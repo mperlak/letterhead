@@ -1,6 +1,6 @@
 # Third-party licenses
 
-License texts for the third-party code shipped in this skill directory. The
+License texts for the third-party code and fonts shipped in this skill directory. The
 skill itself is MIT (see `LICENSE` next to this file). Both library bundles
 in `scripts/vendor/` are built by `dev-scripts/build-vendor.sh`; see
 `NOTICES.md` for versions and how to rebuild them.
@@ -247,3 +247,24 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
 The npm package ships no license file; its package.json declares "ISC". The text above is the standard ISC license naming the package author.
+
+## `fonts/`
+
+Every family in `fonts/` is licensed under the SIL Open Font License,
+Version 1.1. The license text with each family's own copyright notice is in
+`fonts/<family>/OFL.txt`, shipped next to the font files:
+
+- Archivo (`fonts/archivo/OFL.txt`): Copyright 2020 The Archivo Project Authors.
+- Charis SIL (`fonts/charis-sil/OFL.txt`): Copyright (c) 1997-2022 SIL International.
+- Fraunces (`fonts/fraunces/OFL.txt`): Copyright 2018 The Fraunces Project Authors.
+- IBM Plex Mono (`fonts/ibm-plex-mono/OFL.txt`): Copyright 2017 IBM Corp., Reserved Font Name "Plex".
+- IBM Plex Sans (`fonts/ibm-plex-sans/OFL.txt`): Copyright 2017 IBM Corp., Reserved Font Name "Plex".
+- Inter (`fonts/inter/OFL.txt`): Copyright 2020 The Inter Project Authors.
+- JetBrains Mono (`fonts/jetbrains-mono/OFL.txt`): Copyright 2020 The JetBrains Mono Project Authors.
+- Newsreader (`fonts/newsreader/OFL.txt`): Copyright 2020 The Newsreader Project Authors.
+- Nunito Sans (`fonts/nunito-sans/OFL.txt`): Copyright 2016 The Nunito Sans Project Authors.
+- Public Sans (`fonts/public-sans/OFL.txt`): Copyright 2015 The Public Sans Project Authors.
+- Rubik (`fonts/rubik/OFL.txt`): Copyright 2015 The Rubik Project Authors.
+- Source Sans 3 (`fonts/source-sans-3/OFL.txt`): Copyright 2010-2020 Adobe, Reserved Font Name 'Source'.
+- Source Serif 4 (`fonts/source-serif-4/OFL.txt`): Copyright 2014 The Source Serif 4 Project Authors.
+- Space Grotesk (`fonts/space-grotesk/OFL.txt`): Copyright 2020 The Space Grotesk Project Authors.

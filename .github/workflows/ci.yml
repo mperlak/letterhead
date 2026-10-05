@@ -38,6 +38,7 @@ jobs:
           node --check dev-scripts/brand-tokens-smoke.mjs
           node --check dev-scripts/brand-sheet-smoke.mjs
           node --check dev-scripts/presentation-smoke.mjs
+          node --check dev-scripts/apply-tokens-smoke.mjs
 
       - name: Bash syntax check
         run: |
@@ -54,6 +55,7 @@ jobs:
           node dev-scripts/brand-evidence-smoke.mjs
           node dev-scripts/brand-tokens-smoke.mjs
           node dev-scripts/brand-sheet-smoke.mjs
+          node dev-scripts/apply-tokens-smoke.mjs
 
       - name: Presentation scripts smoke (pictures, product pages, build in every style)
         run: node dev-scripts/presentation-smoke.mjs

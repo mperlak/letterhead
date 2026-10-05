@@ -5,19 +5,22 @@
 // examples/hero/compose.html does for the hero.
 //
 //   node dev-scripts/contact-sheet.mjs [--template proposal] [--out examples/screenshots]
-//                                      [--matrix-dir temp/matrix] [--tile-height 765]
+//                                      [--brand <profile-dir>] [--matrix-dir temp/matrix]
+//                                      [--tile-height 765]
 //
 // Writes <out>/styles-contact-sheet.webp (light) and -dark.webp. The tiles come
-// from the matrix (dev-scripts/build-matrix.mjs --keep); if temp/matrix lacks the
-// template for a style, the matrix is rebuilt first.
+// from the matrix (dev-scripts/build-matrix.mjs); if the matrix lacks the
+// template for a style, it is rebuilt first. With --brand, the tiles are that
+// brand profile in every style (build-matrix.mjs --brand, temp/matrix-<brand>/)
+// and the sheet is styles-contact-sheet-<brand>{,-dark}.webp: the brand's
+// colors should hold across all nine tiles, in both themes.
 //
-// It also reports whether each style's first-choice font families actually
-// resolve on this machine: the style tokens name webfonts ("Fraunces", "Inter")
-// but ship no @font-face, so a reader without them installed sees the system
-// fallback. That is a property of the styles, not of this script.
+// It also reports, per style, where the heading and body faces come from:
+// embedded in the document (apply-tokens.mjs puts the fonts in), installed
+// on this machine, or a fallback.
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, resolve, basename } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { launchBrowser, encodeWebp, requireCwebp, makeWorkDir, rmWorkDir } from './lib/shoot.mjs';
@@ -25,7 +28,7 @@ import { launchBrowser, encodeWebp, requireCwebp, makeWorkDir, rmWorkDir } from 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STYLES = join(ROOT, 'letterhead', 'styles');
 
-const o = { template: 'proposal', out: join(ROOT, 'examples', 'screenshots'), matrix: join(ROOT, 'temp', 'matrix'),
+const o = { template: 'proposal', out: join(ROOT, 'examples', 'screenshots'), matrix: null, brand: null,
   tileW: 680, tileH: 765, maxKB: 220 };
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
@@ -33,16 +36,20 @@ for (let i = 0; i < argv.length; i++) {
   if (a === '--template') o.template = argv[++i];
   else if (a === '--out') o.out = resolve(argv[++i]);
   else if (a === '--matrix-dir') o.matrix = resolve(argv[++i]);
+  else if (a === '--brand') o.brand = resolve(argv[++i] || '');
   else if (a === '--tile-height') o.tileH = Number(argv[++i]);
   else if (a === '--max-kb') o.maxKB = Number(argv[++i]);
   else { console.error(`unknown option ${a}`); process.exit(1); }
 }
 
+if (o.brand && !existsSync(join(o.brand, 'tokens.css'))) { console.error(`--brand: no tokens.css in ${o.brand}`); process.exit(1); }
+const brandSlug = o.brand ? basename(o.brand) : null;
+o.matrix ||= join(ROOT, 'temp', brandSlug ? `matrix-${brandSlug}` : 'matrix');
 const styles = readdirSync(STYLES).filter((s) => !s.startsWith('.')).sort();
 const docFor = (s) => join(o.matrix, `${o.template}--${s}.html`);
 if (styles.some((s) => !existsSync(docFor(s)))) {
-  console.log('matrix missing; running build-matrix.mjs --keep');
-  const r = spawnSync('node', [join(ROOT, 'dev-scripts', 'build-matrix.mjs'), '--keep'], { stdio: 'inherit' });
+  console.log('matrix missing; running build-matrix.mjs');
+  const r = spawnSync('node', [join(ROOT, 'dev-scripts', 'build-matrix.mjs'), ...(o.brand ? ['--brand', o.brand] : [])], { stdio: 'inherit' });
   if (r.status !== 0) process.exit(r.status || 1);
   if (styles.some((s) => !existsSync(docFor(s)))) { console.error(`no matrix sample for template "${o.template}"`); process.exit(1); }
 }
@@ -77,19 +84,21 @@ mkdirSync(o.out, { recursive: true });
 const work = makeWorkDir('letterhead-sheet');
 const browser = await launchBrowser();
 try {
-  // Font resolution report: first family of --font-display / --font-sans, measured against fallbacks.
+  // Font report: the heading and body faces, and where each comes from.
   const report = [];
   for (const s of styles) {
-    const tokens = readFileSync(join(STYLES, s, 'tokens.css'), 'utf8');
-    const first = (v) => (tokens.match(new RegExp(`--${v}:\\s*([^;]+);`)) || [, ''])[1].split(',')[0].replace(/["']/g, '').trim();
-    const fams = [...new Set([first('font-display'), first('font-sans')].filter(Boolean))];
-    const hasFace = /@font-face|@import/.test(tokens);
-    const resolved = await browser.evaluate(pathToFileURL(docFor(s)).href, `(() => {
+    const fonts = await browser.evaluate(pathToFileURL(docFor(s)).href, `(() => {
       const c = document.createElement('canvas').getContext('2d'), t = 'Hamburgefonstiv 0123 mmmmmwwwwiiii';
       const w = (f) => { c.font = '40px ' + f; return c.measureText(t).width; };
-      return ${JSON.stringify(fams)}.map((f) => [f, w('"' + f + '", monospace') !== w('monospace') || w('"' + f + '", sans-serif') !== w('sans-serif') || w('"' + f + '", serif') !== w('serif')]);
+      const first = (el) => el ? getComputedStyle(el).fontFamily.split(',')[0].replace(/["']/g, '').trim() : '';
+      const fams = [...new Set([first(document.querySelector('h1')), first(document.body)].filter(Boolean))];
+      return fams.map((f) => {
+        if ([...document.fonts].some((x) => x.family.replace(/["']/g, '') === f && x.status === 'loaded')) return [f, 'embedded'];
+        const installed = w('"' + f + '", monospace') !== w('monospace') || w('"' + f + '", serif') !== w('serif');
+        return [f, installed ? 'installed here only' : 'FALLBACK'];
+      });
     })()`);
-    report.push({ style: s, hasFace, resolved });
+    report.push({ style: s, fonts });
   }
 
   for (const theme of ['light', 'dark']) {
@@ -103,15 +112,16 @@ try {
     const html = join(work, `sheet-${theme}.html`);
     writeFileSync(html, composeHtml(theme, imgs));
     const png = await browser.shoot(pathToFileURL(html).href, { width: PAGE_W, height: PAGE_H, scale: 1.5, theme: 'light' });
-    const dest = join(o.out, theme === 'dark' ? 'styles-contact-sheet-dark.webp' : 'styles-contact-sheet.webp');
+    const base = brandSlug ? `styles-contact-sheet-${brandSlug}` : 'styles-contact-sheet';
+    const dest = join(o.out, theme === 'dark' ? `${base}-dark.webp` : `${base}.webp`);
     const { bytes, quality } = encodeWebp(png, dest, { quality: 80, maxKB: o.maxKB, workDir: work });
     console.log(`${dest}  ${PAGE_W * 1.5}x${PAGE_H * 1.5}  ${(bytes / 1024).toFixed(0)} KB  q${quality}`);
   }
 
-  console.log(`\nStyles in the sheet (${o.template}): ${styles.join(', ')}`);
-  console.log('Font resolution on this machine (first-choice family -> installed?):');
+  console.log(`\nStyles in the sheet (${o.template}${brandSlug ? `, brand ${brandSlug}` : ''}): ${styles.join(', ')}`);
+  console.log('Heading and body faces (where each comes from):');
   for (const r of report) {
-    console.log(`  ${r.style.padEnd(14)} ${r.resolved.map(([f, ok]) => `${f}: ${ok ? 'yes' : 'NO (fallback)'}`).join('; ')}${r.hasFace ? '' : '  [no @font-face in tokens.css]'}`);
+    console.log(`  ${r.style.padEnd(14)} ${r.fonts.map(([f, how]) => `${f}: ${how}`).join('; ')}`);
   }
 } finally {
   await browser.close();

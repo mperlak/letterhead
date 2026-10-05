@@ -98,6 +98,10 @@ import { spawnSync } from 'node:child_process';
 import { dirname, join, basename, resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse, formatHex, converter, wcagContrast } from './vendor/culori.mjs';
+import {
+  round3, round1, formatOklch, clampChromaToGamut, contrastOklch, WHITE, pickInkForFill, quantize,
+  computeInk, computeDarkPrimary, computeDarkInk, deriveStatus, STATUS_KEYS,
+} from './lib/color.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CHECK_TOKENS_SCRIPT = join(HERE, 'check-tokens.mjs');
@@ -214,120 +218,6 @@ function parseColorArg(str, label) {
     process.exit(1);
   }
   return toOklch(c);
-}
-
-const round3 = (n) => Math.round(n * 1000) / 1000;
-const round1 = (n) => Math.round(n * 10) / 10;
-
-function formatOklch({ l, c, h }) {
-  const hue = Number.isFinite(h) ? h : 0;
-  return `oklch(${round3(l).toFixed(3)} ${round3(Math.max(0, c)).toFixed(3)} ${round1(hue).toFixed(1)})`;
-}
-
-// Binary-searches chroma down until the color round-trips into sRGB, keeping
-// L and H fixed — browsers clip out-of-gamut oklch() silently, so this is
-// the only way a derived color is guaranteed to render as composed.
-function inGamut(l, c, h) {
-  const rgb = toRgb({ mode: 'oklch', l, c, h });
-  const eps = 1e-4;
-  return ['r', 'g', 'b'].every((k) => rgb[k] >= -eps && rgb[k] <= 1 + eps);
-}
-
-function clampChromaToGamut(l, c, h) {
-  if (c <= 0 || inGamut(l, c, h)) return { l, c: Math.max(0, c), h };
-  let lo = 0;
-  let hi = c;
-  for (let i = 0; i < 25; i++) {
-    const mid = (lo + hi) / 2;
-    if (inGamut(l, mid, h)) lo = mid;
-    else hi = mid;
-  }
-  return { l, c: lo, h };
-}
-
-function contrastOklch(a, b) {
-  return wcagContrast({ mode: 'oklch', l: a.l, c: a.c, h: a.h }, { mode: 'oklch', l: b.l, c: b.c, h: b.h });
-}
-
-const WHITE = { l: 1, c: 0, h: 0 };
-const NEAR_BLACK = { l: 0.145, c: 0, h: 0 };
-const BLACK = { l: 0, c: 0, h: 0 };
-
-// White or near-black ink on a fill, whichever clears 4.5:1; if only one
-// passes, that one wins; if both pass, the higher-contrast one. A fill in
-// the narrow band where neither does gets pure black, which clears 4.5:1
-// on everything white cannot.
-function pickInkForFill(fill) {
-  const cw = contrastOklch(WHITE, fill);
-  const cb = contrastOklch(NEAR_BLACK, fill);
-  const whitePasses = cw >= 4.5;
-  const blackPasses = cb >= 4.5;
-  if (whitePasses && !blackPasses) return WHITE;
-  if (blackPasses && !whitePasses) return NEAR_BLACK;
-  if (!whitePasses && !blackPasses && contrastOklch(BLACK, fill) >= 4.5) return BLACK;
-  return cw >= cb ? WHITE : NEAR_BLACK;
-}
-
-// The value exactly as formatOklch() will write it, with chroma rounded
-// down so a color computed on the gamut edge stays inside it. Contrast is
-// measured on this, so rounding cannot drop a pair below its threshold.
-function quantize({ l, c, h }) {
-  return { l: round3(l), c: Math.floor(Math.max(0, c) * 1000 + 1e-9) / 1000, h: round1(Number.isFinite(h) ? h : 0) };
-}
-
-// Text-safe primary ink for one block: same hue as primary, chroma inherited
-// from primary (gamut-clamped), lightness walked toward the floor that
-// clears 4.5:1 against that block's own background (darker on a light block,
-// lighter on a dark one). The contrast is measured on the value as it will
-// be written (three decimals), so rounding cannot drop it below 4.5:1.
-function computeInk(primary, background, direction) {
-  const h = primary.h;
-  let c = primary.c;
-  let l = primary.l;
-  const step = direction === 'darker' ? -0.01 : 0.01;
-  let best = clampChromaToGamut(Math.max(0.02, Math.min(0.98, l)), c, h);
-  for (let i = 0; i < 90; i++) {
-    const candidate = clampChromaToGamut(l, c, h);
-    const written = { l: round3(candidate.l), c: round3(candidate.c), h: round1(Number.isFinite(candidate.h) ? candidate.h : 0) };
-    if (contrastOklch(written, background) >= 4.5) return candidate;
-    best = candidate;
-    l += step;
-    if (l < 0.02 || l > 0.98) break;
-  }
-  return best;
-}
-
-// Dark-theme primary: the brand color itself whenever it already reads on
-// the dark background (3:1, the bar for fills and rules). Otherwise the
-// lightness goes up by the smallest step that reaches 3:1, keeping the hue
-// and as much chroma as sRGB allows at that lightness. Deriving it from the
-// style's own light-to-dark shift instead turned amber into cream and red
-// into pink.
-function computeDarkPrimary(primary, background) {
-  if (contrastOklch(primary, background) >= 3) return primary;
-  const h = Number.isFinite(primary.h) ? primary.h : 0;
-  let last = null;
-  for (let l = primary.l; l <= 0.99; l += 0.005) {
-    last = quantize(clampChromaToGamut(l, primary.c, h));
-    if (contrastOklch(last, background) >= 3) return last;
-  }
-  return last || primary;
-}
-
-// Dark-theme ink: the lowest lightness that clears 4.5:1 on the dark
-// background, at the primary's hue and the most chroma sRGB holds there.
-// Walking up from the primary with its own chroma is what produced a pale
-// cream "amber" ink. A near-neutral brand keeps its low chroma, so a grey
-// brand does not get a colored ink.
-function computeDarkInk(primary, background) {
-  const h = Number.isFinite(primary.h) ? primary.h : 0;
-  const cap = primary.c < 0.03 ? primary.c : 0.4;
-  let last = null;
-  for (let l = Math.max(0.02, background.l); l <= 0.99; l += 0.005) {
-    last = quantize(clampChromaToGamut(l, cap, h));
-    if (contrastOklch(last, background) >= 4.5) return last;
-  }
-  return last || primary;
 }
 
 // Neutral surfaces and text (--muted, --border, --muted-foreground) keep
@@ -1464,6 +1354,23 @@ async function main() {
       darkOverrides.push(['brand-logo-plate', logoDark.plate]);
     }
   }
+
+  // State colors: the base style's, kept wherever they still read on this
+  // brand's paper, otherwise walked to 4.5:1; blocked follows the block's
+  // destructive and neutral its muted text (lib/color.mjs deriveStatus).
+  const statusFor = (body, overrides, background, dark) => {
+    if (getToken(body, 'status-ok') == null) return [];
+    const val = (name) => {
+      const o = overrides.find(([k]) => k === name);
+      const c = parse((o ? o[1] : getToken(body, name)) || '');
+      return c ? toOklch(c) : null;
+    };
+    const seeds = Object.fromEntries(STATUS_KEYS.map((k) => [k, val(k)]).filter(([, c]) => c));
+    const st = deriveStatus({ background, dark, seeds, destructive: val('destructive'), mutedForeground: val('muted-foreground') });
+    return STATUS_KEYS.map((k) => [k, formatOklch(st[k])]);
+  };
+  lightOverrides.push(...statusFor(lightBodyOrig, lightOverrides, backgroundLightForContrast, false));
+  darkOverrides.push(...statusFor(darkBodyOrig, darkOverrides, backgroundDarkForContrast, true));
 
   // A previous run's output passed back in as --style carries its own logo
   // tokens; a new --logo replaces all of them, so a stale dark copy or plate

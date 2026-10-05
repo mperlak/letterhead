@@ -1,43 +1,103 @@
 <!-- title: Order Sync Engagement — Proposal (matrix sample) -->
 <!-- description: Matrix sample exercising the proposal structure. -->
-<header>
-    <h1>Order Sync Engagement</h1>
-    <p class="subtitle">Proposal: replace the nightly batch with real-time order sync.</p>
-    <dl class="meta">
-      <dt>Status</dt><dd>Awaiting decision</dd>
-      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
-      <dt>Audience</dt><dd>Lumen Commerce leadership</dd>
-      <dt>Date</dt><dd>June 2026</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Proposal</p>
+  <h1>Order Sync Engagement</h1>
+  <p class="lede">Replace the nightly batch with real-time order sync: orders in Atlas within seconds, in nine weeks.</p>
+  <dl class="meta">
+    <div><dt>Status</dt><dd>Awaiting decision</dd></div>
+    <div><dt>Prepared by</dt><dd>Integration team, Lumen Commerce</dd></div>
+    <div><dt>Prepared for</dt><dd>Lumen Commerce leadership</dd></div>
+    <div><dt>Date</dt><dd>June 2026</dd></div>
+  </dl>
+</header>
 
+<nav class="contents" aria-label="Contents">
+  <ol>
+    <li><a href="#the-situation">The situation</a></li>
+    <li><a href="#the-proposal">The proposal</a></li>
+    <li><a href="#how-it-would-work">How it would work</a></li>
+    <li><a href="#options-considered">Options considered</a></li>
+    <li><a href="#effort-and-cost">Effort and cost</a></li>
+    <li><a href="#the-ask">The ask</a></li>
+  </ol>
+</nav>
+
+<div class="summary">
+  <p class="label">In short</p>
+  <p>Nine weeks and 26 person-days buy order sync that ends overselling during campaigns. We need a yes and a named owner for checkout UX by Friday.</p>
+</div>
+
+<div class="letter">
+  <p>Dear Maria,</p>
+  <p>After the spring campaign you asked us for a way to stop selling stock we no longer
+  have. This proposal is that way, sized to start before the autumn campaign.</p>
+  <p class="from"><strong>Tomasz Wilk</strong>, integration lead, Lumen Commerce</p>
+</div>
+
+<section>
+  <p class="kicker">Why now</p>
   <h2 id="the-situation">The situation</h2>
-  <p>Every campaign oversells stock because orders reach the ERP hours late. Support burns
-  two days a week reconciling states by hand.</p>
+  <p>Every campaign oversells stock because orders reach the ERP hours late.</p>
+  <p class="figure"><strong>2 days</strong> a week of support time go to reconciling order states by hand.</p>
+</section>
 
+<section>
+  <p class="kicker">What we do</p>
   <h2 id="the-proposal">The proposal</h2>
   <p>We build event-driven order sync: orders visible in Atlas within seconds, stock held
   before confirmation, rollback to the batch at the flip of a switch.</p>
+  <p class="verdict">Real-time sync is the only option that removes the reconciliation work instead of shrinking it.</p>
+</section>
 
+<section>
   <h2 id="how-it-would-work">How it would work</h2>
-  <p>Four phases over nine weeks: contract, reservation flow, payment webhook, shadow
-  rollout. Each phase has its own acceptance criteria.</p>
+  <ol class="steps">
+    <li><span class="when">Weeks 1–2</span><div><strong>Contract.</strong> Both teams sign the event payload spec.</div></li>
+    <li><span class="when">Weeks 3–4</span><div><strong>Reservation flow.</strong> Stock is held within the 8-second SLA.</div></li>
+    <li><span class="when">Weeks 5–7</span><div><strong>Payment webhook.</strong> Confirmed orders reach Atlas once, idempotently.</div></li>
+    <li><span class="when">Weeks 8–9</span><div><strong>Shadow rollout.</strong> The batch runs beside the new sync until both agree.</div></li>
+  </ol>
+</section>
 
+<section>
   <h2 id="options-considered">Options considered</h2>
   <ul>
     <li>More frequent batches: lag shrinks but never disappears; reconciliation load stays.</li>
     <li>Full ERP replacement: solves it and three years of other problems; not this budget.</li>
   </ul>
+</section>
 
+<section>
   <h2 id="effort-and-cost">Effort and cost</h2>
-  <table>
-    <thead><tr><th>Phase</th><th>Weeks</th><th style="text-align:right">Effort</th></tr></thead>
-    <tbody>
-      <tr><td>Contract + reservation flow</td><td>1–4</td><td class="num">12 pd</td></tr>
-      <tr><td>Webhook + rollout</td><td>5–9</td><td class="num">14 pd</td></tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>Weeks</th><th class="num">Effort</th></tr></thead>
+      <tbody>
+        <tr><td>Contract + reservation flow</td><td>1–4</td><td class="num">12 pd</td></tr>
+        <tr><td>Webhook + rollout</td><td>5–9</td><td class="num">14 pd</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="price">
+    <p class="label">Price</p>
+    <dl>
+      <div><dt>Contract and reservation flow, 12 person-days</dt><dd>€10,800</dd></div>
+      <div><dt>Payment webhook and rollout, 14 person-days</dt><dd>€12,600</dd></div>
+      <div class="total"><dt>Total, fixed price</dt><dd>€23,400</dd></div>
+    </dl>
+    <p>Invoiced in two parts: at the end of week 4 and at go-live. Prices exclude VAT.</p>
+  </div>
+</section>
 
+<section class="ask">
   <h2 id="the-ask">The ask</h2>
   <p>Approve the engagement and name the decision-owner for checkout UX by Friday; work
   starts the following Monday.</p>
+</section>
+
+<footer class="doc-close">
+  <p class="label">Prepared by</p>
+  <p class="from"><strong>Integration team</strong>, Lumen Commerce</p>
+  <p>June 2026. Comments on this version reach the team directly.</p>
+</footer>

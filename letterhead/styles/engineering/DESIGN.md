@@ -201,7 +201,9 @@ character beyond the palette.
 - **Traffic-light rows.** In tables, a state column carries a dot plus the
   state word (ok / warn / blocked); the row itself stays on canvas.
 - **The mono metadata rail.** Document metadata in mono uppercase labels, so
-  the instrument-panel texture is set from the first line.
+  the instrument-panel texture is set from the first line. In `style.css`
+  the rail stands beside the title like a datasheet, headings hang a mono
+  `#` in the margin, and summaries and callouts are panels with a title bar.
 
 ## 6. Do's and Don'ts
 

@@ -1,48 +1,66 @@
 <!-- title: Returns Portal Milestone — Change Walkthrough (matrix sample) -->
 <!-- description: Matrix sample exercising the change-walkthrough structure. -->
-<header>
-    <h1>Returns Portal — Milestone Walkthrough</h1>
-    <p class="subtitle">The first working slice of Phase 2, delivered for your review.</p>
-    <dl class="meta">
-      <dt>Delivered by</dt><dd>Integration team, Lumen Commerce</dd>
-      <dt>For</dt><dd>Project sponsor</dd>
-      <dt>Date</dt><dd>June 2026</dd>
-      <dt>Where to see it</dt><dd>Staging, behind the <code>returns-portal</code> flag</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Change walkthrough</p>
+  <h1>Returns Portal — Milestone Walkthrough</h1>
+  <p class="lede">The first working slice of Phase 2, delivered for your review.</p>
+  <dl class="meta">
+    <div><dt>Delivered by</dt><dd>Integration team, Lumen Commerce</dd></div>
+    <div><dt>For</dt><dd>Project sponsor</dd></div>
+    <div><dt>Date</dt><dd>June 2026</dd></div>
+    <div><dt>Where to see it</dt><dd>Staging, behind the <code>returns-portal</code> flag</dd></div>
+  </dl>
+</header>
 
-  <h2 id="what-changed-and-why">What changed and why</h2>
+<div class="summary">
+  <p class="label">What changed and why</p>
   <p>Customers can now start a return from their order history instead of emailing
   support. The moment they submit, the return exists in Atlas as an RMA, which removes
   the email-to-warehouse relay that loses a day per return today.</p>
+</div>
 
-  <h2 id="tour-order-history">Stop 1: the order history entry point</h2>
+<section>
+  <p class="kicker">Stop 1</p>
+  <h2 id="tour-order-history">The order history entry point</h2>
   <p>Eligible items show a "Return item" action. Eligibility runs on the 30-day window
   and final-sale flags. Before: no return surface existed. See it: any staged order
   under 30 days old.</p>
+</section>
 
-  <h2 id="tour-rma-creation">Stop 2: the RMA lands in Atlas instantly</h2>
+<section>
+  <p class="kicker">Stop 2</p>
+  <h2 id="tour-rma-creation">The RMA lands in Atlas instantly</h2>
   <p>Submitting creates <code>rma.created</code> in Atlas with the order reference and
   reason. Before: warehouse learned about returns from forwarded emails. See it: the
   RMA list in the Atlas staging tenant.</p>
+</section>
 
+<section>
   <h2 id="what-deserves-your-attention">What deserves your attention</h2>
-  <ul>
-    <li>We defaulted the return window to 30 days for everyone; the loyalty-tier
-    extension is still an open decision and changes eligibility logic.</li>
-    <li>Reason codes are free-text plus four presets for now; the warehouse asked for
-    strict presets, which would drop the free-text field.</li>
-  </ul>
+  <div class="callout">
+    <p class="label">Two decisions made on your behalf</p>
+    <ul>
+      <li>We defaulted the return window to 30 days for everyone; the loyalty-tier
+      extension is still an open decision and changes eligibility logic.</li>
+      <li>Reason codes are free-text plus four presets for now; the warehouse asked for
+      strict presets, which would drop the free-text field.</li>
+    </ul>
+  </div>
+</section>
 
+<section>
   <h2 id="how-to-verify">How to verify</h2>
-  <ol>
-    <li>Log into staging with the reviewer account and open any order under 30 days old.</li>
-    <li>Start a return for one item and submit with the "wrong size" preset.</li>
-    <li>Open the Atlas staging RMA list: the return should appear within seconds with
-    the order reference attached. Anything slower than a minute is wrong.</li>
+  <ol class="steps">
+    <li><div>Log into staging with the reviewer account and open any order under 30 days old.</div></li>
+    <li><div>Start a return for one item and submit with the "wrong size" preset.</div></li>
+    <li><div>Open the Atlas staging RMA list: the return should appear within seconds with
+    the order reference attached. Anything slower than a minute is wrong.</div></li>
   </ol>
+</section>
 
+<section class="ask">
   <h2 id="on-acceptance">What happens on acceptance</h2>
   <p>Your yes opens the flag to internal orders (step 2 exit) and starts the label
   generation work. If it is not a yes, leave comments on the stops above; the next
   walkthrough version answers them.</p>
+</section>

@@ -117,8 +117,8 @@ Twelve templates, one per thing a client actually receives:
 Nine styles, chosen by who reads the document: `boardroom`, `engineering`,
 `corporate`, `startup`, `consulting`, `public-sector`, `workshop`,
 `atelier` (a small business writing to private customers) and `gazette`.
-A style only sets layout and rhythm. Colors, fonts and logo always come from
-the brand.
+A style is a complete look: layout, type and color. A taught brand replaces
+its colors, fonts and logo and keeps its layout.
 
 Ten documents for four fictional companies, each made by the skill from
 short notes, unedited:

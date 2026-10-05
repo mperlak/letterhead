@@ -125,9 +125,9 @@ components:
 
 Consulting is the register for client deliverables: assessments,
 recommendations, engagement documents. Quietly expensive: charcoal ink on
-true-neutral paper, a serif display voice (Charter), one oxblood accent,
-and numbered-section discipline throughout. The authority is structural,
-not decorative.
+true-neutral paper, a serif display voice (Charis SIL, the open-licensed
+Charter), one oxblood accent, and numbered-section discipline throughout.
+The authority is structural, not decorative.
 
 Key characteristics:
 
@@ -149,9 +149,10 @@ its scarcity is its authority.
 
 ## 3. Typography
 
-Two families. Charter, a serif, sets the title and section headings;
-Source Sans 3 sets body text and labels. Body text is 1.0625rem with
-generous line spacing, sized for reading a long document start to finish.
+Two families. Charis SIL, the open-licensed expansion of Bitstream
+Charter, sets the title and section headings; Source Sans 3 sets body text
+and labels. Body text is 1.0625rem with generous line spacing, sized for
+reading a long document start to finish.
 Section numbers belong to the heading and take the accent color.
 
 Number the top-level sections, and set the numbers as part of the heading

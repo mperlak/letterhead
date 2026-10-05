@@ -48,6 +48,12 @@
   --chart-4: oklch(0.5400 0.0800 80);
   --chart-5: oklch(0.4200 0.0300 250);
 
+  /* -- States: the word carries the state, the color repeats it -- */
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.560 0.115 78.0);
+  --status-blocked: oklch(0.490 0.175 27.0);
+  --status-neutral: oklch(0.445 0.022 250.0);
+
   /* -- Shape: boardroom is crisp; nothing rounder than 4px -------- */
   --radius-sm: 2px;
   --radius-md: 3px;
@@ -128,6 +134,11 @@
   --chart-4: oklch(0.7300 0.0850 82);
   --chart-5: oklch(0.6600 0.0200 248);
 
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.660 0.160 25.0);
+  --status-neutral: oklch(0.780 0.013 245.0);
+
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
   --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);
 }
@@ -172,6 +183,11 @@
     --chart-3: oklch(0.5200 0.0500 240);
     --chart-4: oklch(0.7300 0.0850 82);
     --chart-5: oklch(0.6600 0.0200 248);
+
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.660 0.160 25.0);
+    --status-neutral: oklch(0.780 0.013 245.0);
 
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
     --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);

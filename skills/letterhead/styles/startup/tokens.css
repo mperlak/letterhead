@@ -42,6 +42,12 @@
   --chart-3: oklch(0.8100 0.0800 150);
   --chart-4: oklch(0.4600 0.0900 240);
   --chart-5: oklch(0.5800 0.0180 162);
+
+  /* -- States: the word carries the state, the color repeats it -- */
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.560 0.115 78.0);
+  --status-blocked: oklch(0.530 0.185 28.0);
+  --status-neutral: oklch(0.470 0.014 163.0);
   --shadow-sm: 0 1px 2px oklch(0.19 0.006 165 / 0.06);
   --shadow-md: 0 6px 20px -6px oklch(0.19 0.006 165 / 0.12);
   --radius-sm: 8px;
@@ -107,6 +113,11 @@
   --chart-3: oklch(0.5000 0.0850 156);
   --chart-4: oklch(0.6800 0.0800 242);
   --chart-5: oklch(0.7000 0.0170 162);
+
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.690 0.155 27.0);
+  --status-neutral: oklch(0.770 0.011 160.0);
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
   --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
 }
@@ -147,6 +158,11 @@
     --chart-3: oklch(0.5000 0.0850 156);
     --chart-4: oklch(0.6800 0.0800 242);
     --chart-5: oklch(0.7000 0.0170 162);
+
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.690 0.155 27.0);
+    --status-neutral: oklch(0.770 0.011 160.0);
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
     --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
   }

@@ -1,27 +1,35 @@
 <!-- title: Lumen Order Sync 1.4 — Release Notes (matrix sample) -->
 <!-- description: Matrix sample exercising the release-notes structure. -->
-<header>
-    <h1>Lumen Order Sync 1.4</h1>
-    <p class="subtitle">Release notes.</p>
-    <dl class="meta">
-      <dt>Released</dt><dd>June 18, 2026</dd>
-      <dt>Channel</dt><dd>Production</dd>
-      <dt>Changes from</dt><dd>1.3.2</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Release notes</p>
+  <h1>Lumen Order Sync 1.4</h1>
+  <p class="lede">One breaking change: consumers must enforce the sequence field before 1.5.</p>
+  <dl class="meta">
+    <div><dt>Released</dt><dd>June 18, 2026</dd></div>
+    <div><dt>Channel</dt><dd>Production</dd></div>
+    <div><dt>Changes from</dt><dd>1.3.2</dd></div>
+  </dl>
+</header>
 
+<section>
   <h2 id="breaking-changes">Breaking changes and required actions</h2>
-  <p>One breaking change. Consumers must enforce the <code>sequence</code> field:
-  deliveries may arrive out of order, and 1.4 stops guaranteeing ordered retries.
-  Migrate by discarding events with a lower sequence than the last processed. Deadline:
-  before upgrading to 1.5.</p>
+  <div class="callout warn">
+    <p class="label">Action required</p>
+    <p>Consumers must enforce the <code>sequence</code> field: deliveries may arrive out of
+    order, and 1.4 stops guaranteeing ordered retries. Migrate by discarding events with a
+    lower sequence than the last processed. Deadline: before upgrading to 1.5.</p>
+  </div>
+</section>
 
+<section>
   <h2 id="highlights">Highlights</h2>
   <ul>
     <li><code>apple_pay</code> joins the payment methods; no consumer action needed.</li>
     <li>Retry backoff now caps at hourly, cutting duplicate-delivery load by half.</li>
   </ul>
+</section>
 
+<section>
   <h2 id="changes-by-area">Changes by area</h2>
   <h3 id="area-webhooks">Webhooks</h3>
   <ul>
@@ -33,12 +41,17 @@
   <ul>
     <li>Changed: rejected lines return public reason codes instead of internal names.</li>
   </ul>
+</section>
 
+<section>
   <h2 id="known-issues">Known issues</h2>
   <ul>
     <li>Sandbox tenants may log a spurious rotation warning; harmless, fix in 1.4.1.</li>
   </ul>
+</section>
 
+<section>
   <h2 id="footer-links">Get it / report problems</h2>
   <p>Rollout is automatic. Report problems in the shared integration channel. Previous
   notes: Lumen Order Sync 1.3.</p>
+</section>

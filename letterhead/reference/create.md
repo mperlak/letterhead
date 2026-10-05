@@ -38,8 +38,10 @@ brand's type on your machine and a fallback in every review frame.
 Stop before any file write. Present in plain conversational markdown:
 
 - **Template** and the one-line reason.
-- **Brand:** which profile or style anchors the look, and the binding
-  invariants in one line.
+- **Brand and style:** which profile gives the colors, fonts and logo,
+  which style lays the document out (the profile's own base style, or
+  another one named with `--style`), and the binding invariants in one
+  line.
 - **Sections** in order.
 - **Signature move:** which of the style's signature moves this document will
   carry, and where. One line. This is the composition choice that makes the
@@ -69,23 +71,32 @@ the shape gate, the brand lock and the phone and theme review still apply.
 1. Read the chosen `template.md` end to end. Its structure, hierarchy
    contract, mobile contract, review contract, and failure modes are the
    spec for this document.
-2. Write the document with its own `<style>` for layout, then put the
-   resolved tokens into it with the script, never by hand:
+2. Write the body in the shared markup of `reference/markup.md`: the
+   `doc-head`, `dl.meta`, `section` + `h2 id`, and the vocabulary elements
+   the content earns. The style's `style.css` lays that markup out; a
+   document that invents its own class names gets none of the style's
+   layout. Then put the look into the head with the script, never by hand:
    ```sh
-   node <skill>/scripts/apply-tokens.mjs <profile-dir> <file>
+   node <skill>/scripts/apply-tokens.mjs <profile-dir> <file> [--style <slug>]
    ```
    With no profile, pass the style's file instead
-   (`<skill>/styles/<style>/tokens.css`). The script inserts the whole
-   `tokens.css` as one `<style data-letterhead-tokens>` block in `<head>`,
-   ahead of the document's own styles: the embedded fonts, the logo, and
-   the three selector blocks, which travel together:
+   (`<skill>/styles/<style>/tokens.css`). With a profile, the layout is its
+   base style unless `--style` names another one; the brand keeps its
+   colors (both themes), fonts and logo in any style. The script writes two
+   blocks in `<head>`, ahead of the document's own styles:
+   `<style data-letterhead-tokens>` with the fonts and the tokens, and
+   `<style data-letterhead-style>` with the style's `style.css`. The tokens
+   come in three selector blocks, which travel together:
    - `:root` carries light tokens,
    - `[data-theme="dark"]` carries the explicit dark override,
    - `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not([data-theme="dark"]) { ... } }`
      carries the same dark tokens for raw files opened with no theme
      attribute set.
-   Run it again after the tokens change; it replaces the block instead of
-   adding a second one. Pasting 100 KB of tokens by hand is where a
+   The document's own `<style>` comes after them and holds only what this
+   document needs on top, in `var(--*)` tokens. Restyling `.doc-head` or
+   `h2` there removes the style's composition.
+   Run it again after the tokens change, or with another `--style`; it
+   replaces both blocks instead of adding more. Pasting 100 KB of tokens by hand is where a
    document loses its dark blocks or its fonts, and a one-off script to do
    the pasting is a detour. A profile whose `DESIGN.md` says documents are
    always light still ships all three blocks: the reader picks the theme,
@@ -146,14 +157,14 @@ the shape gate, the brand lock and the phone and theme review still apply.
      translated.
 6. **Signature-move pass.** Read the resolved style's `DESIGN.md`
    § Signature moves (every shipped style has one; a taught brand profile may
-   too). Instantiate at least one move that fits the document, in the first
-   viewport where it can land. These are what separate a styled document from
-   the same palette poured into a generic shell: the gazette masthead, the
-   consulting numbered spine, the boardroom cover line. Tokens are the paint;
-   the signature move is the composition. A document that uses only the tokens
-   and a plain shared layout has skipped this step. Never force a move that
-   fights the source (no masthead on a two-line status update); pick the one
-   the content earns.
+   too). `style.css` draws them on the shared markup: the gazette masthead
+   from `doc-head`, the consulting numbered spine from the sections, the
+   engineering status ledger from `dl.status`. Check that the document
+   carries the markup the chosen move needs, in the first viewport where it
+   can land. Tokens are the paint; the signature move is the composition. A
+   document in its own div soup gets the tokens and none of the moves. Never
+   force a move that fights the source (no masthead on a two-line status
+   update); pick the one the content earns.
 7. **Stable-id pass.** Give every `h2`/`h3` an id slugged from its text:
    lowercase, drop leading section numbers, strip punctuation, spaces to
    hyphens. "5. Error handling and retries" → `error-handling-and-retries`.

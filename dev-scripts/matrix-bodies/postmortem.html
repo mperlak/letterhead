@@ -1,49 +1,64 @@
 <!-- title: Checkout Reservation Outage — Postmortem (matrix sample) -->
 <!-- description: Matrix sample exercising the postmortem structure. -->
-<header>
-    <h1>Checkout Reservation Outage — Postmortem</h1>
-    <p class="subtitle">June 12, 2026 · 41 minutes · severity 2.</p>
-    <dl class="meta">
-      <dt>Severity</dt><dd>2 — checkout degraded, no data loss</dd>
-      <dt>Duration</dt><dd>41 minutes (09:14–09:55 CET)</dd>
-      <dt>Affected</dt><dd>Reservation calls from Lumen checkout</dd>
-      <dt>Status</dt><dd>Final</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Postmortem</p>
+  <h1>Checkout Reservation Outage</h1>
+  <p class="lede">June 12, 2026 · 41 minutes · severity 2. No orders lost.</p>
+  <dl class="meta">
+    <div><dt>Severity</dt><dd>2 — checkout degraded, no data loss</dd></div>
+    <div><dt>Duration</dt><dd>41 minutes (09:14–09:55 CET)</dd></div>
+    <div><dt>Affected</dt><dd>Reservation calls from Lumen checkout</dd></div>
+    <div><dt>Status</dt><dd>Final</dd></div>
+  </dl>
+</header>
 
+<section>
   <h2 id="summary">Summary</h2>
   <p>An Atlas item-master job ran outside its window and held table locks during morning
   traffic. Reservation calls timed out; checkout degraded to the pending state for 41
   minutes. The retry design prevented double-holds; no orders were lost.</p>
+</section>
 
+<section>
   <h2 id="impact">Impact</h2>
-  <p>1,832 orders saw the pending state; 214 carts were released after double timeouts.
-  Support received 37 tickets. No stock was double-held and no payment was captured
+  <p class="figure"><strong>1,832</strong> orders saw the pending state; 214 carts were released after double timeouts.</p>
+  <p>Support received 37 tickets. No stock was double-held and no payment was captured
   without a confirmed order.</p>
+</section>
 
+<section>
   <h2 id="timeline">Timeline</h2>
-  <ul>
-    <li><code>09:14</code> Timeout rate crosses 0.5%; on-call paged automatically.</li>
-    <li><code>09:21</code> On-call correlates timeouts with item-master lock activity.</li>
-    <li><code>09:38</code> Atlas ops terminates the stray job; locks release.</li>
-    <li><code>09:55</code> Timeout rate back under 0.1%; incident closed.</li>
-  </ul>
+  <ol class="steps">
+    <li><span class="when">09:14</span><div>Timeout rate crosses 0.5%; on-call paged automatically.</div></li>
+    <li><span class="when">09:21</span><div>On-call correlates timeouts with item-master lock activity.</div></li>
+    <li><span class="when">09:38</span><div>Atlas ops terminates the stray job; locks release.</div></li>
+    <li><span class="when">09:55</span><div>Timeout rate back under 0.1%; incident closed.</div></li>
+  </ol>
+</section>
 
+<section>
   <h2 id="why-it-happened">Why it happened</h2>
   <p>Trigger: a manually re-run maintenance job did not carry the window guard the
   scheduled version has. Condition: nothing in the job runner enforces execution windows;
   the guard lives only in the schedule definition.</p>
+</section>
 
+<section>
   <h2 id="response-review">What went well, what went badly</h2>
   <p>Detection and paging worked as designed (7 minutes to a correct hypothesis).
   Terminating the job took 17 minutes because the runbook did not cover the manual-run
   case.</p>
+</section>
 
+<section>
   <h2 id="action-items">Action items</h2>
-  <table>
-    <thead><tr><th>Action</th><th>Owner</th><th>Priority</th><th>Due</th></tr></thead>
-    <tbody>
-      <tr><td>Window guard enforced by the job runner, not the schedule</td><td>Atlas IT</td><td>High</td><td>July 4</td></tr>
-      <tr><td>Runbook section for terminating manual job runs</td><td>Atlas ops</td><td>Medium</td><td>June 27</td></tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Action</th><th>Owner</th><th>Priority</th><th>Due</th></tr></thead>
+      <tbody>
+        <tr><td>Window guard enforced by the job runner, not the schedule</td><td>Atlas IT</td><td><span class="state blocked">high</span></td><td>July 4</td></tr>
+        <tr><td>Runbook section for terminating manual job runs</td><td>Atlas ops</td><td><span class="state warn">medium</span></td><td>June 27</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

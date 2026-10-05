@@ -1,40 +1,58 @@
 <!-- title: Order Sync — Status Update, week 25 (matrix sample) -->
 <!-- description: Matrix sample exercising the status-update structure. -->
-<header>
-    <h1>Order Sync — Status Update</h1>
-    <p class="subtitle">Week 25 · June 15–19, 2026.</p>
-    <dl class="meta">
-      <dt>Status</dt><dd>On track, one blocker</dd>
-      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
-      <dt>Audience</dt><dd>Engineering leads, Atlas operations</dd>
-      <dt>Date</dt><dd>June 2026</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Status update · Week 25</p>
+  <h1>Order Sync — Status Update</h1>
+  <p class="lede">Load test passed; go-live holds if Atlas staging credentials arrive by Wednesday.</p>
+  <dl class="meta">
+    <div><dt>Status</dt><dd>On track, one blocker</dd></div>
+    <div><dt>Owner</dt><dd>Integration team, Lumen Commerce</dd></div>
+    <div><dt>Audience</dt><dd>Engineering leads, Atlas operations</dd></div>
+    <div><dt>Period</dt><dd>June 15–19, 2026</dd></div>
+  </dl>
+</header>
 
-  <div class="panel">
-    <span class="k">TL;DR</span>
-    <p>Load test passed (p95 6.1s against the 8s SLA). Go-live holds only if Atlas staging
-    credentials arrive by Wednesday; that is the one thing this update needs from you.</p>
-  </div>
+<dl class="status">
+  <div><dt>Load test</dt><dd><span class="state ok">passed</span></dd></div>
+  <div><dt>Reconciliation</dt><dd><span class="state warn">in progress</span></dd></div>
+  <div><dt>Staging access</dt><dd><span class="state blocked">blocked</span></dd></div>
+  <div><dt>Go-live</dt><dd><span class="state neutral">Tuesday, held</span></dd></div>
+</dl>
 
+<div class="summary">
+  <p class="label">TL;DR</p>
+  <p>Load test passed (p95 6.1s against the 8s SLA). Go-live holds only if Atlas staging
+  credentials arrive by Wednesday; that is the one thing this update needs from you.</p>
+</div>
+
+<section>
   <h2 id="done">Done</h2>
-  <ul>
-    <li><span class="state ok">done</span> Load test at 3x peak volume, p95 6.1s.</li>
-    <li><span class="state ok">done</span> Idempotency verified for <code>order.paid</code>.</li>
+  <p class="figure"><strong>6.1 s</strong> p95 reservation time at three times peak volume, against an 8 s SLA.</p>
+  <ul class="states">
+    <li><span class="state ok">done</span><div>Load test at 3x peak volume, p95 6.1s.</div></li>
+    <li><span class="state ok">done</span><div>Idempotency verified for <code>order.paid</code>.</div></li>
   </ul>
+</section>
 
+<section>
   <h2 id="in-progress">In progress</h2>
-  <ul>
-    <li><span class="state warn">wip</span> Reconciliation dry-run; 3 rounding false positives, fix underway.</li>
+  <ul class="states">
+    <li><span class="state warn">wip</span><div>Reconciliation dry-run; 3 rounding false positives, fix underway.</div></li>
   </ul>
+</section>
 
+<section>
   <h2 id="blocked-decisions-needed">Blocked / decisions needed</h2>
-  <ul>
-    <li><span class="state blocked">blocked</span> Staging credentials, requested three weeks ago. Go-live slips a week without them.</li>
-  </ul>
+  <div class="callout warn">
+    <p class="label">Needed from Atlas IT</p>
+    <p>Staging credentials, requested three weeks ago. Go-live slips a week without them.</p>
+  </div>
+</section>
 
+<section>
   <h2 id="next">Next</h2>
-  <ul>
-    <li>Complete reconciliation dry-run with the rounding fix.</li>
-    <li>Rollback drill in staging on Monday.</li>
-  </ul>
+  <ol class="steps">
+    <li aria-current="step"><span class="when">Mon</span><div>Rollback drill in staging.</div></li>
+    <li><span class="when">Tue</span><div>Complete reconciliation dry-run with the rounding fix.</div></li>
+  </ol>
+</section>

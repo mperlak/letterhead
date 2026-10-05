@@ -148,7 +148,11 @@ overrides, never hand-written and never hand-edited. The script fills all
 three blocks, computes a text-safe ink variant of the primary when the
 primary fails contrast on paper, embeds the logo, and exits non-zero on a
 contrast failure it cannot fix. Hand edits are how a file ends up with a
-tuned `:root` and dark blocks copied from somewhere else.
+tuned `:root` and dark blocks copied from somewhere else. The state colors
+(`--status-ok`, `-warn`, `-blocked`, `-neutral`) come from the base style
+and are kept where they read at 4.5:1 on the brand's paper, walked darker or
+lighter where they do not; a profile taught before they existed gets them
+from `apply-tokens.mjs` at build time, worked out the same way.
 
 The three-block contract stays: `:root`, `[data-theme="dark"]`, and the
 `@media (prefers-color-scheme: dark)` fallback scoped to
@@ -381,8 +385,9 @@ an opinion.
    composition, register, signature moves. A style is complete on its own.
    Without this rule a thin profile produces a document made of bare tokens
    and default margins, which reads as unfinished work.
-2. **The profile overrides the style's colors, fonts, voice and logo.**
-   Named values in a profile are binding. Without this rule a style
+2. **The profile overrides the style's colors (in both themes), fonts,
+   voice and logo; the style keeps its layout.** Named values in a profile
+   are binding. Without this rule a style
    repaints a confirmed primary color, and the reader receives a document in
    somebody else's blue.
 3. **A filled `composition` block overrides the style's composition; an
@@ -392,7 +397,9 @@ an opinion.
 4. **A one-off override from the user wins over both, and gets recorded.**
    "Ignore the brand" or "in the engineering style anyway" applies to that
    document only, is stated in the shape gate, and goes into the file as an
-   HTML comment. Without the record, the next person to open the document
+   HTML comment. "In the engineering style anyway" keeps the brand and
+   changes the layout: `apply-tokens.mjs <profile> <file> --style
+   engineering`. Without the record, the next person to open the document
    reads a deliberate choice as a mistake and re-brands it.
 5. **No profile means a style the user confirmed, never an invented
    palette.** Propose a style by recipient and wait for the answer. Without

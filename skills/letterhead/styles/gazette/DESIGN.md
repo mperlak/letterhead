@@ -131,7 +131,7 @@ accent, square corners. Dark mode is the night edition.
 
 Key characteristics:
 
-- Serif body (Charter) at newspaper measure and leading.
+- Serif body (Newsreader) at newspaper measure and leading.
 - Headlines in heavy serif; kickers and labels in tracked uppercase sans.
 - Rules do the layout: hairlines between items, double rules between
   sections.
@@ -150,8 +150,10 @@ lead treatment.
 
 ## 3. Typography
 
-Charter sets body text and headlines; Archivo sets kickers, bylines and
-labels in tracked uppercase. Headline sizes step up in large jumps, which is
+Newsreader, a serif drawn for reading news on screens, sets body text and
+headlines; Archivo sets kickers, bylines and labels in tracked uppercase.
+In the tokens the serif sits in `--font-sans` (the body slot) and Archivo
+in `--font-label`; a brand that names its own body font takes both slots. Headline sizes step up in large jumps, which is
 what gives the style its newspaper voice, while body text stays at 1.0625rem
 with newspaper line spacing. Mono is for table figures only.
 

@@ -1,46 +1,67 @@
 <!-- title: Order Sync — Implementation Plan (matrix sample) -->
 <!-- description: Matrix sample exercising the implementation-plan structure. -->
-<header>
-    <h1>Order Sync Integration</h1>
-    <p class="subtitle">Implementation plan: replacing the nightly batch with event-driven sync.</p>
-    <dl class="meta">
-      <dt>Status</dt><dd>Awaiting sign-off</dd>
-      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
-      <dt>Audience</dt><dd>Engineering leadership, Atlas operations</dd>
-      <dt>Date</dt><dd>June 2026</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Implementation plan</p>
+  <h1>Order Sync Integration</h1>
+  <p class="lede">Replacing the nightly batch with event-driven sync, in four phases behind a percentage ramp.</p>
+  <dl class="meta">
+    <div><dt>Status</dt><dd>Awaiting sign-off</dd></div>
+    <div><dt>Owner</dt><dd>Integration team, Lumen Commerce</dd></div>
+    <div><dt>Audience</dt><dd>Engineering leadership, Atlas operations</dd></div>
+    <div><dt>Date</dt><dd>June 2026</dd></div>
+  </dl>
+</header>
 
+<section>
   <h2 id="summary">Summary</h2>
   <p>Orders reach Atlas in a nightly batch today, which oversells stock during campaigns.
   We replace the batch with event-driven sync in four phases behind a percentage ramp.</p>
+</section>
 
+<section>
   <h2 id="scope-boundary">Scope boundary</h2>
   <p>In scope: order creation, stock reservation, payment confirmation. Out of scope:
   returns and refunds, catalog sync. Assumption: SKUs pre-exist in the Atlas item master.</p>
+</section>
 
+<section>
   <h2 id="phases">Phases</h2>
+  <ol class="steps">
+    <li aria-current="step"><span class="when">This week</span><div><strong>Sign-off.</strong> Engineering leadership and Atlas operations approve this plan.</div></li>
+    <li><span class="when">Weeks 1–2</span><div><strong>Event contract.</strong> Both teams sign the payload spec.</div></li>
+    <li><span class="when">Weeks 3–4</span><div><strong>Reservation flow.</strong> Stock is held within the 8-second SLA.</div></li>
+    <li><span class="when">Weeks 5–9</span><div><strong>Webhook and ramp.</strong> 5% to 100% with the batch as shadow.</div></li>
+  </ol>
   <h3 id="phase-1-event-contract">Phase 1: event contract agreed</h3>
   <p>Both teams sign the payload spec. Done when the spec is committed to both repos.</p>
   <h3 id="phase-2-reservation-flow">Phase 2: stock reservation flow</h3>
   <p>Checkout reserves stock within the 8-second SLA, idempotent on retry. Done when an
   end-to-end order confirms in staging and duplicates never double-hold stock.</p>
+</section>
 
+<section>
   <h2 id="risks">Risks</h2>
-  <table>
-    <thead><tr><th>Risk</th><th>Trigger</th><th>Response</th></tr></thead>
-    <tbody>
-      <tr><td>Reservation latency breaches SLA</td><td>Timeout rate over 0.5%</td><td>Page on-call; freeze ramp</td></tr>
-      <tr><td>Order states diverge</td><td>Reconciliation over 0.1%</td><td>Halt ramp; replay from sequence</td></tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Risk</th><th>Trigger</th><th>Response</th></tr></thead>
+      <tbody>
+        <tr><td>Reservation latency breaches SLA</td><td>Timeout rate over 0.5%</td><td>Page on-call; freeze ramp</td></tr>
+        <tr><td>Order states diverge</td><td>Reconciliation over 0.1%</td><td>Halt ramp; replay from sequence</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
+<section>
   <h2 id="decisions-needed">Decisions needed</h2>
   <ol>
     <li>Second timeout in a row: pending queue or fail fast? Blocks phase 2.</li>
     <li>Sandbox credentials for the Atlas staging tenant. Blocks phase 1 exit.</li>
   </ol>
+</section>
 
+<section>
   <h2 id="rollout-and-rollback">Rollout and rollback</h2>
   <p>Ramp 5% to 100% with the batch as shadow. Rollback is a switch:
   <code>ORDER_SYNC_MODE=batch</code> re-enables the export.</p>
+</section>

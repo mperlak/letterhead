@@ -73,7 +73,9 @@ directory.
 
 **Default (no command word):** `/letterhead <topic-or-path>` creates a new
 document. The agent picks a template, resolves the brand, proposes a shape,
-and only writes HTML after the user says yes. Procedure: `reference/create.md`.
+and only writes HTML after the user says yes, in the shared markup that
+every style's `style.css` lays out. Procedure: `reference/create.md`;
+markup: `reference/markup.md`.
 
 | Command | Argument | What it does | Reference |
 |---|---|---|---|
@@ -170,8 +172,10 @@ When sources disagree, higher wins:
    to, and it ships looking like a decision.
 
 **Brand against style.** A style is complete on its own: colors, fonts,
-composition, register. A brand profile overrides the style's colors, fonts,
-voice, and logo. A filled `Composition` section in the profile also
+composition, register. A brand profile overrides the style's colors (in both
+themes), fonts, voice, and logo, and keeps the style's layout. Putting a
+brand in a style other than its base one is one flag:
+`apply-tokens.mjs <profile> <file> --style <slug>`. A filled `Composition` section in the profile also
 overrides the style's composition; an empty one leaves composition to the
 style, because a brand nobody measured should not dictate layout. The user
 may say "ignore the brand" for one document; record that choice in the
@@ -200,9 +204,11 @@ a violation. When no profile exists, nudge the user once toward
 6. **A document needs a shape of its own.** A document can pass every check and still have
    no point of view. Every style carries **signature moves** in its
    `DESIGN.md` — named composition patterns (a masthead, a numbered spine, a
-   cover line) that make a document recognizable beyond its palette. A
-   document that uses only the tokens and a generic layout has skipped the
-   composition; instantiate at least one signature move the content earns.
+   cover line) that make a document recognizable beyond its palette. The
+   style's `style.css` draws them on the shared markup in
+   `reference/markup.md`, so a document written in that markup gets them; a
+   document in its own class names gets the tokens and a generic layout.
+   Instantiate at least one signature move the content earns.
    Tokens are the paint, the signature move is what you build with it.
 7. **The profile changes only through `teach`.** `polish` and `create`
    never write to `.letterhead/brand/` or `.letterhead/brands/<x>/` as a

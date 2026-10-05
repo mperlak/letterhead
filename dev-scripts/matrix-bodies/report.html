@@ -1,42 +1,57 @@
 <!-- title: Reservation Timeout Analysis — Report (matrix sample) -->
 <!-- description: Matrix sample exercising the report structure. -->
-<header>
-    <h1>Reservation Timeout Analysis</h1>
-    <p class="subtitle">What three weeks of staging traffic say about the 8-second SLA.</p>
-    <dl class="meta">
-      <dt>Status</dt><dd>Final</dd>
-      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
-      <dt>Audience</dt><dd>Integration team, Atlas operations</dd>
-      <dt>Date</dt><dd>June 2026</dd>
-    </dl>
-  </header>
+<header class="doc-head">
+  <p class="kicker">Report</p>
+  <h1>Reservation Timeout Analysis</h1>
+  <p class="lede">What three weeks of staging traffic say about the 8-second SLA.</p>
+  <dl class="meta">
+    <div><dt>Status</dt><dd>Final</dd></div>
+    <div><dt>Owner</dt><dd>Integration team, Lumen Commerce</dd></div>
+    <div><dt>Audience</dt><dd>Integration team, Atlas operations</dd></div>
+    <div><dt>Date</dt><dd>June 2026</dd></div>
+  </dl>
+</header>
 
-  <h2 id="summary-of-findings">Summary of findings</h2>
+<div class="summary">
+  <p class="label">Summary of findings</p>
   <ul>
     <li>Timeouts cluster at Atlas item-master lock windows, not at load peaks.</li>
     <li>The retry-once policy recovers 92% of timeouts without customer impact.</li>
     <li>Recommended action: move the nightly item-master job off the campaign window.</li>
   </ul>
+</div>
 
+<section>
   <h2 id="what-was-examined">What was examined and how</h2>
   <p>21 days of staging traffic (48k orders), replayed campaign patterns, Atlas lock logs
   correlated by timestamp.</p>
+</section>
 
-  <h2 id="finding-lock-windows">Finding: timeouts follow lock windows</h2>
-  <p>78% of reservation timeouts fall inside the 02:00–02:20 item-master maintenance
-  window. Load explains only 9% of variance.</p>
+<section>
+  <p class="kicker">Finding 1</p>
+  <h2 id="finding-lock-windows">Timeouts follow lock windows</h2>
+  <p class="figure"><strong>78%</strong> of reservation timeouts fall inside the 02:00–02:20 item-master maintenance window.</p>
+  <p>Load explains only 9% of variance.</p>
+</section>
 
-  <h2 id="finding-retry-recovery">Finding: retry recovers most timeouts</h2>
-  <table>
-    <thead><tr><th>Outcome</th><th style="text-align:right">Share</th></tr></thead>
-    <tbody>
-      <tr><td>Recovered on retry</td><td class="num">92%</td></tr>
-      <tr><td>Failed twice</td><td class="num">8%</td></tr>
-    </tbody>
-  </table>
+<section>
+  <p class="kicker">Finding 2</p>
+  <h2 id="finding-retry-recovery">Retry recovers most timeouts</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Outcome</th><th class="num">Share</th></tr></thead>
+      <tbody>
+        <tr><td>Recovered on retry</td><td class="num">92%</td></tr>
+        <tr><td>Failed twice</td><td class="num">8%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
+<section>
   <h2 id="recommendations">Recommendations</h2>
-  <ol>
-    <li>Reschedule the item-master job outside campaign windows (from finding 1).</li>
-    <li>Keep retry-once; do not add a second retry (from finding 2).</li>
+  <ol class="recs">
+    <li><div><strong>Reschedule the item-master job outside campaign windows.</strong></div><span class="from">From finding 1</span></li>
+    <li><div><strong>Keep retry-once; do not add a second retry.</strong></div><span class="from">From finding 2</span></li>
   </ol>
+</section>

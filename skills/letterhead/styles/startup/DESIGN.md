@@ -180,6 +180,8 @@ Use at least one; they carry the momentum through composition, not decoration.
   card at the end, unmissable, echoing the opener.
 - **The one-number pull.** Per section, at most one emerald-emphasized figure,
   sized up inline in the sentence that earns it.
+- **The roadmap.** Steps run down a thin line with a ring on each stop, the
+  time above the step, so a plan reads as momentum rather than a table.
 
 ## 6. Do's and Don'ts
 

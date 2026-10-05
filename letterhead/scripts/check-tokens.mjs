@@ -54,6 +54,11 @@ const PAIRS = [
   // Tags, callouts and highlighted rows set text on the accent fill.
   ['accent-foreground', 'accent', 4.5, 'error'],
   ['card-foreground', 'card', 7, 'warning'],
+  // State words (passed, blocked) are set in these colors.
+  ['status-ok', 'background', 4.5, 'error'],
+  ['status-warn', 'background', 4.5, 'error'],
+  ['status-blocked', 'background', 4.5, 'error'],
+  ['status-neutral', 'background', 4.5, 'error'],
 ];
 
 const COLOR_LITERAL_RE = /^(?:#[0-9a-f]{3,8}|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(.*\))$/i;

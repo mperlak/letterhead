@@ -178,7 +178,7 @@ Use at least one; they make a workshop handout feel like part of the room.
 - **Sticky-note boxes.** Exercises and write-in areas sit in accent-tinted
   boxes with a dashed border; the tint means "this is where you do something".
 - **The timeboxed agenda.** The agenda is a numbered spine with times; the
-  current step is coral.
+  current step is coral (mark it `<li aria-current="step">` in `ol.steps`).
 - **Outcome cards.** Delivered results and key blocks sit in white rounded
   cards floating gently off the paper.
 

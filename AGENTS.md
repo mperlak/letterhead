@@ -16,11 +16,19 @@ fails on drift.
 - **Template** → `letterhead/templates/<slug>/template.md`. Frontmatter, use /
   do-not-use rules, structure, hierarchy contract, mobile contract, review
   contract, failure modes. Keep it compact.
-- **Style** → `letterhead/styles/<slug>/{DESIGN.md,tokens.css}`. DESIGN.md is
+- **Style** → `letterhead/styles/<slug>/{DESIGN.md,tokens.css,style.css}`.
+  A style is a complete look: layout, type and color. DESIGN.md is
   Stitch-format (YAML frontmatter + six numbered prose sections); tokens.css
-  carries the full CSS token surface in all three selector blocks (`:root`,
-  `[data-theme="dark"]`, and the `prefers-color-scheme` fallback). Validate
-  tokens with `node letterhead/scripts/check-tokens.mjs <tokens.css>`.
+  carries the full CSS token surface, state colors (`--status-*`) included,
+  in all three selector blocks (`:root`, `[data-theme="dark"]`, and the
+  `prefers-color-scheme` fallback); style.css lays out the shared markup of
+  `letterhead/reference/markup.md` (every element of the vocabulary, phone
+  width included) from tokens only, scoped as `:where(.doc) …`. A font the
+  style names goes into `letterhead/fonts/` with `dev-scripts/vendor-fonts.sh`
+  and its license. Validate tokens with
+  `node letterhead/scripts/check-tokens.mjs <tokens.css>`, then run
+  `node dev-scripts/build-matrix.mjs` and look at
+  `node dev-scripts/contact-sheet.mjs --template status-update`.
 - **Reference doc** → `letterhead/reference/<topic>.md`. Lean procedure and
   named failure modes only.
 
@@ -46,9 +54,11 @@ letterhead/                 ← canonical mount, the only directory anyone edits
 ├── SKILL.md
 ├── AUTHORING.md            ← contributor guide (voice, constraint discipline)
 ├── NOTICES.md              ← bundled libraries and their licenses
-├── reference/              ← create / teach / publish procedures
+├── reference/              ← create / teach / publish procedures; markup.md, the
+│                             shared markup every style.css lays out
 ├── templates/              ← template contracts (template.md per template)
-├── styles/                 ← styles (DESIGN.md + tokens.css per style)
+├── styles/                 ← styles (DESIGN.md + tokens.css + style.css per style)
+├── fonts/                  ← OFL fonts the styles name (woff2 + OFL.txt, fonts.json)
 ├── fixtures/               ← Lumen/Atlas demo source documents
 └── scripts/                ← checkers, brand scripts, vendor/ bundles
 
@@ -57,7 +67,9 @@ examples/                   ← generated demo documents + brand profiles
 dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (not shipped)
                             ← build-gallery.mjs: the Pages gallery in temp/site/ (pages.yml)
                             ← screenshots.mjs (uniform 4:5 light/dark webp thumbnails, --all, --grid) and
-                            ← contact-sheet.mjs (3x3 styles sheet), both on lib/shoot.mjs (headless shell + cwebp)
+                            ← contact-sheet.mjs (3x3 styles sheet, --brand <profile> for a brand in every style),
+                            ←   both on lib/shoot.mjs (headless shell + cwebp)
+                            ← vendor-fonts.sh: fetch the style fonts into letterhead/fonts/
 bin/sync-mounts.sh          ← regenerate the mirror (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
 .claude-plugin/             ← Claude Code plugin + marketplace manifests
