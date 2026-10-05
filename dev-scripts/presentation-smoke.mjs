@@ -316,6 +316,10 @@ check('English words', /<html lang="en"/.test(en) && /Contents/.test(en) && /6 r
 check('no picture or stylesheet loads from the network', !/(?:src|href)="https?:\/\/(?!127\.0\.0\.1)/.test(multi.replace(/<a class="product-link" href="[^"]*"/g, '')) && !/<img[^>]+src="http/.test(multi));
 
 const general = join(tmp, 'general.html');
+const noPricesFile = join(tmp, 'no-prices.html');
+const np = node([BUILD, work, '--title', 'Dom nad jeziorem', '--profile', profilePl, '--date', '2026-09-28', '--no-prices', '--out', noPricesFile]);
+const npHtml = np.status === 0 ? readFileSync(noPricesFile, 'utf8') : '';
+check('--no-prices: no price and no price date in the page, the rest of the card stays', np.status === 0 && !/<p class="product-price"/.test(npHtml) && !/594\s€|1299\szł/.test(npHtml) && !/ceny ze stron sklepów/.test(npHtml) && /id="salon-z-kuchnia-produkt-lamp-312"/.test(npHtml) && /Vantora Labs · Vantora Home/.test(npHtml) && /Zobacz w sklepie/.test(npHtml), out(np));
 const g = node([BUILD, work, '--title', 'Sala Arkona', '--style', 'atelier', '--lang', 'pl', '--kind', 'general', '--date', '2026-09-28', '--out', general]);
 const gHtml = existsSync(general) ? readFileSync(general, 'utf8') : '';
 check('--kind general and a style without a profile', g.status === 0 && /Spis treści/.test(gHtml) && /6 zdjęć/.test(gHtml) && /Części/.test(gHtml) && !/wizualizacj/i.test(gHtml), out(g));

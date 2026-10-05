@@ -7,7 +7,8 @@
 //   node build-presentation.mjs <workdir> --title "<project title>"
 //        [--profile <brand-dir>] [--style <slug | tokens.css>] [--lang pl|en]
 //        [--only <room-slug>] [--kind interior|general] [--brand-name "<name>"]
-//        [--extra-css <file.css>] [--date YYYY-MM-DD] --out <file.html>
+//        [--extra-css <file.css>] [--date YYYY-MM-DD] [--no-prices]
+//        --out <file.html>
 //
 // Reads from <workdir>:
 //   manifest.json   from prepare-images.mjs (room names checked by the agent)
@@ -24,6 +25,10 @@
 // title, the project title sits above it, no contents list, no room numbers.
 // Figure and product ids are the same as in the full document, so comments
 // read the same in both.
+//
+// --no-prices leaves every price out of the document, with the note on when
+// prices were read: they are not in the page source either, only name,
+// maker, shop and link stay. For a client who should not see prices.
 //
 // --kind general swaps the words for a project that is not an interior
 // (a venue, a wedding, a portfolio): "sections" and "photos" instead of
@@ -46,7 +51,7 @@ import { imageSize, slugify, bytesText, MIME } from './lib/images.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SKILL = resolve(__dirname, '..');
-const USAGE = 'usage: node build-presentation.mjs <workdir> --title "<project title>" [--profile <brand-dir>] [--style <slug | tokens.css>] [--lang pl|en] [--only <room-slug>] [--kind interior|general] [--brand-name "<name>"] [--extra-css <file.css>] [--date YYYY-MM-DD] --out <file.html>';
+const USAGE = 'usage: node build-presentation.mjs <workdir> --title "<project title>" [--profile <brand-dir>] [--style <slug | tokens.css>] [--lang pl|en] [--only <room-slug>] [--kind interior|general] [--brand-name "<name>"] [--extra-css <file.css>] [--date YYYY-MM-DD] [--no-prices] --out <file.html>';
 
 function fail(msg) {
   console.error(`build-presentation: ${msg}`);
@@ -54,11 +59,12 @@ function fail(msg) {
 }
 
 function parseArgs(argv) {
-  const o = { work: null, title: null, profile: null, style: null, lang: null, only: null, kind: 'interior', brandName: null, extraCss: null, date: null, out: null, checkScript: null };
+  const o = { work: null, title: null, profile: null, style: null, lang: null, only: null, kind: 'interior', brandName: null, extraCss: null, date: null, out: null, checkScript: null, prices: true };
   const takes = { '--title': 'title', '--profile': 'profile', '--style': 'style', '--lang': 'lang', '--only': 'only', '--kind': 'kind', '--brand-name': 'brandName', '--extra-css': 'extraCss', '--date': 'date', '--out': 'out', '--check-script': 'checkScript' };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-h' || a === '--help') { console.log(USAGE); process.exit(0); }
+    if (a === '--no-prices') { o.prices = false; continue; }
     if (takes[a]) {
       if (argv[i + 1] === undefined) fail(`${a} needs a value`);
       o[takes[a]] = argv[++i];
@@ -296,7 +302,7 @@ function partition(items) {
 }
 
 function build(ctx) {
-  const { t, rooms, work, products, texts, single, title, date } = ctx;
+  const { t, rooms, work, products, texts, single, title, date, prices } = ctx;
   const dateText = t.date(date);
   const dateIso = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   const roomText = (r) => paragraphs((texts.rooms || {})[r.slug]);
@@ -337,10 +343,10 @@ function build(ctx) {
     if (!list.length) return '';
     const id = level === 2 ? t.ids.products : `${r.slug}-${t.ids.products}`;
     const dates = list.map((p) => p.fetchedAt).filter(Boolean).sort();
-    const note = [t.products(list.length), dates.length && list.some((p) => p.price) ? t.pricesFrom(t.date(new Date(dates[0]))) : null].filter(Boolean).join(' · ');
+    const note = [t.products(list.length), prices && dates.length && list.some((p) => p.price) ? t.pricesFrom(t.date(new Date(dates[0]))) : null].filter(Boolean).join(' · ');
     const items = list.map((p) => {
       const maker = p.maker && p.shop && p.maker !== p.shop ? `${p.maker} · ${p.shop}` : p.shop || p.maker || '';
-      const price = money(p.price, p.currency);
+      const price = prices ? money(p.price, p.currency) : '';
       const img = p.image && existsSync(join(work, p.image))
         ? `<img src="${dataUri(p.image)}" width="${p.width}" height="${p.height}" alt="${esc(p.name)}" loading="lazy" decoding="async">`
         : '';
@@ -610,7 +616,7 @@ function main() {
   const date = o.date ? new Date(`${o.date}T12:00:00`) : new Date();
 
   const html = build({
-    t, lang, rooms, work, products, texts, single: rooms.length === 1, title: o.title.trim(), date,
+    t, lang, rooms, work, products, texts, single: rooms.length === 1, title: o.title.trim(), date, prices: o.prices,
     mark: brandMark(combined, brandName), favicon, css, js, extraCss,
   });
   const outPath = resolve(o.out);

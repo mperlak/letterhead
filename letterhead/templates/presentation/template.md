@@ -113,6 +113,9 @@ node <skill>/scripts/build-presentation.mjs <work> --title "<title>" \
          "currency": "PLN", "image": "photos/table.jpg" } ] }
    ```
    The build leaves out a product without a name; say which ones.
+   Ask whether the client should see prices. When not, build with
+   `--no-prices`: prices and the note on when they were read leave the
+   document, page source included; name, maker, shop and link stay.
 5. **Brand.** `--profile` is the brand's folder; its tokens go over the
    style's (`--style`, default: the profile's own style, else `atelier`,
    which suits a studio writing to private clients). Without a profile,
