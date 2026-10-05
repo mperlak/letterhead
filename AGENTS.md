@@ -55,7 +55,19 @@ letterhead/                 ← canonical mount, the only directory anyone edits
 skills/letterhead/          ← byte-identical mirror for `npx skills add`
 examples/                   ← generated demo documents + brand profiles
 dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (not shipped)
+                            ← build-gallery.mjs: the Pages gallery in temp/site/ (pages.yml)
 bin/sync-mounts.sh          ← regenerate the mirror (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
+.claude-plugin/             ← Claude Code plugin + marketplace manifests
+.codex-plugin/              ← Codex plugin manifest
+.agents/plugins/            ← Codex marketplace catalog
 .github/workflows/ci.yml
 ```
+
+## Releasing
+
+Plugin hosts update only when the version changes. Bump `version` in
+`letterhead/SKILL.md`, `.claude-plugin/plugin.json` and
+`.codex-plugin/plugin.json` together, in the same commit, then run
+`bin/sync-mounts.sh`. Check the Claude Code manifests with
+`claude plugin validate .`.

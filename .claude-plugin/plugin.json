@@ -1,0 +1,24 @@
+{
+  "name": "letterhead",
+  "description": "Branded HTML documents for a real reader: implementation plans, status updates, specs, proposals, reports. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Marcin Perlak",
+    "url": "https://github.com/mperlak"
+  },
+  "homepage": "https://github.com/mperlak/letterhead",
+  "repository": "https://github.com/mperlak/letterhead",
+  "license": "MIT",
+  "keywords": [
+    "documents",
+    "html",
+    "brand",
+    "branding",
+    "reports",
+    "proposals",
+    "status-update",
+    "specs",
+    "design-tokens",
+    "review"
+  ]
+}

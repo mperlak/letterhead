@@ -1,117 +1,237 @@
-# letterhead
+<!--
+  DRAFT README. Assets marked TODO(asset) do not exist yet:
+  - examples/screenshots/teach.gif (or a video uploaded to GitHub)
+  - the GitHub Pages gallery (https://mperlak.github.io/letterhead/)
+  - styles-contact-sheet.png still shows eight styles; rebuild it with atelier
+-->
 
-Your agent's work, on your letterhead.
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/hero-before-after-dark.webp">
+    <img alt="letterhead. The same weekly status update twice: on the left in the generic agent-made look (purple gradients, emoji cards), on the right on the client's letterhead." src="examples/screenshots/hero-before-after-light.webp">
+  </picture>
+</h1>
 
-`letterhead` is a free, open-source skill for coding agents (Claude Code,
-Cursor, Codex, and friends). It generates branded, self-contained HTML
-documents meant for a human recipient: implementation plans, status updates,
-specs, reports, proposals. Teach it your brand once (or a client's brand,
-one profile per client) and every document comes out looking like it came
-from that company. Documents are built to be commented on: comments
-anchored to a section survive the next version.
+**Your agent writes the document. letterhead puts it on your client's letterhead.**
+
+A skill for Claude Code, Codex, Cursor and other coding agents. It turns
+notes, a repo or a conversation into a self-contained HTML document for
+someone outside your team: a client, a boss, a board. The plan, the status
+update, the proposal comes out in their brand (or yours), reads well on a
+phone, and is built to collect comments and come back as version two.
+
+No Figma, no template hunting, and no "this was clearly written by a bot" moment
+when the client opens it.
+
+<!-- TODO(asset): https://mperlak.github.io/letterhead/ -->
+**[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 12 templates × 9 styles, light and dark.
+
+---
 
 ## Install
 
-```sh
+**Claude Code**
+
+```text
+/plugin marketplace add mperlak/letterhead
+/plugin install letterhead@letterhead
+```
+
+To get updates automatically, run `/plugin`, open **Marketplaces**, select
+**letterhead** and choose **Enable auto-update** (Claude Code leaves it off
+for third-party marketplaces).
+
+**Codex**
+
+```bash
+codex plugin marketplace add mperlak/letterhead
+codex plugin add letterhead@letterhead
+```
+
+**Cursor, OpenCode and other Agent Skills hosts**
+
+```bash
 npx skills add mperlak/letterhead
 ```
 
-Or clone the repo and point your agent at the `letterhead/` directory.
+Or clone the repo and point your agent at `skills/letterhead/`. The scripts
+need Node.js and nothing else.
 
 ## Quick start
 
+Talk to your agent the way you would talk to a colleague. The skill loads on
+its own when you ask for a document or mention a brand.
+
+```text
+> learn the brand of https://arkona.example, it's my client
+> make a status update for Arkona from NOTES.md
+> polish status-update.html
 ```
-/letterhead teach                       # build your brand profile (asks first, every step)
-/letterhead a status update for the payments project
-/letterhead an implementation plan from NOTES.md, for Acme   # client brand
-/letterhead publish ./status-update.html                     # publish it for comments
-```
 
-The skill proposes a shape (template, brand, sections, mobile reading) and
-waits for your yes before writing any HTML.
+1. **Brand, about two minutes.** The agent reads the site, proposes a profile
+   (primary color, fonts, logo, closest style) and waits for your yes. Then
+   it writes the profile and opens a one-page **brand sheet**.
+2. **Document.** Before writing any HTML, the agent shows the shape: which
+   template, which brand, the sections in order, what the first two phone
+   screens say. You say yes, change it, or say no.
+3. **Done.** One `.html` file, both themes inside, opens offline with a
+   double-click.
 
-## What the documents look like
+You can also call the skill directly: `/letterhead teach`, `/letterhead
+polish <file>`, `/letterhead publish <file>` (when installed as a plugin in
+Claude Code, the prefix is `/letterhead:letterhead`).
 
-Generated examples live in [`examples/documents/`](examples/documents/),
-with screenshots in [`examples/screenshots/`](examples/screenshots/).
-Twelve templates ship with the skill (implementation-plan, status-update,
-spec, proposal, report, audit, project-recap, release-notes, checklist,
-postmortem, change-walkthrough, presentation) and nine
-reference styles, organized by who receives the document: `boardroom`,
-`engineering`, `corporate`, `startup`, `consulting`, `public-sector`,
-`workshop`, `atelier` (a small business writing to private customers), and
-`gazette` (the wildcard). Two taught brand profiles are
-included as worked examples under [`examples/brands/`](examples/brands/).
+<!-- TODO(asset): 60–90 s screen recording: URL → brand sheet → status update → a comment → version 2 at the same link. -->
 
-All eight styles at a glance, each on a different template:
+## Why I built it
 
-![All eight letterhead styles](examples/screenshots/styles-contact-sheet.png)
+<!-- TODO(marcin): rewrite in your own words; this is a placeholder of the facts. -->
 
-The individual documents, light and dark:
+I run an interior design studio and build a review tool on the side. Every
+week an agent writes something for me that goes to a client: a project plan,
+a status update, a proposal, a presentation of a room. The content was fine.
+The look was always the same: Inter, a purple accent, three cards with icons.
+The client could tell, and every time I fixed it by hand or sent it anyway.
+
+So I taught my agent one brand per client, once, and made every document
+follow it. letterhead is that skill, cleaned up.
+
+## What it makes
+
+Twelve templates, one per thing a client actually receives:
+
+| Template | Use it for |
+|---|---|
+| `implementation-plan` | how a piece of work will be done, step by step |
+| `status-update` | where a project stands this week |
+| `spec` | what will be built, for sign-off |
+| `proposal` | an offer: scope, price, timeline |
+| `report` | findings with evidence |
+| `audit` | what was checked, what failed, what to fix |
+| `project-recap` | what was delivered, at the end |
+| `release-notes` | what changed in this version |
+| `checklist` | steps someone else will tick off |
+| `postmortem` | what went wrong and what changes now |
+| `change-walkthrough` | a change explained to a non-author |
+| `presentation` | a project shown picture by picture: rooms, variants, the products used |
+
+Nine styles, chosen by who reads the document: `boardroom`, `engineering`,
+`corporate`, `startup`, `consulting`, `public-sector`, `workshop`,
+`atelier` (a small business writing to private customers) and `gazette`.
+A style only sets layout and rhythm. Colors, fonts and logo always come from
+the brand.
+
+![The letterhead styles side by side](examples/screenshots/styles-contact-sheet.png)
 
 | | |
 |---|---|
 | ![Implementation plan, boardroom style](examples/screenshots/implementation-plan-boardroom-light.png) | ![Status update, engineering style, dark](examples/screenshots/status-update-engineering-dark.png) |
-| ![Status update, Markloop brand](examples/screenshots/status-update-markloop-light.png) | ![Implementation plan, Mroomy brand](examples/screenshots/implementation-plan-mroomy-light.png) |
 | ![Spec, consulting style](examples/screenshots/spec--consulting-light.png) | ![Proposal, startup style](examples/screenshots/proposal--startup-light.png) |
-| ![Report, corporate style](examples/screenshots/report--corporate-light.png) | ![Audit, public-sector style](examples/screenshots/audit--public-sector-light.png) |
-| ![Project recap, workshop style](examples/screenshots/project-recap--workshop-light.png) | ![Release notes, gazette style](examples/screenshots/release-notes--gazette-light.png) |
+| ![Report, corporate style](examples/screenshots/report--corporate-light.png) | ![Release notes, gazette style](examples/screenshots/release-notes--gazette-light.png) |
 
-Every template renders in every style: CI builds the full 11 x 9 matrix and
-fails on any error from `check-document.mjs`. The twelfth, `presentation`,
-is assembled by scripts from a folder of pictures (room by room, with
-variants to choose from and the products used, read from the shops' pages);
-its own smoke test builds it in all nine styles.
+The source HTML of every screenshot is in
+[`examples/documents/`](examples/documents/).
 
-## How brand works
+## Teach it a brand
 
-`/letterhead teach` builds a brand profile from any sources you opt into: a
-brand book PDF, your live site, design tokens already in the repo, or a
-short interview. The profile is five files in `.letterhead/brand/`
-(`DESIGN.md`, `PRODUCT.md`, `tokens.css`, `profile.meta.json`, and a
-one-page `brand-sheet.html`). The brand sheet is the first thing you
-publish, before the first document: whoever owns the brand comments on
-what is not theirs, and the next version of the sheet lands at the same
-link. Other brands live in `.letterhead/brands/<slug>/`; say "for Acme"
-and the document ships in Acme's identity instead of yours. Every document
-carries both themes: light and dark travel in the same file.
+```text
+You:    learn the brand of https://arkona.example
+Agent:  → reads the page and its stylesheets
+        → counts which colors sit on buttons, links and navigation
+        → reads the font rules and saves the logo from the header
+        → proposes: primary, fonts, logo, closest style, open questions
+You:    yes, but use the dark logo
+Agent:  → writes .letterhead/brands/arkona/ and opens the brand sheet
+```
 
-## Built for comments, by contract
+| Taken from | Becomes |
+|---|---|
+| colors used on buttons, links, navigation (counted, not guessed) | primary and accent |
+| `font-family` rules on body and headings, with their weights | text and heading fonts |
+| the logo in the site header, light or dark version | the logo on every document |
+| how the site writes | voice notes in `PRODUCT.md` |
 
-Documents are made to collect comments, not just to be looked at:
+Every value records **where it came from and how sure the agent is**
+(`profile.meta.json`). The agent never fills a gap with a random color.
+When something is missing, it asks.
 
-- every section heading has a stable, content-derived id, so comments
-  anchored to a section survive new versions of the document
-- the title is extractable, metadata is labeled, and the file is fully
-  self-contained
-- `scripts/check-document.mjs` verifies all of it mechanically
+Besides a website, `teach` reads a brand book PDF, HTML files, design tokens
+already in your repo, or a short interview.
 
-## Publishing for comments
+**The brand sheet** is a one-page document showing the colors, fonts and
+logo, with their sources and the agent's open questions. Send it to whoever
+owns the brand before the first real document. It catches "that is not our
+blue" before a twenty-page spec does.
 
-`/letterhead publish` sends a document to [Markloop](https://markloop.io).
-Markloop turns an HTML document into one link people can comment on; your
-AI pulls the comments and publishes the next version at the same link.
+**One profile per client.** Your own brand lives in `.letterhead/brand/`,
+every other brand in `.letterhead/brands/<name>/`. Say "for Arkona" and the
+document ships in Arkona's identity.
 
-- **Publish.** Your agent uploads the document through Markloop's MCP
-  tools. Publishing needs a Markloop account for you, the author (14-day
-  trial, no card). Then you switch on commenting for the file's share link
-  in Markloop (links are read-only until you do) and send that link to your
-  team or clients.
-- **Comment.** They open the link, type a name and comment on the exact
-  line. No account on their side.
-- **Update.** Your agent pulls the comments, each with the sentence it is
-  about and the version it was made on, and uploads the next version of the
-  same file. The share link always opens the latest version, so you never
-  send a new link.
+## Built to be commented on
 
-MCP works with Claude (chat, Cowork and Claude Code), ChatGPT (including
-Codex), Cursor and Grok. Any other AI works through file upload, and the
-comments come back as a feedback package of plain files you can hand to any
-agent. If you do not use Markloop, the generated file is still a plain
-self-contained HTML document you can share any way you like.
+A document for a client is a draft until they answer. letterhead makes every
+document easy to review:
 
-Third-party notices: [`letterhead/NOTICES.md`](letterhead/NOTICES.md).
+- every section heading gets a stable id derived from its text, so a comment
+  on "Timeline" still points at "Timeline" in version two
+- the title, date, owner and status are labeled fields, not decoration
+- the file is self-contained: no build step, no external scripts, both
+  themes inside
+
+`/letterhead publish` sends a document to [Markloop](https://markloop.io),
+which turns it into one link people comment on without an account. Your
+agent pulls the comments and uploads the next version to the same link.
+Markloop is a paid service from the author of this skill. You don't need it:
+without it, letterhead gives you a plain HTML file you can share any way
+you like.
+
+## It's working if…
+
+- Before writing HTML, the agent shows you the template, the brand, the
+  sections and the first two phone screens, and waits for your yes.
+- `teach` ends with a brand sheet on screen, and every color on it names its
+  source.
+- The document opens offline with a double-click and looks right on a phone,
+  in light and in dark.
+- `node <skill>/scripts/check-document.mjs <file>.html` reports no errors.
+- No gradient text, no icon tile in front of every heading, no
+  three-card grid, no "Generated by AI" footer.
+
+If one of these fails, please [open an issue](https://github.com/mperlak/letterhead/issues).
+
+## When not to use it
+
+- **Slides for a talk.** Use a slides skill such as
+  [frontend-slides](https://github.com/zarazhangrui/frontend-slides).
+  letterhead's `presentation` template is for showing a project picture by
+  picture, not for a keynote.
+- **A diagram on its own.** Use
+  [diagram-design](https://github.com/cathrynlavery/diagram-design).
+- **A landing page or app UI.** That is a frontend job, not a document.
+- **The recipient must edit a Word or PowerPoint file.** letterhead writes
+  HTML.
+
+## How it is checked
+
+CI builds every template in every style (11 × 9 documents, plus the
+presentation in all nine styles) and fails on any error from
+`check-document.mjs`. Brand tokens are checked by `check-tokens.mjs`. Both
+scripts ship with the skill, so your agent runs the same checks on your
+documents.
+
+## Contributing
+
+Templates live in `letterhead/templates/<name>/template.md`, styles in
+`letterhead/styles/<name>/`. Edit only `letterhead/`; `bin/sync-mounts.sh`
+copies it to `skills/letterhead/`. [AGENTS.md](AGENTS.md) has the full
+workflow.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE) and [`letterhead/NOTICES.md`](letterhead/NOTICES.md).
+
+---
+
+Made by **Marcin Perlak**. <!-- TODO(marcin): link to X / site --> If
+letterhead saved you an evening, **star the repo**. That is how other people
+find it.

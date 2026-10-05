@@ -1,0 +1,16 @@
+{
+  "name": "letterhead",
+  "owner": {
+    "name": "Marcin Perlak",
+    "url": "https://github.com/mperlak"
+  },
+  "metadata": {
+    "description": "Branded HTML documents from your coding agent: plans, status updates, specs, proposals, reports, in your brand or your client's."
+  },
+  "plugins": [
+    {
+      "name": "letterhead",
+      "source": "./"
+    }
+  ]
+}
