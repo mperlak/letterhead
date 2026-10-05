@@ -2,7 +2,6 @@
   DRAFT README. Assets marked TODO(asset) do not exist yet:
   - examples/screenshots/teach.gif (or a video uploaded to GitHub)
   - the GitHub Pages gallery (https://mperlak.github.io/letterhead/)
-  - styles-contact-sheet.png still shows eight styles; rebuild it with atelier
 -->
 
 <h1>
@@ -121,16 +120,93 @@ Nine styles, chosen by who reads the document: `boardroom`, `engineering`,
 A style only sets layout and rhythm. Colors, fonts and logo always come from
 the brand.
 
-![The letterhead styles side by side](examples/screenshots/styles-contact-sheet.png)
+Ten documents for four fictional companies, each made by the skill from
+short notes, unedited:
 
-| | |
-|---|---|
-| ![Implementation plan, boardroom style](examples/screenshots/implementation-plan-boardroom-light.png) | ![Status update, engineering style, dark](examples/screenshots/status-update-engineering-dark.png) |
-| ![Spec, consulting style](examples/screenshots/spec--consulting-light.png) | ![Proposal, startup style](examples/screenshots/proposal--startup-light.png) |
-| ![Report, corporate style](examples/screenshots/report--corporate-light.png) | ![Release notes, gazette style](examples/screenshots/release-notes--gazette-light.png) |
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/proposal--halde.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/proposal--halde-dark.webp">
+        <img src="examples/screenshots/proposal--halde-light.webp" alt="Proposal with packages and prices, Studio Halde · interior studio to a private client · atelier" width="100%">
+      </picture></a><br>
+      <b>Proposal with packages and prices</b><br>
+      <sub>Studio Halde · interior studio to a private client · atelier</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/report--halde.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/report--halde-dark.webp">
+        <img src="examples/screenshots/report--halde-light.webp" alt="Site survey report, Studio Halde · findings and a € range · gazette" width="100%">
+      </picture></a><br>
+      <b>Site survey report</b><br>
+      <sub>Studio Halde · findings and a € range · gazette</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/status-update--arkona.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/status-update--arkona-dark.webp">
+        <img src="examples/screenshots/status-update--arkona-light.webp" alt="Weekly status update, Arkona, written by its agency · consulting" width="100%">
+      </picture></a><br>
+      <b>Weekly status update</b><br>
+      <sub>Arkona, written by its agency · consulting</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/proposal--fieldwork.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/proposal--fieldwork-dark.webp">
+        <img src="examples/screenshots/proposal--fieldwork-light.webp" alt="Fixed-price proposal, Fieldwork Digital · agency to a client · consulting" width="100%">
+      </picture></a><br>
+      <b>Fixed-price proposal</b><br>
+      <sub>Fieldwork Digital · agency to a client · consulting</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/project-recap--fieldwork.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/project-recap--fieldwork-dark.webp">
+        <img src="examples/screenshots/project-recap--fieldwork-light.webp" alt="Project recap, Fieldwork Digital · results at the end · startup" width="100%">
+      </picture></a><br>
+      <b>Project recap</b><br>
+      <sub>Fieldwork Digital · results at the end · startup</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/checklist--arkona.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/checklist--arkona-dark.webp">
+        <img src="examples/screenshots/checklist--arkona-light.webp" alt="Go-live weekend checklist, Arkona · owners and sign-offs · workshop" width="100%">
+      </picture></a><br>
+      <b>Go-live weekend checklist</b><br>
+      <sub>Arkona · owners and sign-offs · workshop</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/spec--kestrel.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/spec--kestrel-dark.webp">
+        <img src="examples/screenshots/spec--kestrel-light.webp" alt="Product spec for sign-off, Kestrel Labs · B2B software · engineering" width="100%">
+      </picture></a><br>
+      <b>Product spec for sign-off</b><br>
+      <sub>Kestrel Labs · B2B software · engineering</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/release-notes--kestrel.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/release-notes--kestrel-dark.webp">
+        <img src="examples/screenshots/release-notes--kestrel-light.webp" alt="Release notes with breaking changes, Kestrel Labs · corporate" width="100%">
+      </picture></a><br>
+      <b>Release notes with breaking changes</b><br>
+      <sub>Kestrel Labs · corporate</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/postmortem--kestrel.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/postmortem--kestrel-dark.webp">
+        <img src="examples/screenshots/postmortem--kestrel-light.webp" alt="Incident postmortem for a client, Kestrel Labs · public-sector" width="100%">
+      </picture></a><br>
+      <b>Incident postmortem for a client</b><br>
+      <sub>Kestrel Labs · public-sector</sub>
+    </td>
+  </tr>
+</table>
 
-The source HTML of every screenshot is in
-[`examples/documents/`](examples/documents/).
+Every brand above was taught from its website in about a minute. The notes,
+the prompts and the HTML of every document are in
+[`examples/`](examples/).
 
 ## Teach it a brand
 
@@ -162,6 +238,11 @@ already in your repo, or a short interview.
 logo, with their sources and the agent's open questions. Send it to whoever
 owns the brand before the first real document. It catches "that is not our
 blue" before a twenty-page spec does.
+
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/brand-sheet--halde-dark.webp">
+  <img src="examples/screenshots/brand-sheet--halde-light.webp" alt="The brand sheet for Studio Halde: palette, fonts and logo, each with its source" width="420">
+</picture></p>
 
 **One profile per client.** Your own brand lives in `.letterhead/brand/`,
 every other brand in `.letterhead/brands/<name>/`. Say "for Arkona" and the

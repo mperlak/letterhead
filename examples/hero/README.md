@@ -9,7 +9,8 @@ documents built from the same `NOTES.md` side by side:
   purple-to-blue gradients, gradient text, emoji icon tiles, the three-card
   grid, a "Generated with AI" footer), with no brand. The image labels it
   "The usual agent-made update" and claims nothing about a specific model.
-- **Right, `after.html`: a real run** of Claude with letterhead, unedited.
+- **Right, `after.html`: a real run** of Claude with letterhead, unedited
+  (the second run, from the corrected notes; see Run log).
 
 Why the left side is an illustration: the honest run without the skill
 (`before-run.html`, below) was given the client's site and asked for "their
@@ -32,7 +33,7 @@ Neither output HTML is edited by hand.
 | File | What it is |
 |---|---|
 | `arkona-site.html` | Homepage of Arkona, a fictional Bornholm outdoor-furniture maker. Used as the brand evidence: spruce-green primary on buttons, links and nav, Fraunces + Work Sans from Google Fonts, an inline SVG wordmark in the header. |
-| `NOTES.md` | Raw weekly status notes from a fictional agency (Fieldwork Digital) to Arkona about a webshop + ERP order-sync migration. |
+| `NOTES.md` | Raw weekly status notes from a fictional agency (Fieldwork Digital) to Arkona about a webshop + ERP order-sync migration. Dates follow the 2026 calendar (corrected on 2026-10-05; see Run log). |
 | `PROMPT.md` | The one prompt both runs get, verbatim. It pre-approves the shape gate and the teach confirmation, so both runs finish without a second turn. |
 
 ## Commands
@@ -75,34 +76,50 @@ Playwright's cached `chrome-headless-shell` (or `CHROME=`).
 
 ## Run log
 
-Date: 2026-10-05. Model: `opus` (resolved to `claude-opus-5-5`). Both sides
-ran in parallel with `--setting-sources project,local` (no user-level skills
-or plugins in either run) and Artifact tools disallowed. Summaries:
-`runs/{before,after}-summary.json`.
+### Current `after.html` (2026-10-05, second run)
+
+`NOTES.md` was corrected to the 2026 calendar before this run: the
+weekday-labelled dates moved one day earlier so each weekday stays true
+(retest Mon 5 Oct, price tier Wed 7 Oct, decision Fri 9 Oct, content freeze
+19 Oct, cutover 27 Oct to Mon 2 Nov, go-live Mon 2 Nov; the dependent dates
+29 Sep and 13 Oct moved with them). Only the after side was rerun:
+`bash examples/hero/run.sh <dir> after`, model `opus` (resolved to
+`claude-opus-5-5`), `--setting-sources project,local`, Artifact tools
+disallowed. Summary: `runs/after-summary.json`.
+
+| Side | Attempts | Wall time | Skills invoked | Tool calls | Cost |
+|---|---|---|---|---|---|
+| after | 1 | 193 s | `letterhead:letterhead` only | 21 | $1.33 |
+
+The run taught the brand (`brand-evidence.mjs --save-logo`,
+`brand-tokens.mjs --embed-fonts`, `brand-sheet.mjs`, profile in `brand/`,
+also copied to `examples/brands/arkona/`), wrote the document from the
+`status-update` template, ran `apply-tokens.mjs` and `check-document.mjs`,
+and needed no second turn. `check-document.mjs` on `after.html`: 0 errors,
+0 warnings, 0 info. Fraunces and Work Sans are embedded as woff2 data URIs.
+The same session then wrote `examples/documents/implementation-plan--arkona.html`
+and `checklist--arkona.html` (see `examples/README.md`), so `after.html` is
+byte-identical to `examples/documents/status-update--arkona.html`.
+
+### Record: `before-run.html` (2026-10-05, first run, old notes)
+
+`before-run.html` is kept as the historical record of the first pair of runs,
+made from the **old** `NOTES.md`, whose weekdays matched the 2025 calendar
+("Mon 6 Oct", "Fri 10 Oct", go-live "Mon 3 Nov"). It was not rerun with the
+corrected notes, so its dates differ from `after.html`.
 
 | Side | Attempts | Wall time | Skills invoked | Tool calls | Cost |
 |---|---|---|---|---|---|
 | before | 1 | 97 s | none (0 available) | 8 | $0.67 |
-| after | 1 | 206 s | `letterhead:letterhead` only | 28 | $1.43 |
+| after (superseded) | 1 | 206 s | `letterhead:letterhead` only | 28 | $1.43 |
 
-The after run taught the brand (`brand-evidence.mjs --save-logo`,
-`brand-tokens.mjs`, `brand-sheet.mjs`, profile in `brand/`), wrote the
-document from the `status-update` template and ran `apply-tokens.mjs` and
-`check-document.mjs`. Neither run needed a second turn.
-
-`check-document.mjs`:
-
-- `after.html`: 0 errors, 0 warnings, 2 info (`doc/no-metadata-block`,
-  `doc/section-numbers`).
-- `before-run.html`: 15 errors, 2 warnings (headings without stable ids, among
-  others).
-
-Both runs flagged the same input problem: the weekdays in `NOTES.md` match
-the 2025 calendar (in 2026, 6 Oct is a Tuesday). Both kept the dates as
-written.
+`check-document.mjs` on `before-run.html`: 15 errors, 2 warnings (headings
+without stable ids, among others). Both first runs flagged the 2025 weekdays
+and kept the dates as written, which is why the notes were corrected.
 
 Without the skill the model still put the document in Arkona's brand, because
 the prompt says "in their brand" and gives it the site. The differences are
-mostly ones a screenshot does not show: a dark theme (only `after.html` has
-one), fonts embedded in the file (`before-run.html` loads Google Fonts), labeled
-metadata at the title, and heading ids that survive the next version.
+mostly ones a screenshot does not show: a dark theme (only the letterhead
+output has one), fonts embedded in the file (`before-run.html` loads Google
+Fonts), labeled metadata at the title, and heading ids that survive the next
+version.

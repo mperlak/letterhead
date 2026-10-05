@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fieldwork Digital | Web shops and integrations for companies that make things</title>
+<meta name="description" content="Fieldwork Digital is a seven-person studio in Aarhus that builds web shops, B2B portals and the integrations behind them for manufacturers and wholesalers.">
+<meta property="og:site_name" content="Fieldwork Digital">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #d9432a;
+    --brand-primary-dark: #b23420;
+    --brand-mustard: #f1c84b;
+    --ink: #161616;
+    --muted: #5b5b5b;
+    --paper: #ffffff;
+    --line: #e6e6e6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  h1, h2, h3 {
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5em;
+  }
+  h1 { font-size: 3.6rem; }
+  h2 { font-size: 2.1rem; }
+  h3 { font-size: 1.2rem; }
+  a { color: var(--brand-primary); }
+  a:hover { color: var(--brand-primary-dark); }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+
+  .site-header { border-bottom: 2px solid var(--ink); }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand-link { display: inline-flex; align-items: center; text-decoration: none; }
+  .site-nav { display: flex; gap: 26px; align-items: center; }
+  .site-nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 16px; }
+  .site-nav a:hover { color: var(--brand-primary); }
+  .site-nav a.btn { color: #ffffff; }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 0;
+    background: var(--brand-primary);
+    color: #ffffff;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    border: 2px solid var(--brand-primary);
+  }
+  .btn:hover { background: var(--brand-primary-dark); border-color: var(--brand-primary-dark); color: #ffffff; }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn-ghost:hover { background: var(--brand-mustard); color: var(--ink); border-color: var(--ink); }
+
+  .hero { padding: 88px 0 64px; }
+  .hero .kicker { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; font-size: 15px; color: var(--brand-primary); }
+  .hero h1 { max-width: 15em; }
+  .hero p.lead { font-size: 1.25rem; max-width: 36em; color: var(--muted); }
+  .hero .actions { display: flex; gap: 14px; margin-top: 28px; }
+
+  .numbers { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  .numbers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .numbers li { padding: 28px 20px; border-right: 1px solid var(--line); }
+  .numbers li:last-child { border-right: 0; }
+  .numbers strong { display: block; font-family: "Space Grotesk", system-ui, sans-serif; font-size: 2.4rem; font-weight: 700; color: var(--ink); }
+  .numbers li:first-child strong { color: var(--brand-primary); }
+
+  .work { padding: 72px 0; }
+  .case { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding: 26px 0; border-top: 1px solid var(--line); }
+  .case .client { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 600; }
+  .case p { margin: 0 0 8px; }
+
+  .how { background: var(--brand-mustard); padding: 64px 0; }
+  .how ol { margin: 0; padding-left: 1.2em; max-width: 44em; }
+  .how li { margin-bottom: 12px; }
+
+  .site-footer { background: var(--ink); color: #d6d6d6; padding: 36px 0; font-size: 15px; }
+  .site-footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .site-footer a { color: #ffffff; }
+  @media (max-width: 760px) {
+    h1 { font-size: 2.4rem; }
+    .site-nav { display: none; }
+    .numbers ul { grid-template-columns: 1fr 1fr; }
+    .case { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand-link" href="/" aria-label="Fieldwork Digital home">
+      <svg width="196" height="34" viewBox="0 0 196 34" role="img" aria-label="Fieldwork Digital logo" xmlns="http://www.w3.org/2000/svg">
+        <title>Fieldwork Digital</title>
+        <rect x="0" y="5" width="10" height="10" fill="#d9432a"/>
+        <rect x="12" y="5" width="10" height="10" fill="#d9432a"/>
+        <rect x="0" y="17" width="10" height="10" fill="#d9432a"/>
+        <rect x="12" y="17" width="10" height="10" fill="none" stroke="#d9432a" stroke-width="2"/>
+        <text x="32" y="25" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.5" fill="#161616">fieldwork</text>
+        <text x="136" y="25" font-family="Space Grotesk, Arial, sans-serif" font-size="22" font-weight="500" letter-spacing="-0.5" fill="#d9432a">digital</text>
+      </svg>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/work">Work</a>
+      <a href="/services">What we do</a>
+      <a href="/journal">Journal</a>
+      <a href="/about">Studio</a>
+      <a class="btn" href="/contact">Start a project</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Web shops, B2B portals, ERP integrations</p>
+      <h1>We build the shop and the plumbing behind it</h1>
+      <p class="lead">Most web shop projects fail in the parts nobody sees: order sync, stock, prices per customer, freight. We start there. Seven of us, in Aarhus, working mostly for companies that make or move physical things.</p>
+      <div class="actions">
+        <a class="btn" href="/work">See recent work</a>
+        <a class="btn btn-ghost" href="/contact">Book a 30-minute call</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="numbers" aria-label="The studio in numbers">
+    <div class="wrap">
+      <ul>
+        <li><strong>41</strong> shops and portals shipped since 2017</li>
+        <li><strong>7</strong> people, no account managers</li>
+        <li><strong>14</strong> ERP systems we have integrated with</li>
+        <li><strong>1 day</strong> a week of every project spent with your team</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="work">
+    <div class="wrap">
+      <h2>Recent work</h2>
+      <div class="case">
+        <span class="client">Saltværk</span>
+        <div><p>Moved a sea-salt producer from a hosted shop to Shopify with a live link to their warehouse system. Orders now leave the same day.</p><a href="/work/saltvaerk">Read the case</a></div>
+      </div>
+      <div class="case">
+        <span class="client">Nordlys Tekstil</span>
+        <div><p>A trade portal where 300 shop owners order linens at their own price list, built on top of the ERP the company already had.</p><a href="/work/nordlys">Read the case</a></div>
+      </div>
+      <div class="case">
+        <span class="client">Arkona</span>
+        <div><p>New web shop and ERP order sync for a Bornholm outdoor-furniture maker. In progress, live in November.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="wrap">
+      <h2>How we work</h2>
+      <ol>
+        <li>Two weeks of discovery, priced on its own. You get a plan and a fixed quote, and you can take both elsewhere.</li>
+        <li>Weekly status in writing, with the numbers. If something is late, you hear it from us first.</li>
+        <li>We hand over the code, the documentation and the passwords. No lock-in.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>&copy; 2026 Fieldwork Digital ApS · Mejlgade 31, 8000 Aarhus C · CVR 39 41 77 02</span>
+    <span><a href="/contact">hello@fieldwork.example</a></span>
+  </div>
+</footer>
+</body>
+</html>

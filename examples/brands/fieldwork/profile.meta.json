@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "brand": "fieldwork",
+  "lang": "en",
+  "style": "consulting",
+  "collectedAt": "2026-10-05T12:40:00Z",
+  "sources": [
+    { "id": "doc1", "type": "document", "ref": "fieldwork-site.html (saved copy of the Fieldwork Digital homepage)", "fetchedAt": "2026-10-05T12:38:00Z" },
+    { "id": "int1", "type": "interview", "ref": "user, 2026-10-05: approved the brand reading in advance, no field-level answers" }
+  ],
+  "fields": {
+    "name":                     { "value": "Fieldwork Digital", "confidence": "inferred", "sources": ["doc1"], "note": "The name in the page metadata, the logo and the footer; the legal form ApS stays off document headers." },
+    "colors.primary":           { "value": "#d9432a", "confidence": "inferred", "sources": ["doc1"], "note": "The site's named brand red, on the main button, the links and in the logo itself." },
+    "colors.secondary":         { "value": "#f1c84b", "confidence": "inferred", "sources": ["doc1"], "note": "The site's named mustard, used as the full-width band behind How we work and on button hover." },
+    "colors.foreground":        { "value": "#161616", "confidence": "inferred", "sources": ["doc1"], "note": "The site's text colour, a near-black that also draws the word fieldwork in the logo." },
+    "typography.body":          { "value": "Source Sans 3", "confidence": "inferred", "sources": ["doc1"], "note": "The site's body typeface, an open Google font, embedded in documents." },
+    "typography.heading":       { "value": "Space Grotesk", "confidence": "inferred", "sources": ["doc1"], "note": "The site's heading typeface, an open Google font, embedded in documents." },
+    "typography.headingWeight": { "value": 600, "confidence": "inferred", "sources": ["doc1"], "note": "Headings on the site are set semibold (600), not bold." },
+    "logo":                     { "value": "logo.svg (inline header mark, on light)", "confidence": "inferred", "sources": ["doc1"], "note": "The mark from the site header that links home: four red squares, fieldwork in ink and digital in red." },
+    "voice.register":           { "value": "plain, concrete studio English: we-voice, short sentences, numbers instead of adjectives, promises stated as facts", "confidence": "inferred", "sources": ["doc1"] },
+    "voice.sample":             { "value": "Order sync is two days behind plan because the ERP export drops customer price lists over 500 lines. We have a fix in test and expect it live on Thursday. If it slips, you will hear it from us first.", "confidence": "inferred", "sources": ["doc1"] }
+  },
+  "questions": [],
+  "notes": {
+    "name": "We took Fieldwork Digital from the page metadata, the logo and the footer, and leave the ApS for contracts and invoices.",
+    "logo": "This is the mark from your site header, kept in its own red and ink; its lettering is live text rather than outlines, so an outlined version of the file would make it render exactly the same everywhere.",
+    "tone": "Documents talk the way the homepage does: we, short sentences, the number instead of the adjective, and bad news told early and plainly.",
+    "avoid": ["solutions", "seamless", "cutting-edge"]
+  }
+}

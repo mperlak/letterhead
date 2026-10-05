@@ -1,0 +1,6 @@
+<svg width="170" height="32" viewBox="0 0 170 32" role="img" aria-label="Kestrel Labs logo" xmlns="http://www.w3.org/2000/svg">
+        <title>Kestrel Labs</title>
+        <path d="M2 22 L14 6 L18 14 L30 4 L22 26 L16 18 Z" fill="#1f4fd1"/>
+        <text x="40" y="23" font-family="Manrope, Arial, sans-serif" font-size="21" font-weight="800" letter-spacing="-0.4" fill="#101828">kestrel</text>
+        <text x="122" y="23" font-family="Manrope, Arial, sans-serif" font-size="21" font-weight="500" letter-spacing="-0.4" fill="#1f4fd1">labs</text>
+      </svg>

@@ -56,6 +56,8 @@ skills/letterhead/          ← byte-identical mirror for `npx skills add`
 examples/                   ← generated demo documents + brand profiles
 dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (not shipped)
                             ← build-gallery.mjs: the Pages gallery in temp/site/ (pages.yml)
+                            ← screenshots.mjs (uniform 4:5 light/dark webp thumbnails, --all, --grid) and
+                            ← contact-sheet.mjs (3x3 styles sheet), both on lib/shoot.mjs (headless shell + cwebp)
 bin/sync-mounts.sh          ← regenerate the mirror (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
 .claude-plugin/             ← Claude Code plugin + marketplace manifests

@@ -11,19 +11,19 @@ DONE this week
 IN PROGRESS
 - 4th trade price tier (project/contract pricing) – waiting on spreadsheet from Arkona finance, promised last fri
 - stock levels: sync every 15 min in staging, want 5 min for go-live, Tomasz checking ERP API rate limits
-- payment provider webhooks – sandbox flaky, support ticket open since 30 Sep
+- payment provider webhooks – sandbox flaky, support ticket open since 29 Sep
 
 RISKS
-- the 37 SKUs w/o dimensions: if not filled by 20 Oct, those products go live with flat-rate freight (cheaper for customer than real cost on big tables, Arkona eats the diff)
-- payment webhooks: if sandbox not fixed by 14 Oct we test against live with small real orders instead
+- the 37 SKUs w/o dimensions: if not filled by 19 Oct, those products go live with flat-rate freight (cheaper for customer than real cost on big tables, Arkona eats the diff)
+- payment webhooks: if sandbox not fixed by 13 Oct we test against live with small real orders instead
 - budget: 62% of hours used, we're at ~55% of the timeline. ok-ish, watching it
 
-DECISION NEEDED (Karin / finance) by Fri 10 Oct
-- price freeze in ERP during cutover 28 Oct – 3 Nov? option A freeze (clean cutover, no manual work), option B no freeze (we reconcile price changes by hand after go-live, est. 1-2 days of our time + Arkona checking)
+DECISION NEEDED (Karin / finance) by Fri 9 Oct
+- price freeze in ERP during cutover 27 Oct – 2 Nov? option A freeze (clean cutover, no manual work), option B no freeze (we reconcile price changes by hand after go-live, est. 1-2 days of our time + Arkona checking)
 - we recommend A
 
 DATES
-- retest order sync: Mon 6 Oct
-- 4th price tier needed by: Wed 8 Oct
-- content freeze: 20 Oct
-- cutover window: 28 Oct – 3 Nov, go-live Mon 3 Nov
+- retest order sync: Mon 5 Oct
+- 4th price tier needed by: Wed 7 Oct
+- content freeze: 19 Oct
+- cutover window: 27 Oct – 2 Nov, go-live Mon 2 Nov

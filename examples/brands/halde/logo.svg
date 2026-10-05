@@ -1,0 +1,7 @@
+<svg width="210" height="44" viewBox="0 0 210 44" role="img" aria-label="Studio Halde logo" xmlns="http://www.w3.org/2000/svg">
+        <title>Studio Halde</title>
+        <path d="M4 40 V18 A14 14 0 0 1 32 18 V40" fill="none" stroke="#9a5b3f" stroke-width="2.2"/>
+        <path d="M11 40 V20 A7 7 0 0 1 25 20 V40" fill="none" stroke="#9a5b3f" stroke-width="1.4"/>
+        <text x="46" y="20" font-family="Jost, Helvetica, sans-serif" font-size="10.5" font-weight="400" letter-spacing="5.2" fill="#9a5b3f">STUDIO</text>
+        <text x="45" y="40" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-weight="500" letter-spacing="1.5" fill="#9a5b3f">Halde</text>
+      </svg>

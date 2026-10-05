@@ -69,7 +69,9 @@ jobs:
       - name: Document check on fixtures and examples
         run: |
           node letterhead/scripts/check-document.mjs letterhead/fixtures/*.html
-          find examples -name '*.html' -print0 | xargs -0 node letterhead/scripts/check-document.mjs
+          # Generated documents only: brand evidence (site.html), the hand-made
+          # "before" illustration and the hero compositor are not documents.
+          node letterhead/scripts/check-document.mjs examples/documents/*.html examples/brands/*/brand-sheet.html examples/hero/after.html
 
       - name: Tag closure — fixtures and examples
         run: |

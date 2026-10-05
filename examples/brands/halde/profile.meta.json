@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "brand": "halde",
+  "lang": "en",
+  "style": "atelier",
+  "collectedAt": "2026-10-05T12:40:00Z",
+  "sources": [
+    { "id": "html1", "type": "document", "ref": "halde-site.html (saved copy of the Studio Halde homepage)", "fetchedAt": "2026-10-05T12:40:00Z" },
+    { "id": "int1", "type": "interview", "ref": "user, 2026-10-05: approved the brand reading in advance, no review of individual values" }
+  ],
+  "fields": {
+    "name":                     { "value": "Studio Halde", "confidence": "inferred", "sources": ["html1"], "note": "The name in the page metadata, the logo and the footer; the footer adds the legal form B.V., which documents leave out." },
+    "colors.primary":           { "value": "#9a5b3f", "confidence": "inferred", "sources": ["html1"], "note": "The site's clay colour: the logo, the buttons, the links and the active menu item." },
+    "colors.secondary":         { "value": "#ece2d4", "confidence": "inferred", "sources": ["html1"], "note": "The site's linen colour, used behind the approach section and the image placeholders." },
+    "colors.foreground":        { "value": "#2b2522", "confidence": "inferred", "sources": ["html1"], "note": "The site's text colour, a warm near-black rather than pure black." },
+    "typography.body":          { "value": "Jost", "confidence": "inferred", "sources": ["html1"], "note": "The site's text typeface, an open Google font, embedded in documents." },
+    "typography.heading":       { "value": "Cormorant Garamond", "confidence": "inferred", "sources": ["html1"], "note": "The site's heading typeface, an open Google font, embedded in documents." },
+    "typography.headingWeight": { "value": 500, "confidence": "inferred", "sources": ["html1"], "note": "Headings on the site are set at medium weight (500), not bold." },
+    "logo":                     { "value": "logo.svg", "confidence": "inferred", "sources": ["html1"], "note": "The clay arch mark with STUDIO Halde from the site header, used as it is on paper and drawn light in dark mode." },
+    "voice.register":           { "value": "Calm, concrete, first person plural; addresses the client as you; talks about how people live in rooms, not about design trends.", "confidence": "inferred", "sources": ["html1"] },
+    "voice.sample":             { "value": "Every project starts with a morning in the house as it is: how the light moves, where the bags get dropped, which chair everyone fights over. We draw only after that.", "confidence": "inferred", "sources": ["html1"] }
+  },
+  "questions": [],
+  "notes": {
+    "name": "We took the name from the site's metadata, the logo and the footer, and left the legal form B.V. for the invoice small print.",
+    "logo": "The logo is the clay arch with STUDIO Halde from the top of your site, placed on the page as it is; in dark mode it turns light.",
+    "tone": "We write the way your homepage does: short, plain sentences about the house and the people in it, a fixed fee and a budget stated outright, and no design jargon.",
+    "avoid": ["luxury", "curated", "bespoke"]
+  }
+}

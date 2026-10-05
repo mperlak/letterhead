@@ -303,8 +303,19 @@ function shots(base) {
   return out;
 }
 
-// "spec--consulting" -> spec in the consulting style; "status-update-markloop"
-// -> status-update in the taught markloop brand.
+// The brand's display name from its profile ("halde" -> "Studio Halde"),
+// falling back to the capitalised slug.
+function brandLabel(slug) {
+  try {
+    const meta = JSON.parse(readFileSync(join(EXAMPLES, 'brands', slug, 'profile.meta.json'), 'utf8'));
+    const name = meta?.fields?.name?.value;
+    if (name) return name;
+  } catch { /* no profile.meta.json */ }
+  return `${slug[0].toUpperCase()}${slug.slice(1)}`;
+}
+
+// "spec--consulting" -> spec in the consulting style; "proposal--halde"
+// -> proposal in the taught halde brand.
 function classify(base) {
   let template = null;
   let rest = '';
@@ -317,7 +328,7 @@ function classify(base) {
   }
   const tName = template ? templateMeta[template].name || template : null;
   if (styles.includes(rest)) return { template: tName, look: `${styleMeta[rest].name || rest} style`, brand: false };
-  if (brandNames.includes(rest)) return { template: tName, look: `${rest[0].toUpperCase()}${rest.slice(1)} brand, taught`, brand: true };
+  if (brandNames.includes(rest)) return { template: tName, look: `${brandLabel(rest)} brand, taught`, brand: true };
   return { template: tName, look: rest || null, brand: false };
 }
 

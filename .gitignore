@@ -2,3 +2,6 @@
 node_modules/
 temp/
 *.log
+
+# Codex marketplace catalog (the parent repo ignores .agents/)
+!.agents/

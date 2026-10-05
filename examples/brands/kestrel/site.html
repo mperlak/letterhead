@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel Labs | Route planning for waste collection and field crews</title>
+<meta name="description" content="Kestrel plans the daily routes of waste-collection trucks and field crews for municipalities and contractors, and re-plans them when the day goes wrong.">
+<meta property="og:site_name" content="Kestrel Labs">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-cobalt: #1f4fd1;
+    --brand-cobalt-dark: #173ca3;
+    --brand-amber: #f4b73c;
+    --ink: #101828;
+    --muted: #4b5565;
+    --paper: #ffffff;
+    --mist: #f2f5fb;
+    --line: #dde3ee;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  h1, h2, h3 {
+    font-family: "Manrope", system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5em;
+  }
+  h1 { font-size: 3.4rem; }
+  h2 { font-size: 2.1rem; }
+  h3 { font-size: 1.2rem; }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.9em; }
+  a { color: var(--brand-cobalt); }
+  a:hover { color: var(--brand-cobalt-dark); }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+  .site-header { border-bottom: 1px solid var(--line); }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand-link { display: inline-flex; align-items: center; text-decoration: none; }
+  .site-nav { display: flex; gap: 28px; align-items: center; }
+  .site-nav a { color: var(--ink); text-decoration: none; font-weight: 500; font-size: 15px; }
+  .site-nav a:hover { color: var(--brand-cobalt); }
+  .site-nav a.btn { color: #ffffff; }
+
+  .btn {
+    display: inline-block;
+    padding: 11px 20px;
+    border-radius: 6px;
+    background: var(--brand-cobalt);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid var(--brand-cobalt);
+  }
+  .btn:hover { background: var(--brand-cobalt-dark); color: #ffffff; }
+  .btn-line { background: #ffffff; color: var(--brand-cobalt); border-color: var(--line); }
+  .btn-line:hover { border-color: var(--brand-cobalt); }
+
+  .hero { padding: 84px 0 72px; background: var(--mist); }
+  .hero .tag { display: inline-block; font-size: 13px; font-weight: 600; background: var(--brand-amber); color: var(--ink); padding: 3px 10px; border-radius: 4px; }
+  .hero h1 { max-width: 14em; margin-top: 18px; }
+  .hero p.lead { font-size: 1.2rem; max-width: 38em; color: var(--muted); }
+  .hero .actions { display: flex; gap: 12px; margin-top: 26px; }
+
+  .proof { padding: 48px 0; border-bottom: 1px solid var(--line); }
+  .proof dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 0; }
+  .proof dt { font-family: "Manrope", system-ui, sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--brand-cobalt); }
+  .proof dd { margin: 0; color: var(--muted); }
+
+  .features { padding: 72px 0; }
+  .features .rows { display: grid; gap: 0; }
+  .row { display: grid; grid-template-columns: 280px 1fr; gap: 32px; padding: 24px 0; border-top: 1px solid var(--line); }
+  .row h3 { margin: 0; }
+  .row p { margin: 0; color: var(--muted); }
+
+  .dev { background: var(--ink); color: #e6eaf2; padding: 64px 0; }
+  .dev h2 { color: #ffffff; }
+  .dev pre { background: #0b1220; border: 1px solid #263248; border-radius: 6px; padding: 18px; overflow-x: auto; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 14px; color: #c9d4ea; }
+  .dev a { color: var(--brand-amber); }
+
+  .site-footer { padding: 36px 0; font-size: 14px; color: var(--muted); }
+  .site-footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  @media (max-width: 780px) {
+    h1 { font-size: 2.4rem; }
+    .site-nav { display: none; }
+    .proof dl { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand-link" href="/" aria-label="Kestrel Labs home">
+      <svg width="170" height="32" viewBox="0 0 170 32" role="img" aria-label="Kestrel Labs logo" xmlns="http://www.w3.org/2000/svg">
+        <title>Kestrel Labs</title>
+        <path d="M2 22 L14 6 L18 14 L30 4 L22 26 L16 18 Z" fill="#1f4fd1"/>
+        <text x="40" y="23" font-family="Manrope, Arial, sans-serif" font-size="21" font-weight="800" letter-spacing="-0.4" fill="#101828">kestrel</text>
+        <text x="122" y="23" font-family="Manrope, Arial, sans-serif" font-size="21" font-weight="500" letter-spacing="-0.4" fill="#1f4fd1">labs</text>
+      </svg>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/product">Product</a>
+      <a href="/customers">Customers</a>
+      <a href="/docs">Docs</a>
+      <a href="/changelog">Changelog</a>
+      <a href="/status">Status</a>
+      <a class="btn" href="/demo">Book a demo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="tag">New in 4.2: live re-routing when a truck breaks down</span>
+      <h1>Route planning for the trucks that empty the bins</h1>
+      <p class="lead">Kestrel plans tomorrow's routes for waste collection and field crews in under a minute, keeps them inside every driver's hours and every street's weight limit, and re-plans the rest of the day when something goes wrong at 7:40.</p>
+      <div class="actions">
+        <a class="btn" href="/demo">Book a demo</a>
+        <a class="btn btn-line" href="/docs">Read the API docs</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" aria-label="Results">
+    <div class="wrap">
+      <dl>
+        <div><dt>38</dt><dd>municipalities and contractors plan with Kestrel every night</dd></div>
+        <div><dt>11.4%</dt><dd>fewer kilometres driven on average in the first year</dd></div>
+        <div><dt>99.95%</dt><dd>planning API uptime over the last twelve months</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="wrap">
+      <h2>What it does</h2>
+      <div class="rows">
+        <div class="row"><h3>Nightly planning</h3><p>Imports tomorrow's stops from your fleet system at 22:00 and publishes routes to every cab tablet by 05:00.</p></div>
+        <div class="row"><h3>Live re-routing</h3><p>A truck breaks down or a road closes: the remaining stops are spread over the other trucks, and drivers see the change within two minutes.</p></div>
+        <div class="row"><h3>Constraints that are real</h3><p>Driver hours, bridge and street weight limits, school-zone time windows, tipping-site opening hours.</p></div>
+        <div class="row"><h3>An API first</h3><p>Everything in the planner is available over a documented REST API with webhooks, so your fleet system stays the system of record.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dev">
+    <div class="wrap">
+      <h2>For your developers</h2>
+      <pre>POST /v2/plans
+{ "depot": "dep_0412", "date": "2026-10-06", "stops": "s3://…/stops.ndjson" }</pre>
+      <p><a href="/docs">API reference</a> · <a href="/changelog">Changelog</a> · <a href="/status">Status page</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>&copy; 2026 Kestrel Labs B.V. · Stationsplein 45, 3013 AK Rotterdam</span>
+    <span><a href="/security">Security</a> · <a href="mailto:support@kestrel.example">support@kestrel.example</a></span>
+  </div>
+</footer>
+</body>
+</html>

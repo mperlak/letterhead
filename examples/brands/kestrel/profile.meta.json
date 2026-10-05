@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "brand": "kestrel",
+  "lang": "en",
+  "style": "engineering",
+  "collectedAt": "2026-10-05T12:40:00Z",
+  "sources": [
+    { "id": "html1", "type": "document", "ref": "kestrel-site.html (saved copy of the Kestrel Labs homepage)", "fetchedAt": "2026-10-05T12:38:00Z" }
+  ],
+  "fields": {
+    "name":                     { "value": "Kestrel Labs", "confidence": "inferred", "sources": ["html1"], "note": "The name in the page metadata, the logo's title and the footer, without the legal form B.V." },
+    "colors.primary":           { "value": "#1f4fd1", "confidence": "inferred", "sources": ["html1"], "note": "Your cobalt: the logo mark, the buttons, the links and the key figures." },
+    "colors.foreground":        { "value": "#101828", "confidence": "inferred", "sources": ["html1"], "note": "The site's text colour, a deep navy ink rather than black." },
+    "colors.secondary":         { "value": "#f4b73c", "confidence": "inferred", "sources": ["html1"], "note": "Your amber, used on the site for the release tag and for links on dark panels; documents use it for tags and callouts, never for text." },
+    "typography.body":          { "value": "IBM Plex Sans", "confidence": "inferred", "sources": ["html1"], "note": "The site's body text face, an open font from Google Fonts." },
+    "typography.heading":       { "value": "Manrope", "confidence": "inferred", "sources": ["html1"], "note": "The site's heading face, also the face of the logo lettering; an open font from Google Fonts." },
+    "typography.headingWeight": { "value": 700, "confidence": "inferred", "sources": ["html1"], "note": "Headings on the site are set at 700." },
+    "logo":                     { "value": "inline SVG in the site header (kestrel mark and 'kestrel labs' wordmark)", "confidence": "inferred", "sources": ["html1"], "note": "The header logo that links to the home page, used as it is on paper." },
+    "voice.register":           { "value": "Plain, concrete operations English: real times, real numbers, the reader's own trucks and crews.", "confidence": "inferred", "sources": ["html1"] },
+    "voice.sample":             { "value": "At 07:40 truck 14 lost hydraulics on Maasboulevard. Kestrel spread its 63 remaining stops over trucks 9 and 22, and both drivers had the new route on their tablets by 07:42.", "confidence": "inferred", "sources": ["html1"] }
+  },
+  "questions": [],
+  "notes": {
+    "name": "We took the name from the page title data, the logo and the footer; documents say Kestrel Labs and leave the legal form B.V. to the footer of contracts.",
+    "logo": "The cobalt mark with the kestrel labs wordmark from your site header, used as it is; in dark mode it sits on a light plate so the navy lettering stays readable.",
+    "tone": "Short sentences with the actual time, number or street in them: what happened, what Kestrel did, what the driver or the developer sees next.",
+    "avoid": ["seamless", "revolutionary", "leverage"]
+  }
+}
