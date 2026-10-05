@@ -5,17 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kestrel 4.3 release notes</title>
 <meta property="og:title" content="Kestrel 4.3 release notes">
-<meta property="og:description" content="Live tipping-site queue times, an offline driver app and locked stop order. If you call the Kestrel API, two changes need action before Monday 30 November 2026.">
-<!-- Style: corporate, as requested for this document. Brand: the kestrel profile (colours, fonts, logo), applied over the corporate base. -->
+<meta property="og:description" content="Kestrel 4.3 plans dump trips around live queue times at 9 tipping sites, keeps the driver app working offline for up to 6 hours, and lets planners lock stop order. If you call the API, two changes need your action before Mon 30 Nov 2026.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'4'%20y%3D'4'%20width%3D'24'%20height%3D'24'%20rx%3D'4'%20fill%3D'%231f4fd1'%2F%3E%3C%2Fsvg%3E">
-<style data-letterhead-tokens>
-/**
- * Brand tokens.
- * Built 2026-10-05 on the "corporate" base style: colors, fonts and logo
- * are the brand's; spacing, radii, motion and the rest come from the style.
- * Generated file; regenerate it instead of editing it.
- */
-
+<style data-letterhead-tokens data-style="corporate">
 /* letterhead:fonts */
 /* IBM Plex Sans latin */
 @font-face {
@@ -37,49 +29,56 @@
 }
 /* /letterhead:fonts */
 
+/* ---- style "corporate" ---- */
 :root {
   color-scheme: light;
 
-  --background: oklch(1.000 0.000 0.0);
-  --foreground: oklch(0.210 0.034 263.4);
+  --background: oklch(0.9880 0.0020 248);
+  --foreground: oklch(0.2300 0.0120 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.210 0.034 263.4);
+  --card-foreground: oklch(0.2300 0.0120 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.210 0.034 263.4);
-  --primary: oklch(0.484 0.207 264.3);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --popover-foreground: oklch(0.2300 0.0120 255);
+  --primary: oklch(0.4500 0.1300 252);
+  --primary-foreground: oklch(0.9900 0.0020 248);
   --secondary: oklch(0.9550 0.0060 247);
   --secondary-foreground: oklch(0.3000 0.0200 253);
-  --muted: oklch(0.962 0.012 264.3);
-  --muted-foreground: oklch(0.460 0.012 264.3);
-  --accent: oklch(0.816 0.149 80.7);
-  --accent-foreground: oklch(0.210 0.034 263.4);
+  --muted: oklch(0.9620 0.0050 247);
+  --muted-foreground: oklch(0.4600 0.0180 251);
+  --accent: oklch(0.9350 0.0130 250);
+  --accent-foreground: oklch(0.3600 0.0700 252);
   --destructive: oklch(0.5100 0.1750 27);
   --destructive-foreground: oklch(0.9900 0.0030 248);
-  --border: oklch(0.905 0.012 264.3);
+  --border: oklch(0.9050 0.0070 249);
   --input: oklch(0.9050 0.0070 249);
-  --ring: oklch(0.484 0.207 264.3);
+  --ring: oklch(0.4500 0.1300 252);
   --sidebar: oklch(0.9700 0.0045 248);
-  --sidebar-foreground: oklch(0.210 0.034 263.4);
-  --sidebar-primary: oklch(0.484 0.207 264.3);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.816 0.149 80.7);
-  --sidebar-accent-foreground: oklch(0.210 0.034 263.4);
-  --sidebar-border: oklch(0.905 0.012 264.3);
-  --sidebar-ring: oklch(0.484 0.207 264.3);
-  --chart-1: oklch(0.484 0.207 264.3);
+  --sidebar-foreground: oklch(0.2300 0.0120 255);
+  --sidebar-primary: oklch(0.4500 0.1300 252);
+  --sidebar-primary-foreground: oklch(0.9900 0.0020 248);
+  --sidebar-accent: oklch(0.9350 0.0130 250);
+  --sidebar-accent-foreground: oklch(0.3600 0.0700 252);
+  --sidebar-border: oklch(0.9050 0.0070 249);
+  --sidebar-ring: oklch(0.4500 0.1300 252);
+  --chart-1: oklch(0.4500 0.1300 252);
   --chart-2: oklch(0.6000 0.1000 248);
   --chart-3: oklch(0.7300 0.0700 245);
   --chart-4: oklch(0.5500 0.0900 160);
   --chart-5: oklch(0.5600 0.0250 250);
+
+  /* -- States: the word carries the state, the color repeats it -- */
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.560 0.115 78.0);
+  --status-blocked: oklch(0.510 0.175 27.0);
+  --status-neutral: oklch(0.460 0.018 251.0);
   --shadow-sm: 0 1px 2px oklch(0.23 0.012 255 / 0.07);
   --shadow-md: 0 2px 8px oklch(0.23 0.012 255 / 0.10);
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 10px;
-  --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-display: Manrope, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Source Sans 3", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   --text-xs: 0.75rem;
@@ -99,12 +98,6 @@
   --motion-duration-fast: 120ms;
   --motion-duration-base: 180ms;
   --motion-ease: cubic-bezier(0.2, 0, 0, 1);
-  --primary-ink: oklch(0.484 0.207 264.3);
-  --font-heading-weight: 700;
-  --brand-logo: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTcwIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgMTcwIDMyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Iktlc3RyZWwgTGFicyBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5LZXN0cmVsIExhYnM8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik0yIDIyIEwxNCA2IEwxOCAxNCBMMzAgNCBMMjIgMjYgTDE2IDE4IFoiIGZpbGw9IiMxZjRmZDEiLz4KICAgICAgICA8dGV4dCB4PSI0MCIgeT0iMjMiIGZvbnQtZmFtaWx5PSJNYW5yb3BlLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMSIgZm9udC13ZWlnaHQ9IjgwMCIgbGV0dGVyLXNwYWNpbmc9Ii0wLjQiIGZpbGw9IiMxMDE4MjgiPmtlc3RyZWw8L3RleHQ+CiAgICAgICAgPHRleHQgeD0iMTIyIiB5PSIyMyIgZm9udC1mYW1pbHk9Ik1hbnJvcGUsIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIxIiBmb250LXdlaWdodD0iNTAwIiBsZXR0ZXItc3BhY2luZz0iLTAuNCIgZmlsbD0iIzFmNGZkMSI+bGFiczwvdGV4dD4KICAgICAgPC9zdmc+");
-  --brand-logo-on: light;
-  --brand-logo-ratio: 5.3125;
-  --brand-logo-plate: transparent;
 }
 
 [data-theme="dark"] {
@@ -116,37 +109,39 @@
   --card-foreground: oklch(0.9250 0.0070 248);
   --popover: oklch(0.2350 0.0120 253);
   --popover-foreground: oklch(0.9250 0.0070 248);
-  --primary: oklch(0.514 0.206 264.3);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --primary: oklch(0.7200 0.1050 250);
+  --primary-foreground: oklch(0.1900 0.0120 253);
   --secondary: oklch(0.2750 0.0140 252);
   --secondary-foreground: oklch(0.8900 0.0090 248);
-  --muted: oklch(0.265 0.012 264.3);
-  --muted-foreground: oklch(0.785 0.012 264.3);
-  --accent: oklch(0.300 0.050 80.7);
-  --accent-foreground: oklch(0.9250 0.0070 248);
+  --muted: oklch(0.2650 0.0130 252);
+  --muted-foreground: oklch(0.7850 0.0125 248);
+  --accent: oklch(0.3050 0.0250 251);
+  --accent-foreground: oklch(0.8800 0.0300 249);
   --destructive: oklch(0.6700 0.1550 26);
   --destructive-foreground: oklch(0.1800 0.0110 253);
-  --border: oklch(0.320 0.012 264.3);
+  --border: oklch(0.3200 0.0140 252);
   --input: oklch(0.3200 0.0140 252);
-  --ring: oklch(0.514 0.206 264.3);
+  --ring: oklch(0.7200 0.1050 250);
   --sidebar: oklch(0.2250 0.0115 253);
   --sidebar-foreground: oklch(0.9250 0.0070 248);
-  --sidebar-primary: oklch(0.514 0.206 264.3);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.300 0.050 80.7);
-  --sidebar-accent-foreground: oklch(0.9250 0.0070 248);
-  --sidebar-border: oklch(0.320 0.012 264.3);
-  --sidebar-ring: oklch(0.514 0.206 264.3);
-  --chart-1: oklch(0.514 0.206 264.3);
+  --sidebar-primary: oklch(0.7200 0.1050 250);
+  --sidebar-primary-foreground: oklch(0.1900 0.0120 253);
+  --sidebar-accent: oklch(0.3050 0.0250 251);
+  --sidebar-accent-foreground: oklch(0.8800 0.0300 249);
+  --sidebar-border: oklch(0.3200 0.0140 252);
+  --sidebar-ring: oklch(0.7200 0.1050 250);
+  --chart-1: oklch(0.7200 0.1050 250);
   --chart-2: oklch(0.6200 0.0900 248);
   --chart-3: oklch(0.5200 0.0700 246);
   --chart-4: oklch(0.7300 0.1000 160);
   --chart-5: oklch(0.7000 0.0220 250);
+
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.670 0.155 26.0);
+  --status-neutral: oklch(0.785 0.012 248.0);
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
   --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
-  --primary-ink: oklch(0.610 0.210 264.3);
-  --brand-logo-on: light;
-  --brand-logo-plate: oklch(1.000 0.000 0.0);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -159,37 +154,39 @@
     --card-foreground: oklch(0.9250 0.0070 248);
     --popover: oklch(0.2350 0.0120 253);
     --popover-foreground: oklch(0.9250 0.0070 248);
-    --primary: oklch(0.514 0.206 264.3);
-    --primary-foreground: oklch(1.000 0.000 0.0);
+    --primary: oklch(0.7200 0.1050 250);
+    --primary-foreground: oklch(0.1900 0.0120 253);
     --secondary: oklch(0.2750 0.0140 252);
     --secondary-foreground: oklch(0.8900 0.0090 248);
-    --muted: oklch(0.265 0.012 264.3);
-    --muted-foreground: oklch(0.785 0.012 264.3);
-    --accent: oklch(0.300 0.050 80.7);
-    --accent-foreground: oklch(0.9250 0.0070 248);
+    --muted: oklch(0.2650 0.0130 252);
+    --muted-foreground: oklch(0.7850 0.0125 248);
+    --accent: oklch(0.3050 0.0250 251);
+    --accent-foreground: oklch(0.8800 0.0300 249);
     --destructive: oklch(0.6700 0.1550 26);
     --destructive-foreground: oklch(0.1800 0.0110 253);
-    --border: oklch(0.320 0.012 264.3);
+    --border: oklch(0.3200 0.0140 252);
     --input: oklch(0.3200 0.0140 252);
-    --ring: oklch(0.514 0.206 264.3);
+    --ring: oklch(0.7200 0.1050 250);
     --sidebar: oklch(0.2250 0.0115 253);
     --sidebar-foreground: oklch(0.9250 0.0070 248);
-    --sidebar-primary: oklch(0.514 0.206 264.3);
-    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-    --sidebar-accent: oklch(0.300 0.050 80.7);
-    --sidebar-accent-foreground: oklch(0.9250 0.0070 248);
-    --sidebar-border: oklch(0.320 0.012 264.3);
-    --sidebar-ring: oklch(0.514 0.206 264.3);
-    --chart-1: oklch(0.514 0.206 264.3);
+    --sidebar-primary: oklch(0.7200 0.1050 250);
+    --sidebar-primary-foreground: oklch(0.1900 0.0120 253);
+    --sidebar-accent: oklch(0.3050 0.0250 251);
+    --sidebar-accent-foreground: oklch(0.8800 0.0300 249);
+    --sidebar-border: oklch(0.3200 0.0140 252);
+    --sidebar-ring: oklch(0.7200 0.1050 250);
+    --chart-1: oklch(0.7200 0.1050 250);
     --chart-2: oklch(0.6200 0.0900 248);
     --chart-3: oklch(0.5200 0.0700 246);
     --chart-4: oklch(0.7300 0.1000 160);
     --chart-5: oklch(0.7000 0.0220 250);
+
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.670 0.155 26.0);
+    --status-neutral: oklch(0.785 0.012 248.0);
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
     --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
-    --primary-ink: oklch(0.610 0.210 264.3);
-    --brand-logo-on: light;
-    --brand-logo-plate: oklch(1.000 0.000 0.0);
   }
 }
 
@@ -199,171 +196,376 @@
     --motion-duration-base: 0ms;
   }
 }
+
+/* ---- brand profile "kestrel" over the "corporate" style (its base style is "engineering"): the brand's colors in every theme, its fonts and logo ---- */
+
+:root {
+  --background: oklch(1.000 0.000 0.0);
+  --foreground: oklch(0.210 0.034 263.4);
+  --card: oklch(0.9700 0.0045 220);
+  --card-foreground: oklch(0.210 0.034 263.4);
+  --popover: oklch(0.9930 0.0020 220);
+  --popover-foreground: oklch(0.210 0.034 263.4);
+  --primary: oklch(0.484 0.207 264.3);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.9450 0.0060 221);
+  --secondary-foreground: oklch(0.2700 0.0200 230);
+  --muted: oklch(0.952 0.012 264.3);
+  --muted-foreground: oklch(0.440 0.012 264.3);
+  --accent: oklch(0.816 0.149 80.7);
+  --accent-foreground: oklch(0.210 0.034 263.4);
+  --destructive: oklch(0.5000 0.1800 26);
+  --destructive-foreground: oklch(0.9900 0.0030 220);
+  --border: oklch(0.895 0.012 264.3);
+  --input: oklch(0.8950 0.0080 222);
+  --ring: oklch(0.484 0.207 264.3);
+  --sidebar: oklch(0.9650 0.0045 220);
+  --sidebar-foreground: oklch(0.210 0.034 263.4);
+  --sidebar-primary: oklch(0.484 0.207 264.3);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.816 0.149 80.7);
+  --sidebar-accent-foreground: oklch(0.210 0.034 263.4);
+  --sidebar-border: oklch(0.895 0.012 264.3);
+  --sidebar-ring: oklch(0.484 0.207 264.3);
+  --chart-1: oklch(0.484 0.207 264.3);
+  --chart-2: oklch(0.5800 0.1000 165);
+  --chart-3: oklch(0.6000 0.1100 80);
+  --chart-4: oklch(0.4500 0.0700 260);
+  --chart-5: oklch(0.6400 0.0350 225);
+  --status-ok: oklch(0.5300 0.1200 152);
+  --status-warn: oklch(0.5600 0.1150 78);
+  --status-blocked: oklch(0.5000 0.1800 26);
+  --status-neutral: oklch(0.4400 0.0180 228);
+  --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Manrope, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --primary-ink: oklch(0.484 0.207 264.3);
+  --font-heading-weight: 700;
+  --brand-logo: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTcwIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgMTcwIDMyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Iktlc3RyZWwgTGFicyBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5LZXN0cmVsIExhYnM8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik0yIDIyIEwxNCA2IEwxOCAxNCBMMzAgNCBMMjIgMjYgTDE2IDE4IFoiIGZpbGw9IiMxZjRmZDEiLz4KICAgICAgICA8dGV4dCB4PSI0MCIgeT0iMjMiIGZvbnQtZmFtaWx5PSJNYW5yb3BlLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMSIgZm9udC13ZWlnaHQ9IjgwMCIgbGV0dGVyLXNwYWNpbmc9Ii0wLjQiIGZpbGw9IiMxMDE4MjgiPmtlc3RyZWw8L3RleHQ+CiAgICAgICAgPHRleHQgeD0iMTIyIiB5PSIyMyIgZm9udC1mYW1pbHk9Ik1hbnJvcGUsIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIxIiBmb250LXdlaWdodD0iNTAwIiBsZXR0ZXItc3BhY2luZz0iLTAuNCIgZmlsbD0iIzFmNGZkMSI+bGFiczwvdGV4dD4KICAgICAgPC9zdmc+");
+  --brand-logo-on: light;
+  --brand-logo-ratio: 5.3125;
+  --brand-logo-plate: transparent;
+}
+
+[data-theme="dark"] {
+  --background: oklch(0.1950 0.0100 232);
+  --foreground: oklch(0.9050 0.0070 222);
+  --card: oklch(0.2300 0.0110 231);
+  --card-foreground: oklch(0.9050 0.0070 222);
+  --popover: oklch(0.2300 0.0110 231);
+  --popover-foreground: oklch(0.9050 0.0070 222);
+  --primary: oklch(0.509 0.206 264.3);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.2700 0.0120 230);
+  --secondary-foreground: oklch(0.8800 0.0080 222);
+  --muted: oklch(0.260 0.012 264.3);
+  --muted-foreground: oklch(0.770 0.012 264.3);
+  --accent: oklch(0.300 0.050 80.7);
+  --accent-foreground: oklch(0.9050 0.0070 222);
+  --destructive: oklch(0.6700 0.1550 25);
+  --destructive-foreground: oklch(0.1700 0.0110 232);
+  --border: oklch(0.320 0.012 264.3);
+  --input: oklch(0.3200 0.0120 230);
+  --ring: oklch(0.509 0.206 264.3);
+  --sidebar: oklch(0.2150 0.0105 231);
+  --sidebar-foreground: oklch(0.9050 0.0070 222);
+  --sidebar-primary: oklch(0.509 0.206 264.3);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.300 0.050 80.7);
+  --sidebar-accent-foreground: oklch(0.9050 0.0070 222);
+  --sidebar-border: oklch(0.320 0.012 264.3);
+  --sidebar-ring: oklch(0.509 0.206 264.3);
+  --chart-1: oklch(0.509 0.206 264.3);
+  --chart-2: oklch(0.7400 0.1100 160);
+  --chart-3: oklch(0.7800 0.1150 85);
+  --chart-4: oklch(0.6800 0.0800 262);
+  --chart-5: oklch(0.7000 0.0300 225);
+  --status-ok: oklch(0.7400 0.1150 155);
+  --status-warn: oklch(0.7800 0.1150 82);
+  --status-blocked: oklch(0.6700 0.1550 25);
+  --status-neutral: oklch(0.7700 0.0110 224);
+  --primary-ink: oklch(0.605 0.213 264.3);
+  --brand-logo-on: light;
+  --brand-logo-plate: oklch(1.000 0.000 0.0);
+}
+
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --background: oklch(0.1950 0.0100 232);
+    --foreground: oklch(0.9050 0.0070 222);
+    --card: oklch(0.2300 0.0110 231);
+    --card-foreground: oklch(0.9050 0.0070 222);
+    --popover: oklch(0.2300 0.0110 231);
+    --popover-foreground: oklch(0.9050 0.0070 222);
+    --primary: oklch(0.509 0.206 264.3);
+    --primary-foreground: oklch(1.000 0.000 0.0);
+    --secondary: oklch(0.2700 0.0120 230);
+    --secondary-foreground: oklch(0.8800 0.0080 222);
+    --muted: oklch(0.260 0.012 264.3);
+    --muted-foreground: oklch(0.770 0.012 264.3);
+    --accent: oklch(0.300 0.050 80.7);
+    --accent-foreground: oklch(0.9050 0.0070 222);
+    --destructive: oklch(0.6700 0.1550 25);
+    --destructive-foreground: oklch(0.1700 0.0110 232);
+    --border: oklch(0.320 0.012 264.3);
+    --input: oklch(0.3200 0.0120 230);
+    --ring: oklch(0.509 0.206 264.3);
+    --sidebar: oklch(0.2150 0.0105 231);
+    --sidebar-foreground: oklch(0.9050 0.0070 222);
+    --sidebar-primary: oklch(0.509 0.206 264.3);
+    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+    --sidebar-accent: oklch(0.300 0.050 80.7);
+    --sidebar-accent-foreground: oklch(0.9050 0.0070 222);
+    --sidebar-border: oklch(0.320 0.012 264.3);
+    --sidebar-ring: oklch(0.509 0.206 264.3);
+    --chart-1: oklch(0.509 0.206 264.3);
+    --chart-2: oklch(0.7400 0.1100 160);
+    --chart-3: oklch(0.7800 0.1150 85);
+    --chart-4: oklch(0.6800 0.0800 262);
+    --chart-5: oklch(0.7000 0.0300 225);
+    --status-ok: oklch(0.7400 0.1150 155);
+    --status-warn: oklch(0.7800 0.1150 82);
+    --status-blocked: oklch(0.6700 0.1550 25);
+    --status-neutral: oklch(0.7700 0.0110 224);
+    --primary-ink: oklch(0.605 0.213 264.3);
+    --brand-logo-on: light;
+    --brand-logo-plate: oklch(1.000 0.000 0.0);
+  }
+}
+</style>
+<style data-letterhead-style="corporate">
+/* styles/corporate/style.css — the intranet report on the shared markup
+ * (reference/markup.md). Blue-topped title block over a ruled control grid,
+ * executive summary in a box with a title bar, blue-ruled section openers,
+ * R1/R2 recommendation ledger, tables as the workhorse. Tokens only. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
+:where(.doc) { display: block; max-width: calc(var(--measure) + 10rem); margin: 0 auto; padding: 2rem 2rem 4rem; }
+:where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+:where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.6rem 0; }
+:where(.doc) :is(.kicker, .label, dt, th, .state, .when, .from) { font-family: var(--font-label, var(--font-sans)); }
+:where(.doc) :is(.kicker, .label, .meta dt, .status dt, th), :where(.doc) .contents::before { margin: 0; font-size: var(--text-xs); font-weight: 600;
+  letter-spacing: var(--tracking-label, 0.05em); text-transform: uppercase; color: var(--muted-foreground); }
+:where(.doc) :is(.doc-head, section) > .kicker, :where(.doc) .when { color: var(--primary-ink, var(--primary)); }
+
+/* Title block: blue top strip, kicker as document class, control grid */
+:where(.doc) .doc-head { border-top: 4px solid var(--primary); padding-top: 1rem; margin-bottom: 1.5rem; }
+:where(.doc) .doc-head .brand-mark { margin: 0 0 1rem; }
+:where(.doc) h1 { font-family: var(--font-display); font-weight: var(--font-heading-weight, 650); font-size: var(--text-3xl);
+  line-height: var(--leading-tight); letter-spacing: -0.01em; margin: 0.35rem 0 0.5rem; max-width: 30ch; }
+:where(.doc) .lede { font-size: var(--text-lg); line-height: 1.45; color: var(--muted-foreground); max-width: var(--measure); margin: 0 0 1.25rem; }
+:where(.doc) :is(.meta, .status) { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); margin: 0;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+:where(.doc) .meta { background: var(--muted); }
+:where(.doc) .status { display: flex; flex-wrap: wrap; }
+:where(.doc) .status > div { flex: 1 1 9.5rem; border-top: 1px solid var(--border); margin-top: -1px; }
+:where(.doc) :is(.meta, .status) > div { padding: 0.5rem 0.75rem; border-left: 1px solid var(--border); margin-left: -1px; }
+:where(.doc) .meta dd { margin: 0.1rem 0 0; font-size: var(--text-sm); font-weight: 600; line-height: 1.35; }
+
+/* Contents: a ruled two-column index */
+:where(.doc) .contents { margin: 0 0 1.5rem; border-block: 1px solid var(--border); padding: 0.6rem 0; }
+:where(.doc) .contents::before { content: attr(aria-label); display: block; margin-bottom: 0.3rem; }
+:where(.doc) .contents ol { columns: 2 14rem; column-gap: 2rem; margin: 0; padding: 0; list-style: none; counter-reset: idx; }
+:where(.doc) .contents li { break-inside: avoid; counter-increment: idx; padding: 0.15rem 0; font-size: var(--text-sm); }
+:where(.doc) .contents li::before { content: counter(idx) "."; display: inline-block; min-width: 1.6rem; font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--primary-ink, var(--primary)); }
+:where(.doc) .contents a { color: inherit; text-decoration: none; }
+
+/* Executive summary: bordered box, the label as a blue title bar */
+:where(.doc) .summary { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card);
+  color: var(--card-foreground); margin: 0 0 2rem; overflow: hidden; }
+:where(.doc) .summary > .label { background: var(--primary); color: var(--primary-foreground); padding: 0.45rem 1rem; }
+:where(.doc) .summary > :not(.label) { margin: 0.75rem 1rem; }
+:where(.doc) .summary > p:not(.label) { font-size: var(--text-lg); line-height: 1.45; }
+
+/* Sections: a hairline across, a short blue rule on top of it */
+:where(.doc) section { position: relative; margin-top: 2.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+:where(.doc) section::before { content: ""; position: absolute; left: 0; top: -1px; width: 3rem; border-top: 3px solid var(--primary); }
+:where(.doc) :is(.summary, .status) + section { margin-top: 0; }
+:where(.doc) h2 { font-family: var(--font-display); font-weight: var(--font-heading-weight, 600); font-size: var(--text-xl);
+  line-height: 1.3; margin: 0.1rem 0 0.6rem; }
+:where(.doc) h3 { font-size: var(--text-lg); font-weight: 600; margin: 1.4rem 0 0.3rem; }
+
+/* Pieces */
+:where(.doc) .figure { margin: 1rem 0; padding: 0.4rem 0 0.4rem 1rem; border-left: 3px solid var(--primary); color: var(--muted-foreground); }
+:where(.doc) .figure strong { margin-right: 0.6rem; font-family: var(--font-display); font-weight: var(--font-heading-weight, 650);
+  font-size: var(--text-3xl); line-height: 1; color: var(--foreground); font-variant-numeric: tabular-nums; }
+:where(.doc) .verdict { font-weight: 600; margin: 1rem 0; padding: 0.55rem 0.9rem; background: var(--accent);
+  color: var(--accent-foreground); border-radius: var(--radius-sm); }
+:where(.doc) :is(.callout, .price) { margin: 1rem 0; padding: 0.7rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--card); color: var(--card-foreground); }
+:where(.doc) .callout { border-left: 4px solid var(--primary); }
+:where(.doc) .callout.warn { border-left-color: var(--destructive); }
+:where(.doc) .callout.warn > .label { color: var(--destructive); }
+:where(.doc) :is(.callout, .price) > :last-child { margin-bottom: 0; }
+:where(.doc) .callout > p:not(.label) { margin: 0.3rem 0 0; }
+
+/* Status ledger and state badges */
+:where(.doc) .status { margin-bottom: 1.5rem; }
+:where(.doc) .status dd { margin: 0.3rem 0 0; }
+:where(.doc) .state { display: inline-block; font-size: var(--text-xs); font-weight: 600; line-height: 1.5; padding: 0 0.45rem;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--muted); color: var(--foreground); white-space: nowrap; }
+:where(.doc) .state.ok { border-color: var(--status-ok); color: var(--status-ok); background: none; }
+:where(.doc) .state.ok::before { content: "✓ "; }
+:where(.doc) .state.warn { border-style: dashed; border-color: var(--status-warn); color: var(--status-warn); background: none; }
+:where(.doc) .state.blocked { background: var(--status-blocked); border-color: var(--status-blocked); color: var(--background); }
+:where(.doc) .state.neutral { background: none; color: var(--status-neutral); }
+:where(.doc) .states { list-style: none; padding: 0; }
+:where(.doc) .states > li { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+:where(.doc) .states > li > .state { flex: none; min-width: 6.5rem; }
+:where(.doc) .states > li > div { flex: 1; min-width: 0; }
+:where(.doc) .states > li > .state { min-width: 0; text-align: center; }
+
+/* Tables: the workhorse */
+:where(.doc) .table-wrap { overflow-x: auto; margin: 1rem 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+:where(.doc) table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+:where(.doc) th { text-align: left; background: var(--muted); padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--primary); }
+:where(.doc) td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+:where(.doc) tbody tr:last-child td { border-bottom: 0; }
+:where(.doc) .num { text-align: right; font-variant-numeric: tabular-nums; }
+:where(.doc) td.num, :where(.doc) .price dd { font-family: var(--font-mono); font-size: 0.95em; }
+
+/* Steps: a dated schedule. Recommendations: the R1/R2 ledger */
+:where(.doc) :is(.steps, .recs) { list-style: none; padding: 0; margin: 1rem 0; counter-reset: n; border-top: 1px solid var(--border); }
+:where(.doc) :is(.steps, .recs) li { counter-increment: n; position: relative; padding: 0.55rem 0 0.55rem 8.5rem; border-bottom: 1px solid var(--border); }
+:where(.doc) .steps li:not(:has(.when))::before, :where(.doc) .steps .when { position: absolute; left: 0; top: 0.55rem; width: 7.5rem; }
+:where(.doc) .steps li:not(:has(.when))::before { content: counter(n, decimal-leading-zero); font-weight: 600; color: var(--primary-ink, var(--primary)); }
+:where(.doc) .when { font-size: var(--text-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+:where(.doc) .recs li { padding-left: 3rem; }
+:where(.doc) .recs li:has(.from) { padding-right: 9.5rem; }
+:where(.doc) .recs li::before { content: "R" counter(n); position: absolute; left: 0; top: 0.7rem; font-size: var(--text-xs); font-weight: 700;
+  line-height: 1.6; padding: 0 0.4rem; border-radius: var(--radius-sm); background: var(--primary); color: var(--primary-foreground); }
+:where(.doc) .recs .from { position: absolute; right: 0; top: 0.7rem; width: 9rem; text-align: right; font-size: var(--text-xs); color: var(--muted-foreground); }
+:where(.doc) .steps [aria-current="step"] { background: color-mix(in oklch, var(--primary) 7%, transparent); box-shadow: inset 3px 0 0 var(--primary); }
+:where(.doc) .steps [aria-current="step"] > div { font-weight: 600; }
+:where(.doc) .steps [aria-current="step"] :is(.when), :where(.doc) .steps [aria-current="step"]::before { padding-left: 0.75rem; }
+
+/* Price, letter, ask, close */
+:where(.doc) .price { border-radius: var(--radius-md); }
+:where(.doc) .price dl { margin: 0.4rem 0 0; }
+:where(.doc) .price dl > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
+:where(.doc) .price dd { margin: 0; font-variant-numeric: tabular-nums; }
+:where(.doc) .price .total { font-weight: 700; font-size: var(--text-lg); border-bottom: 2px solid var(--primary); }
+:where(.doc) .price > p:not(.label), :where(.doc) .from { font-size: var(--text-sm); color: var(--muted-foreground); }
+:where(.doc) .letter { margin: 1.25rem 0; padding: 0.25rem 0 0.25rem 1.25rem; border-left: 1px solid var(--border); }
+:where(.doc) :is(.letter, .doc-close) .from { color: var(--foreground); }
+:where(.doc) section.ask { border: 1px solid var(--primary); border-top-width: 4px; border-radius: var(--radius-md);
+  background: var(--card); color: var(--card-foreground); padding: 1rem 1.25rem; }
+:where(.doc) section.ask::before { display: none; }
+:where(.doc) .doc-close { margin-top: 3rem; padding-top: 0.75rem; border-top: 2px solid var(--foreground); font-size: var(--text-sm); }
+:where(.doc) .doc-close .meta { margin-top: 0.75rem; }
+:where(.doc) code { font-family: var(--font-mono); font-size: 0.875em; background: var(--muted); padding: 0.05em 0.3em; border-radius: var(--radius-sm); }
+:where(.doc) pre { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--muted); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 0.8rem 1rem; overflow-x: auto; line-height: 1.55; }
+:where(.doc) pre code { background: none; padding: 0; }
+
+@media (max-width: 640px) {
+  :where(.doc) { padding: 1rem 1rem 3rem; }
+  :where(.doc) h1 { font-size: 1.75rem; }
+  :where(.doc) .lede { font-size: var(--text-base); }
+  :where(.doc) .meta { grid-template-columns: 1fr 1fr; }
+  :where(.doc) .status > div { flex-basis: 8rem; }
+  :where(.doc) :is(.meta, .status) > div { border-top: 1px solid var(--border); margin-top: -1px; }
+  :where(.doc) section { margin-top: 1.75rem; }
+  :where(.doc) .steps li { padding-left: 0; }
+  :where(.doc) .steps li:not(:has(.when))::before, :where(.doc) .steps .when { position: static; display: block; width: auto; }
+  :where(.doc) .recs li:has(.from) { padding-right: 0; }
+  :where(.doc) .recs .from { position: static; display: block; width: auto; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; scroll-behavior: auto; } }
+@media print {
+  :where(.doc) { max-width: none; padding: 0; }
+  :where(.doc) :is(section, .summary, .table-wrap) { break-inside: avoid-page; }
+  :where(.doc) .summary > .label { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
 </style>
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: 1.58;
-  }
-  .page { max-width: var(--measure); margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
-
-  h1, h2, h3 {
-    font-family: var(--font-display);
-    font-weight: var(--font-heading-weight);
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
-  }
-  h1 { font-size: var(--text-3xl); margin: 0 0 0.4rem; }
-  h3 { font-size: var(--text-lg); margin: 1.5rem 0 0.5rem; }
-  p, ul, ol { margin: 0 0 0.875rem; }
-  ul, ol { padding-left: 1.25rem; }
-  li { margin-bottom: 0.35rem; }
-  a { color: var(--primary-ink); }
-  strong { font-weight: 600; }
-  code { font-family: var(--font-mono); font-size: 0.875em; background: var(--muted); padding: 0.05em 0.3em; border-radius: var(--radius-sm); overflow-wrap: anywhere; }
-
-  /* Signature move: blue-ruled sections */
-  h2 { font-size: var(--text-xl); margin: var(--space-section) 0 1rem; padding-top: 0.875rem; position: relative; }
-  h2::before { content: ""; position: absolute; top: 0; left: 0; width: 3rem; height: 3px; background: var(--primary); border-radius: 2px; }
-
-  .masthead { padding-bottom: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-  .brand-mark {
+  .doc .brand-mark {
     display: block; box-sizing: content-box;
-    height: 28px; width: calc(28px * var(--brand-logo-ratio));
+    height: 32px; width: calc(32px * var(--brand-logo-ratio));
     padding: 6px 10px; margin-left: -10px; border-radius: 3px;
     background: var(--brand-logo) left center / contain no-repeat;
     background-origin: content-box;
     background-color: var(--brand-logo-plate, transparent);
     print-color-adjust: exact; -webkit-print-color-adjust: exact;
   }
-  .subtitle { font-size: var(--text-lg); color: var(--muted-foreground); margin: 0 0 1.25rem; }
-
-  .meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.25rem; margin: 0 0 1.5rem; font-size: var(--text-sm); }
-  .meta dt { font-weight: 600; color: var(--muted-foreground); }
-  .meta dd { margin: 0; }
-
-  /* Signature move: executive summary box */
-  .summary { background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin: 0 0 0.5rem; }
-  .summary p { margin: 0 0 0.5rem; }
-  .summary p:last-child { margin-bottom: 0; }
-
-  .label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted-foreground); }
-
-  /* Breaking changes */
-  .breaking { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius-lg); padding: 0.25rem 1.25rem 0.75rem; margin: 0 0 1.25rem; }
-  .breaking h3 { margin-top: 1rem; }
-  .tag { display: inline-block; font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); background: var(--accent); color: var(--accent-foreground); }
-  .facts { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.4rem 1rem; margin: 0.5rem 0 0.75rem; }
-  .facts dt { font-size: var(--text-sm); font-weight: 600; color: var(--muted-foreground); padding-top: 0.1rem; }
-  .facts dd { margin: 0; }
-
-  .table-wrap { overflow-x: auto; margin: 0.25rem 0 0.875rem; border: 1px solid var(--border); border-radius: var(--radius-md); }
-  table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
-  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
-  tr:last-child td { border-bottom: 0; }
-  th { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--muted-foreground); background: var(--muted); white-space: nowrap; }
-
-  /* Highlights */
-  .highlight { margin: 0 0 1.25rem; }
-  .highlight h3 { margin-bottom: 0.3rem; }
-  .figure { color: var(--primary-ink); font-weight: 600; }
-
-  /* Changes by area */
-  ul.changes { list-style: none; padding: 0; margin: 0 0 0.5rem; }
-  ul.changes li { display: grid; grid-template-columns: 5rem 1fr; gap: 0.75rem; padding: 0.45rem 0; border-top: 1px solid var(--border); margin: 0; }
-  ul.changes li:last-child { border-bottom: 1px solid var(--border); }
-  .kind { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; padding-top: 0.2rem; color: var(--muted-foreground); }
-  .kind-added { color: var(--primary-ink); }
-
-  .issue { border-top: 1px solid var(--border); padding-top: 0.25rem; }
-
-  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: var(--text-sm); color: var(--muted-foreground); }
-  footer p { margin: 0 0 0.35rem; }
-
-  @media (max-width: 640px) {
-    .page { padding: 1rem 1rem 3rem; }
-    .masthead { margin-bottom: 1rem; }
-    .subtitle { font-size: var(--text-base); margin-bottom: 1rem; }
-    .meta { grid-template-columns: 1fr; gap: 0; margin-bottom: 1.25rem; }
-    .meta dd { margin-bottom: 0.4rem; }
-    .summary { padding: 0.875rem 1rem; }
-    h2 { margin-top: 2rem; }
-    .breaking { padding: 0.25rem 1rem 0.5rem; }
-    .facts { grid-template-columns: 1fr; gap: 0; }
-    .facts dd { margin-bottom: 0.5rem; }
-    ul.changes li { grid-template-columns: 4.5rem 1fr; gap: 0.5rem; }
-  }
-  @media print {
-    h2, h3 { break-after: avoid; }
-    .breaking, .highlight { break-inside: avoid; }
-  }
+  .doc .change { margin: 1.25rem 0 0; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
+  .doc .change h3 { margin-top: 0; }
+  .doc .change dl { margin: 0.5rem 0 0; }
+  .doc .change dl > div { padding: 0.35rem 0; border-top: 1px solid var(--border); }
+  .doc .change dt { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); }
+  .doc .change dd { margin: 0.15rem 0 0; }
+  .doc .change dd ol { margin: 0.2rem 0 0; padding-left: 1.25rem; }
 </style>
 </head>
 <body>
-<div class="page">
-<header>
-  <div class="masthead">
-    <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
-  </div>
-  <h1>Kestrel 4.3 release notes</h1>
-  <p class="subtitle">Live tipping-site queue times, an offline driver app and locked stop order.</p>
+<main class="doc">
+
+<header class="doc-head">
+  <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
+  <p class="kicker">Release notes</p>
+  <h1>Kestrel 4.3</h1>
+  <p class="lede">The planner now plans dump trips around live queue times at 9 tipping sites, the driver app keeps working for up to 6 hours without signal, and planners can lock the order of stops on a stretch of route.</p>
   <dl class="meta">
-    <dt>Released</dt><dd>EU-West on Tuesday 29 September 2026; all regions on Thursday 1 October 2026</dd>
-    <dt>Notes dated</dt><dd>Thursday 1 October 2026</dd>
-    <dt>Changes since</dt><dd>Kestrel 4.2</dd>
-    <dt>For</dt><dd>Fleet and operations managers, and the developers who use the Kestrel API</dd>
-    <dt>Contact</dt><dd><a href="mailto:support@kestrel.example">support@kestrel.example</a> · Noor Hamdi, product manager</dd>
+    <div><dt>Released</dt><dd>EU-West Tue 29 Sep 2026; all regions Thu 1 Oct 2026</dd></div>
+    <div><dt>Notes dated</dt><dd>Thu 1 Oct 2026</dd></div>
+    <div><dt>For</dt><dd>Fleet and operations managers, and developers using the Kestrel API</dd></div>
+    <div><dt>Contact</dt><dd>support@kestrel.example; Noor Hamdi, PM</dd></div>
   </dl>
-  <div class="summary" role="note" aria-label="Summary">
-    <p><strong>If you plan routes in Kestrel, there is nothing to do.</strong> The driver tablets update themselves overnight.</p>
-    <p><strong>If you call the Kestrel API, two changes need action before Monday 30 November 2026:</strong> the v1 API is removed, and webhooks switch to a new signature header.</p>
-  </div>
 </header>
 
-<main>
-<section>
-  <h2 id="breaking-changes">Breaking changes and required actions</h2>
+<div class="summary">
+  <p class="label">What you need to do</p>
+  <p>If you only use the planner and the driver app, nothing: the tablets update themselves overnight. If you call the API, check the three breaking changes below; two of them have a deadline of Mon 30 Nov 2026.</p>
+</div>
 
-  <div class="breaking">
-    <h3 id="v1-api-removed-on-30-november-2026">v1 API removed on 30 November 2026</h3>
-    <dl class="facts">
-      <dt>What changes</dt><dd><code>/v1/routes</code> and <code>/v1/stops</code>, deprecated since 3.8 in February 2026, stop working on Monday 30 November 2026.</dd>
-      <dt>Who is affected</dt><dd>Integrations that still call v1. Four customers still do, and we have emailed each of them.</dd>
-      <dt>Deadline</dt><dd><span class="tag">Monday 30 November 2026</span></dd>
-      <dt>What to do</dt><dd>Move each call to its v2 equivalent. The full guide is at <code>docs/migrate-v1</code>.</dd>
+<section>
+  <h2 id="breaking-changes">Breaking changes</h2>
+
+  <div class="change">
+    <h3 id="v1-api-removed-on-30-november">v1 API removed on Mon 30 Nov 2026</h3>
+    <dl>
+      <div><dt>What breaks</dt><dd>Calls to <code>/v1/routes</code> and <code>/v1/stops</code> stop working on Mon 30 Nov 2026. Both have been deprecated since 3.8 (February 2026).</dd></div>
+      <div><dt>Who is affected</dt><dd>4 customers still call v1. We have emailed each of them.</dd></div>
+      <div><dt>What to do</dt><dd>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>v1 endpoint</th><th>Replace with</th></tr></thead>
+            <tbody>
+              <tr><td><code>/v1/routes</code></td><td><code>/v2/plans/{date}/routes</code></td></tr>
+              <tr><td><code>/v1/stops</code></td><td><code>/v2/stops</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        The migration guide is at <code>docs/migrate-v1</code>.</dd></div>
+      <div><dt>Deadline</dt><dd>Mon 30 Nov 2026</dd></div>
     </dl>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>v1 endpoint</th><th>Replace with</th></tr></thead>
-        <tbody>
-          <tr><td><code>/v1/routes</code></td><td><code>/v2/plans/{date}/routes</code></td></tr>
-          <tr><td><code>/v1/stops</code></td><td><code>/v2/stops</code></td></tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 
-  <div class="breaking">
+  <div class="change">
     <h3 id="new-webhook-signature-header">New webhook signature header</h3>
-    <dl class="facts">
-      <dt>What changes</dt><dd>Webhooks now carry a new header, <code>Kestrel-Signature</code>, signed with HMAC-SHA256. The old <code>X-Kestrel-Signature</code> header (SHA-1) is still sent alongside it until Monday 30 November 2026. After that date, only the new header is sent.</dd>
-      <dt>Who is affected</dt><dd>Everyone who verifies Kestrel webhooks.</dd>
-      <dt>Deadline</dt><dd><span class="tag">Monday 30 November 2026</span></dd>
-      <dt>What to do</dt><dd>
+    <dl>
+      <div><dt>What breaks</dt><dd>Webhooks are now signed in a new header, <code>Kestrel-Signature</code> (HMAC-SHA256). The old header, <code>X-Kestrel-Signature</code> (SHA-1), is still sent alongside it until Mon 30 Nov 2026. After that, only the new header is sent.</dd></div>
+      <div><dt>Who is affected</dt><dd>Everyone who receives Kestrel webhooks and checks the signature.</dd></div>
+      <div><dt>What to do</dt><dd>
         <ol>
           <li>Read the new <code>Kestrel-Signature</code> header.</li>
           <li>Verify it with your existing webhook secret, using SHA-256.</li>
           <li>Deploy.</li>
           <li>Stop reading <code>X-Kestrel-Signature</code>.</li>
-        </ol>
-      </dd>
+        </ol></dd></div>
+      <div><dt>Deadline</dt><dd>Mon 30 Nov 2026</dd></div>
+    </dl>
+  </div>
+
+  <div class="change">
+    <h3 id="vehiclecapacity_kg-now-required">vehicle.capacity_kg now required</h3>
+    <dl>
+      <div><dt>What changes</dt><dd>When you create a vehicle through the API, <code>vehicle.capacity_kg</code> is now required.</dd></div>
+      <div><dt>Who is affected</dt><dd>Integrations that create vehicles without sending <code>capacity_kg</code>.</dd></div>
+      <div><dt>What to do</dt><dd>Send <code>capacity_kg</code> with every new vehicle. Existing vehicles without it default to 10,000 kg and show a warning in the planner; set the real capacity there.</dd></div>
+      <div><dt>Deadline</dt><dd>In effect since 4.3</dd></div>
     </dl>
   </div>
 </section>
@@ -371,80 +573,63 @@
 <section>
   <h2 id="highlights">Highlights</h2>
 
-  <div class="highlight">
-    <h3 id="live-tipping-site-queue-times">Live tipping-site queue times</h3>
-    <p>The planner now reads live queue times from the weighbridges at 9 tipping sites and plans each trip to the tip around the queue. In the Westerhaven pilot in August and September, trucks waited <span class="figure">22 minutes less per truck per day</span> on average.</p>
-  </div>
+  <h3 id="tipping-site-queue-times">Tipping-site queue times</h3>
+  <p>The planner now reads live queue times from the weighbridge feeds at 9 tipping sites and plans each dump trip around the queue. The route map shows each truck's tipping-site ETA and the queue it can expect.</p>
+  <p class="figure"><strong>22 min</strong> less waiting per truck per day on average, in the Westerhaven pilot in August and September.</p>
 
-  <div class="highlight">
-    <h3 id="driver-app-works-offline">Driver app works offline</h3>
-    <p>The driver app keeps working for <span class="figure">up to 6 hours</span> without signal. Stop confirmations and photos wait on the tablet and upload as soon as the tablet is back online.</p>
-  </div>
+  <h3 id="driver-app-offline-mode">Driver app offline mode</h3>
+  <p>The driver app keeps working for up to 6 hours without signal. Stop confirmations and photos queue on the tablet and upload when it is back online. See the known issue about photos over 12 MB.</p>
 
-  <div class="highlight">
-    <h3 id="lock-the-stop-order">Lock the stop order</h3>
-    <p>Planners can lock the order of a stretch of a route, and the optimizer plans the rest around it. Drivers who know their streets asked for this often.</p>
-  </div>
+  <h3 id="lock-stop-order">Lock stop order</h3>
+  <p>Planners can lock the order of stops on a stretch of a route, and the optimizer plans the rest of the route around it. Drivers who know their streets asked for this a lot.</p>
 </section>
 
 <section>
   <h2 id="changes-by-area">Changes by area</h2>
 
   <h3 id="planner">Planner</h3>
-  <ul class="changes">
-    <li><span class="kind kind-added">Added</span><span>Routes are planned around live queue times at 9 tipping sites.</span></li>
-    <li><span class="kind kind-added">Added</span><span>Planners can lock the order of a stretch of a route.</span></li>
-    <li><span class="kind kind-added">Added</span><span>The route map shows the expected arrival time at the tipping site and the expected queue.</span></li>
-    <li><span class="kind">Changed</span><span>Vehicles saved without a load capacity are set to 10,000 kg and show a warning.</span></li>
-    <li><span class="kind">Fixed</span><span>Depots with more than 2,000 stops took 8–12 seconds to open; they now open in under 2 seconds.</span></li>
-    <li><span class="kind">Fixed</span><span>Time-dependent weight limits on bridges were ignored after 18:00.</span></li>
+  <ul class="states">
+    <li><span class="state neutral">added</span><div>The route map shows the tipping-site ETA and the expected queue.</div></li>
+    <li><span class="state neutral">fixed</span><div>Time-dependent weight limits on bridges were ignored after 18:00.</div></li>
+    <li><span class="state neutral">fixed</span><div>Depots with more than 2,000 stops took 8 to 12 s to open. They now open in under 2 s.</div></li>
   </ul>
 
   <h3 id="driver-app">Driver app</h3>
-  <ul class="changes">
-    <li><span class="kind kind-added">Added</span><span>Offline mode for up to 6 hours without signal; confirmations and photos upload on reconnect.</span></li>
-    <li><span class="kind">Fixed</span><span>Routes that cross midnight showed the next day's date on the tablet.</span></li>
+  <ul class="states">
+    <li><span class="state neutral">fixed</span><div>Routes that cross midnight showed the next day's date on the tablet.</div></li>
   </ul>
 
   <h3 id="imports-and-exports">Imports and exports</h3>
-  <ul class="changes">
-    <li><span class="kind kind-added">Added</span><span>The daily plan export is also available as Parquet. CSV is still available.</span></li>
-    <li><span class="kind">Fixed</span><span>Importing NDJSON stop files with a byte-order mark created duplicate stops.</span></li>
+  <ul class="states">
+    <li><span class="state neutral">added</span><div>The daily plan export is now also available as Parquet. CSV is still there.</div></li>
+    <li><span class="state neutral">fixed</span><div>Importing an NDJSON stop file that starts with a byte-order mark created duplicate stops.</div></li>
   </ul>
 
   <h3 id="api">API</h3>
-  <ul class="changes">
-    <li><span class="kind kind-added">Added</span><span>The <code>/v2/plans</code> response has a new field, <code>tipping_eta</code>, on each route.</span></li>
-    <li><span class="kind">Changed</span><span><code>vehicle.capacity_kg</code> is now required when you create a vehicle. Existing vehicles without it default to 10,000 kg and show a warning in the planner.</span></li>
-    <li><span class="kind">Changed</span><span><code>/v1/routes</code> and <code>/v1/stops</code> will be removed on Monday 30 November 2026; see <a href="#breaking-changes">Breaking changes</a>.</span></li>
-  </ul>
-
-  <h3 id="webhooks">Webhooks</h3>
-  <ul class="changes">
-    <li><span class="kind kind-added">Added</span><span>The <code>Kestrel-Signature</code> header (HMAC-SHA256). <code>X-Kestrel-Signature</code> (SHA-1) is still sent until 30 November 2026; see <a href="#breaking-changes">Breaking changes</a>.</span></li>
+  <ul class="states">
+    <li><span class="state neutral">added</span><div>The <code>/v2/plans</code> response has a new field, <code>tipping_eta</code>, per route.</div></li>
+    <li><span class="state neutral">changed</span><div><code>vehicle.capacity_kg</code> is required when you create a vehicle. See breaking changes.</div></li>
   </ul>
 </section>
 
 <section>
   <h2 id="known-issues">Known issues</h2>
-
-  <div class="issue">
-    <h3 id="large-photos-fail-to-upload-after-reconnect">Large photos fail to upload after reconnecting</h3>
-    <p>In offline mode, photos larger than 12 MB fail to upload once the tablet is back online. <strong>Workaround:</strong> set the tablet camera to “standard” quality, which most tablets already use. The fix ships in 4.3.1 in mid-October.</p>
-  </div>
-
-  <div class="issue">
-    <h3 id="parquet-export-has-no-timezone-for-depots-outside-cet">Parquet export has no time zone for depots outside CET/CEST</h3>
-    <p>The Parquet export carries no time zone metadata for depots outside Central European Time. This affects two customers, and both have been told.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Issue</th><th>Workaround</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Offline mode: photos larger than 12 MB fail to upload after the tablet reconnects.</td><td>Set the tablet camera to "standard" quality. Most tablets already are.</td><td>4.3.1, mid-October</td></tr>
+        <tr><td>The Parquet export has no timezone metadata for depots outside CET/CEST. This affects 2 customers, and we have told both.</td><td>Not announced yet</td><td>Not announced yet</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
-</main>
 
-<footer>
-  <p><strong>Getting 4.3:</strong> the planner already runs 4.3 in every region, and the tablets update themselves overnight.</p>
-  <p><strong>Problems or questions:</strong> <a href="mailto:support@kestrel.example">support@kestrel.example</a></p>
-  <p>Kestrel Labs · Kestrel 4.3 release notes · 1 October 2026</p>
+<footer class="doc-close">
+  <p class="label">Questions and problems</p>
+  <p class="from">Email support@kestrel.example, or contact Noor Hamdi, PM, Kestrel Labs.</p>
 </footer>
-</div>
+
+</main>
 </body>
 </html>

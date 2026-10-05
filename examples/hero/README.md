@@ -10,7 +10,12 @@ documents built from the same `NOTES.md` side by side:
   grid, a "Generated with AI" footer), with no brand. The image labels it
   "The usual agent-made update" and claims nothing about a specific model.
 - **Right, `after.html`: a real run** of Claude with letterhead, unedited
-  (the second run, from the corrected notes; see Run log).
+  (the second run, from the corrected notes; see Run log). Since the style
+  layer landed it is replaced by the status update of the regeneration run
+  described in `../README.md` (same notes, the already taught `arkona`
+  profile placed beforehand, the one-turn prompt in
+  `../notes/status-update--arkona.md`); the Run log below records the
+  earlier run that taught the brand and wrote the document in one turn.
 
 Why the left side is an illustration: the honest run without the skill
 (`before-run.html`, below) was given the client's site and asked for "their

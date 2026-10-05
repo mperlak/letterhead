@@ -3,19 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Routes not published by 05:00 on 22 September 2026 — incident report</title>
-<meta property="og:title" content="Routes not published by 05:00 on 22 September 2026 — incident report">
-<meta property="og:description" content="On 22 September 2026, 14 customers' routes were not on the cab tablets at 05:00 because of a database change we made. What happened, what it cost, and what we are changing.">
-<!-- Style: public-sector, as requested for this document. Brand: the kestrel profile (colours, fonts, logo), applied over the public-sector base. -->
+<title>Routes not published by 05:00 on Tue 22 Sep 2026: postmortem</title>
+<meta property="og:title" content="Routes not published by 05:00 on Tue 22 Sep 2026: postmortem">
+<meta property="og:description" content="On Tue 22 Sep 2026, 211 trucks at 14 customers started the day without a new route, because a database change we made locked the table that nightly planning needs.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'4'%20y%3D'4'%20width%3D'24'%20height%3D'24'%20rx%3D'4'%20fill%3D'%231f4fd1'%2F%3E%3C%2Fsvg%3E">
-<style data-letterhead-tokens>
-/**
- * Brand tokens.
- * Built 2026-10-05 on the "public-sector" base style: colors, fonts and logo
- * are the brand's; spacing, radii, motion and the rest come from the style.
- * Generated file; regenerate it instead of editing it.
- */
-
+<style data-letterhead-tokens data-style="public-sector">
 /* letterhead:fonts */
 /* IBM Plex Sans latin */
 @font-face {
@@ -37,49 +29,56 @@
 }
 /* /letterhead:fonts */
 
+/* ---- style "public-sector" ---- */
 :root {
   color-scheme: light;
 
-  --background: oklch(1.000 0.000 0.0);
-  --foreground: oklch(0.210 0.034 263.4);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.1800 0.0080 250);
   --card: oklch(0.9740 0.0040 247);
-  --card-foreground: oklch(0.210 0.034 263.4);
+  --card-foreground: oklch(0.1800 0.0080 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.210 0.034 263.4);
-  --primary: oklch(0.484 0.207 264.3);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --popover-foreground: oklch(0.1800 0.0080 250);
+  --primary: oklch(0.4150 0.1080 248);
+  --primary-foreground: oklch(0.9950 0.0015 247);
   --secondary: oklch(0.9550 0.0055 246);
   --secondary-foreground: oklch(0.2500 0.0140 250);
-  --muted: oklch(0.964 0.012 264.3);
-  --muted-foreground: oklch(0.405 0.012 264.3);
-  --accent: oklch(0.816 0.149 80.7);
-  --accent-foreground: oklch(0.210 0.034 263.4);
+  --muted: oklch(0.9640 0.0045 246);
+  --muted-foreground: oklch(0.4050 0.0170 249);
+  --accent: oklch(0.9300 0.0120 247);
+  --accent-foreground: oklch(0.3200 0.0650 249);
   --destructive: oklch(0.4900 0.1800 27);
   --destructive-foreground: oklch(0.9950 0.0015 247);
-  --border: oklch(0.860 0.012 264.3);
+  --border: oklch(0.8600 0.0090 247);
   --input: oklch(0.8600 0.0090 247);
-  --ring: oklch(0.484 0.207 264.3);
+  --ring: oklch(0.4150 0.1080 248);
   --sidebar: oklch(0.9680 0.0045 246);
-  --sidebar-foreground: oklch(0.210 0.034 263.4);
-  --sidebar-primary: oklch(0.484 0.207 264.3);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.816 0.149 80.7);
-  --sidebar-accent-foreground: oklch(0.210 0.034 263.4);
-  --sidebar-border: oklch(0.860 0.012 264.3);
-  --sidebar-ring: oklch(0.484 0.207 264.3);
-  --chart-1: oklch(0.484 0.207 264.3);
+  --sidebar-foreground: oklch(0.1800 0.0080 250);
+  --sidebar-primary: oklch(0.4150 0.1080 248);
+  --sidebar-primary-foreground: oklch(0.9950 0.0015 247);
+  --sidebar-accent: oklch(0.9300 0.0120 247);
+  --sidebar-accent-foreground: oklch(0.3200 0.0650 249);
+  --sidebar-border: oklch(0.8600 0.0090 247);
+  --sidebar-ring: oklch(0.4150 0.1080 248);
+  --chart-1: oklch(0.4150 0.1080 248);
   --chart-2: oklch(0.5600 0.0950 246);
   --chart-3: oklch(0.7000 0.0700 244);
   --chart-4: oklch(0.4700 0.0900 160);
   --chart-5: oklch(0.4500 0.0200 249);
+
+  /* -- States: the word carries the state, the color repeats it -- */
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.560 0.115 78.0);
+  --status-blocked: oklch(0.490 0.180 27.0);
+  --status-neutral: oklch(0.405 0.017 249.0);
   --shadow-sm: 0 1px 2px oklch(0.18 0.008 250 / 0.08);
   --shadow-md: 0 2px 6px oklch(0.18 0.008 250 / 0.10);
   --radius-sm: 2px;
   --radius-md: 3px;
   --radius-lg: 4px;
   --radius-xl: 4px;
-  --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
-  --font-display: Manrope, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Public Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --text-xs: 0.8125rem;
@@ -99,12 +98,6 @@
   --motion-duration-fast: 0ms;
   --motion-duration-base: 120ms;
   --motion-ease: linear;
-  --primary-ink: oklch(0.484 0.207 264.3);
-  --font-heading-weight: 700;
-  --brand-logo: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTcwIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgMTcwIDMyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Iktlc3RyZWwgTGFicyBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5LZXN0cmVsIExhYnM8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik0yIDIyIEwxNCA2IEwxOCAxNCBMMzAgNCBMMjIgMjYgTDE2IDE4IFoiIGZpbGw9IiMxZjRmZDEiLz4KICAgICAgICA8dGV4dCB4PSI0MCIgeT0iMjMiIGZvbnQtZmFtaWx5PSJNYW5yb3BlLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMSIgZm9udC13ZWlnaHQ9IjgwMCIgbGV0dGVyLXNwYWNpbmc9Ii0wLjQiIGZpbGw9IiMxMDE4MjgiPmtlc3RyZWw8L3RleHQ+CiAgICAgICAgPHRleHQgeD0iMTIyIiB5PSIyMyIgZm9udC1mYW1pbHk9Ik1hbnJvcGUsIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIxIiBmb250LXdlaWdodD0iNTAwIiBsZXR0ZXItc3BhY2luZz0iLTAuNCIgZmlsbD0iIzFmNGZkMSI+bGFiczwvdGV4dD4KICAgICAgPC9zdmc+");
-  --brand-logo-on: light;
-  --brand-logo-ratio: 5.3125;
-  --brand-logo-plate: transparent;
 }
 
 [data-theme="dark"] {
@@ -116,37 +109,39 @@
   --card-foreground: oklch(0.9550 0.0050 246);
   --popover: oklch(0.2350 0.0100 250);
   --popover-foreground: oklch(0.9550 0.0050 246);
-  --primary: oklch(0.514 0.206 264.3);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --primary: oklch(0.7500 0.0950 247);
+  --primary-foreground: oklch(0.1800 0.0100 251);
   --secondary: oklch(0.2750 0.0110 250);
   --secondary-foreground: oklch(0.9200 0.0060 246);
-  --muted: oklch(0.265 0.012 264.3);
-  --muted-foreground: oklch(0.800 0.012 264.3);
-  --accent: oklch(0.300 0.050 80.7);
-  --accent-foreground: oklch(0.9550 0.0050 246);
+  --muted: oklch(0.2650 0.0105 250);
+  --muted-foreground: oklch(0.8000 0.0100 246);
+  --accent: oklch(0.3000 0.0280 249);
+  --accent-foreground: oklch(0.8900 0.0350 247);
   --destructive: oklch(0.6800 0.1550 26);
   --destructive-foreground: oklch(0.1800 0.0090 251);
-  --border: oklch(0.340 0.012 264.3);
+  --border: oklch(0.3400 0.0110 250);
   --input: oklch(0.3400 0.0110 250);
-  --ring: oklch(0.514 0.206 264.3);
+  --ring: oklch(0.7500 0.0950 247);
   --sidebar: oklch(0.2200 0.0095 250);
   --sidebar-foreground: oklch(0.9550 0.0050 246);
-  --sidebar-primary: oklch(0.514 0.206 264.3);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.300 0.050 80.7);
-  --sidebar-accent-foreground: oklch(0.9550 0.0050 246);
-  --sidebar-border: oklch(0.340 0.012 264.3);
-  --sidebar-ring: oklch(0.514 0.206 264.3);
-  --chart-1: oklch(0.514 0.206 264.3);
+  --sidebar-primary: oklch(0.7500 0.0950 247);
+  --sidebar-primary-foreground: oklch(0.1800 0.0100 251);
+  --sidebar-accent: oklch(0.3000 0.0280 249);
+  --sidebar-accent-foreground: oklch(0.8900 0.0350 247);
+  --sidebar-border: oklch(0.3400 0.0110 250);
+  --sidebar-ring: oklch(0.7500 0.0950 247);
+  --chart-1: oklch(0.7500 0.0950 247);
   --chart-2: oklch(0.6500 0.0850 246);
   --chart-3: oklch(0.5400 0.0700 245);
   --chart-4: oklch(0.7200 0.0950 160);
   --chart-5: oklch(0.7300 0.0180 248);
+
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.680 0.155 26.0);
+  --status-neutral: oklch(0.800 0.010 246.0);
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
   --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);
-  --primary-ink: oklch(0.610 0.210 264.3);
-  --brand-logo-on: light;
-  --brand-logo-plate: oklch(1.000 0.000 0.0);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -159,37 +154,39 @@
     --card-foreground: oklch(0.9550 0.0050 246);
     --popover: oklch(0.2350 0.0100 250);
     --popover-foreground: oklch(0.9550 0.0050 246);
-    --primary: oklch(0.514 0.206 264.3);
-    --primary-foreground: oklch(1.000 0.000 0.0);
+    --primary: oklch(0.7500 0.0950 247);
+    --primary-foreground: oklch(0.1800 0.0100 251);
     --secondary: oklch(0.2750 0.0110 250);
     --secondary-foreground: oklch(0.9200 0.0060 246);
-    --muted: oklch(0.265 0.012 264.3);
-    --muted-foreground: oklch(0.800 0.012 264.3);
-    --accent: oklch(0.300 0.050 80.7);
-    --accent-foreground: oklch(0.9550 0.0050 246);
+    --muted: oklch(0.2650 0.0105 250);
+    --muted-foreground: oklch(0.8000 0.0100 246);
+    --accent: oklch(0.3000 0.0280 249);
+    --accent-foreground: oklch(0.8900 0.0350 247);
     --destructive: oklch(0.6800 0.1550 26);
     --destructive-foreground: oklch(0.1800 0.0090 251);
-    --border: oklch(0.340 0.012 264.3);
+    --border: oklch(0.3400 0.0110 250);
     --input: oklch(0.3400 0.0110 250);
-    --ring: oklch(0.514 0.206 264.3);
+    --ring: oklch(0.7500 0.0950 247);
     --sidebar: oklch(0.2200 0.0095 250);
     --sidebar-foreground: oklch(0.9550 0.0050 246);
-    --sidebar-primary: oklch(0.514 0.206 264.3);
-    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-    --sidebar-accent: oklch(0.300 0.050 80.7);
-    --sidebar-accent-foreground: oklch(0.9550 0.0050 246);
-    --sidebar-border: oklch(0.340 0.012 264.3);
-    --sidebar-ring: oklch(0.514 0.206 264.3);
-    --chart-1: oklch(0.514 0.206 264.3);
+    --sidebar-primary: oklch(0.7500 0.0950 247);
+    --sidebar-primary-foreground: oklch(0.1800 0.0100 251);
+    --sidebar-accent: oklch(0.3000 0.0280 249);
+    --sidebar-accent-foreground: oklch(0.8900 0.0350 247);
+    --sidebar-border: oklch(0.3400 0.0110 250);
+    --sidebar-ring: oklch(0.7500 0.0950 247);
+    --chart-1: oklch(0.7500 0.0950 247);
     --chart-2: oklch(0.6500 0.0850 246);
     --chart-3: oklch(0.5400 0.0700 245);
     --chart-4: oklch(0.7200 0.0950 160);
     --chart-5: oklch(0.7300 0.0180 248);
+
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.680 0.155 26.0);
+    --status-neutral: oklch(0.800 0.010 246.0);
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
     --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);
-    --primary-ink: oklch(0.610 0.210 264.3);
-    --brand-logo-on: light;
-    --brand-logo-plate: oklch(1.000 0.000 0.0);
   }
 }
 
@@ -199,231 +196,416 @@
     --motion-duration-base: 0ms;
   }
 }
+
+/* ---- brand profile "kestrel" over the "public-sector" style (its base style is "engineering"): the brand's colors in every theme, its fonts and logo ---- */
+
+:root {
+  --background: oklch(1.000 0.000 0.0);
+  --foreground: oklch(0.210 0.034 263.4);
+  --card: oklch(0.9700 0.0045 220);
+  --card-foreground: oklch(0.210 0.034 263.4);
+  --popover: oklch(0.9930 0.0020 220);
+  --popover-foreground: oklch(0.210 0.034 263.4);
+  --primary: oklch(0.484 0.207 264.3);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.9450 0.0060 221);
+  --secondary-foreground: oklch(0.2700 0.0200 230);
+  --muted: oklch(0.952 0.012 264.3);
+  --muted-foreground: oklch(0.440 0.012 264.3);
+  --accent: oklch(0.816 0.149 80.7);
+  --accent-foreground: oklch(0.210 0.034 263.4);
+  --destructive: oklch(0.5000 0.1800 26);
+  --destructive-foreground: oklch(0.9900 0.0030 220);
+  --border: oklch(0.895 0.012 264.3);
+  --input: oklch(0.8950 0.0080 222);
+  --ring: oklch(0.484 0.207 264.3);
+  --sidebar: oklch(0.9650 0.0045 220);
+  --sidebar-foreground: oklch(0.210 0.034 263.4);
+  --sidebar-primary: oklch(0.484 0.207 264.3);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.816 0.149 80.7);
+  --sidebar-accent-foreground: oklch(0.210 0.034 263.4);
+  --sidebar-border: oklch(0.895 0.012 264.3);
+  --sidebar-ring: oklch(0.484 0.207 264.3);
+  --chart-1: oklch(0.484 0.207 264.3);
+  --chart-2: oklch(0.5800 0.1000 165);
+  --chart-3: oklch(0.6000 0.1100 80);
+  --chart-4: oklch(0.4500 0.0700 260);
+  --chart-5: oklch(0.6400 0.0350 225);
+  --status-ok: oklch(0.5300 0.1200 152);
+  --status-warn: oklch(0.5600 0.1150 78);
+  --status-blocked: oklch(0.5000 0.1800 26);
+  --status-neutral: oklch(0.4400 0.0180 228);
+  --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: Manrope, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --primary-ink: oklch(0.484 0.207 264.3);
+  --font-heading-weight: 700;
+  --brand-logo: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTcwIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgMTcwIDMyIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Iktlc3RyZWwgTGFicyBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5LZXN0cmVsIExhYnM8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik0yIDIyIEwxNCA2IEwxOCAxNCBMMzAgNCBMMjIgMjYgTDE2IDE4IFoiIGZpbGw9IiMxZjRmZDEiLz4KICAgICAgICA8dGV4dCB4PSI0MCIgeT0iMjMiIGZvbnQtZmFtaWx5PSJNYW5yb3BlLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMSIgZm9udC13ZWlnaHQ9IjgwMCIgbGV0dGVyLXNwYWNpbmc9Ii0wLjQiIGZpbGw9IiMxMDE4MjgiPmtlc3RyZWw8L3RleHQ+CiAgICAgICAgPHRleHQgeD0iMTIyIiB5PSIyMyIgZm9udC1mYW1pbHk9Ik1hbnJvcGUsIEFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIxIiBmb250LXdlaWdodD0iNTAwIiBsZXR0ZXItc3BhY2luZz0iLTAuNCIgZmlsbD0iIzFmNGZkMSI+bGFiczwvdGV4dD4KICAgICAgPC9zdmc+");
+  --brand-logo-on: light;
+  --brand-logo-ratio: 5.3125;
+  --brand-logo-plate: transparent;
+}
+
+[data-theme="dark"] {
+  --background: oklch(0.1950 0.0100 232);
+  --foreground: oklch(0.9050 0.0070 222);
+  --card: oklch(0.2300 0.0110 231);
+  --card-foreground: oklch(0.9050 0.0070 222);
+  --popover: oklch(0.2300 0.0110 231);
+  --popover-foreground: oklch(0.9050 0.0070 222);
+  --primary: oklch(0.509 0.206 264.3);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.2700 0.0120 230);
+  --secondary-foreground: oklch(0.8800 0.0080 222);
+  --muted: oklch(0.260 0.012 264.3);
+  --muted-foreground: oklch(0.770 0.012 264.3);
+  --accent: oklch(0.300 0.050 80.7);
+  --accent-foreground: oklch(0.9050 0.0070 222);
+  --destructive: oklch(0.6700 0.1550 25);
+  --destructive-foreground: oklch(0.1700 0.0110 232);
+  --border: oklch(0.320 0.012 264.3);
+  --input: oklch(0.3200 0.0120 230);
+  --ring: oklch(0.509 0.206 264.3);
+  --sidebar: oklch(0.2150 0.0105 231);
+  --sidebar-foreground: oklch(0.9050 0.0070 222);
+  --sidebar-primary: oklch(0.509 0.206 264.3);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.300 0.050 80.7);
+  --sidebar-accent-foreground: oklch(0.9050 0.0070 222);
+  --sidebar-border: oklch(0.320 0.012 264.3);
+  --sidebar-ring: oklch(0.509 0.206 264.3);
+  --chart-1: oklch(0.509 0.206 264.3);
+  --chart-2: oklch(0.7400 0.1100 160);
+  --chart-3: oklch(0.7800 0.1150 85);
+  --chart-4: oklch(0.6800 0.0800 262);
+  --chart-5: oklch(0.7000 0.0300 225);
+  --status-ok: oklch(0.7400 0.1150 155);
+  --status-warn: oklch(0.7800 0.1150 82);
+  --status-blocked: oklch(0.6700 0.1550 25);
+  --status-neutral: oklch(0.7700 0.0110 224);
+  --primary-ink: oklch(0.605 0.213 264.3);
+  --brand-logo-on: light;
+  --brand-logo-plate: oklch(1.000 0.000 0.0);
+}
+
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --background: oklch(0.1950 0.0100 232);
+    --foreground: oklch(0.9050 0.0070 222);
+    --card: oklch(0.2300 0.0110 231);
+    --card-foreground: oklch(0.9050 0.0070 222);
+    --popover: oklch(0.2300 0.0110 231);
+    --popover-foreground: oklch(0.9050 0.0070 222);
+    --primary: oklch(0.509 0.206 264.3);
+    --primary-foreground: oklch(1.000 0.000 0.0);
+    --secondary: oklch(0.2700 0.0120 230);
+    --secondary-foreground: oklch(0.8800 0.0080 222);
+    --muted: oklch(0.260 0.012 264.3);
+    --muted-foreground: oklch(0.770 0.012 264.3);
+    --accent: oklch(0.300 0.050 80.7);
+    --accent-foreground: oklch(0.9050 0.0070 222);
+    --destructive: oklch(0.6700 0.1550 25);
+    --destructive-foreground: oklch(0.1700 0.0110 232);
+    --border: oklch(0.320 0.012 264.3);
+    --input: oklch(0.3200 0.0120 230);
+    --ring: oklch(0.509 0.206 264.3);
+    --sidebar: oklch(0.2150 0.0105 231);
+    --sidebar-foreground: oklch(0.9050 0.0070 222);
+    --sidebar-primary: oklch(0.509 0.206 264.3);
+    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+    --sidebar-accent: oklch(0.300 0.050 80.7);
+    --sidebar-accent-foreground: oklch(0.9050 0.0070 222);
+    --sidebar-border: oklch(0.320 0.012 264.3);
+    --sidebar-ring: oklch(0.509 0.206 264.3);
+    --chart-1: oklch(0.509 0.206 264.3);
+    --chart-2: oklch(0.7400 0.1100 160);
+    --chart-3: oklch(0.7800 0.1150 85);
+    --chart-4: oklch(0.6800 0.0800 262);
+    --chart-5: oklch(0.7000 0.0300 225);
+    --status-ok: oklch(0.7400 0.1150 155);
+    --status-warn: oklch(0.7800 0.1150 82);
+    --status-blocked: oklch(0.6700 0.1550 25);
+    --status-neutral: oklch(0.7700 0.0110 224);
+    --primary-ink: oklch(0.605 0.213 264.3);
+    --brand-logo-on: light;
+    --brand-logo-plate: oklch(1.000 0.000 0.0);
+  }
+}
+</style>
+<style data-letterhead-style="public-sector">
+/* styles/public-sector/style.css — the public-service notice on the shared
+ * markup (reference/markup.md). Large plain type, the verdict in a heavy
+ * box under the title, metadata as a ruled label/value list, every table
+ * cell bordered under a filled header, required actions in thick-edged
+ * boxes. Square corners, no uppercase, no motion. Tokens only. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
+:where(.doc) { --ps-rule: color-mix(in oklch, var(--foreground) 40%, var(--background));
+  display: block; max-width: calc(var(--measure) + 8rem); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+:where(.doc) section > :is(p, ul, ol):not([class]) { max-width: var(--measure); }
+:where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+:where(.doc) a:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; text-decoration-thickness: 3px; }
+:where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.75rem 0; }
+:where(.doc) li + li { margin-top: 0.35rem; }
+:where(.doc) :is(.kicker, .label, dt, th, .state, .when, .from) { font-family: var(--font-label, var(--font-sans)); }
+:where(.doc) .label { margin: 0 0 0.4rem; font-size: var(--text-lg); font-weight: 700; line-height: var(--leading-tight); }
+:where(.doc) .kicker { margin: 0; font-size: var(--text-lg); font-weight: 400; color: var(--muted-foreground); }
+
+/* Head: caption, large title, plain lede, a ruled label/value list */
+:where(.doc) .doc-head { margin-bottom: 2rem; }
+:where(.doc) .doc-head .brand-mark { margin: 0 0 1.5rem; }
+:where(.doc) h1 { font-family: var(--font-display); font-weight: var(--font-heading-weight, 700); font-size: clamp(2.125rem, 5.5vw, 3rem);
+  line-height: 1.12; margin: 0.25rem 0 1rem; max-width: 24ch; }
+:where(.doc) .lede { font-size: var(--text-xl); line-height: 1.4; margin: 0 0 1.75rem; max-width: var(--measure); }
+:where(.doc) .meta { margin: 0; border-top: 1px solid var(--ps-rule); }
+:where(.doc) .meta > div { display: grid; grid-template-columns: minmax(7rem, 11rem) 1fr; gap: 1.25rem; padding: 0.6rem 0; border-bottom: 1px solid var(--ps-rule); }
+:where(.doc) .meta dt { font-weight: 700; }
+:where(.doc) .meta dd { margin: 0; }
+
+/* Contents: a plain numbered list under its own heading */
+:where(.doc) .contents { margin: 0 0 2rem; }
+:where(.doc) .contents::before { content: attr(aria-label); display: block; font-size: var(--text-lg); font-weight: 700; margin-bottom: 0.4rem; }
+:where(.doc) .contents ol { margin: 0; padding-left: 1.75rem; }
+:where(.doc) .contents li + li { margin-top: 0.2rem; }
+
+/* The verdict box: heavy border, no fill */
+:where(.doc) .summary { border: 5px solid var(--foreground); padding: 1.1rem 1.4rem; margin: 0 0 2.5rem; }
+:where(.doc) .summary > .label { font-size: var(--text-xl); }
+:where(.doc) .summary > p:not(.label), :where(.doc) .summary li { font-size: var(--text-lg); }
+:where(.doc) .summary > :last-child, :where(.doc) .callout > :last-child, :where(.doc) section.ask > :last-child { margin-bottom: 0; }
+
+/* Sections: space, not ornament */
+:where(.doc) section { margin-top: var(--space-section, 3rem); }
+:where(.doc) section > .kicker { font-size: var(--text-base); }
+:where(.doc) h2 { font-family: var(--font-display); font-weight: var(--font-heading-weight, 700); font-size: var(--text-2xl);
+  line-height: var(--leading-tight); margin: 0.15rem 0 0.9rem; }
+:where(.doc) h3 { font-size: var(--text-xl); font-weight: 700; line-height: var(--leading-tight); margin: 2rem 0 0.5rem; }
+
+/* Pieces */
+:where(.doc) .figure { margin: 1.25rem 0; font-size: var(--text-lg); }
+:where(.doc) .figure strong { display: block; font-family: var(--font-display); font-weight: 700; font-size: clamp(2.25rem, 6vw, 3rem);
+  line-height: 1.05; font-variant-numeric: tabular-nums; }
+:where(.doc) .verdict { margin: 1.25rem 0; padding: 0.4rem 0 0.4rem 1.1rem; border-left: 5px solid var(--ps-rule); font-size: var(--text-lg); font-weight: 600; }
+:where(.doc) .callout { margin: 1.5rem 0; padding: 1rem 1.25rem; border: 2px solid var(--foreground); border-left: 10px solid var(--primary); }
+:where(.doc) .callout.warn { border-left-color: var(--destructive); }
+:where(.doc) .callout.warn > .label { color: var(--destructive); }
+:where(.doc) .callout > p:not(.label) { font-size: var(--text-lg); }
+
+/* Status ledger: bordered label/state rows; states as square tags */
+:where(.doc) .status { display: flex; flex-wrap: wrap; margin: 0 0 2rem;
+  border-top: 1px solid var(--ps-rule); border-left: 1px solid var(--ps-rule); }
+:where(.doc) .status > div { flex: 1 1 11rem; padding: 0.6rem 0.8rem; border-right: 1px solid var(--ps-rule); border-bottom: 1px solid var(--ps-rule); }
+:where(.doc) .status dt { font-weight: 700; }
+:where(.doc) .status dd { margin: 0.35rem 0 0; }
+:where(.doc) .state { display: inline-block; font-size: var(--text-sm); font-weight: 700; line-height: 1.4; padding: 0.05rem 0.45rem;
+  border: 2px solid var(--foreground); color: var(--foreground); white-space: nowrap; }
+:where(.doc) .state.ok::before { content: "✓ "; }
+:where(.doc) .state.ok { border-color: var(--status-ok); color: var(--status-ok); }
+:where(.doc) .state.warn { border-style: dashed; border-color: var(--status-warn); color: var(--status-warn); }
+:where(.doc) .state.blocked { background: var(--status-blocked); border-color: var(--status-blocked); color: var(--background); }
+:where(.doc) .state.neutral { border-color: var(--ps-rule); color: var(--status-neutral); font-weight: 600; }
+:where(.doc) .states { list-style: none; padding: 0; }
+:where(.doc) .states > li { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--ps-rule); }
+:where(.doc) .states > li > .state { flex: none; min-width: 6.5rem; }
+:where(.doc) .states > li > div { flex: 1; min-width: 0; }
+:where(.doc) .states > li:first-child { border-top: 1px solid var(--ps-rule); }
+
+/* Tables: every cell bordered, filled header row */
+:where(.doc) .table-wrap { overflow-x: auto; margin: 1.25rem 0; }
+:where(.doc) table { width: 100%; border-collapse: collapse; font-size: var(--text-base); }
+:where(.doc) :is(th, td) { padding: 0.55rem 0.75rem; border: 1px solid var(--ps-rule); text-align: left; vertical-align: top; }
+:where(.doc) th { background: var(--muted); font-weight: 700; border-bottom: 2px solid var(--foreground); }
+:where(.doc) .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Steps: numbered squares on a line. Recommendations: R1, R2 in a column */
+:where(.doc) :is(.steps, .recs) { list-style: none; padding: 0; margin: 1.25rem 0; counter-reset: n; }
+:where(.doc) .steps li { counter-increment: n; position: relative; margin: 0; padding: 0.3rem 0 1.25rem 3.5rem; }
+:where(.doc) .steps li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 2.25rem; height: 2.25rem;
+  display: grid; place-items: center; border: 2px solid var(--foreground); background: var(--background); font-weight: 700; z-index: 1; }
+:where(.doc) .steps li:not(:last-child)::after { content: ""; position: absolute; left: calc(1.125rem - 1px); top: 2.25rem; bottom: 0;
+  border-left: 2px solid var(--ps-rule); }
+:where(.doc) .when { display: block; font-weight: 700; }
+:where(.doc) .steps [aria-current="step"]::before { background: var(--foreground); color: var(--background); }
+:where(.doc) .steps [aria-current="step"] > div { font-weight: 700; }
+:where(.doc) .recs li { counter-increment: n; position: relative; margin: 0; padding: 0.75rem 0 0.75rem 3.5rem; border-bottom: 1px solid var(--ps-rule); }
+:where(.doc) .recs li:first-child { border-top: 1px solid var(--ps-rule); }
+:where(.doc) .recs li::before { content: "R" counter(n); position: absolute; left: 0; top: 0.65rem; font-size: var(--text-lg); font-weight: 700;
+  color: var(--primary-ink, var(--primary)); }
+:where(.doc) .from { display: block; margin-top: 0.2rem; color: var(--muted-foreground); }
+
+/* Price, letter, ask, close */
+:where(.doc) .price { margin: 1.5rem 0; padding: 1rem 1.25rem; border: 2px solid var(--foreground); }
+:where(.doc) .price dl { margin: 0; }
+:where(.doc) .price dl > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--ps-rule); }
+:where(.doc) .price dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+:where(.doc) .price .total { font-size: var(--text-xl); font-weight: 700; border-top: 3px solid var(--foreground); border-bottom: 0; margin-top: -1px; }
+:where(.doc) .letter { margin: 1.5rem 0; padding: 1rem 1.25rem; background: var(--card); color: var(--card-foreground); border: 1px solid var(--ps-rule); }
+:where(.doc) :is(.letter, .doc-close) .from { color: var(--foreground); font-weight: 700; }
+:where(.doc) section.ask { border: 5px solid var(--primary); padding: 1.1rem 1.4rem; }
+:where(.doc) section.ask > h2 { margin-top: 0; }
+:where(.doc) .doc-close { margin-top: 3.5rem; padding-top: 1rem; border-top: 3px solid var(--foreground); }
+:where(.doc) .doc-close > .label { font-size: var(--text-base); }
+:where(.doc) .doc-close .from { margin-top: 0; }
+:where(.doc) code { font-family: var(--font-mono); font-size: 0.9em; background: var(--muted); padding: 0.05em 0.3em; }
+:where(.doc) pre { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--muted); border: 1px solid var(--ps-rule);
+  padding: 0.9rem 1rem; overflow-x: auto; line-height: 1.55; }
+:where(.doc) pre code { background: none; padding: 0; }
+
+@media (max-width: 640px) {
+  :where(.doc) { padding: 1.5rem 1rem 3rem; }
+  :where(.doc) h1 { font-size: 2rem; }
+  :where(.doc) .lede { font-size: var(--text-lg); }
+  :where(.doc) .meta > div { grid-template-columns: 1fr; gap: 0.1rem; }
+  :where(.doc) .status > div { flex-basis: 100%; }
+  :where(.doc) .status > div { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  :where(.doc) .status dd { margin: 0; }
+  :where(.doc) :is(.summary, .callout, .price, section.ask) { padding-inline: 1rem; }
+  :where(.doc) section { margin-top: 2.5rem; }
+}
+/* No motion at all; the media query keeps the shared convention explicit */
+:where(.doc) * { transition: none; animation: none; }
+@media (prefers-reduced-motion: reduce) { :where(.doc) * { scroll-behavior: auto; } }
+@media print {
+  :where(.doc) { max-width: none; padding: 0; }
+  :where(.doc) :is(section, .summary, .callout, .table-wrap) { break-inside: avoid-page; }
+  :where(.doc) :is(th, .state.blocked) { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
 </style>
 <style>
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: 1.65;
-  }
-  .page { max-width: var(--measure); margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
-
-  h1, h2, h3 {
-    font-family: var(--font-display);
-    font-weight: var(--font-heading-weight);
-    line-height: 1.25;
-    color: var(--foreground);
-  }
-  h1 { font-size: var(--text-3xl); margin: 0 0 0.5rem; }
-  h2 { font-size: var(--text-xl); margin: var(--space-section) 0 1rem; padding-top: 1rem; border-top: 2px solid var(--foreground); }
-  h3 { font-size: var(--text-lg); margin: 1.5rem 0 0.5rem; }
-  p, ul, ol { margin: 0 0 1rem; }
-  ul { padding-left: 1.3rem; }
-  li { margin-bottom: 0.4rem; }
-  a { color: var(--primary-ink); text-decoration: underline; text-underline-offset: 0.15em; }
-  strong { font-weight: 700; }
-  .time, .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-  .masthead { padding-bottom: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
-  .brand-mark {
+  .doc .brand-mark {
     display: block; box-sizing: content-box;
-    height: 30px; width: calc(30px * var(--brand-logo-ratio));
-    padding: 6px 10px; margin-left: -10px; border-radius: 3px;
+    height: 32px; width: calc(32px * var(--brand-logo-ratio));
+    padding: 6px 10px; margin-left: -10px;
     background: var(--brand-logo) left center / contain no-repeat;
     background-origin: content-box;
     background-color: var(--brand-logo-plate, transparent);
     print-color-adjust: exact; -webkit-print-color-adjust: exact;
   }
-  .kicker { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-label); text-transform: uppercase; margin: 0 0 0.35rem; }
-
-  .meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.25rem; margin: 1rem 0 1.5rem; font-size: var(--text-sm); }
-  .meta dt { font-weight: 700; }
-  .meta dd { margin: 0; }
-
-  /* Signature move: the verdict box */
-  .verdict { border: 3px solid var(--foreground); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin: 0 0 1rem; }
-  .verdict p { margin: 0 0 0.75rem; }
-  .verdict p:last-child { margin-bottom: 0; }
-  .apology { font-size: var(--text-lg); font-weight: 700; }
-
-  /* Signature move: explicit-border tables */
-  .table-wrap { overflow-x: auto; margin: 0 0 1.25rem; }
-  table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); }
-  th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
-  thead th { background: var(--muted); font-weight: 700; }
-  tbody th { font-weight: 700; background: transparent; }
-  td.num { text-align: right; white-space: nowrap; width: 1%; }
-
-  /* Timeline */
-  ol.timeline { list-style: none; padding: 0; margin: 0 0 1rem; border-top: 1px solid var(--border); }
-  ol.timeline li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 0 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); margin: 0; }
-  ol.timeline .time { font-weight: 700; padding-top: 0.05rem; }
-  ol.timeline .marker { display: inline-block; font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-label); text-transform: uppercase; border: 1px solid var(--foreground); border-radius: var(--radius-sm); padding: 0 0.4rem; margin-right: 0.4rem; }
-  ol.timeline li.gap .event { color: var(--muted-foreground); }
-
-  .callout { border: 2px solid var(--foreground); border-left-width: 8px; border-left-color: var(--accent); border-radius: var(--radius-lg); padding: 0.75rem 1rem; margin: 0 0 1.25rem; }
-  .callout p { margin: 0; }
-
-  /* Action items */
-  .action { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0.25rem 1rem 0.75rem; margin: 0 0 0.875rem; }
-  .action h3 { margin-top: 0.75rem; }
-  .action dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.2rem 1rem; margin: 0.25rem 0 0; font-size: var(--text-sm); }
-  .action dt { font-weight: 700; }
-  .action dd { margin: 0; }
-  .state { font-weight: 700; }
-  .state-done::before { content: "✓ "; }
-
-  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: var(--text-xs); }
-  footer p { margin: 0 0 0.35rem; }
-
-  @media (max-width: 640px) {
-    .page { padding: 1rem 1rem 3rem; }
-    .masthead { margin-bottom: 1rem; }
-    .meta { grid-template-columns: 1fr; gap: 0; }
-    .meta dd { margin-bottom: 0.45rem; }
-    .verdict { padding: 0.875rem 1rem; }
-    .apology { font-size: var(--text-base); }
-    ol.timeline li { grid-template-columns: 4.25rem 1fr; gap: 0 0.75rem; }
-  }
-  @media print {
-    h2, h3 { break-after: avoid; }
-    .action, ol.timeline li { break-inside: avoid; }
-  }
+  .doc .steps .when { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .doc .apology { font-weight: 700; }
 </style>
 </head>
 <body>
-<div class="page">
-<header>
-  <div class="masthead">
-    <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
-  </div>
-  <p class="kicker">Incident report</p>
-  <h1>Routes not published by 05:00 on 22 September 2026</h1>
+<main class="doc">
+
+<header class="doc-head">
+  <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
+  <p class="kicker">Incident postmortem</p>
+  <h1>Routes not published by 05:00 on Tue 22 Sep 2026</h1>
+  <p class="lede">On the morning of Tue 22 Sep, 211 trucks at 14 customers started the day without a new route. A database change we made locked the table that nightly planning needs, and the planning jobs gave up.</p>
   <dl class="meta">
-    <dt>Incident date</dt><dd>Night of Monday 21 to Tuesday 22 September 2026</dd>
-    <dt>Duration</dt><dd>Routes were late from 05:00 until 07:52; all-clear given at 09:30</dd>
-    <dt>Affected</dt><dd>Nightly route planning for 14 of our 38 customers; 211 trucks</dd>
-    <dt>Report date</dt><dd>Tuesday 29 September 2026</dd>
-    <dt>Status</dt><dd>Final</dd>
-    <dt>Times</dt><dd>All times are Central European Summer Time (UTC+2)</dd>
-    <dt>Contacts</dt><dd>Sanne de Graaf, support lead (questions about this report) · Ruth Okafor, incident lead · Felix Aydın, engineering lead (author)</dd>
+    <div><dt>Incident date</dt><dd>Night of Mon 21 to Tue 22 Sep 2026</dd></div>
+    <div><dt>Duration</dt><dd>From 02:10, when planning was blocked, to 07:52, when the last routes were published. All-clear at 09:30.</dd></div>
+    <div><dt>Affected</dt><dd>Nightly planning and route publishing to cab tablets, for 14 of 38 customers</dd></div>
+    <div><dt>Status</dt><dd>Issued to customers Tue 29 Sep 2026</dd></div>
+    <div><dt>Incident lead</dt><dd>Ruth Okafor, on-call SRE</dd></div>
+    <div><dt>Written by</dt><dd>Felix Aydın, engineering lead</dd></div>
+    <div><dt>Your contact</dt><dd>Sanne de Graaf, support lead</dd></div>
+    <div><dt>Times</dt><dd>All times are CEST (UTC+2)</dd></div>
   </dl>
 </header>
 
-<main>
-<section>
-  <h2 id="summary">Summary</h2>
-  <div class="verdict">
-    <p class="apology">We're sorry. Your crews started late because of a change we made, and that's on us.</p>
-    <p>On the night of 21 to 22 September, nightly route planning did not finish for 14 of our 38 customers. At 05:00, the start of the working day, their routes were not on the cab tablets. 211 trucks started the day without a new plan, and drivers used the previous day's route or paper lists from the depot.</p>
-    <p>The last routes were published at 07:52. On average, affected trucks started 47 minutes late.</p>
-    <p><strong>Why, in one sentence:</strong> a database change we deployed at night blocked the planning jobs for almost two hours, and nothing alerted us until the routes were already missing.</p>
-  </div>
-</section>
+<div class="summary">
+  <p class="label">Summary</p>
+  <p>The nightly planning for 14 of our 38 customers did not finish. Routes were not on the cab tablets at 05:00, so 211 trucks started without a new plan, and drivers used yesterday's route or paper lists from the depot. The last routes were published at 07:52. Affected trucks started 47 minutes late on average.</p>
+  <p>The cause was a database change we deployed at night. It locked a table for almost two hours, the planning jobs waited, timed out and did not restart. No data was lost.</p>
+  <p class="apology">We're sorry. Your crews started late because of a change we made, and that's on us.</p>
+</div>
+
+<nav class="contents" aria-label="Contents">
+  <ol>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#why-it-happened">Why it happened</a></li>
+    <li><a href="#what-we-are-changing">What we are changing</a></li>
+    <li><a href="#what-we-are-not-changing">What we are not changing</a></li>
+  </ol>
+</nav>
 
 <section>
   <h2 id="impact">Impact</h2>
+  <p class="figure"><strong>211 trucks</strong> at 14 customers started the day without a new route.</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th scope="col">What</th><th scope="col">Figure</th></tr></thead>
+      <thead><tr><th>What</th><th class="num">Number</th></tr></thead>
       <tbody>
-        <tr><th scope="row">Customers affected (9 municipalities, 5 contractors)</th><td class="num">14</td></tr>
-        <tr><th scope="row">Trucks without a new plan at 05:00</th><td class="num">211</td></tr>
-        <tr><th scope="row">Average start delay per affected truck</th><td class="num">47 min</td></tr>
-        <tr><th scope="row">Stops collected later than planned that morning</th><td class="num">about 9,800</td></tr>
-        <tr><th scope="row">Stops missed that day, collected on Wednesday 23 September</th><td class="num">640</td></tr>
-        <tr><th scope="row">Customers who claimed service credits</th><td class="num">3</td></tr>
-        <tr><th scope="row">Service credits paid</th><td class="num">€ 11,850</td></tr>
-        <tr><th scope="row">Data lost</th><td class="num">None</td></tr>
+        <tr><td>Customers affected (9 municipalities, 5 contractors)</td><td class="num">14</td></tr>
+        <tr><td>Trucks without a new plan at 05:00</td><td class="num">211</td></tr>
+        <tr><td>Average start delay for affected trucks</td><td class="num">47 min</td></tr>
+        <tr><td>Stops collected later than planned that morning</td><td class="num">about 9,800</td></tr>
+        <tr><td>Stops missed altogether, collected the next day (Wed 23 Sep)</td><td class="num">640</td></tr>
+        <tr><td>Customers who claimed under the SLA</td><td class="num">3</td></tr>
+        <tr><td>Service credits paid</td><td class="num">€ 11,850</td></tr>
+        <tr><td>Data lost</td><td class="num">none</td></tr>
       </tbody>
     </table>
   </div>
-  <p>The service credits were claimed under our service level agreement, which commits us to publishing routes by 05:00 on 99.5% of days each month.</p>
+  <p>The SLA is that routes are published by 05:00 on 99.5% of days each month.</p>
 </section>
 
 <section>
   <h2 id="timeline">Timeline</h2>
-  <p>Tuesday 22 September 2026.</p>
-  <ol class="timeline">
-    <li id="t-0158"><span class="time">01:58</span><span class="event">A database change starts to deploy. It prepares the tipping-site queue feature for release 4.3.</span></li>
-    <li id="t-0210"><span class="time">02:10</span><span class="event"><span class="marker">Trigger</span>The change starts rebuilding the table that holds all stops. The table is locked while it rebuilds. Nobody expected it to lock.</span></li>
-    <li id="t-0210-0358"><span class="time">02:10–03:58</span><span class="event">Planning jobs for 14 customers wait for the lock, retry three times, and give up. The other 24 customers plan earlier in the night and had already finished.</span></li>
-    <li id="t-0358"><span class="time">03:58</span><span class="event">The rebuild finishes and the lock is released. The jobs that gave up do not restart on their own.</span></li>
-    <li id="t-0358-0500" class="gap"><span class="time">03:58–05:00</span><span class="event">No alert. Nothing is watching for planning jobs that are waiting or have given up.</span></li>
-    <li id="t-0500"><span class="time">05:00</span><span class="event"><span class="marker">Detected</span>The alert “plans missing at 05:00” fires and pages the on-call engineer.</span></li>
-    <li id="t-0506"><span class="time">05:06</span><span class="event">The on-call engineer acknowledges the page.</span></li>
-    <li id="t-0520"><span class="time">05:20</span><span class="event"><span class="marker">Mitigation</span>The planning is re-run by hand, biggest customers first.</span></li>
-    <li id="t-0535"><span class="time">05:35</span><span class="event">The status page is updated and affected customers are emailed.</span></li>
-    <li id="t-0640"><span class="time">06:40</span><span class="event">10 of the 14 customers have their routes.</span></li>
-    <li id="t-0752"><span class="time">07:52</span><span class="event"><span class="marker">Resolved</span>The last customer's routes are published.</span></li>
-    <li id="t-0930"><span class="time">09:30</span><span class="event">All-clear on the status page.</span></li>
+  <p>Tue 22 Sep 2026. The planning jobs were blocked from 02:10. We found out at 05:00, 2 hours 50 minutes later, and started the manual re-run at 05:20.</p>
+  <ol class="steps">
+    <li id="t-0158"><span class="when">01:58</span><div>A database change starts deploying. It prepares the tipping-site queue feature for release 4.3.</div></li>
+    <li id="t-0210"><span class="when">02:10</span><div>The change starts rebuilding the stops table, and the table is locked. Nobody expected the change to lock it.</div></li>
+    <li id="t-0210-0358"><span class="when">02:10–03:58</span><div>Planning jobs for 14 customers wait for the lock, retry 3 times and time out. The other 24 customers plan earlier and had already finished.</div></li>
+    <li id="t-0358"><span class="when">03:58</span><div>The table rebuild is done and the lock is released. The planning jobs do not restart by themselves, because they had already given up.</div></li>
+    <li id="t-0500"><span class="when">05:00</span><div><strong>Detected.</strong> The alert "plans missing at 05:00" fires and pages the on-call engineer.</div></li>
+    <li id="t-0506"><span class="when">05:06</span><div>The on-call engineer acknowledges the page.</div></li>
+    <li id="t-0520"><span class="when">05:20</span><div><strong>Recovery starts.</strong> A manual re-run of planning begins, biggest customers first.</div></li>
+    <li id="t-0535"><span class="when">05:35</span><div>The status page is updated and affected customers are emailed.</div></li>
+    <li id="t-0640"><span class="when">06:40</span><div>10 of the 14 customers have their routes.</div></li>
+    <li id="t-0752"><span class="when">07:52</span><div><strong>Resolved.</strong> The last customer's routes are published.</div></li>
+    <li id="t-0930"><span class="when">09:30</span><div>All-clear on the status page.</div></li>
   </ol>
-  <p>The table was locked from 02:10, but the first alert came at 05:00. With an alert on waiting jobs, we could have known at 02:20.</p>
 </section>
 
 <section>
   <h2 id="why-it-happened">Why it happened</h2>
-  <h3 id="the-trigger">The trigger</h3>
-  <p>The database change looked safe to run while the system was live, and it passed review on that basis. But it changed the type of one column, and that makes the database rebuild the whole table of stops. While the table rebuilds, nothing else can use it, including the nightly planning.</p>
-  <h3 id="the-conditions">What turned it into an incident</h3>
+  <h3 id="what-set-it-off">What set it off</h3>
+  <p>The database change looked safe to run while the system was in use when it was reviewed. But it changed the type of a column, and that rebuilds the whole table and locks it until the rebuild is done.</p>
+  <h3 id="what-turned-it-into-an-incident">What turned it into an incident</h3>
   <ul>
-    <li><strong>The test did not show the problem.</strong> Our test environment holds about 1/40 of the real data. There, the rebuild took 3 minutes, which was too short for a lock to be noticed.</li>
-    <li><strong>Database changes were allowed at night</strong>, which is exactly when planning runs.</li>
-    <li><strong>We only alerted on the end result</strong>, routes missing at 05:00, and not on planning jobs that were waiting.</li>
-    <li><strong>Planning jobs that give up do not restart</strong> once the cause has gone away.</li>
+    <li><strong>Testing did not show the lock.</strong> On our test environment the change took 3 minutes. The test data is about 1/40 of production, so the lock never lasted long enough to matter.</li>
+    <li><strong>Database changes were allowed at night</strong>, which is exactly when nightly planning runs.</li>
+    <li><strong>We only alerted on the end result</strong>, no plans at 05:00, not on planning jobs that were waiting. We could have known at 02:20.</li>
+    <li><strong>Planning jobs that time out do not restart</strong> on their own once the cause goes away. The lock was released at 03:58, but nothing ran again until the manual re-run at 05:20.</li>
   </ul>
 </section>
 
 <section>
   <h2 id="what-we-are-changing">What we are changing</h2>
-
-  <div class="action">
-    <h3 id="no-database-changes-between-2000-and-0600">No database changes between 20:00 and 06:00</h3>
-    <p>The deploy pipeline itself blocks database changes during these hours, so the rule does not depend on anyone remembering it.</p>
-    <dl><dt>Owner</dt><dd>Felix Aydın, engineering lead</dd><dt>Status</dt><dd><span class="state state-done">Done</span> on Thursday 24 September 2026</dd></dl>
-  </div>
-
-  <div class="action">
-    <h3 id="status-page-and-customer-email-within-15-minutes">Status page and customer email within 15 minutes</h3>
-    <p>Within 15 minutes of an on-call page, the status page is updated and affected customers are emailed, from a prepared template. On 22 September this took 35 minutes.</p>
-    <dl><dt>Owner</dt><dd>Sanne de Graaf, support lead</dd><dt>Status</dt><dd><span class="state state-done">Done</span> on Friday 25 September 2026</dd></dl>
-  </div>
-
-  <div class="action">
-    <h3 id="alert-on-planning-jobs-that-wait-more-than-15-minutes">Alert on planning jobs that wait more than 15 minutes</h3>
-    <p>Any planning job that has waited more than 15 minutes pages the on-call engineer, hours before routes are due.</p>
-    <dl><dt>Owner</dt><dd>Ruth Okafor, on-call engineer</dd><dt>Due</dt><dd>Friday 9 October 2026</dd></dl>
-  </div>
-
-  <div class="action">
-    <h3 id="test-database-changes-on-full-size-data">Test database changes on full-size data</h3>
-    <p>Every database change is tested against a full-size copy of the production data, so a slow rebuild shows up before the change is deployed.</p>
-    <dl><dt>Owner</dt><dd>Felix Aydın, engineering lead</dd><dt>Due</dt><dd>Friday 30 October 2026</dd></dl>
-  </div>
-
-  <div class="action">
-    <h3 id="publish-yesterdays-plan-if-todays-is-missing">Publish yesterday's plan if today's is missing</h3>
-    <p>If a customer's new plan is missing at 05:00, Kestrel automatically publishes the previous day's plan with a clear banner on the tablet, so drivers always have a route.</p>
-    <dl><dt>Owner</dt><dd>Noor Hamdi, product manager</dd><dt>Due</dt><dd>Monday 30 November 2026</dd></dl>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Change</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr id="no-database-changes-between-2000-and-0600"><td>No database changes between 20:00 and 06:00. The deploy pipeline enforces this, so it does not depend on people remembering a rule.</td><td>Felix Aydın</td><td>Thu 24 Sep</td><td><span class="state ok">done</span></td></tr>
+        <tr id="status-page-and-customer-email-within-15-minutes"><td>Status page update and customer email within 15 minutes of a page, from a template.</td><td>Sanne de Graaf</td><td>Fri 25 Sep</td><td><span class="state ok">done</span></td></tr>
+        <tr id="alert-when-a-planning-job-waits-more-than-15-minutes"><td>An alert when any planning job has waited more than 15 minutes.</td><td>Ruth Okafor</td><td>Fri 9 Oct</td><td><span class="state neutral">planned</span></td></tr>
+        <tr id="test-database-changes-on-full-size-production-data"><td>Test database changes against a full-size copy of production data.</td><td>Felix Aydın</td><td>Fri 30 Oct</td><td><span class="state neutral">planned</span></td></tr>
+        <tr id="publish-yesterdays-plan-when-a-new-plan-is-missing"><td>If a customer's new plan is missing at 05:00, publish yesterday's plan automatically, with a clear banner on the tablet, so drivers have something to work from.</td><td>Noor Hamdi, PM</td><td>Mon 30 Nov</td><td><span class="state neutral">planned</span></td></tr>
+      </tbody>
+    </table>
   </div>
   <div class="callout">
-    <p><strong>We will show you this before it goes live.</strong> It changes what your drivers see on the tablet, so you will see it and can comment before we switch it on.</p>
+    <p class="label">We will show you the fallback plan first</p>
+    <p>Publishing yesterday's plan changes what your drivers see on the tablet. We will show it to you before it goes live.</p>
   </div>
-
-  <h3 id="what-we-are-not-changing">What we are not changing</h3>
-  <p>The 05:00 publishing target stays the same.</p>
 </section>
-</main>
 
-<footer>
-  <p>Questions about this report: Sanne de Graaf, support lead, <a href="mailto:support@kestrel.example">support@kestrel.example</a></p>
-  <p>Kestrel Labs · Incident report, 22 September 2026 · published 29 September 2026</p>
+<section>
+  <h2 id="what-we-are-not-changing">What we are not changing</h2>
+  <p>The target stays the same: routes are on the cab tablets by 05:00.</p>
+</section>
+
+<footer class="doc-close">
+  <p class="label">Questions about this incident</p>
+  <p class="from">Sanne de Graaf, support lead, Kestrel Labs</p>
 </footer>
-</div>
+
+</main>
 </body>
 </html>

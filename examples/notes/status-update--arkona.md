@@ -6,9 +6,9 @@ plugin loaded from this repo; the HTML is unedited.
 
 ## Prompt (verbatim)
 
-> Arkona is my client; their website is saved in arkona-site.html. Make this week's status update for them from NOTES.md as a single self-contained HTML file I can send them, in their brand. Save it as status-update.html. I am not available to answer questions during this run: you may use arkona-site.html as brand evidence, and I approve in advance whatever brand reading, plan and document shape you propose, so do not wait for my confirmation. Just go.
+> Arkona is my client; their brand profile is already taught and saved as arkona (.letterhead/brands/arkona/). Make this week's status update for them from NOTES.md as a single self-contained HTML file I can send them, on Arkona's letterhead (the arkona brand). Save it as status-update.html. I am not available to answer questions during this run: I approve in advance whatever plan and document shape you propose, so do not wait for my confirmation. Just go.
 
-First turn of the Arkona session, run by `examples/hero/run.sh` (after side) with `arkona-site.html` and these notes in the run directory. The same turn taught the `arkona` brand (no separate teach prompt) and wrote the document.
+Turn 1 of the arkona session of the regeneration run. The taught `arkona` profile (`examples/brands/arkona/`, without `site.html`) was placed in `.letterhead/brands/arkona/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `NOTES.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

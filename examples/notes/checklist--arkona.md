@@ -8,7 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next: the go-live weekend checklist for Arkona's team and ours, from my notes in notes/checklist--arkona.md, as a single self-contained HTML file on Arkona's letterhead (the arkona brand), using the checklist template in the workshop style. Save it as checklist--arkona.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the Arkona session that began with `examples/hero/PROMPT.md` (teach + status update); the notes file was copied into the run directory as `notes/checklist--arkona.md`.
+Turn 3 of the arkona session of the regeneration run (`--resume` of the previous turn). The taught `arkona` profile (`examples/brands/arkona/`, without `site.html`) was placed in `.letterhead/brands/arkona/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/checklist--arkona.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

@@ -3,19 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arkona go-live weekend checklist, 30 October to 2 November 2026</title>
-<meta property="og:title" content="Arkona go-live weekend checklist, 30 October to 2 November 2026">
-<meta property="og:description" content="Every condition for Arkona's go-live weekend, with its owner, from the walkthrough on Thursday 29 October to the shop opening on Monday 2 November. 29 items, none done yet, 1 blocked.">
-<!-- Style: workshop, as requested for this document. Arkona's brand profile (colours, fonts, logo) overrides the style's coral, yellow and Rubik; the sand accent takes the sticky-note role. Made to be printed and ticked off by hand. -->
+<title>Arkona go-live weekend checklist, 29 Oct – 2 Nov 2026</title>
+<meta property="og:title" content="Arkona go-live weekend checklist, 29 Oct – 2 Nov 2026">
+<meta property="og:description" content="Everything that must be true, hour by hour, from the walkthrough on Thu 29 Oct to the shop opening on Mon 2 Nov. 29 items, none ticked yet; one has no owner.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'4'%20y%3D'4'%20width%3D'24'%20height%3D'24'%20rx%3D'4'%20fill%3D'%231c5c4d'%2F%3E%3C%2Fsvg%3E">
-<style data-letterhead-tokens>
-/**
- * Brand tokens.
- * Built 2026-10-05 on the "workshop" base style: colors, fonts and logo
- * are the brand's; spacing, radii, motion and the rest come from the style.
- * Generated file; regenerate it instead of editing it.
- */
-
+<style data-letterhead-tokens data-style="workshop">
 /* letterhead:fonts */
 /* Fraunces latin */
 @font-face {
@@ -37,49 +29,56 @@
 }
 /* /letterhead:fonts */
 
+/* ---- style "workshop" ---- */
 :root {
   color-scheme: light;
 
-  --background: oklch(0.980 0.007 80.7);
-  --foreground: oklch(0.257 0.010 164.1);
+  --background: oklch(0.9900 0.0025 85);
+  --foreground: oklch(0.2400 0.0080 60);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.257 0.010 164.1);
+  --card-foreground: oklch(0.2400 0.0080 60);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.257 0.010 164.1);
-  --primary: oklch(0.430 0.069 174.1);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --popover-foreground: oklch(0.2400 0.0080 60);
+  --primary: oklch(0.5700 0.1600 38);
+  --primary-foreground: oklch(0.9950 0.0020 85);
   --secondary: oklch(0.9520 0.0100 80);
   --secondary-foreground: oklch(0.3100 0.0140 62);
-  --muted: oklch(0.964 0.004 174.1);
-  --muted-foreground: oklch(0.475 0.004 174.1);
-  --accent: oklch(0.898 0.032 82.8);
-  --accent-foreground: oklch(0.257 0.010 164.1);
+  --muted: oklch(0.9640 0.0070 82);
+  --muted-foreground: oklch(0.4750 0.0180 65);
+  --accent: oklch(0.9450 0.0480 95);
+  --accent-foreground: oklch(0.4300 0.0800 75);
   --destructive: oklch(0.5300 0.1850 28);
   --destructive-foreground: oklch(0.9950 0.0020 85);
-  --border: oklch(0.900 0.004 174.1);
+  --border: oklch(0.9000 0.0130 78);
   --input: oklch(0.9000 0.0130 78);
-  --ring: oklch(0.430 0.069 174.1);
+  --ring: oklch(0.5700 0.1600 38);
   --sidebar: oklch(0.9700 0.0060 83);
-  --sidebar-foreground: oklch(0.257 0.010 164.1);
-  --sidebar-primary: oklch(0.430 0.069 174.1);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.898 0.032 82.8);
-  --sidebar-accent-foreground: oklch(0.257 0.010 164.1);
-  --sidebar-border: oklch(0.900 0.004 174.1);
-  --sidebar-ring: oklch(0.430 0.069 174.1);
-  --chart-1: oklch(0.430 0.069 174.1);
+  --sidebar-foreground: oklch(0.2400 0.0080 60);
+  --sidebar-primary: oklch(0.5700 0.1600 38);
+  --sidebar-primary-foreground: oklch(0.9950 0.0020 85);
+  --sidebar-accent: oklch(0.9450 0.0480 95);
+  --sidebar-accent-foreground: oklch(0.4300 0.0800 75);
+  --sidebar-border: oklch(0.9000 0.0130 78);
+  --sidebar-ring: oklch(0.5700 0.1600 38);
+  --chart-1: oklch(0.5700 0.1600 38);
   --chart-2: oklch(0.7200 0.1300 95);
   --chart-3: oklch(0.6200 0.1000 210);
   --chart-4: oklch(0.5800 0.1300 150);
   --chart-5: oklch(0.5200 0.0100 65);
+
+  /* -- States: the word carries the state, the color repeats it -- */
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.560 0.115 78.0);
+  --status-blocked: oklch(0.530 0.185 28.0);
+  --status-neutral: oklch(0.475 0.018 65.0);
   --shadow-sm: 0 2px 5px oklch(0.30 0.02 55 / 0.10);
   --shadow-md: 0 6px 16px oklch(0.30 0.02 55 / 0.13);
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 18px;
   --radius-xl: 24px;
-  --font-sans: "Work Sans", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
-  --font-display: Fraunces, serif;
+  --font-sans: "Rubik", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Rubik", "Trebuchet MS", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --text-xs: 0.78125rem;
@@ -99,13 +98,6 @@
   --motion-duration-fast: 160ms;
   --motion-duration-base: 260ms;
   --motion-ease: cubic-bezier(0.34, 1.35, 0.64, 1);
-  --primary-ink: oklch(0.430 0.069 174.1);
-  --font-heading-weight: 600;
-  --brand-logo-mask: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTY4IiBoZWlnaHQ9IjM2IiB2aWV3Qm94PSIwIDAgMTY4IDM2IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkFya29uYSBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5BcmtvbmE8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik00IDMyIEwxOCA2IEwzMiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWQ1YzRkIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz4KICAgICAgICA8cGF0aCBkPSJNMTAgMjQgSDI2IiBzdHJva2U9IiMxZDVjNGQiIHN0cm9rZS13aWR0aD0iMyIvPgogICAgICAgIDx0ZXh0IHg9IjQ0IiB5PSIyNyIgZm9udC1mYW1pbHk9IkZyYXVuY2VzLCBHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9IjYwMCIgbGV0dGVyLXNwYWNpbmc9IjMiIGZpbGw9IiMxZDVjNGQiPkFSS09OQTwvdGV4dD4KICAgICAgPC9zdmc+");
-  --brand-logo: var(--brand-logo-mask);
-  --brand-logo-color: oklch(0.430 0.069 174.1);
-  --brand-logo-on: light;
-  --brand-logo-ratio: 4.6667;
 }
 
 [data-theme="dark"] {
@@ -117,37 +109,39 @@
   --card-foreground: oklch(0.9400 0.0055 80);
   --popover: oklch(0.2600 0.0085 57);
   --popover-foreground: oklch(0.9400 0.0055 80);
-  --primary: oklch(0.505 0.068 174.1);
-  --primary-foreground: oklch(1.000 0.000 0.0);
+  --primary: oklch(0.7300 0.1250 42);
+  --primary-foreground: oklch(0.2050 0.0200 45);
   --secondary: oklch(0.3000 0.0095 58);
   --secondary-foreground: oklch(0.9000 0.0065 78);
-  --muted: oklch(0.290 0.004 174.1);
-  --muted-foreground: oklch(0.780 0.004 174.1);
-  --accent: oklch(0.300 0.032 82.8);
-  --accent-foreground: oklch(0.9400 0.0055 80);
+  --muted: oklch(0.2900 0.0090 58);
+  --muted-foreground: oklch(0.7800 0.0080 75);
+  --accent: oklch(0.3200 0.0350 90);
+  --accent-foreground: oklch(0.8700 0.0800 95);
   --destructive: oklch(0.6900 0.1500 28);
   --destructive-foreground: oklch(0.2000 0.0070 55);
-  --border: oklch(0.335 0.004 174.1);
+  --border: oklch(0.3350 0.0095 58);
   --input: oklch(0.3350 0.0095 58);
-  --ring: oklch(0.505 0.068 174.1);
+  --ring: oklch(0.7300 0.1250 42);
   --sidebar: oklch(0.2400 0.0080 56);
   --sidebar-foreground: oklch(0.9400 0.0055 80);
-  --sidebar-primary: oklch(0.505 0.068 174.1);
-  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-  --sidebar-accent: oklch(0.300 0.032 82.8);
-  --sidebar-accent-foreground: oklch(0.9400 0.0055 80);
-  --sidebar-border: oklch(0.335 0.004 174.1);
-  --sidebar-ring: oklch(0.505 0.068 174.1);
-  --chart-1: oklch(0.505 0.068 174.1);
+  --sidebar-primary: oklch(0.7300 0.1250 42);
+  --sidebar-primary-foreground: oklch(0.2050 0.0200 45);
+  --sidebar-accent: oklch(0.3200 0.0350 90);
+  --sidebar-accent-foreground: oklch(0.8700 0.0800 95);
+  --sidebar-border: oklch(0.3350 0.0095 58);
+  --sidebar-ring: oklch(0.7300 0.1250 42);
+  --chart-1: oklch(0.7300 0.1250 42);
   --chart-2: oklch(0.8200 0.1100 95);
   --chart-3: oklch(0.7400 0.0950 212);
   --chart-4: oklch(0.7300 0.1100 152);
   --chart-5: oklch(0.7100 0.0090 70);
+
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.690 0.150 28.0);
+  --status-neutral: oklch(0.780 0.008 75.0);
   --shadow-sm: 0 2px 5px oklch(0 0 0 / 0.35);
   --shadow-md: 0 6px 16px oklch(0 0 0 / 0.42);
-  --primary-ink: oklch(0.595 0.113 174.1);
-  --brand-logo-color: oklch(0.9400 0.0055 80);
-  --brand-logo-on: dark;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -160,37 +154,39 @@
     --card-foreground: oklch(0.9400 0.0055 80);
     --popover: oklch(0.2600 0.0085 57);
     --popover-foreground: oklch(0.9400 0.0055 80);
-    --primary: oklch(0.505 0.068 174.1);
-    --primary-foreground: oklch(1.000 0.000 0.0);
+    --primary: oklch(0.7300 0.1250 42);
+    --primary-foreground: oklch(0.2050 0.0200 45);
     --secondary: oklch(0.3000 0.0095 58);
     --secondary-foreground: oklch(0.9000 0.0065 78);
-    --muted: oklch(0.290 0.004 174.1);
-    --muted-foreground: oklch(0.780 0.004 174.1);
-    --accent: oklch(0.300 0.032 82.8);
-    --accent-foreground: oklch(0.9400 0.0055 80);
+    --muted: oklch(0.2900 0.0090 58);
+    --muted-foreground: oklch(0.7800 0.0080 75);
+    --accent: oklch(0.3200 0.0350 90);
+    --accent-foreground: oklch(0.8700 0.0800 95);
     --destructive: oklch(0.6900 0.1500 28);
     --destructive-foreground: oklch(0.2000 0.0070 55);
-    --border: oklch(0.335 0.004 174.1);
+    --border: oklch(0.3350 0.0095 58);
     --input: oklch(0.3350 0.0095 58);
-    --ring: oklch(0.505 0.068 174.1);
+    --ring: oklch(0.7300 0.1250 42);
     --sidebar: oklch(0.2400 0.0080 56);
     --sidebar-foreground: oklch(0.9400 0.0055 80);
-    --sidebar-primary: oklch(0.505 0.068 174.1);
-    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
-    --sidebar-accent: oklch(0.300 0.032 82.8);
-    --sidebar-accent-foreground: oklch(0.9400 0.0055 80);
-    --sidebar-border: oklch(0.335 0.004 174.1);
-    --sidebar-ring: oklch(0.505 0.068 174.1);
-    --chart-1: oklch(0.505 0.068 174.1);
+    --sidebar-primary: oklch(0.7300 0.1250 42);
+    --sidebar-primary-foreground: oklch(0.2050 0.0200 45);
+    --sidebar-accent: oklch(0.3200 0.0350 90);
+    --sidebar-accent-foreground: oklch(0.8700 0.0800 95);
+    --sidebar-border: oklch(0.3350 0.0095 58);
+    --sidebar-ring: oklch(0.7300 0.1250 42);
+    --chart-1: oklch(0.7300 0.1250 42);
     --chart-2: oklch(0.8200 0.1100 95);
     --chart-3: oklch(0.7400 0.0950 212);
     --chart-4: oklch(0.7300 0.1100 152);
     --chart-5: oklch(0.7100 0.0090 70);
+
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.690 0.150 28.0);
+    --status-neutral: oklch(0.780 0.008 75.0);
     --shadow-sm: 0 2px 5px oklch(0 0 0 / 0.35);
     --shadow-md: 0 6px 16px oklch(0 0 0 / 0.42);
-    --primary-ink: oklch(0.595 0.113 174.1);
-    --brand-logo-color: oklch(0.9400 0.0055 80);
-    --brand-logo-on: dark;
   }
 }
 
@@ -200,476 +196,465 @@
     --motion-duration-base: 0ms;
   }
 }
+
+/* ---- brand profile "arkona" over the "workshop" style (its base style is "consulting"): the brand's colors in every theme, its fonts and logo ---- */
+
+:root {
+  --background: oklch(0.980 0.007 80.7);
+  --foreground: oklch(0.257 0.010 164.1);
+  --card: oklch(0.9930 0.0012 80);
+  --card-foreground: oklch(0.257 0.010 164.1);
+  --popover: oklch(0.9930 0.0012 80);
+  --popover-foreground: oklch(0.257 0.010 164.1);
+  --primary: oklch(0.430 0.069 174.1);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.9480 0.0035 78);
+  --secondary-foreground: oklch(0.3000 0.0060 72);
+  --muted: oklch(0.956 0.004 174.1);
+  --muted-foreground: oklch(0.455 0.004 174.1);
+  --accent: oklch(0.898 0.032 82.8);
+  --accent-foreground: oklch(0.257 0.010 164.1);
+  --destructive: oklch(0.5100 0.1700 28);
+  --destructive-foreground: oklch(0.9880 0.0015 80);
+  --border: oklch(0.898 0.004 174.1);
+  --input: oklch(0.8980 0.0040 77);
+  --ring: oklch(0.430 0.069 174.1);
+  --sidebar: oklch(0.9650 0.0025 79);
+  --sidebar-foreground: oklch(0.257 0.010 164.1);
+  --sidebar-primary: oklch(0.430 0.069 174.1);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.898 0.032 82.8);
+  --sidebar-accent-foreground: oklch(0.257 0.010 164.1);
+  --sidebar-border: oklch(0.898 0.004 174.1);
+  --sidebar-ring: oklch(0.430 0.069 174.1);
+  --chart-1: oklch(0.430 0.069 174.1);
+  --chart-2: oklch(0.5600 0.0850 28);
+  --chart-3: oklch(0.7000 0.0600 35);
+  --chart-4: oklch(0.4400 0.0450 250);
+  --chart-5: oklch(0.5500 0.0050 75);
+  --font-sans: "Work Sans", "Gill Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: Fraunces, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --primary-ink: oklch(0.430 0.069 174.1);
+  --font-heading-weight: 600;
+  --brand-logo-mask: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTY4IiBoZWlnaHQ9IjM2IiB2aWV3Qm94PSIwIDAgMTY4IDM2IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IkFya29uYSBsb2dvIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgICAgIDx0aXRsZT5BcmtvbmE8L3RpdGxlPgogICAgICAgIDxwYXRoIGQ9Ik00IDMyIEwxOCA2IEwzMiAzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWQ1YzRkIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz4KICAgICAgICA8cGF0aCBkPSJNMTAgMjQgSDI2IiBzdHJva2U9IiMxZDVjNGQiIHN0cm9rZS13aWR0aD0iMyIvPgogICAgICAgIDx0ZXh0IHg9IjQ0IiB5PSIyNyIgZm9udC1mYW1pbHk9IkZyYXVuY2VzLCBHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9IjYwMCIgbGV0dGVyLXNwYWNpbmc9IjMiIGZpbGw9IiMxZDVjNGQiPkFSS09OQTwvdGV4dD4KICAgICAgPC9zdmc+");
+  --brand-logo: var(--brand-logo-mask);
+  --brand-logo-color: oklch(0.430 0.069 174.1);
+  --brand-logo-on: light;
+  --brand-logo-ratio: 4.6667;
+  --status-ok: oklch(0.530 0.120 152.0);
+  --status-warn: oklch(0.550 0.114 78.0);
+  --status-blocked: oklch(0.510 0.170 28.0);
+  --status-neutral: oklch(0.455 0.004 174.1);
+}
+
+[data-theme="dark"] {
+  --background: oklch(0.2100 0.0040 60);
+  --foreground: oklch(0.9300 0.0030 75);
+  --card: oklch(0.2420 0.0045 62);
+  --card-foreground: oklch(0.9300 0.0030 75);
+  --popover: oklch(0.2420 0.0045 62);
+  --popover-foreground: oklch(0.9300 0.0030 75);
+  --primary: oklch(0.495 0.068 174.1);
+  --primary-foreground: oklch(1.000 0.000 0.0);
+  --secondary: oklch(0.2850 0.0050 64);
+  --secondary-foreground: oklch(0.8950 0.0040 74);
+  --muted: oklch(0.275 0.004 174.1);
+  --muted-foreground: oklch(0.770 0.004 174.1);
+  --accent: oklch(0.300 0.032 82.8);
+  --accent-foreground: oklch(0.9300 0.0030 75);
+  --destructive: oklch(0.6800 0.1450 28);
+  --destructive-foreground: oklch(0.1900 0.0040 62);
+  --border: oklch(0.325 0.004 174.1);
+  --input: oklch(0.3250 0.0055 64);
+  --ring: oklch(0.495 0.068 174.1);
+  --sidebar: oklch(0.2280 0.0042 61);
+  --sidebar-foreground: oklch(0.9300 0.0030 75);
+  --sidebar-primary: oklch(0.495 0.068 174.1);
+  --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+  --sidebar-accent: oklch(0.300 0.032 82.8);
+  --sidebar-accent-foreground: oklch(0.9300 0.0030 75);
+  --sidebar-border: oklch(0.325 0.004 174.1);
+  --sidebar-ring: oklch(0.495 0.068 174.1);
+  --chart-1: oklch(0.495 0.068 174.1);
+  --chart-2: oklch(0.6100 0.0700 30);
+  --chart-3: oklch(0.5100 0.0550 33);
+  --chart-4: oklch(0.6400 0.0450 250);
+  --chart-5: oklch(0.6800 0.0045 73);
+  --primary-ink: oklch(0.590 0.112 174.1);
+  --brand-logo-color: oklch(0.9300 0.0030 75);
+  --brand-logo-on: dark;
+  --status-ok: oklch(0.740 0.115 155.0);
+  --status-warn: oklch(0.780 0.115 82.0);
+  --status-blocked: oklch(0.680 0.145 28.0);
+  --status-neutral: oklch(0.770 0.004 174.1);
+}
+
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --background: oklch(0.2100 0.0040 60);
+    --foreground: oklch(0.9300 0.0030 75);
+    --card: oklch(0.2420 0.0045 62);
+    --card-foreground: oklch(0.9300 0.0030 75);
+    --popover: oklch(0.2420 0.0045 62);
+    --popover-foreground: oklch(0.9300 0.0030 75);
+    --primary: oklch(0.495 0.068 174.1);
+    --primary-foreground: oklch(1.000 0.000 0.0);
+    --secondary: oklch(0.2850 0.0050 64);
+    --secondary-foreground: oklch(0.8950 0.0040 74);
+    --muted: oklch(0.275 0.004 174.1);
+    --muted-foreground: oklch(0.770 0.004 174.1);
+    --accent: oklch(0.300 0.032 82.8);
+    --accent-foreground: oklch(0.9300 0.0030 75);
+    --destructive: oklch(0.6800 0.1450 28);
+    --destructive-foreground: oklch(0.1900 0.0040 62);
+    --border: oklch(0.325 0.004 174.1);
+    --input: oklch(0.3250 0.0055 64);
+    --ring: oklch(0.495 0.068 174.1);
+    --sidebar: oklch(0.2280 0.0042 61);
+    --sidebar-foreground: oklch(0.9300 0.0030 75);
+    --sidebar-primary: oklch(0.495 0.068 174.1);
+    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+    --sidebar-accent: oklch(0.300 0.032 82.8);
+    --sidebar-accent-foreground: oklch(0.9300 0.0030 75);
+    --sidebar-border: oklch(0.325 0.004 174.1);
+    --sidebar-ring: oklch(0.495 0.068 174.1);
+    --chart-1: oklch(0.495 0.068 174.1);
+    --chart-2: oklch(0.6100 0.0700 30);
+    --chart-3: oklch(0.5100 0.0550 33);
+    --chart-4: oklch(0.6400 0.0450 250);
+    --chart-5: oklch(0.6800 0.0045 73);
+    --primary-ink: oklch(0.590 0.112 174.1);
+    --brand-logo-color: oklch(0.9300 0.0030 75);
+    --brand-logo-on: dark;
+    --status-ok: oklch(0.740 0.115 155.0);
+    --status-warn: oklch(0.780 0.115 82.0);
+    --status-blocked: oklch(0.680 0.145 28.0);
+    --status-neutral: oklch(0.770 0.004 174.1);
+  }
+}
+</style>
+<style data-letterhead-style="workshop">
+/* styles/workshop/style.css — the session handout on the shared markup (reference/markup.md):
+ * kicker tab, name-badge metadata, dashed sticky notes, a timeboxed agenda spine
+ * (current step: li[aria-current]), white outcome cards, dashed cut lines. Tokens only. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
+:where(.doc) { display: block; max-width: calc(var(--measure) + 4rem); margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+:where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+:where(.doc) :is(p, ul, ol) { margin: 0.75rem 0; }
+:where(.doc) :is(.kicker, .label, dt, th, .state) { font-family: var(--font-label, var(--font-sans)); }
+:where(.doc) .kicker { display: inline-block; margin: 0; padding: 0.2rem 0.8rem; border-radius: 999px; font-size: var(--text-sm);
+  font-weight: 600; line-height: 1.5; background: var(--primary); color: var(--primary-foreground); }
+:where(.doc) section > .kicker { background: none; color: var(--primary-ink, var(--primary)); box-shadow: inset 0 0 0 2px currentColor; }
+:where(.doc) .label { margin: 0 0 0.35rem; font-size: var(--text-sm); font-weight: 700; color: var(--accent-foreground); }
+
+/* Head: big friendly title, metadata as name badges */
+:where(.doc) .doc-head { margin-bottom: 2rem; }
+:where(.doc) .doc-head .brand-mark { margin-bottom: 1.5rem; }
+:where(.doc) :is(h1, h2, h3) { font-family: var(--font-display); letter-spacing: -0.015em; }
+:where(.doc) h1 { font-weight: var(--font-heading-weight, 700); font-size: var(--text-3xl); line-height: 1.08; margin: 0.9rem 0 0.7rem; }
+:where(.doc) .lede { font-size: var(--text-lg); line-height: 1.45; margin: 0 0 1.4rem; }
+:where(.doc) .meta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0; }
+:where(.doc) .meta > div { background: var(--card); color: var(--card-foreground); border: 2px solid var(--border);
+  border-radius: var(--radius-md); padding: 0.4rem 0.85rem; line-height: 1.35; }
+:where(.doc) .meta dt { font-size: var(--text-xs); font-weight: 600; color: var(--muted-foreground); }
+:where(.doc) .meta dd { margin: 0; font-weight: 600; }
+:where(.doc) .contents ol { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; margin: 0 0 1.75rem; padding: 0; counter-reset: c; }
+:where(.doc) .contents li { counter-increment: c; }
+:where(.doc) .contents a { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.25rem 0.85rem 0.25rem 0.3rem;
+  border-radius: 999px; border: 2px solid var(--border); background: var(--card); color: var(--foreground);
+  text-decoration: none; font-size: var(--text-sm); font-weight: 500; }
+:where(.doc) .contents a::before { content: counter(c); display: grid; place-items: center; width: 1.6rem; height: 1.6rem;
+  border-radius: 50%; background: var(--accent); color: var(--accent-foreground); font-weight: 700; font-size: var(--text-xs); }
+
+/* Sticky notes: summary and callouts */
+:where(.doc) :is(.summary, .callout) { background: var(--accent); color: var(--foreground); border-radius: var(--radius-lg);
+  border: 2px dashed color-mix(in oklab, var(--accent-foreground) 45%, var(--accent)); padding: 1.15rem 1.4rem; margin: 1.5rem 0; }
+:where(.doc) :is(.summary, .callout, .letter, .ask) > :last-child { margin-bottom: 0; }
+:where(.doc) .summary > p:not(.label), :where(.doc) .summary li { font-size: var(--text-lg); font-weight: 500; line-height: 1.45; }
+:where(.doc) .callout.warn { background: color-mix(in oklab, var(--destructive) 9%, var(--card));
+  border-color: color-mix(in oklab, var(--destructive) 55%, var(--card)); }
+:where(.doc) .callout.warn > .label { color: var(--destructive); }
+
+/* Sections, cut along the dashed line */
+:where(.doc) section { margin-top: 2.25rem; padding-top: 2rem; border-top: 2px dashed var(--border); }
+:where(.doc) :is(.summary, .contents) + section, :where(.doc) .doc-head + section { border-top: 0; padding-top: 0.5rem; }
+:where(.doc) section > .kicker + h2 { margin-top: 0.6rem; }
+:where(.doc) h2 { font-weight: var(--font-heading-weight, 600); font-size: var(--text-xl); line-height: 1.25; margin: 0 0 0.7rem; }
+:where(.doc) h3 { font-weight: 600; font-size: var(--text-lg); line-height: 1.3; margin: 1.5rem 0 0.35rem; }
+
+/* Outcome cards: white, rounded, off the paper */
+:where(.doc) :is(.figure, .verdict, .letter, .price), :where(.doc) .recs > li, :where(.doc) .status > div { background: var(--card); color: var(--card-foreground);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm), 0 0 0 1px var(--border); }
+:where(.doc) .figure { padding: 1rem 1.3rem; margin: 1.4rem 0; box-shadow: var(--shadow-md), 0 0 0 1px var(--border); }
+:where(.doc) .figure strong { display: block; font-family: var(--font-display); font-weight: 700; line-height: 1;
+  font-size: clamp(2.25rem, 6vw, 3rem); letter-spacing: -0.02em; color: var(--primary-ink, var(--primary)); margin-bottom: 0.35rem; }
+:where(.doc) .verdict { padding: 0.9rem 1.3rem; margin: 1.4rem 0; font-size: var(--text-lg); font-weight: 600; line-height: 1.4;
+  box-shadow: var(--shadow-sm), 0 0 0 2px var(--primary); }
+:where(.doc) .letter { padding: 1.2rem 1.4rem; margin: 1.5rem 0; }
+:where(.doc) .from { margin-top: 0.8rem; font-size: var(--text-sm); color: var(--muted-foreground); }
+:where(.doc) .from strong { color: var(--foreground); font-weight: 700; }
+
+/* Status: one card per item */
+:where(.doc) .status { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+:where(.doc) .status > div { padding: 0.65rem 0.9rem; border-radius: var(--radius-md); }
+:where(.doc) .status dt { font-size: var(--text-sm); color: var(--muted-foreground); line-height: 1.3; }
+:where(.doc) .status dd { margin: 0.4rem 0 0; }
+:where(.doc) .state { display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px; font-size: var(--text-xs); font-weight: 600;
+  line-height: 1.6; white-space: nowrap; background: var(--muted); color: var(--status-neutral); }
+:where(.doc) .state.ok { background: var(--card); color: var(--status-ok); box-shadow: inset 0 0 0 2px var(--status-ok); }
+:where(.doc) .state.warn { background: var(--card); color: var(--status-warn); box-shadow: inset 0 0 0 2px var(--status-warn); }
+:where(.doc) .state.blocked { background: var(--status-blocked); color: var(--background); }
+:where(.doc) .states { list-style: none; padding: 0; }
+:where(.doc) .states > li { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.45rem 0.7rem; margin: 0.4rem 0; background: var(--card); color: var(--card-foreground); border-radius: var(--radius-md); }
+:where(.doc) .states > li > .state { flex: none; min-width: 6rem; }
+:where(.doc) .states > li > div { flex: 1; min-width: 0; }
+:where(.doc) .states > li > .state { text-align: center; }
+
+/* Tables: friendly and open */
+:where(.doc) .table-wrap { overflow-x: auto; margin: 1.25rem 0; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); }
+:where(.doc) table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+:where(.doc) th { text-align: left; font-weight: 600; background: var(--muted); padding: 0.6rem 0.9rem; }
+:where(.doc) td { padding: 0.6rem 0.9rem; border-top: 1px solid var(--border); vertical-align: top; }
+:where(.doc) .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* The timeboxed agenda: a spine of numbered tiles, the current step lifted */
+:where(.doc) :is(.steps, .recs) { list-style: none; padding: 0; margin: 1.25rem 0; counter-reset: n; }
+:where(.doc) :is(.steps, .recs) > li { counter-increment: n; }
+:where(.doc) .steps li { position: relative; padding: 0.1rem 0 1.25rem 3.5rem; min-height: 2.75rem; }
+:where(.doc) .steps li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 2.5rem; height: 2.5rem;
+  display: grid; place-items: center; border-radius: var(--radius-sm); background: var(--accent); color: var(--accent-foreground);
+  font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); }
+:where(.doc) .steps li::after { content: ""; position: absolute; left: calc(1.25rem - 1px); top: 2.85rem; bottom: 0.3rem;
+  border-left: 2px dashed var(--border); }
+:where(.doc) .steps li:last-child { padding-bottom: 0.2rem; }
+:where(.doc) .steps li:last-child::after { display: none; }
+:where(.doc) .when { display: block; width: fit-content; margin: 0 0 0.25rem; padding: 0 0.55rem; border-radius: 999px; background: var(--muted);
+  font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.8; color: var(--muted-foreground); }
+:where(.doc) .steps [aria-current] { font-weight: 500; }
+:where(.doc) .steps [aria-current]::before { background: var(--primary); color: var(--primary-foreground);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 22%, transparent); }
+:where(.doc) .steps [aria-current] .when { background: var(--primary); color: var(--primary-foreground); }
+:where(.doc) .recs li { position: relative; padding: 0.85rem 1.1rem 0.85rem 4.1rem; margin: 0.7rem 0; }
+:where(.doc) .recs li::before { content: "R" counter(n); position: absolute; left: 1.1rem; top: 0.95rem; padding: 0 0.55rem;
+  border-radius: 999px; background: var(--primary); color: var(--primary-foreground); font-weight: 700; font-size: var(--text-sm); line-height: 1.7; }
+:where(.doc) .recs .from { display: block; margin: 0.25rem 0 0; }
+
+/* Price, ask, close */
+:where(.doc) .price { padding: 1.3rem 1.5rem; margin: 1.5rem 0; border-radius: var(--radius-xl); box-shadow: var(--shadow-md), 0 0 0 1px var(--border); }
+:where(.doc) .price dl { margin: 0.4rem 0 0; }
+:where(.doc) .price dl > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 2px dashed var(--border); }
+:where(.doc) .price dd { margin: 0; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+:where(.doc) .price .total { border-bottom: 0; padding-top: 0.7rem; font-size: var(--text-xl); font-weight: 700; }
+:where(.doc) .price .total > * { margin: 0; }
+:where(.doc) .price .total > :last-child { color: var(--primary-ink, var(--primary)); font-weight: 700; }
+:where(.doc) .price > p:not(.label) { font-size: var(--text-sm); color: var(--muted-foreground); margin: 0.6rem 0 0; }
+:where(.doc) .ask { background: var(--card); color: var(--card-foreground); border: 3px solid var(--primary); border-radius: var(--radius-xl);
+  padding: 1.3rem 1.5rem; margin-top: 2.5rem; box-shadow: var(--shadow-md); }
+:where(.doc) .ask h2 { color: var(--primary-ink, var(--primary)); }
+:where(.doc) .doc-close { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 2px dashed var(--border); font-size: var(--text-sm); color: var(--muted-foreground); }
+:where(.doc) .doc-close .label { color: var(--muted-foreground); }
+:where(.doc) .doc-close .from { margin-top: 0.2rem; font-size: var(--text-base); }
+:where(.doc) :is(code, pre) { font-family: var(--font-mono); background: var(--muted); border-radius: var(--radius-sm); }
+:where(.doc) code { font-size: 0.88em; padding: 0.1em 0.4em; }
+:where(.doc) pre { font-size: var(--text-sm); line-height: 1.55; padding: 0.9rem 1.1rem; overflow-x: auto; border-radius: var(--radius-md); }
+:where(.doc) pre code { background: none; padding: 0; }
+:where(.doc) img { max-width: 100%; height: auto; border-radius: var(--radius-lg); }
+
+@media (max-width: 640px) {
+  :where(.doc) { padding: 1.5rem 1rem 3.5rem; }
+  :where(.doc) .lede { font-size: var(--text-base); }
+  :where(.doc) .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  :where(.doc) .status { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  :where(.doc) :is(.summary, .callout, .price, .letter, .ask) { padding: 1rem 1.1rem; }
+}
+@media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; scroll-behavior: auto; } }
+@media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) * { box-shadow: none; }
+  :where(.doc) :is(.figure, .price, .letter, .ask, .summary, .callout) { break-inside: avoid; outline: 1px solid var(--border); } }
 </style>
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--background); color: var(--foreground);
-    font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal);
-    -webkit-text-size-adjust: 100%;
+  /* The taught logo sets its wordmark as SVG text, which cannot load Fraunces
+     inside a mask and overflows its viewBox. Draw the A mark from the mask and
+     set the wordmark in the embedded Fraunces instead. */
+  .brand-mark { display: flex; align-items: center; gap: 9px; height: 40px; }
+  .brand-mark .mark {
+    flex: 0 0 auto; height: 40px; width: 40px;
+    background-color: var(--brand-logo-color);
+    -webkit-mask: var(--brand-logo-mask) left center / calc(40px * var(--brand-logo-ratio)) 40px no-repeat;
+    mask: var(--brand-logo-mask) left center / calc(40px * var(--brand-logo-ratio)) 40px no-repeat;
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
   }
-  .page { max-width: var(--measure); margin: 0 auto; padding: 0 1.25rem 3rem; }
-  h1, h2 { font-family: var(--font-display); font-weight: var(--font-heading-weight); letter-spacing: -0.01em; }
-  h1 { font-size: var(--text-3xl); line-height: 1.12; margin: 0 0 1rem; }
-  h2 { font-size: var(--text-2xl); line-height: var(--leading-tight); margin: 0; }
-  p { margin: 0 0 1em; }
-  a { color: var(--primary-ink); }
-  strong { font-weight: 600; }
-
-  .masthead { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 0; margin-bottom: 1.75rem; border-bottom: 1px solid var(--border); }
-  .brand-mark { display: block; height: 28px; width: calc(28px * 176 / 36); color: var(--brand-logo-color); overflow: visible; }
-  .brand-mark text { font-family: var(--font-display); font-weight: var(--font-heading-weight); }
-  .masthead .kind { font-size: var(--text-sm); color: var(--muted-foreground); text-align: right; }
-
-  .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: var(--text-xs); font-weight: 600; color: var(--primary-ink); margin: 0 0 0.5rem; }
-
-  .meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1.1rem; margin: 0 0 1.5rem; font-size: var(--text-sm); }
-  .meta dt { color: var(--muted-foreground); }
-  .meta dd { margin: 0; }
-
-  /* Readiness line: an outcome card */
-  .readiness {
-    background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
-    padding: 1.1rem 1.3rem; border-left: 6px solid var(--primary); margin: 0 0 2rem;
+  .brand-mark .word {
+    font-family: var(--font-display); font-weight: 600; font-size: 26.5px;
+    letter-spacing: 3.3px; line-height: 1; color: var(--brand-logo-color);
+    padding-top: 6px;
   }
-  .readiness p { margin: 0; font-size: var(--text-lg); line-height: 1.45; }
-  .readiness .count { font-family: var(--font-display); font-weight: var(--font-heading-weight); color: var(--primary-ink); font-variant-numeric: tabular-nums; }
 
-  /* Day blocks as outcome cards */
-  .block { background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1.35rem 1.35rem 1.2rem; margin: 0 0 1.5rem; }
-  .block-sub { color: var(--muted-foreground); font-size: var(--text-sm); margin: 0.2rem 0 0.75rem; }
-
-  .items { list-style: none; margin: 0; padding: 0; }
-  .item {
-    display: grid; grid-template-columns: 1.6rem 3.4rem 1fr; gap: 0 0.75rem; align-items: start;
-    padding: 0.85rem 0; border-top: 1px solid var(--border);
+  /* Items: condition, owner, and a box to tick by hand on the printout. */
+  .states .item { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 1rem; align-items: start; }
+  .states .item .cond { grid-column: 1; }
+  .states .item .owner { grid-column: 1; font-size: 0.875rem; color: var(--muted-foreground); }
+  .states .item .tick {
+    grid-column: 2; grid-row: 1 / span 2; width: 1.25rem; height: 1.25rem;
+    border: 2px solid var(--foreground); border-radius: 3px; margin-top: 0.15rem;
   }
-  .no-times .item { grid-template-columns: 1.6rem 1fr; }
-  .no-times .time-empty { display: none; }
-  .box { width: 1.45rem; height: 1.45rem; border: 2px solid var(--primary); border-radius: 5px; margin-top: 0.12rem; background: var(--background); }
-  .is-blocked .box { border-style: dashed; border-color: var(--destructive); }
-  .time { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 600; color: var(--primary-ink); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
-  .cond { margin: 0 0 0.25rem; }
-  .owner { margin: 0; font-size: var(--text-sm); }
-  .lbl { color: var(--muted-foreground); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 0.3rem; }
-  .state { display: inline-block; margin-left: 0.5rem; padding: 0 0.55rem; border-radius: 999px; font-size: var(--text-xs); font-weight: 600; border: 1px solid var(--border); color: var(--muted-foreground); }
-  .state-blocked { border-color: var(--destructive); color: var(--destructive); }
+  .time { font-family: var(--font-mono); font-weight: 600; margin-right: 0.35rem; }
 
-  /* Signature move: sticky-note write-in boxes, where people sign by hand */
+  /* Write-in sign-off at the end of each block. */
   .write-in {
-    display: grid; grid-template-columns: max-content 1fr max-content 6rem; gap: 0.6rem; align-items: end;
-    margin-top: 0.9rem; padding: 0.9rem 1rem; border: 1.5px dashed var(--primary); border-radius: var(--radius-sm);
-    background: var(--accent); color: var(--accent-foreground);
+    margin: 1rem 0 0; padding: 0.9rem 1rem; border: 2px dashed var(--border);
+    border-radius: var(--radius-md); background: var(--accent); color: var(--accent-foreground);
+    display: flex; flex-wrap: wrap; gap: 0.75rem 2rem;
   }
-  .write-in .lbl { color: var(--accent-foreground); margin: 0; }
-  .blank { display: block; border-bottom: 1.5px solid var(--accent-foreground); height: 1.6rem; }
+  .write-in p { margin: 0; flex: 1 1 14rem; }
+  .write-in .line { display: inline-block; min-width: 9rem; border-bottom: 1.5px solid currentColor; margin-left: 0.4rem; height: 1.1em; vertical-align: bottom; }
 
-  .section-h { margin-top: var(--space-section); }
-  .detail { background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1.2rem 1.35rem 0.4rem; margin: 0.9rem 0 1.5rem; border-left: 6px solid var(--destructive); }
-  .detail h3, .esc h3 { font-size: var(--text-lg); font-weight: 600; margin: 0 0 0.5rem; }
-  .detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0 0 0.9rem; }
-  .detail dt { color: var(--muted-foreground); font-size: var(--text-sm); }
-  .detail dd { margin: 0; }
-
-  .esc { list-style: none; padding: 0; margin: 0.9rem 0 1.5rem; }
-  .esc li { background: var(--card); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 0.9rem 1.1rem; margin-bottom: 0.7rem; }
-  .esc .when { font-weight: 600; display: block; }
-
-  .signoffs { list-style: none; padding: 0; margin: 0.9rem 0 0; }
-  .signoffs li { background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1rem 1.25rem; margin-bottom: 1rem; }
-  .signoffs h3 { font-size: var(--text-lg); font-weight: 600; margin: 0 0 0.25rem; }
-  .signoffs p { margin: 0; font-size: var(--text-sm); }
-
-  .people { font-size: var(--text-sm); columns: 2; column-gap: 2rem; padding: 0; list-style: none; margin: 0.75rem 0 0; }
-  .people li { break-inside: avoid; padding: 0.2rem 0; }
-
-  .colophon { margin-top: var(--space-section); padding-top: 1rem; border-top: 1px solid var(--border); font-size: var(--text-sm); color: var(--muted-foreground); }
-  .colophon p { margin: 0 0 0.25rem; }
-
-  @media (max-width: 560px) {
-    .page { padding: 0 0.9rem 2.5rem; }
-    .block { padding: 1.1rem 1rem 1rem; }
-    .item { grid-template-columns: 1.6rem 1fr; }
-    .item .time { grid-column: 2; grid-row: 1; padding-top: 0; }
-    .item .time-empty { display: none; }
-    .item .body { grid-column: 2; }
-    .item .box { grid-row: 1 / span 2; }
-    .write-in { grid-template-columns: max-content 1fr; }
-    .people { columns: 1; }
-  }
   @media print {
-    body { font-size: 11pt; }
-    .block, .readiness, .detail, .esc li, .signoffs li { box-shadow: none; border: 1px solid var(--border); }
-    .block { break-inside: avoid; }
-    .item { break-inside: avoid; }
-    .write-in, .box, .readiness { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .states > li, .write-in, .callout, tr { break-inside: avoid; }
+    section { break-inside: auto; }
   }
 </style>
 </head>
 <body>
-<div class="page">
+<main class="doc">
 
-<div class="masthead">
-  <!-- Logo drawn inline, not from the --brand-logo-mask token: the Arkona wordmark is live SVG text, and inside a mask image it cannot reach the embedded Fraunces, so it falls back to a wider serif and the last letter clips. Same artwork, wordmark set in the embedded face. -->
-  <svg class="brand-mark" viewBox="0 0 176 36" role="img" aria-label="Arkona" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 32 L18 6 L32 32" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="miter"/>
-    <path d="M10 24 H26" stroke="currentColor" stroke-width="3"/>
-    <text x="44" y="27" font-size="24" letter-spacing="3" fill="currentColor">ARKONA</text>
-  </svg>
-  <span class="kind">Go-live checklist<br>Print and tick by hand</span>
+<header class="doc-head">
+  <div class="brand-mark" role="img" aria-label="Arkona"><span class="mark" aria-hidden="true"></span><span class="word" aria-hidden="true">ARKONA</span></div>
+  <p class="kicker">Go-live weekend checklist</p>
+  <h1>The new shop goes live: weekend of 30 October</h1>
+  <p class="lede">Every condition from the walkthrough on Thursday to the shop opening on Monday, each with its owner. Tick each box by hand when it is true, and sign off each day's block with a name and the time.</p>
+  <dl class="meta">
+    <div><dt>Weekend</dt><dd>Fri 30 Oct – Mon 2 Nov 2026</dd></div>
+    <div><dt>Walkthrough</dt><dd>Thu 29 Oct, 14:00, Arkona showroom, Rønne</dd></div>
+    <div><dt>Runs the weekend</dt><dd>Karin Holm (Arkona), Signe Krog (Fieldwork Digital)</dd></div>
+    <div><dt>Go/no-go</dt><dd>Henrik Mortensen</dd></div>
+    <div><dt>Status</dt><dd>In preparation; one item has no owner</dd></div>
+    <div><dt>Version</dt><dd>Mon 5 Oct 2026</dd></div>
+  </dl>
+</header>
+
+<div class="summary">
+  <p class="label">Readiness</p>
+  <p>0 of 29 items ticked, as expected four weeks out. One is blocked: nobody from Arkona is named yet to pick the test orders in the warehouse on Sunday. If something goes wrong, see <a href="#if-something-goes-wrong">If something goes wrong</a> at the end.</p>
 </div>
 
-<main>
-  <header>
-    <p class="eyebrow">New web shop</p>
-    <h1>Go-live weekend checklist</h1>
-    <dl class="meta">
-      <dt>Weekend</dt><dd>Fri 30 Oct, 17:30 to Mon 2 Nov, 12:00</dd>
-      <dt>Walkthrough</dt><dd>Thu 29 Oct, 14:00, Arkona showroom, Rønne</dd>
-      <dt>Status</dt><dd>At risk: one item has no owner</dd>
-      <dt>Runs it</dt><dd>Karin Holm for Arkona; Signe Krog for Fieldwork Digital, who owns this checklist</dd>
-      <dt>Go/no-go</dt><dd>Henrik Mortensen</dd>
-      <dt>If it goes wrong</dt><dd><a href="#if-something-goes-wrong">Rollback and escalation</a>, at the end</dd>
-    </dl>
-  </header>
+<section>
+  <h2 id="who-is-who">Who is who</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Role this weekend</th></tr></thead>
+      <tbody>
+        <tr><td>Karin Holm</td><td>Arkona e-commerce lead; runs the weekend on Arkona's side</td></tr>
+        <tr><td>Henrik Mortensen</td><td>Arkona managing director; decides go/no-go</td></tr>
+        <tr><td>Sofie Lund</td><td>Arkona finance: prices, gift cards, refunds</td></tr>
+        <tr><td>Jens Kofoed</td><td>Arkona warehouse; on site Saturday 09:00–15:00 only</td></tr>
+        <tr><td>Mette Ravn</td><td>Arkona customer service</td></tr>
+        <tr><td>Signe Krog</td><td>Fieldwork Digital project lead</td></tr>
+        <tr><td>Tomasz Wójcik</td><td>Fieldwork Digital backend and ERP</td></tr>
+        <tr><td>Ines Ferreira</td><td>Fieldwork Digital frontend</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Everyone's mobile number is on the printed phone list Signe brings to the walkthrough.</p>
+</section>
 
-  <section class="readiness" aria-label="Readiness">
-    <p><span class="count">0 of 29</span> items done, <span class="count">1</span> blocked: nobody is named yet to pick Sunday’s test orders in the warehouse. Everything else has an owner.</p>
-  </section>
-
-  <section class="block" aria-labelledby="before-the-weekend">
-    <h2 id="before-the-weekend">Before the weekend</h2>
-    <p class="block-sub">By Thu 29 Oct, checked at the walkthrough</p>
-    <ul class="items no-times">
-      <li id="the-fourth-trade-price-tier-is-loaded-and-10" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The fourth trade price tier is loaded and 10 customers per tier are spot-checked</p>
-          <p class="owner"><span class="lbl">Owner</span> Sofie <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="every-product-has-package-dimensions-37-were-missing-on" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">Every product has package dimensions (37 were missing on 5 Oct)</p>
-          <p class="owner"><span class="lbl">Owner</span> Karin <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-shop-closed-for-the-weekend-email-and-phone" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The “shop closed for the weekend” email and phone message are ready and reviewed by Signe</p>
-          <p class="owner"><span class="lbl">Owner</span> Mette <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-88-hand-mapped-redirects-are-done-and-tested" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The 88 hand-mapped redirects are done and tested</p>
-          <p class="owner"><span class="lbl">Owner</span> Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="dns-time-to-live-is-lowered-to-300-s" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">DNS time-to-live is lowered to 300 s (scheduled for Fri 23 Oct)</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-erp-price-freeze-has-been-active-since-tue" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The ERP price freeze has been active since Tue 27 Oct 06:00</p>
-          <p class="owner"><span class="lbl">Owner</span> Sofie <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="go-no-go-1-is-held-and-the-decision" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">Go/no-go 1 is held and the decision is written down</p>
-          <p class="owner"><span class="lbl">Owner</span> Henrik <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-weekend-phone-list-with-everyones-mobile-number-is" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The weekend phone list with everyone’s mobile number is printed</p>
-          <p class="owner"><span class="lbl">Owner</span> Signe <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-    </ul>
-    <div class="write-in" aria-label="Sign-off for Before the weekend">
-      <span class="lbl">Block checked by</span><span class="blank"></span>
-      <span class="lbl">Time</span><span class="blank short"></span>
-    </div>
-  </section>
-  <section class="block" aria-labelledby="friday-30-october">
-    <h2 id="friday-30-october">Friday 30 October</h2>
-    <p class="block-sub">Old shop closes</p>
-    <ul class="items">
-      <li id="the-last-orders-in-the-old-shop-are-picked" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">17:30</span>
-        <div class="body">
-          <p class="cond">The last orders in the old shop are picked and packed as normal</p>
-          <p class="owner"><span class="lbl">Owner</span> Jens <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-old-shop-shows-the-maintenance-page" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">18:00</span>
-        <div class="body">
-          <p class="cond">The old shop shows the maintenance page</p>
-          <p class="owner"><span class="lbl">Owner</span> Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-last-orders-are-exported-and-synced-to-the" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">18:15</span>
-        <div class="body">
-          <p class="cond">The last orders are exported and synced to the ERP, and the count matches the shop admin</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-out-of-office-reply-on-the-shop-mailbox" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">18:30</span>
-        <div class="body">
-          <p class="cond">The out-of-office reply on the shop@ mailbox is on</p>
-          <p class="owner"><span class="lbl">Owner</span> Mette <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-    </ul>
-    <div class="write-in" aria-label="Sign-off for Friday 30 October">
-      <span class="lbl">Block checked by</span><span class="blank"></span>
-      <span class="lbl">Time</span><span class="blank short"></span>
-    </div>
-  </section>
-  <section class="block" aria-labelledby="saturday-31-october">
-    <h2 id="saturday-31-october">Saturday 31 October</h2>
-    <p class="block-sub">Final migration</p>
-    <ul class="items">
-      <li id="the-final-migration-of-customers-order-history-and-gift" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">08:00</span>
-        <div class="body">
-          <p class="cond">The final migration of customers, order history and gift cards has started</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-gift-card-total-is-dkk-148-900-across" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The gift-card total is DKK 148,900 across 312 cards (Sofie checks the figure Tomasz sends)</p>
-          <p class="owner"><span class="lbl">Owner</span> Sofie <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-order-sync-points-at-the-new-shop" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The order sync points at the new shop</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="stock-levels-in-the-new-shop-match-the-erp" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">Stock levels in the new shop match the ERP for 20 random products (Jens is here 09:00–15:00 only)</p>
-          <p class="owner"><span class="lbl">Owner</span> Jens <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="30-product-pages-are-spot-checked-for-prices-images" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">30 product pages are spot-checked for prices, images and freight</p>
-          <p class="owner"><span class="lbl">Owner</span> Karin, with Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-    </ul>
-    <div class="write-in" aria-label="Sign-off for Saturday 31 October">
-      <span class="lbl">Block checked by</span><span class="blank"></span>
-      <span class="lbl">Time</span><span class="blank short"></span>
-    </div>
-  </section>
-  <section class="block" aria-labelledby="sunday-1-november">
-    <h2 id="sunday-1-november">Sunday 1 November</h2>
-    <p class="block-sub">Test orders and go/no-go 2</p>
-    <ul class="items">
-      <li id="20-test-orders-are-placed-dk-se-no-and" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">20 test orders are placed: DK, SE, NO and DE, all 4 payment methods, each trade tier, at least 1 to Norway (Karin watches the ERP)</p>
-          <p class="owner"><span class="lbl">Owner</span> Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-test-orders-arrive-in-the-erp-with-the" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The test orders arrive in the ERP with the right VAT code</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-test-orders-are-picked-in-the-warehouse-system" class="item is-blocked">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">The test orders are picked in the warehouse system, not shipped</p>
-          <p class="owner"><span class="lbl">Owner</span> No owner yet <span class="state state-blocked">⚠ Blocked</span></p>
-        </div>
-      </li>
-      <li id="all-test-orders-are-refunded-and-the-refunds-show" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time time-empty" aria-hidden="true"></span>
-        <div class="body">
-          <p class="cond">All test orders are refunded and the refunds show in the payment provider</p>
-          <p class="owner"><span class="lbl">Owner</span> Sofie <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="go-no-go-2-is-held-by-phone-signe" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">16:00</span>
-        <div class="body">
-          <p class="cond">Go/no-go 2 is held by phone: Signe reports the criteria, Henrik decides</p>
-          <p class="owner"><span class="lbl">Owner</span> Henrik <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-    </ul>
-    <div class="write-in" aria-label="Sign-off for Sunday 1 November">
-      <span class="lbl">Block checked by</span><span class="blank"></span>
-      <span class="lbl">Time</span><span class="blank short"></span>
-    </div>
-  </section>
-  <section class="block" aria-labelledby="monday-2-november">
-    <h2 id="monday-2-november">Monday 2 November</h2>
-    <p class="block-sub">Go-live</p>
-    <ul class="items">
-      <li id="dns-is-switched-to-the-new-shop" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">07:00</span>
-        <div class="body">
-          <p class="cond">DNS is switched to the new shop</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-new-shop-is-reachable-from-3-networks-office" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">07:30</span>
-        <div class="body">
-          <p class="cond">The new shop is reachable from 3 networks: office, mobile and home</p>
-          <p class="owner"><span class="lbl">Owner</span> Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-shop-is-open-and-the-maintenance-page-is" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">08:00</span>
-        <div class="body">
-          <p class="cond">The shop is open and the maintenance page is gone</p>
-          <p class="owner"><span class="lbl">Owner</span> Ines <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-set-your-new-password-email-to-14-212" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">08:00</span>
-        <div class="body">
-          <p class="cond">The “set your new password” email to 14,212 customers is going out in batches</p>
-          <p class="owner"><span class="lbl">Owner</span> Tomasz <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-first-daily-check-in-between-karin-and-signe" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">09:00</span>
-        <div class="body">
-          <p class="cond">The first daily check-in between Karin and Signe is held (every weekday until Fri 13 Nov)</p>
-          <p class="owner"><span class="lbl">Owner</span> Karin <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-first-10-real-orders-have-synced-clean-and" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">12:00</span>
-        <div class="body">
-          <p class="cond">The first 10 real orders have synced clean and the ERP price freeze is lifted, after Tomasz confirms</p>
-          <p class="owner"><span class="lbl">Owner</span> Sofie <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-      <li id="the-rollback-window-is-closed-and-henrik-is-informed" class="item is-open">
-        <span class="box" aria-hidden="true"></span>
-        <span class="time">12:00</span>
-        <div class="body">
-          <p class="cond">The rollback window is closed and Henrik is informed</p>
-          <p class="owner"><span class="lbl">Owner</span> Henrik <span class="state state-open">Open</span></p>
-        </div>
-      </li>
-    </ul>
-    <div class="write-in" aria-label="Sign-off for Monday 2 November">
-      <span class="lbl">Block checked by</span><span class="blank"></span>
-      <span class="lbl">Time</span><span class="blank short"></span>
-    </div>
-  </section>
-
-  <h2 id="blocked-items" class="section-h">Blocked items</h2>
-  <article class="detail" id="blocked-sunday-test-order-picking">
-    <h3 id="the-test-orders-are-picked-on-sunday">The test orders are picked on Sunday</h3>
-    <dl>
-      <dt>Waits on</dt><dd>A person in the warehouse on Sunday 1 November. Jens is only here on Saturday, 09:00–15:00.</dd>
-      <dt>Who can unblock</dt><dd>Karin, with Jens</dd>
-      <dt>If nobody does</dt><dd>The warehouse part of Sunday’s test is not done before go/no-go 2 at 16:00.</dd>
-    </dl>
-  </article>
-
-  <h2 id="if-something-goes-wrong" class="section-h">If something goes wrong</h2>
-  <ul class="esc">
-    <li id="rollback-before-monday-1200"><span class="when">Before Monday 12:00</span>Signe calls Henrik. Rollback means pointing DNS back to the old shop; Tomasz does it in about 15 minutes.</li>
-    <li id="payment-problems"><span class="when">Payment problems</span>Ines switches to the backup payment method.</li>
-    <li id="warehouse-cannot-see-orders"><span class="when">The warehouse cannot see orders</span>Jens calls Tomasz directly.</li>
+<section>
+  <h2 id="before-the-weekend">Before the weekend, by Thu 29 Oct</h2>
+  <ul class="states">
+    <li id="fourth-trade-price-tier-loaded-and-spot-checked"><span class="state neutral">to do</span><div class="item"><span class="cond">All 4 trade price tiers are loaded, including tier 4, and 10 customers per tier are spot-checked.</span><span class="owner">Sofie</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="all-skus-have-package-dimensions"><span class="state neutral">to do</span><div class="item"><span class="cond">Every SKU has package dimensions (37 were missing on 5 Oct).</span><span class="owner">Karin</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="shop-closed-email-and-phone-message-ready"><span class="state neutral">to do</span><div class="item"><span class="cond">The “shop closed for the weekend” email and phone message are ready and reviewed by Signe.</span><span class="owner">Mette</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="hand-mapped-redirects-done-and-tested"><span class="state neutral">to do</span><div class="item"><span class="cond">The 88 hand-mapped redirects are in place and tested.</span><span class="owner">Ines</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="dns-ttl-lowered-to-300-s"><span class="state neutral">to do</span><div class="item"><span class="cond">DNS TTL is 300 s (planned for Fri 23 Oct).</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="erp-price-freeze-active"><span class="state neutral">to do</span><div class="item"><span class="cond">The ERP price freeze has been active since Tue 27 Oct, 06:00.</span><span class="owner">Sofie</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="go-no-go-1-held-and-written-down"><span class="state neutral">to do</span><div class="item"><span class="cond">Go/no-go #1 is held and the decision is written down.</span><span class="owner">Henrik</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="weekend-phone-list-printed"><span class="state neutral">to do</span><div class="item"><span class="cond">The weekend phone list, with everyone's mobile, is printed.</span><span class="owner">Signe</span><span class="tick" aria-hidden="true"></span></div></li>
   </ul>
+  <div class="write-in" id="sign-off-before-the-weekend"><p>Signed off by<span class="line"></span></p><p>Time<span class="line"></span></p></div>
+</section>
 
-  <h2 id="sign-offs" class="section-h">Sign-offs</h2>
-  <ul class="signoffs">
-    <li id="sign-off-go-no-go-1">
-      <h3 id="go-no-go-1">Go/no-go 1 · Thu 29 Oct, 14:00</h3>
-      <p><strong>Henrik Mortensen</strong> · Pending</p>
-      <div class="write-in"><span class="lbl">Decision</span><span class="blank"></span><span class="lbl">Time</span><span class="blank short"></span></div>
-    </li>
-    <li id="sign-off-go-no-go-2">
-      <h3 id="go-no-go-2">Go/no-go 2 · Sun 1 Nov, 16:00, by phone</h3>
-      <p><strong>Henrik Mortensen</strong>, with Signe Krog reporting the criteria · Pending</p>
-      <div class="write-in"><span class="lbl">Decision</span><span class="blank"></span><span class="lbl">Time</span><span class="blank short"></span></div>
-    </li>
+<section>
+  <h2 id="friday-30-october">Friday 30 October</h2>
+  <ul class="states">
+    <li id="last-old-shop-orders-picked-and-packed"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">17:30</span>The last orders from the old shop are picked and packed as normal.</span><span class="owner">Jens</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="old-shop-shows-maintenance-page"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">18:00</span>The old shop shows the maintenance page.</span><span class="owner">Ines</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="last-orders-exported-synced-and-counted"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">18:15</span>The last orders are exported and synced to the ERP, and the count matches the shop admin.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="shop-mailbox-out-of-office-on"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">18:30</span>The out-of-office reply on the shop@ mailbox is on.</span><span class="owner">Mette</span><span class="tick" aria-hidden="true"></span></div></li>
   </ul>
+  <div class="write-in" id="sign-off-friday"><p>Signed off by<span class="line"></span></p><p>Time<span class="line"></span></p></div>
+</section>
 
-  <h2 id="who-is-who" class="section-h">Who is who</h2>
-  <ul class="people">
-    <li><strong>Karin Holm</strong>, e-commerce lead, runs the weekend for Arkona</li>
-    <li><strong>Henrik Mortensen</strong>, managing director, go/no-go</li>
-    <li><strong>Sofie Lund</strong>, finance</li>
-    <li><strong>Jens Kofoed</strong>, warehouse</li>
-    <li><strong>Mette Ravn</strong>, customer service</li>
-    <li><strong>Signe Krog</strong>, project lead, Fieldwork Digital</li>
-    <li><strong>Tomasz Wójcik</strong>, backend and ERP, Fieldwork Digital</li>
-    <li><strong>Ines Ferreira</strong>, frontend, Fieldwork Digital</li>
+<section>
+  <h2 id="saturday-31-october">Saturday 31 October</h2>
+  <ul class="states">
+    <li id="final-migration-started"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">08:00</span>The final migration of customers, order history and gift cards has started.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="gift-card-total-matches"><span class="state neutral">to do</span><div class="item"><span class="cond">The new shop holds 312 gift cards worth DKK 148,900 in total. Sofie checks the number Tomasz sends.</span><span class="owner">Sofie</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="order-sync-points-at-new-shop"><span class="state neutral">to do</span><div class="item"><span class="cond">The ERP order sync points at the new shop.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="stock-levels-match-erp-for-20-skus"><span class="state neutral">to do</span><div class="item"><span class="cond">Stock levels in the new shop match the ERP for 20 random SKUs. Jens is here 09:00–15:00 only.</span><span class="owner">Jens</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="30-product-pages-spot-checked"><span class="state neutral">to do</span><div class="item"><span class="cond">30 product pages are spot-checked for prices, images and freight.</span><span class="owner">Karin and Ines</span><span class="tick" aria-hidden="true"></span></div></li>
   </ul>
+  <div class="write-in" id="sign-off-saturday"><p>Signed off by<span class="line"></span></p><p>Time<span class="line"></span></p></div>
+</section>
 
-  <footer class="colophon">
-    <p>Prepared by Signe Krog, Fieldwork Digital, for Arkona.</p>
-    <p>Version of 5 October 2026</p>
-  </footer>
+<section>
+  <h2 id="sunday-1-november">Sunday 1 November</h2>
+  <ul class="states">
+    <li id="20-test-orders-placed"><span class="state neutral">to do</span><div class="item"><span class="cond">20 test orders are placed: Denmark, Sweden, Norway and Germany; all 4 payment methods; each trade tier; at least 1 to Norway. Karin watches the ERP.</span><span class="owner">Ines</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="test-orders-in-erp-with-right-vat-code"><span class="state neutral">to do</span><div class="item"><span class="cond">The test orders arrive in the ERP with the right VAT code.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="test-orders-picked-in-warehouse-system"><span class="state blocked">no owner</span><div class="item"><span class="cond">The test orders are picked in the warehouse system (not shipped).</span><span class="owner">Not named yet; Jens is not available on Sunday</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="test-orders-refunded"><span class="state neutral">to do</span><div class="item"><span class="cond">All test orders are refunded, and the refunds show in the payment provider.</span><span class="owner">Sofie</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="go-no-go-2-decided"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">16:00</span>Go/no-go #2 by phone: Signe reports the criteria, Henrik decides.</span><span class="owner">Henrik</span><span class="tick" aria-hidden="true"></span></div></li>
+  </ul>
+  <div class="write-in" id="sign-off-sunday"><p>Signed off by<span class="line"></span></p><p>Time<span class="line"></span></p></div>
+</section>
+
+<section>
+  <h2 id="monday-2-november">Monday 2 November</h2>
+  <ul class="states">
+    <li id="dns-switched"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">07:00</span>DNS points at the new shop.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="new-shop-reachable-from-3-networks"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">07:30</span>The new shop loads from 3 networks: office, mobile and home.</span><span class="owner">Ines</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="shop-open-maintenance-page-gone"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">08:00</span>The shop is open and the maintenance page is gone.</span><span class="owner">Ines</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="password-mail-sent-to-14212-customers"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">08:00</span>The “set your new password” mail goes out to 14,212 customers in batches.</span><span class="owner">Tomasz</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="daily-check-in-started"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">09:00</span>The daily check-in between Karin and Signe has started; it runs every weekday until Fri 13 Nov.</span><span class="owner">Karin and Signe</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="erp-price-freeze-lifted"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">12:00</span>The first 10 real orders have synced cleanly, Tomasz confirms, and the ERP price freeze is lifted.</span><span class="owner">Sofie</span><span class="tick" aria-hidden="true"></span></div></li>
+    <li id="rollback-window-closed-henrik-informed"><span class="state neutral">to do</span><div class="item"><span class="cond"><span class="time">12:00</span>The rollback window closes and Henrik is informed.</span><span class="owner">Signe</span><span class="tick" aria-hidden="true"></span></div></li>
+  </ul>
+  <div class="write-in" id="sign-off-monday"><p>Signed off by<span class="line"></span></p><p>Time<span class="line"></span></p></div>
+</section>
+
+<section>
+  <h2 id="blocked-items">Blocked items</h2>
+  <div class="callout warn" id="blocked-sunday-test-order-picking">
+    <p class="label">Sunday: picking the test orders</p>
+    <p>Waits on Arkona naming someone from the warehouse for Sunday; Jens is on site Saturday only. Karin can settle it, at the latest at the walkthrough on Thursday. If nobody is named, the test orders are not checked through the warehouse system before go/no-go #2 at 16:00.</p>
+  </div>
+</section>
+
+<section>
+  <h2 id="if-something-goes-wrong">If something goes wrong</h2>
+  <ul>
+    <li id="rollback-before-monday-12-00"><strong>Before Monday 12:00:</strong> Signe calls Henrik. Rollback means pointing DNS back to the old shop; Tomasz does it in about 15 minutes.</li>
+    <li id="payment-problems"><strong>Payment problems:</strong> Ines switches to the backup payment method.</li>
+    <li id="warehouse-cannot-see-orders"><strong>The warehouse cannot see orders:</strong> Jens calls Tomasz directly.</li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="sign-offs">Sign-offs</h2>
+  <ul class="states">
+    <li id="sign-off-henrik-mortensen"><span class="state neutral">pending</span><div>Henrik Mortensen, managing director: go/no-go #1 on Thu 29 Oct and #2 on Sun 1 Nov.</div></li>
+    <li id="sign-off-karin-holm"><span class="state neutral">pending</span><div>Karin Holm, e-commerce lead: runs the weekend on Arkona's side.</div></li>
+    <li id="sign-off-signe-krog"><span class="state neutral">pending</span><div>Signe Krog, Fieldwork Digital: reports the go criteria and runs the weekend on our side.</div></li>
+  </ul>
+</section>
+
+<footer class="doc-close">
+  <p class="label">Prepared by</p>
+  <p class="from">Signe Krog, Fieldwork Digital</p>
+</footer>
+
 </main>
-
-</div>
 </body>
 </html>

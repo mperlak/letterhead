@@ -8,7 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next document for Arkona. I'm Signe Krog, project lead at Fieldwork Digital, the agency building their new web shop. Turn my notes in notes/implementation-plan--arkona.md into the cutover and go-live plan that Henrik and Karin are to sign off, as a single self-contained HTML file on Arkona's letterhead (the arkona brand you taught), using the implementation-plan template in the boardroom style. Save it as implementation-plan--arkona.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the Arkona session that began with `examples/hero/PROMPT.md` (teach + status update); the notes file was copied into the run directory as `notes/implementation-plan--arkona.md`.
+Turn 2 of the arkona session of the regeneration run (`--resume` of the previous turn). The taught `arkona` profile (`examples/brands/arkona/`, without `site.html`) was placed in `.letterhead/brands/arkona/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/implementation-plan--arkona.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

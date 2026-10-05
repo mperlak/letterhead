@@ -8,11 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next: the write-up of our survey of the Mulder house in Haarlem, for Priya and Daan Mulder, from my notes in notes/survey--halde.md. Make it a single self-contained HTML file on our letterhead (the halde brand), using the report template in the gazette style. Save it as report--halde.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the halde session. The session's first turn taught the brand from `halde-site.html` (saved here as `examples/brands/halde/site.html`) with this prompt:
-
-> I run Studio Halde, an interior design studio in Amsterdam; a saved copy of our homepage is in halde-site.html. Teach letterhead our brand from it and save the profile under the name halde (.letterhead/brands/halde/), so the documents we send our clients go out on it. I am not available to answer questions during this run: use the site file as the brand evidence, and I approve in advance whatever brand reading you propose, so do not wait for my confirmation. Just go.
-
-The notes were in the run directory as `notes/survey--halde.md`.
+Turn 2 of the halde session of the regeneration run (`--resume` of the previous turn). The taught `halde` profile (`examples/brands/halde/`, without `site.html`) was placed in `.letterhead/brands/halde/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/survey--halde.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

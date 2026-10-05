@@ -8,11 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next: our offer to Maartje de Wit and Tom Achterberg for their apartment, from my notes in notes/proposal--halde.md. Make it a single self-contained HTML file on our letterhead (the halde brand), using the proposal template in the atelier style. Save it as proposal--halde.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the halde session. The session's first turn taught the brand from `halde-site.html` (saved here as `examples/brands/halde/site.html`) with this prompt:
-
-> I run Studio Halde, an interior design studio in Amsterdam; a saved copy of our homepage is in halde-site.html. Teach letterhead our brand from it and save the profile under the name halde (.letterhead/brands/halde/), so the documents we send our clients go out on it. I am not available to answer questions during this run: use the site file as the brand evidence, and I approve in advance whatever brand reading you propose, so do not wait for my confirmation. Just go.
-
-The notes were in the run directory as `notes/proposal--halde.md`.
+Turn 1 of the halde session of the regeneration run. The taught `halde` profile (`examples/brands/halde/`, without `site.html`) was placed in `.letterhead/brands/halde/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/proposal--halde.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

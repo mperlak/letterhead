@@ -8,11 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next: the spec for missed-collection reports, for Marloes Janssen (Gemeente Westerhaven) and Kees Brouwer (ReinNet) to review, from my notes in notes/spec--kestrel.md. Make it a single self-contained HTML file on our letterhead (the kestrel brand), using the spec template in the engineering style. Save it as spec--kestrel.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the kestrel session. The session's first turn taught the brand from `kestrel-site.html` (saved here as `examples/brands/kestrel/site.html`) with this prompt:
-
-> I work at Kestrel Labs; a saved copy of our homepage is in kestrel-site.html. Teach letterhead our brand from it and save the profile under the name kestrel (.letterhead/brands/kestrel/), so our specs, release notes and incident reports go out on it. I am not available to answer questions during this run: use the site file as the brand evidence, and I approve in advance whatever brand reading you propose, so do not wait for my confirmation. Just go.
-
-The notes were in the run directory as `notes/spec--kestrel.md`.
+Turn 1 of the kestrel session of the regeneration run. The taught `kestrel` profile (`examples/brands/kestrel/`, without `site.html`) was placed in `.letterhead/brands/kestrel/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/spec--kestrel.md`.
 
 ## Raw notes (verbatim, as given to the model)
 

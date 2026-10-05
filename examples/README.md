@@ -3,16 +3,22 @@
 Everything in this directory is generated output, kept as proof and gallery
 material. Nothing here is part of the installable skill.
 
-The set was made on 2026-10-05 with letterhead 0.1.0 and Claude
-`opus` (resolved to `claude-opus-5-5`), by real headless runs of the skill.
-Four fictional businesses, ten documents, nine templates, nine styles. No
-HTML file here was edited by hand.
+The set was regenerated on 2026-10-05 with the current skill, which builds
+documents on the style layer (a `style.css` per style, the shared markup
+vocabulary in `letterhead/reference/markup.md`, style fonts embedded, and
+`apply-tokens.mjs --style`), by real headless runs of Claude `opus` (resolved
+to `claude-opus-5-5`). Four fictional businesses, ten documents, nine
+templates, nine styles. No HTML file here was edited by hand; where a run
+polished its own output after writing it, that is the agent's own work and is
+counted in the runs log.
 
 ## brands/
 
 Four fictional brands, each taught by `teach` from a one-page homepage
 written for the purpose (`site.html` in each folder, the only brand
-evidence the run saw). Each folder holds the taught profile as `teach`
+evidence the teaching run saw). The profiles come from the first generation of
+this set and were reused as they are for the regeneration: no run taught a
+brand again. Each folder holds the taught profile as `teach`
 wrote it: `profile.meta.json`, `DESIGN.md`, `PRODUCT.md`, `tokens.css`
 (fonts embedded as woff2 data URIs, logo embedded), `logo.svg` and
 `brand-sheet.html`. In a real project the profile would live in
@@ -46,23 +52,34 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `release-notes--kestrel.html` | release-notes | corporate | Kestrel to customers' fleet managers and developers: release 4.3, two breaking API changes |
 | `postmortem--kestrel.html` | postmortem | public-sector | Kestrel to municipal customers: the night the routes were not published by 05:00 |
 
-All ten pass `check-document.mjs` with 0 errors and 0 warnings (three
-info notes in the two Fieldwork documents). Each carries light and dark
-themes in one file and embeds its brand's two fonts and its logo; nothing
-loads from the network.
+All ten pass `check-document.mjs` with 0 errors, 0 warnings and 0 info
+notes. Each carries light and dark themes in one file, embeds its brand's
+fonts and its logo, and carries two generated head blocks:
+`<style data-letterhead-tokens>` (fonts and tokens) and
+`<style data-letterhead-style>` (the style's `style.css`). The body is the
+shared markup (`<main class="doc">`, `doc-head`, `dl.meta`, `section` +
+`h2 id`, and the vocabulary elements the content earns); the documents' own
+`<style>` holds 0.4 to 2.1 KB. Nothing loads from the network.
 
 ## notes/
 
 One file per document: the raw notes exactly as the model got them, the
-prompt verbatim, and which session turn it was. All dates follow the 2026
+prompt verbatim, and which session turn it was. The prompts are the ones of
+the first generation, except `status-update--arkona`: its first-generation
+prompt taught the brand from the homepage in the same turn, so for the
+regeneration it names the already taught profile instead. All dates follow the 2026
 calendar (5 October 2026 is a Monday); every weekday in the notes was
 checked against it.
 
 ## How they were made
 
 One headless Claude Code session per brand, run in a fresh directory outside
-any repository (so no project `CLAUDE.md` or existing `.letterhead/` leaks
-in), with the four sessions running in parallel:
+any repository (so no project `CLAUDE.md` and no other `.letterhead/` leaks
+in), with the four sessions running in parallel. The taught profile of the
+brand (everything in `brands/<slug>/` except `site.html`) was copied to
+`.letterhead/brands/<slug>/` of the run directory beforehand, the notes to
+`notes/` (`NOTES.md` for the status update), and each document was one turn:
+the first turn of a session fresh, each later turn `--resume`.
 
 ```sh
 claude -p "<prompt>" --model opus --setting-sources project,local \
@@ -72,49 +89,48 @@ claude -p "<prompt>" --model opus --setting-sources project,local \
   --output-format stream-json --verbose            # + --resume <session> after turn 1
 ```
 
-These are the flags `hero/run.sh` uses. The first turn of each session
-taught the brand from its `site.html`; each later turn (`--resume`) wrote one
-document. Every prompt approves the brand reading and the shape in advance
-("I approve in advance the shape you propose, so do not wait for my
-confirmation"), so no turn stopped at the shape gate. The Arkona session's
-first turn is `hero/run.sh <dir> after` itself (`hero/PROMPT.md`, which
-teaches the brand and writes the status update in one turn).
+These are the flags `hero/run.sh` uses. Every prompt approves the shape in
+advance ("I approve in advance the shape you propose, so do not wait for my
+confirmation"), so no turn stopped at the shape gate.
 
 ### Runs log
 
-| Session | Turn | Wall time | Tool calls | Cost |
-|---|---|---|---|---|
-| arkona | teach + status-update (`hero/run.sh`) | 193 s | 21 | $1.33 |
-| arkona | implementation-plan | 155 s | 9 | $2.05 |
-| arkona | checklist | 151 s | 8 | $2.72 |
-| fieldwork | teach | 58 s | 6 | $0.62 |
-| fieldwork | proposal | 121 s | 14 | $1.31 |
-| fieldwork | project-recap | 116 s | 11 | $1.97 |
-| halde | teach | 75 s | 12 | $0.67 |
-| halde | proposal | 115 s | 7 | $1.20 |
-| halde | report | 103 s | 4 | $1.66 |
-| kestrel | teach | 67 s | 11 | $0.66 |
-| kestrel | spec | 162 s | 15 | $1.52 |
-| kestrel | release-notes | 102 s | 9 | $2.05 |
-| kestrel | postmortem | 131 s | 14 | $2.69 |
+| Session | Turn | Style (`--style`?) | Wall time | Tool calls | Cost |
+|---|---|---|---|---|---|
+| arkona | status-update | consulting (profile base, none) | 119 s | 19 | $0.83 |
+| arkona | implementation-plan | boardroom (`--style boardroom`) | 137 s | 12 | $1.48 |
+| arkona | checklist | workshop (`--style workshop`) | 121 s | 8 | $2.06 |
+| fieldwork | proposal | consulting (profile base, none) | 88 s | 12 | $0.66 |
+| fieldwork | project-recap | startup (`--style startup`) | 82 s | 10 | $1.04 |
+| halde | proposal | atelier (profile base, none) | 147 s | 16 | $0.93 |
+| halde | report | gazette (`--style gazette`) | 88 s | 7 | $1.34 |
+| kestrel | spec | engineering (profile base, none) | 114 s | 9 | $0.76 |
+| kestrel | release-notes | corporate (`--style corporate`) | 66 s | 8 | $1.12 |
+| kestrel | postmortem | public-sector (`--style public-sector`) | 63 s | 6 | $1.44 |
 
-Total: 13 turns, about 25 minutes of model time (8 minutes 20 seconds wall clock, 14:33 to 14:42,
-with the sessions in parallel), $20.47. Every turn succeeded on the first
-attempt; there were no retries.
+Total: 10 turns, about 17 minutes of model time (6 minutes 20 seconds wall
+clock with the four sessions in parallel), $11.68, 107 tool calls. Every turn
+succeeded on the first attempt; there were no retries.
 
-**Skills invoked:** `letterhead:letterhead` only, once per session (in the
-first turn); the later turns worked from the skill already loaded in the
-session. No other skill and no MCP tool was called in any turn (tools used
-across all runs: Bash, Read, Write, Edit, Skill).
+**Skills invoked:** `letterhead:letterhead` only, once per session (in its
+first turn); later turns worked from the skill already loaded in the
+session. No other skill and no MCP tool was called in any turn (tools used:
+Bash, Read, Write, Edit, Skill).
 
-**Scripts the runs used:** `brand-evidence.mjs`, `brand-tokens.mjs`,
-`brand-sheet.mjs` (teach), `apply-tokens.mjs` and `check-document.mjs`
-(every document). In all six turns whose requested style differed from the
-profile's base style, the agent ran `brand-tokens.mjs` again with that
-style's `tokens.css` and the profile's values, wrote the result to a scratch
-file outside the profile and applied that. The profiles themselves were not
-changed. `reference/create.md` does not describe this step; the agents worked
-it out.
+**Scripts the runs used:** `apply-tokens.mjs` and `check-document.mjs` in
+every document. In the six turns whose requested style differs from the
+profile's base style the agent passed `--style <style>` to `apply-tokens.mjs`
+(the brand keeps its colors, fonts and logo in the other style); in the other
+four it ran the script with the profile alone. No run needed
+`brand-tokens.mjs`, which the first generation had to call to put a profile
+into another style by hand. Each agent wrote the body in the shared markup,
+read the template, `reference/markup.md` (first turn of the session) and the
+style's `DESIGN.md`, and most also looked at the style's `style.css`.
+
+**What the agents did after writing.** Seven of the ten turns changed their
+own output after the first write and before the final check: wording fixes
+by `Edit`, `sed`, `perl` or a short Python script, and in the Halde proposal
+a rebuilt price table. The generated head blocks were never touched.
 
 ## screenshots/
 

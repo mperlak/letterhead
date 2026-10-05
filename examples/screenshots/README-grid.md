@@ -5,9 +5,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/checklist--arkona.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="checklist--arkona-dark.webp">
-        <img src="checklist--arkona-light.webp" alt="Arkona go-live weekend checklist, 30 October to 2 November 2026" width="100%">
+        <img src="checklist--arkona-light.webp" alt="Arkona go-live weekend checklist, 29 Oct" width="100%">
       </picture></a><br>
-      <b>Arkona go-live weekend checklist, 30 October to 2 November 2026</b><br>
+      <b>Arkona go-live weekend checklist, 29 Oct</b><br>
       <sub>Checklist · arkona brand</sub>
     </td>
     <td align="center" width="33%">
@@ -21,9 +21,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/postmortem--kestrel.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="postmortem--kestrel-dark.webp">
-        <img src="postmortem--kestrel-light.webp" alt="Routes not published by 05:00 on 22 September 2026" width="100%">
+        <img src="postmortem--kestrel-light.webp" alt="Routes not published by 05:00 on Tue 22 Sep 2026" width="100%">
       </picture></a><br>
-      <b>Routes not published by 05:00 on 22 September 2026</b><br>
+      <b>Routes not published by 05:00 on Tue 22 Sep 2026</b><br>
       <sub>Postmortem · kestrel brand</sub>
     </td>
   </tr>
@@ -31,9 +31,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/project-recap--fieldwork.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="project-recap--fieldwork-dark.webp">
-        <img src="project-recap--fieldwork-light.webp" alt="Saltværk's new shop" width="100%">
+        <img src="project-recap--fieldwork-light.webp" alt="Saltværk new shop" width="100%">
       </picture></a><br>
-      <b>Saltværk's new shop</b><br>
+      <b>Saltværk new shop</b><br>
       <sub>Project recap · fieldwork brand</sub>
     </td>
     <td align="center" width="33%">
@@ -47,9 +47,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/proposal--halde.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="proposal--halde-dark.webp">
-        <img src="proposal--halde-light.webp" alt="Your duplex on Bilderdijkkade" width="100%">
+        <img src="proposal--halde-light.webp" alt="Your duplex on the Bilderdijkkade" width="100%">
       </picture></a><br>
-      <b>Your duplex on Bilderdijkkade</b><br>
+      <b>Your duplex on the Bilderdijkkade</b><br>
       <sub>Proposal · halde brand</sub>
     </td>
   </tr>
@@ -65,17 +65,17 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/report--halde.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="report--halde-dark.webp">
-        <img src="report--halde-light.webp" alt="The Mulder house, surveyed" width="100%">
+        <img src="report--halde-light.webp" alt="The Mulder house in Haarlem" width="100%">
       </picture></a><br>
-      <b>The Mulder house, surveyed</b><br>
+      <b>The Mulder house in Haarlem</b><br>
       <sub>Report · halde brand</sub>
     </td>
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/spec--kestrel.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="spec--kestrel-dark.webp">
-        <img src="spec--kestrel-light.webp" alt="Missed-collection reports" width="100%">
+        <img src="spec--kestrel-light.webp" alt="Missed-collection reports to same-day return trips" width="100%">
       </picture></a><br>
-      <b>Missed-collection reports</b><br>
+      <b>Missed-collection reports to same-day return trips</b><br>
       <sub>Spec · kestrel brand</sub>
     </td>
   </tr>
@@ -83,9 +83,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/status-update--arkona.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="status-update--arkona-dark.webp">
-        <img src="status-update--arkona-light.webp" alt="Arkona webshop and ERP order sync" width="100%">
+        <img src="status-update--arkona-light.webp" alt="Arkona webshop and ERP sync" width="100%">
       </picture></a><br>
-      <b>Arkona webshop and ERP order sync</b><br>
+      <b>Arkona webshop and ERP sync</b><br>
       <sub>Status update · arkona brand</sub>
     </td>
     <td align="center" width="33%">

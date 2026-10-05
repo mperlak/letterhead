@@ -8,11 +8,7 @@ plugin loaded from this repo; the HTML is unedited.
 
 > Next: a proposal from us (Fieldwork Digital) to our client Arkona for phase 2, a trade portal. My notes are in notes/proposal--fieldwork.md. Make it a single self-contained HTML file on our own letterhead (the fieldwork brand), using the proposal template in the consulting style. Save it as proposal--fieldwork.html. I am not available to answer questions during this run: I approve in advance the shape you propose, so do not wait for my confirmation. Just go.
 
-A later turn (`--resume`) of the fieldwork session. The session's first turn taught the brand from `fieldwork-site.html` (saved here as `examples/brands/fieldwork/site.html`) with this prompt:
-
-> Fieldwork Digital is my own agency; a saved copy of our homepage is in fieldwork-site.html. Teach letterhead our brand from it and save the profile under the name fieldwork (.letterhead/brands/fieldwork/), so our own documents can go out on it. I am not available to answer questions during this run: use the site file as the brand evidence, and I approve in advance whatever brand reading you propose, so do not wait for my confirmation. Just go.
-
-The notes were in the run directory as `notes/proposal--fieldwork.md`.
+Turn 1 of the fieldwork session of the regeneration run. The taught `fieldwork` profile (`examples/brands/fieldwork/`, without `site.html`) was placed in `.letterhead/brands/fieldwork/` of the run directory beforehand, so no turn taught a brand. The notes were in the run directory as `notes/proposal--fieldwork.md`.
 
 ## Raw notes (verbatim, as given to the model)
 
