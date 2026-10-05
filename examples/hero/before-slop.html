@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+  ILLUSTRATION, not a model run. A hand-written stand-in for the generic
+  agent-made status update (Inter, purple-to-blue gradients, gradient text,
+  emoji icon tiles, the three-card grid, a "Generated with AI" footer), built
+  from the same NOTES.md facts. The honest model runs are before.html and
+  after.html; see README.md in this folder.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Status Update 🚀</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #f5f3ff; color: #1e1b4b; line-height: 1.6; }
+  .hero { background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #06b6d4 100%); padding: 64px 24px 96px; text-align: center; color: #fff; }
+  .badge { display: inline-block; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35); padding: 6px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+  .hero h1 { font-size: 46px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 14px; }
+  .hero p { font-size: 18px; opacity: .92; max-width: 620px; margin: 0 auto; }
+  .wrap { max-width: 980px; margin: -56px auto 0; padding: 0 24px 64px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  .stat { background: #fff; border-radius: 20px; padding: 22px; box-shadow: 0 10px 30px rgba(99,102,241,.18); text-align: center; }
+  .stat .num { font-size: 32px; font-weight: 800; background: linear-gradient(90deg, #7c3aed, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stat .lbl { font-size: 13px; color: #6b7280; font-weight: 500; }
+  h2 { font-size: 26px; font-weight: 800; margin: 44px 0 18px; background: linear-gradient(90deg, #7c3aed, #6366f1); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: #fff; border-radius: 20px; padding: 26px; box-shadow: 0 10px 30px rgba(99,102,241,.14); border: 1px solid #ede9fe; }
+  .icon { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #a78bfa, #22d3ee); display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 16px; }
+  .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 15px; color: #4b5563; }
+  .bar { height: 10px; background: #ede9fe; border-radius: 999px; margin-top: 14px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: linear-gradient(90deg, #7c3aed, #06b6d4); border-radius: 999px; }
+  .cta { margin-top: 44px; background: linear-gradient(135deg, #7c3aed, #6366f1); color: #fff; border-radius: 24px; padding: 36px; text-align: center; box-shadow: 0 20px 40px rgba(124,58,237,.3); }
+  .cta h3 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .btn { display: inline-block; margin-top: 18px; background: #fff; color: #6d28d9; font-weight: 700; padding: 12px 28px; border-radius: 999px; }
+  footer { text-align: center; font-size: 13px; color: #9ca3af; padding: 32px 0 48px; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <span class="badge">✨ Week 41 Update</span>
+    <h1>🚀 Weekly Status Update</h1>
+    <p>Exciting progress this week! We're on track for an amazing launch. Here's everything you need to know. 🎉</p>
+  </header>
+
+  <main class="wrap">
+    <section class="stats">
+      <div class="stat"><div class="num">412</div><div class="lbl">SKUs Imported 📦</div></div>
+      <div class="stat"><div class="num">99.6%</div><div class="lbl">Orders Synced ✅</div></div>
+      <div class="stat"><div class="num">5/6</div><div class="lbl">Fixes Done 🛠️</div></div>
+      <div class="stat"><div class="num">62%</div><div class="lbl">Budget Used 💰</div></div>
+    </section>
+
+    <h2>🌟 Key Highlights</h2>
+    <div class="cards">
+      <div class="card"><div class="icon">🛒</div><h3>Seamless Checkout</h3><p>The redesigned checkout is now live on staging, delivering a smooth experience. 5 of 6 fixes done!</p><div class="bar"><span style="width:83%"></span></div></div>
+      <div class="card"><div class="icon">⚡</div><h3>Powerful Sync</h3><p>1,279 of 1,284 test orders flowed into the ERP. A small VAT mapping fix is on the way.</p><div class="bar"><span style="width:99%"></span></div></div>
+      <div class="card"><div class="icon">💎</div><h3>Trade Pricing</h3><p>3 of 4 price tiers imported, unlocking a world-class B2B experience.</p><div class="bar"><span style="width:75%"></span></div></div>
+    </div>
+
+    <h2>🔥 What's Next</h2>
+    <div class="cards">
+      <div class="card"><div class="icon">📊</div><h3>Stock Sync</h3><p>Optimizing stock updates from 15 to 5 minutes for real-time accuracy.</p></div>
+      <div class="card"><div class="icon">💳</div><h3>Payments</h3><p>Working closely with the provider to stabilize webhooks.</p></div>
+      <div class="card"><div class="icon">🎯</div><h3>Go-Live</h3><p>Everything is on track for an incredible launch on 3 November!</p></div>
+    </div>
+
+    <h2>⚠️ Risks &amp; Mitigation</h2>
+    <div class="cards">
+      <div class="card"><div class="icon">📐</div><h3>Missing Data</h3><p>37 SKUs need package dimensions. We've got a plan in place.</p></div>
+      <div class="card"><div class="icon">🔌</div><h3>Integrations</h3><p>Payment sandbox is flaky, but we're on it with a fallback ready.</p></div>
+      <div class="card"><div class="icon">⏱️</div><h3>Timeline</h3><p>Hours are slightly ahead of schedule. Nothing to worry about!</p></div>
+    </div>
+
+    <div class="cta">
+      <h3>🙌 Action Required</h3>
+      <p>We need your decision on the ERP price freeze during cutover. Let's make this launch a success together!</p>
+      <span class="btn">Let's Go! 🚀</span>
+    </div>
+  </main>
+
+  <footer>Generated with AI ✨ · Hope this helps!</footer>
+</body>
+</html>

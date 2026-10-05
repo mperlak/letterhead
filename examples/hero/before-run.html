@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arkona | Webshop &amp; ERP sync: status update, week 41</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #1d5c4d;
+    --brand-primary-dark: #154539;
+    --brand-sand: #e8dcc6;
+    --sand-line: #d6c8ae;
+    --ink: #1f2522;
+    --muted: #5d6762;
+    --paper: #fbf8f3;
+    --line: #e2dbcf;
+    --amber: #8a5a12;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  h1, h2, h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5em;
+  }
+  h1 { font-size: 2.8rem; }
+  h2 { font-size: 1.8rem; }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0 0 1em; }
+  a { color: var(--brand-primary); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 13px; font-weight: 600; color: var(--brand-primary); margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+
+  /* Header */
+  .doc-header { border-bottom: 1px solid var(--line); }
+  .doc-header .wrap { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 16px; }
+  .doc-header .meta { font-size: 14px; color: var(--muted); text-align: right; line-height: 1.4; }
+
+  /* Intro */
+  .intro { padding: 64px 0 48px; }
+  .intro .lead { font-size: 1.2rem; max-width: 36em; color: var(--muted); }
+  .status-line { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .pill { display: inline-block; padding: 6px 14px; border-radius: 2px; font-size: 14px; font-weight: 600; border: 1px solid var(--brand-primary); color: var(--brand-primary); background: transparent; }
+  .pill.solid { background: var(--brand-primary); color: #ffffff; }
+
+  /* Decision band */
+  .band { background: var(--brand-sand); padding: 56px 0; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 28px; }
+  .option { border-top: 2px solid var(--sand-line); padding-top: 18px; }
+  .option.recommended { border-top-color: var(--brand-primary); }
+  .option .tag { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+  .option.recommended .tag { color: var(--brand-primary); }
+  .option p { margin: 0; }
+  .deadline { margin-top: 28px; font-weight: 600; }
+
+  /* Numbers */
+  section.block { padding: 56px 0; border-bottom: 1px solid var(--line); }
+  .facts { list-style: none; padding: 0; margin: 0; }
+  .facts li { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .facts li:last-child { border-bottom: 0; }
+  .facts strong { font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.6rem; color: var(--brand-primary); margin-right: 10px; white-space: nowrap; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+
+  /* Item lists */
+  .items { list-style: none; padding: 0; margin: 0; }
+  .items li { padding: 16px 0; border-top: 1px solid var(--line); }
+  .items li:first-child { border-top: 2px solid var(--brand-primary); }
+  .items h3 { margin-bottom: 4px; }
+  .items p { margin: 0; color: var(--muted); }
+  .items .note { display: block; margin-top: 6px; font-size: 15px; color: var(--ink); }
+
+  .risk-when { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber); margin-bottom: 4px; }
+
+  /* Asks */
+  .asks { counter-reset: ask; list-style: none; padding: 0; margin: 0; }
+  .asks li { counter-increment: ask; display: grid; grid-template-columns: 48px 1fr auto; gap: 16px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--line); }
+  .asks li::before { content: counter(ask); font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.6rem; color: var(--brand-primary); }
+  .asks .by { font-weight: 600; white-space: nowrap; color: var(--brand-primary); }
+
+  /* Dates */
+  .dates { width: 100%; border-collapse: collapse; }
+  .dates td { padding: 14px 0; border-top: 1px solid var(--line); vertical-align: baseline; }
+  .dates tr:first-child td { border-top: 2px solid var(--brand-primary); }
+  .dates td.when { width: 180px; font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 1.15rem; color: var(--brand-primary); white-space: nowrap; padding-right: 16px; }
+  .dates tr.golive td { font-weight: 600; }
+
+  .doc-footer { padding: 40px 0 56px; font-size: 14px; color: var(--muted); }
+  .doc-footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+
+  @media (max-width: 760px) {
+    h1 { font-size: 2.1rem; }
+    .cols, .options { grid-template-columns: 1fr; gap: 32px; }
+    .doc-header .meta { display: none; }
+    .asks li { grid-template-columns: 36px 1fr; }
+    .asks .by { grid-column: 2; }
+    .dates td.when { width: 110px; }
+  }
+  @media print {
+    body { font-size: 12pt; background: #ffffff; }
+    .band { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    section.block, .band { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="wrap">
+    <svg width="168" height="36" viewBox="0 0 168 36" role="img" aria-label="Arkona" xmlns="http://www.w3.org/2000/svg">
+      <title>Arkona</title>
+      <path d="M4 32 L18 6 L32 32" fill="none" stroke="#1d5c4d" stroke-width="4" stroke-linejoin="miter"/>
+      <path d="M10 24 H26" stroke="#1d5c4d" stroke-width="3"/>
+      <text x="44" y="27" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="600" letter-spacing="3" fill="#1d5c4d">ARKONA</text>
+    </svg>
+    <div class="meta">Weekly status, week 41<br>Prepared for Karin Holm by Fieldwork Digital</div>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="wrap">
+      <p class="eyebrow">New webshop &amp; ERP order sync · Week 41</p>
+      <h1>Order sync passed its first full test</h1>
+      <p class="lead">Every product is in the new shop, the redesigned checkout is on staging, and nearly all of 1,284 test orders reached the ERP. The few that failed share one cause, and the fix is written. Go-live on 3 November is still the plan. We need one decision from you by 10 October.</p>
+      <div class="status-line">
+        <span class="pill solid">Go-live: 3 Nov</span>
+        <span class="pill">1 decision needed by 10 Oct</span>
+        <span class="pill">2 inputs needed from Arkona</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="decision">
+    <div class="wrap">
+      <p class="eyebrow">Decision needed · Karin &amp; finance</p>
+      <h2 id="decision">Freeze ERP prices during cutover?</h2>
+      <p>The cutover window runs from 28 October to 3 November. While data moves from the old shop to the new one, any price change made in the ERP has to be handled one of two ways.</p>
+      <div class="options">
+        <div class="option recommended">
+          <div class="tag">Option A · We recommend this</div>
+          <h3>Freeze prices in the ERP</h3>
+          <p>No price changes from 28 Oct to 3 Nov. The cutover stays clean and nobody has to fix anything by hand afterwards.</p>
+        </div>
+        <div class="option">
+          <div class="tag">Option B</div>
+          <h3>No freeze</h3>
+          <p>Prices can change as normal. After go-live we reconcile the changes by hand. We estimate 1–2 days of our time, plus time from your team to check the results.</p>
+        </div>
+      </div>
+      <p class="deadline">Please let us know by 10 October.</p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="numbers">
+    <div class="wrap cols">
+      <div>
+        <p class="eyebrow">This week in numbers</p>
+        <h2 id="numbers">Where things stand</h2>
+        <p class="muted">Hours used are running a little ahead of the calendar: 62% of the hours against about 55% of the timeline. That is within a normal range for this stage, but we are watching it and will raise it early if the gap grows.</p>
+      </div>
+      <ul class="facts">
+        <li><strong>412 / 412</strong> products imported into the new shop</li>
+        <li><strong>1,279</strong> of 1,284 test orders synced to the ERP</li>
+        <li><strong>5 of 6</strong> checkout fixes from your review already done</li>
+        <li><strong>3 of 4</strong> trade price tiers imported</li>
+        <li><strong>62%</strong> of hours used, at about 55% of the timeline</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="done">
+    <div class="wrap">
+      <p class="eyebrow">Done this week</p>
+      <h2 id="done">Completed</h2>
+      <ul class="items">
+        <li>
+          <h3>Checkout redesign is live on staging</h3>
+          <p>You and two of your team clicked through it and logged 6 small fixes. 5 are already done.</p>
+        </li>
+        <li>
+          <h3>All 412 products are in the new shop</h3>
+          <p>37 products are still missing package dimensions. Until they have them, freight for those items falls back to the flat rate.</p>
+        </li>
+        <li>
+          <h3>Order sync tested end to end on staging</h3>
+          <p>From Tuesday to Thursday we pushed 1,284 test orders to the ERP. 1,279 went through. All 5 failures had the same cause: the VAT code for deliveries to Norway was not mapped. The fix is written and we retest on 6 October.</p>
+        </li>
+        <li>
+          <h3>Trade price lists for 3 of 4 tiers imported</h3>
+          <p>The fourth tier (project and contract pricing) is covered below.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="progress">
+    <div class="wrap">
+      <p class="eyebrow">In progress</p>
+      <h2 id="progress">Still moving</h2>
+      <ul class="items">
+        <li>
+          <h3>Fourth trade price tier: project and contract pricing</h3>
+          <p>We are waiting for the spreadsheet from Arkona finance, which was expected last Friday.</p>
+          <span class="note">We need it by 8 October to stay on schedule.</span>
+        </li>
+        <li>
+          <h3>Stock levels</h3>
+          <p>Stock syncs every 15 minutes on staging. We want every 5 minutes for go-live, and Tomasz is checking the ERP's API rate limits to confirm that is possible.</p>
+        </li>
+        <li>
+          <h3>Payment provider webhooks</h3>
+          <p>The provider's sandbox is unreliable, so we cannot test the webhooks properly yet. We have had a support ticket open with them since 30 September.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="risks">
+    <div class="wrap">
+      <p class="eyebrow">Risks</p>
+      <h2 id="risks">What we are watching</h2>
+      <ul class="items">
+        <li>
+          <div class="risk-when">If not resolved by 20 Oct</div>
+          <h3>37 products without package dimensions</h3>
+          <p>These products would go live with flat-rate freight. For large items such as long tables, the flat rate is lower than the real freight cost, and Arkona would cover the difference on each order.</p>
+        </li>
+        <li>
+          <div class="risk-when">If not resolved by 14 Oct</div>
+          <h3>Payment provider sandbox</h3>
+          <p>If the sandbox is still not fixed, we will test against the live payment system with a few small real orders instead.</p>
+        </li>
+        <li>
+          <div class="risk-when">Ongoing</div>
+          <h3>Budget</h3>
+          <p>62% of hours used at about 55% of the timeline. Fine for now; we will flag it straight away if that changes.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="asks">
+    <div class="wrap">
+      <p class="eyebrow">What we need from Arkona</p>
+      <h2 id="asks">Three things, in date order</h2>
+      <ol class="asks">
+        <li><span>Spreadsheet for the fourth trade price tier (project and contract pricing), from finance</span><span class="by">by 8 Oct</span></li>
+        <li><span>Decision on the price freeze during cutover: option A or B</span><span class="by">by 10 Oct</span></li>
+        <li><span>Package dimensions for the 37 products that are missing them</span><span class="by">by 20 Oct</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="dates" style="border-bottom: 0;">
+    <div class="wrap">
+      <p class="eyebrow">Key dates</p>
+      <h2 id="dates">Coming up</h2>
+      <table class="dates">
+        <tr><td class="when">6 Oct</td><td>Retest of order sync with the Norway VAT fix</td></tr>
+        <tr><td class="when">8 Oct</td><td>Fourth price tier spreadsheet needed</td></tr>
+        <tr><td class="when">10 Oct</td><td>Price freeze decision needed</td></tr>
+        <tr><td class="when">14 Oct</td><td>Last date for the payment sandbox fix before we switch to live testing</td></tr>
+        <tr><td class="when">20 Oct</td><td>Content freeze; package dimensions needed</td></tr>
+        <tr><td class="when">28 Oct – 3 Nov</td><td>Cutover window</td></tr>
+        <tr class="golive"><td class="when">3 Nov</td><td>Go-live</td></tr>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="doc-footer">
+  <div class="wrap">
+    <span>Prepared by Fieldwork Digital for Arkona ApS · Week 41</span>
+    <span>Next update: week 42</span>
+  </div>
+</footer>
+
+</body>
+</html>

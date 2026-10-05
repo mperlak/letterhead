@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "brand": "arkona",
+  "lang": "en",
+  "style": "consulting",
+  "collectedAt": "2026-10-05T11:30:00Z",
+  "sources": [
+    {
+      "id": "doc1",
+      "type": "document",
+      "ref": "arkona-site.html (saved copy of the Arkona homepage)",
+      "fetchedAt": "2026-10-05T11:30:00Z"
+    }
+  ],
+  "fields": {
+    "name": {
+      "value": "Arkona",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The site name in the page metadata; the footer adds the legal form ApS, which documents leave off."
+    },
+    "colors.primary": {
+      "value": "#1d5c4d",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The deep green of the logo, the navigation, the links and the buttons."
+    },
+    "colors.foreground": {
+      "value": "#1f2522",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The site's text color, a green-tinted near-black."
+    },
+    "colors.secondary": {
+      "value": "#e8dcc6",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The warm sand of the band behind your materials section and the hover on outline buttons."
+    },
+    "typography.body": {
+      "value": "Work Sans",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The site's text face, an open font from Google Fonts."
+    },
+    "typography.heading": {
+      "value": "Fraunces",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The site's heading face, an open serif from Google Fonts."
+    },
+    "typography.headingWeight": {
+      "value": 600,
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "Headings on the site are set semibold (600)."
+    },
+    "logo": {
+      "value": "logo.svg",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ],
+      "note": "The ARKONA wordmark with the larch A, from the site header, in one green."
+    },
+    "voice.register": {
+      "value": "plain, concrete, craft-proud; short sentences, facts over adjectives",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ]
+    },
+    "voice.sample": {
+      "value": "Larch from the Baltic coast grows slowly, so the wood is dense and resinous. We leave it untreated or oil it once.",
+      "confidence": "inferred",
+      "sources": [
+        "doc1"
+      ]
+    }
+  },
+  "questions": [],
+  "notes": {
+    "name": "We used Arkona, the name in your site's metadata and footer, without the ApS.",
+    "logo": "The wordmark from the top of your website, used as it is in your green, and in light ink when a reader uses dark mode.",
+    "tone": "You write short, concrete sentences about materials and making, and let numbers do the persuading."
+  }
+}

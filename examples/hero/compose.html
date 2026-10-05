@@ -1,0 +1,96 @@
+<!doctype html>
+<!--
+  Lays the two screenshots side by side for the README hero.
+  Rendered by build-hero.sh with query parameters:
+    ?theme=light|dark&before=<image url>&after=<image url>
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>letterhead hero</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --frame: #ffffff;
+    --frame-border: #d9d6cf;
+    --bar: #ecebe6;
+    --dot: #cfccc4;
+    --label: #2a2926;
+    --label-muted: #6f6c65;
+    --caption: #2a2926;
+  }
+  :root[data-theme="dark"] {
+    --bg: #161615;
+    --frame: #1f1f1e;
+    --frame-border: #3a3936;
+    --bar: #262624;
+    --dot: #4a4844;
+    --label: #ecebe6;
+    --label-muted: #a19e96;
+    --caption: #ecebe6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); }
+  body {
+    width: 1200px;
+    padding: 40px 44px 36px;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .label {
+    margin: 0 0 12px 2px;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--label);
+  }
+  .label span { font-weight: 400; color: var(--label-muted); }
+  .frame {
+    border: 1px solid var(--frame-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--frame);
+  }
+  .bar {
+    height: 22px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    background: var(--bar);
+    border-bottom: 1px solid var(--frame-border);
+  }
+  .bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--dot); display: block; }
+  .frame img { display: block; width: 100%; height: auto; }
+  .caption {
+    margin: 28px 0 0;
+    text-align: center;
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--caption);
+  }
+</style>
+</head>
+<body>
+  <div class="pair">
+    <figure style="margin:0">
+      <p class="label">The usual agent-made update</p>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><img id="before" alt=""></div>
+    </figure>
+    <figure style="margin:0">
+      <p class="label">letterhead, on the client's brand</p>
+      <div class="frame"><div class="bar"><i></i><i></i><i></i></div><img id="after" alt=""></div>
+    </figure>
+  </div>
+  <p class="caption">Same notes. One looks generated. One looks like it came from you.</p>
+<script>
+  const q = new URLSearchParams(location.search);
+  document.documentElement.dataset.theme = q.get('theme') === 'dark' ? 'dark' : 'light';
+  document.getElementById('before').src = q.get('before') || '';
+  document.getElementById('after').src = q.get('after') || '';
+</script>
+</body>
+</html>

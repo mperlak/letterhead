@@ -1,0 +1,6 @@
+<svg width="168" height="36" viewBox="0 0 168 36" role="img" aria-label="Arkona logo" xmlns="http://www.w3.org/2000/svg">
+        <title>Arkona</title>
+        <path d="M4 32 L18 6 L32 32" fill="none" stroke="#1d5c4d" stroke-width="4" stroke-linejoin="miter"/>
+        <path d="M10 24 H26" stroke="#1d5c4d" stroke-width="3"/>
+        <text x="44" y="27" font-family="Fraunces, Georgia, serif" font-size="24" font-weight="600" letter-spacing="3" fill="#1d5c4d">ARKONA</text>
+      </svg>
