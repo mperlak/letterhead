@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "name": "Nimbus Freight",
+  "slug": "nimbus-freight",
+  "lang": "pl",
+  "style": "corporate",
+  "collectedAt": "2026-09-10T00:00:00Z",
+  "sources": [
+    { "id": "url1", "type": "url", "ref": "https://nimbus-freight.example/", "fetchedAt": "2026-09-10T00:00:00Z" }
+  ],
+  "fields": {
+    "name": {
+      "value": "Nimbus Freight",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Nazwa zgodna z metadanymi strony i materiałami klienta."
+    },
+    "colors.primary": {
+      "value": "#3B6FE0",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Jedyny kolor marki: nawigacja, przyciski, linki."
+    },
+    "colors.secondary": {
+      "value": "#E0653B",
+      "confidence": "guessed",
+      "sources": [],
+      "note": "Kolor uzupełniający zaproponowany do testów wyróżnień, nie odczytany ze strony."
+    },
+    "colors.foreground": {
+      "value": "#1C1F26",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Kolor zadeklarowany w regule body."
+    },
+    "typography.body": {
+      "value": "Nimbus Sans",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Deklarowany krój strony; brak @font-face, więc dokumenty ładują własny fallback."
+    },
+    "typography.heading": {
+      "value": "Nimbus Sans",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Ten sam krój co tekst, waga 700 dla nagłówków."
+    },
+    "logo": {
+      "value": "assets/nimbus-logo.svg",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Znak biały na przezroczystości; wymaga ciemnego tła."
+    },
+    "composition.density": {
+      "value": "regular",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Strona główna: zwykła gęstość."
+    },
+    "composition.imagery": {
+      "value": "spot",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Pojedyncze zdjęcia flot, nie na całą szerokość."
+    },
+    "composition.rhythm": {
+      "value": "sectioned",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Każda sekcja zaczyna się paskiem koloru."
+    }
+  },
+  "questions": [
+    { "id": "q-name-form", "field": "name", "text": "Czy w dokumentach mamy pisać „Nimbus Freight”, czy pełną nazwę rejestrową?", "why": "Nazwa trafia do nagłówka każdego dokumentu." },
+    { "id": "q-second-color", "field": "colors.secondary", "text": "Czy kolor uzupełniający jest kolorem marki?", "why": "Nie znaleźliśmy go na stronie — zaproponowaliśmy go do testów." },
+    { "id": "q-tone-sample", "field": "tone", "text": "Czy przykładowy akapit brzmi jak Nimbus Freight, czy zbyt ogólnie?", "why": "To rejestr, który skopiuje każdy kolejny dokument." }
+  ],
+  "notes": {
+    "name": "Nazwa jest zgodna z tym, jak firma podpisuje się w materiałach, a og:site_name strony to potwierdza — bez wersji rozszerzonej.",
+    "logo": "Znak działa tylko na ciemnym tle; bez wersji na jasne tło każdy dokument otwiera czarny lub granatowy pasek.",
+    "tone": "Specyfikacja opisuje sposób zgłaszania zleceń transportowych w nowym portalu klienta. Zakres obejmuje formularz zgłoszenia, potwierdzenie trasy oraz miejsce, w którym zlecenie wraca do poprawy. Punkty nierozstrzygnięte wypisujemy osobno jako pytania do Nimbus Freight.",
+    "preview": "Dokument opisuje zgłaszanie zleceń transportowych: formularz, potwierdzenie trasy i miejsca poprawy. Punkty nierozstrzygnięte są wypisane jako pytania do Nimbus Freight.",
+    "avoid": ["hype", "disruptive", "synergy"]
+  },
+  "preview": {
+    "title": "Specyfikacja: portal zgłoszeń transportowych",
+    "nextStep": "recenzja specyfikacji przez Nimbus Freight"
+  }
+}

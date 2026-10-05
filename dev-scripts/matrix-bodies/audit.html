@@ -1,0 +1,42 @@
+<!-- title: Order Sync Security Review — Audit (matrix sample) -->
+<!-- description: Matrix sample exercising the audit structure. -->
+<header>
+    <h1>Order Sync Security Review</h1>
+    <p class="subtitle">Webhook and reservation surfaces assessed against the integration security checklist v2.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Completed</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Lumen engineering, Atlas IT</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="verdict">Verdict</h2>
+  <p>The integration passes with conditions: 1 major and 2 minor findings, no critical.
+  The major finding must close before the public ramp exceeds 50%.</p>
+
+  <h2 id="scope-and-criteria">Scope and criteria</h2>
+  <p>In scope: webhook delivery, signature verification, reservation API. Excluded:
+  Atlas internal network (separate audit). Criteria: integration security checklist v2.</p>
+
+  <h2 id="findings-by-severity">Findings by severity</h2>
+  <h3 id="stale-signature-window">Major: stale-signature window too wide</h3>
+  <p>Deliveries up to 15 minutes old are accepted; the checklist requires 5. Fix: tighten
+  the timestamp check in the webhook receiver.</p>
+  <h3 id="verbose-error-bodies">Minor: verbose error bodies</h3>
+  <p>Reservation rejections echo internal field names. Fix: map to public reason codes.</p>
+
+  <h2 id="what-passed">What passed</h2>
+  <ul>
+    <li>HMAC signature scheme and rotation window.</li>
+    <li>Idempotency-key handling under replay.</li>
+  </ul>
+
+  <h2 id="remediation-plan">Remediation plan</h2>
+  <table>
+    <thead><tr><th>Fix</th><th>Severity</th><th>Effort</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Tighten timestamp window to 5 min</td><td><span class="state blocked">major</span></td><td>Small</td><td>Lumen engineering</td></tr>
+      <tr><td>Public reason-code mapping</td><td><span class="state warn">minor</span></td><td>Small</td><td>Lumen engineering</td></tr>
+    </tbody>
+  </table>

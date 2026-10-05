@@ -1,0 +1,22 @@
+:root {
+  --wp--preset--color--primary: #e20c7b;
+  --wp--preset--color--primary-hover: #830747;
+  --wp--preset--color--vivid-red: #cf2e2e;
+  --fupi-notice-slider-color: #249dc1;
+  --e-global-color-accent: #ff3535;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: #222222; background-color: #ffffff; }
+h1, h2 { font-family: inherit; }
+.wp-block-button .wp-block-button__link { background-color: var(--wp--preset--color--primary); color: #ffffff; }
+.main-menu .menu-link:hover { color: var(--wp--preset--color--primary-hover); }
+#wpadminbar .ab-top-menu > li > .ab-item { background: #2c3338; color: #72aee6; }
+.cmplz-cookiebanner .cmplz-btn { background-color: #1e73be; }
+.wp-block-group p { color: #fffffe; }
+@font-face { font-family: dashicons; src: url(dashicons.woff2) format("woff2"); }
+@font-face { font-family: "Font Awesome 5 Free"; src: url(fa-solid.woff2) format("woff2"); }
+@font-face { font-family: "Poppins"; src: url(https://fonts.gstatic.com/s/poppins/v1/p.woff2) format("woff2"); }
+.dashicons { font-family: dashicons; }
+.fa, .fas { font-family: "Font Awesome 5 Free"; }
+.fa-solid { font-family: "Font Awesome 5 Free"; }
+.fa-regular { font-family: "Font Awesome 5 Free"; }
+.lead { font-family: Poppins, sans-serif; }

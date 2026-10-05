@@ -1,0 +1,48 @@
+<!-- title: Order Sync — Specification (matrix sample) -->
+<!-- description: Matrix sample exercising the spec structure. -->
+<header>
+    <h1>Order Sync Specification</h1>
+    <p class="subtitle">How orders will stay in sync between Lumen Commerce and Atlas ERP.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Draft for client review</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Atlas ERP operations</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="business-context">Business context</h2>
+  <p>Orders are exported nightly by CSV. Campaigns oversell stock, and support reconciles
+  mismatched states by hand. This spec describes an event-driven replacement.</p>
+
+  <h2 id="scope">Scope</h2>
+  <p>Covers order creation, reservation, payment confirmation. Does not cover returns
+  (Phase 2 document) or catalog sync. Assumes Lumen remains the order ID authority.</p>
+
+  <h2 id="flow-order-placement">Flow: order placement</h2>
+  <ol>
+    <li>Customer places the order in Lumen Commerce.</li>
+    <li>Atlas reserves stock per line item within the 8-second SLA.</li>
+    <li>Confirmation is sent once stock is held; the order is <code>confirmed</code> in both systems.</li>
+  </ol>
+
+  <h2 id="requirements-order-module">Requirements: order module</h2>
+  <ul>
+    <li>A rejected line returns a reason code the operator can see.</li>
+    <li>Repeated idempotency keys act as status queries, never new reservations.</li>
+  </ul>
+
+  <h2 id="integrations">Integrations</h2>
+  <table>
+    <thead><tr><th>System</th><th>Direction</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td>Atlas ERP</td><td>Lumen → Atlas</td><td>Payment capture (<code>order.paid</code>)</td></tr>
+      <tr><td>Payment provider</td><td>Provider → Lumen</td><td>Capture confirmation</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="open-decisions">Open decisions</h2>
+  <ol>
+    <li>Timeout behavior after a second failed reservation: queue or fail fast?</li>
+    <li>Do post-picking cancellations require Atlas-side approval?</li>
+  </ol>

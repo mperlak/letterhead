@@ -1,0 +1,40 @@
+<!-- title: Order Sync — Status Update, week 25 (matrix sample) -->
+<!-- description: Matrix sample exercising the status-update structure. -->
+<header>
+    <h1>Order Sync — Status Update</h1>
+    <p class="subtitle">Week 25 · June 15–19, 2026.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>On track, one blocker</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Engineering leads, Atlas operations</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <div class="panel">
+    <span class="k">TL;DR</span>
+    <p>Load test passed (p95 6.1s against the 8s SLA). Go-live holds only if Atlas staging
+    credentials arrive by Wednesday; that is the one thing this update needs from you.</p>
+  </div>
+
+  <h2 id="done">Done</h2>
+  <ul>
+    <li><span class="state ok">done</span> Load test at 3x peak volume, p95 6.1s.</li>
+    <li><span class="state ok">done</span> Idempotency verified for <code>order.paid</code>.</li>
+  </ul>
+
+  <h2 id="in-progress">In progress</h2>
+  <ul>
+    <li><span class="state warn">wip</span> Reconciliation dry-run; 3 rounding false positives, fix underway.</li>
+  </ul>
+
+  <h2 id="blocked-decisions-needed">Blocked / decisions needed</h2>
+  <ul>
+    <li><span class="state blocked">blocked</span> Staging credentials, requested three weeks ago. Go-live slips a week without them.</li>
+  </ul>
+
+  <h2 id="next">Next</h2>
+  <ul>
+    <li>Complete reconciliation dry-run with the rounding fix.</li>
+    <li>Rollback drill in staging on Monday.</li>
+  </ul>

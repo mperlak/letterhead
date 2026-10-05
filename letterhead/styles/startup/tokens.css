@@ -1,0 +1,160 @@
+/**
+ * styles/startup/tokens.css
+ *
+ * Reference style: documents for investors, partners, early customers.
+ * White canvas, near-black ink, one confident emerald, bold display type,
+ * energy from scale and rhythm rather than decoration. A worked example
+ * `teach` borrows structure from; not a brand.
+ */
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.1900 0.0060 165);
+  --card: oklch(0.9820 0.0030 160);
+  --card-foreground: oklch(0.1900 0.0060 165);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.1900 0.0060 165);
+  --primary: oklch(0.5200 0.1280 155);
+  --primary-foreground: oklch(0.9950 0.0020 160);
+  --secondary: oklch(0.9600 0.0050 160);
+  --secondary-foreground: oklch(0.2800 0.0120 162);
+  --muted: oklch(0.9700 0.0040 160);
+  --muted-foreground: oklch(0.4700 0.0140 163);
+  --accent: oklch(0.9450 0.0250 158);
+  --accent-foreground: oklch(0.3700 0.0800 156);
+  --destructive: oklch(0.5300 0.1850 28);
+  --destructive-foreground: oklch(0.9950 0.0020 160);
+  --border: oklch(0.9150 0.0060 161);
+  --input: oklch(0.9150 0.0060 161);
+  --ring: oklch(0.5200 0.1280 155);
+  --sidebar: oklch(0.9750 0.0035 160);
+  --sidebar-foreground: oklch(0.1900 0.0060 165);
+  --sidebar-primary: oklch(0.5200 0.1280 155);
+  --sidebar-primary-foreground: oklch(0.9950 0.0020 160);
+  --sidebar-accent: oklch(0.9450 0.0250 158);
+  --sidebar-accent-foreground: oklch(0.3700 0.0800 156);
+  --sidebar-border: oklch(0.9150 0.0060 161);
+  --sidebar-ring: oklch(0.5200 0.1280 155);
+  --chart-1: oklch(0.5200 0.1280 155);
+  --chart-2: oklch(0.6800 0.1100 152);
+  --chart-3: oklch(0.8100 0.0800 150);
+  --chart-4: oklch(0.4600 0.0900 240);
+  --chart-5: oklch(0.5800 0.0180 162);
+  --shadow-sm: 0 1px 2px oklch(0.19 0.006 165 / 0.06);
+  --shadow-md: 0 6px 20px -6px oklch(0.19 0.006 165 / 0.12);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.9375rem;
+  --text-3xl: clamp(2.25rem, 5.5vw, 3.25rem);
+  --leading-tight: 1.12;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.72;
+  --tracking-label: 0.06em;
+  --tracking-display: -0.02em;
+  --spacing: 1rem;
+  --space-section: 3.5rem;
+  --measure: 42rem;
+  --motion-duration-fast: 140ms;
+  --motion-duration-base: 220ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.1850 0.0080 168);
+  --foreground: oklch(0.9400 0.0050 160);
+  --card: oklch(0.2200 0.0090 167);
+  --card-foreground: oklch(0.9400 0.0050 160);
+  --popover: oklch(0.2200 0.0090 167);
+  --popover-foreground: oklch(0.9400 0.0050 160);
+  --primary: oklch(0.7200 0.1100 152);
+  --primary-foreground: oklch(0.1700 0.0090 168);
+  --secondary: oklch(0.2600 0.0100 166);
+  --secondary-foreground: oklch(0.9000 0.0070 160);
+  --muted: oklch(0.2500 0.0095 166);
+  --muted-foreground: oklch(0.7700 0.0110 160);
+  --accent: oklch(0.2900 0.0300 158);
+  --accent-foreground: oklch(0.8500 0.0700 152);
+  --destructive: oklch(0.6900 0.1550 27);
+  --destructive-foreground: oklch(0.1700 0.0080 168);
+  --border: oklch(0.3050 0.0110 166);
+  --input: oklch(0.3050 0.0110 166);
+  --ring: oklch(0.7200 0.1100 152);
+  --sidebar: oklch(0.2050 0.0085 167);
+  --sidebar-foreground: oklch(0.9400 0.0050 160);
+  --sidebar-primary: oklch(0.7200 0.1100 152);
+  --sidebar-primary-foreground: oklch(0.1700 0.0090 168);
+  --sidebar-accent: oklch(0.2900 0.0300 158);
+  --sidebar-accent-foreground: oklch(0.8500 0.0700 152);
+  --sidebar-border: oklch(0.3050 0.0110 166);
+  --sidebar-ring: oklch(0.7200 0.1100 152);
+  --chart-1: oklch(0.7200 0.1100 152);
+  --chart-2: oklch(0.6200 0.1000 154);
+  --chart-3: oklch(0.5000 0.0850 156);
+  --chart-4: oklch(0.6800 0.0800 242);
+  --chart-5: oklch(0.7000 0.0170 162);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
+  --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.1850 0.0080 168);
+    --foreground: oklch(0.9400 0.0050 160);
+    --card: oklch(0.2200 0.0090 167);
+    --card-foreground: oklch(0.9400 0.0050 160);
+    --popover: oklch(0.2200 0.0090 167);
+    --popover-foreground: oklch(0.9400 0.0050 160);
+    --primary: oklch(0.7200 0.1100 152);
+    --primary-foreground: oklch(0.1700 0.0090 168);
+    --secondary: oklch(0.2600 0.0100 166);
+    --secondary-foreground: oklch(0.9000 0.0070 160);
+    --muted: oklch(0.2500 0.0095 166);
+    --muted-foreground: oklch(0.7700 0.0110 160);
+    --accent: oklch(0.2900 0.0300 158);
+    --accent-foreground: oklch(0.8500 0.0700 152);
+    --destructive: oklch(0.6900 0.1550 27);
+    --destructive-foreground: oklch(0.1700 0.0080 168);
+    --border: oklch(0.3050 0.0110 166);
+    --input: oklch(0.3050 0.0110 166);
+    --ring: oklch(0.7200 0.1100 152);
+    --sidebar: oklch(0.2050 0.0085 167);
+    --sidebar-foreground: oklch(0.9400 0.0050 160);
+    --sidebar-primary: oklch(0.7200 0.1100 152);
+    --sidebar-primary-foreground: oklch(0.1700 0.0090 168);
+    --sidebar-accent: oklch(0.2900 0.0300 158);
+    --sidebar-accent-foreground: oklch(0.8500 0.0700 152);
+    --sidebar-border: oklch(0.3050 0.0110 166);
+    --sidebar-ring: oklch(0.7200 0.1100 152);
+    --chart-1: oklch(0.7200 0.1100 152);
+    --chart-2: oklch(0.6200 0.1000 154);
+    --chart-3: oklch(0.5000 0.0850 156);
+    --chart-4: oklch(0.6800 0.0800 242);
+    --chart-5: oklch(0.7000 0.0170 162);
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
+    --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "name": "Nimbus Freight",
+  "slug": "nimbus-freight",
+  "lang": "en",
+  "style": "corporate",
+  "collectedAt": "2026-09-10T00:00:00Z",
+  "sources": [
+    { "id": "url1", "type": "url", "ref": "https://nimbus-freight.example/", "fetchedAt": "2026-09-10T00:00:00Z" }
+  ],
+  "fields": {
+    "name": {
+      "value": "Nimbus Freight",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Name matches the site's own metadata and client materials."
+    },
+    "colors.primary": {
+      "value": "#3B6FE0",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "The only brand color: navigation, buttons, links."
+    },
+    "colors.secondary": {
+      "value": "#E0653B",
+      "confidence": "guessed",
+      "sources": [],
+      "note": "Secondary color proposed for testing highlights, not read from the site."
+    },
+    "colors.foreground": {
+      "value": "#1C1F26",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Declared color on the body rule."
+    },
+    "typography.body": {
+      "value": "Nimbus Sans",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Declared site face; no @font-face, so documents load their own fallback."
+    },
+    "typography.heading": {
+      "value": "Nimbus Sans",
+      "confidence": "confirmed",
+      "sources": ["url1"],
+      "note": "Same face as body, weight 700 for headings."
+    },
+    "logo": {
+      "value": "assets/nimbus-logo.svg",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Dark mark on transparency; needs a light background."
+    },
+    "composition.density": {
+      "value": "regular",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Home page renders at regular density."
+    },
+    "composition.imagery": {
+      "value": "spot",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Single fleet photos, not full-bleed."
+    },
+    "composition.rhythm": {
+      "value": "sectioned",
+      "confidence": "inferred",
+      "sources": ["url1"],
+      "note": "Each section opens with a color bar."
+    }
+  },
+  "questions": [
+    { "id": "q-name-form", "field": "name", "text": "Should documents say \"Nimbus Freight\" or the full registered name?", "why": "The name lands in the header of every document." },
+    { "id": "q-second-color", "field": "colors.secondary", "text": "Is the secondary color actually a brand color?", "why": "We did not find it on the site — it was proposed for testing." },
+    { "id": "q-tone-sample", "field": "tone", "text": "Does the sample paragraph sound like Nimbus Freight, or too generic?", "why": "This is the register every future document will copy." }
+  ],
+  "notes": {
+    "name": "The name matches how the company signs its own materials, and the site's og:site_name agrees — no extended form.",
+    "logo": "The mark only works on a light background; without a dark variant every document opens with a light band.",
+    "tone": "This specification describes how transport bookings are submitted through the new customer portal. Scope covers the booking form, route confirmation, and the point where a booking is sent back for correction. Points that cannot yet be settled are listed separately as questions to Nimbus Freight.",
+    "preview": "The document describes booking submission: the form, route confirmation, and correction points. Unsettled points are listed as questions to Nimbus Freight.",
+    "avoid": ["hype", "disruptive", "synergy"]
+  },
+  "preview": {
+    "title": "Specification: transport booking portal",
+    "nextStep": "review of the specification by Nimbus Freight"
+  }
+}

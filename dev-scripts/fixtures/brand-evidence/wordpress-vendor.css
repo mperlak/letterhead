@@ -1,0 +1,13 @@
+:root {
+  --gf-color-primary: #204ce5;
+  --stk-link-color: #f00069;
+  --cky-btn-color: #123456;
+  --primary-color: #ffaf00;
+}
+body { font-family: Roboto, sans-serif; color: #333333; background: #ffffff; }
+.btn, button.cta { background-color: var(--primary-color); color: #ffffff; }
+nav a { color: var(--primary-color); }
+header { background: #000000; }
+h1, h2 { font-family: Roboto, sans-serif; font-weight: 700; }
+.page-header h1 { font-weight: 300; }
+body { color: #414042; }

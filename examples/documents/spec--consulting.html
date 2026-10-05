@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Sync Specification — Lumen Commerce ↔ Atlas ERP</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23732430'/%3E%3C/svg%3E">
+<meta property="og:title" content="Order Sync Specification — Lumen Commerce ↔ Atlas ERP">
+<meta property="og:description" content="How orders will stay in sync between Lumen Commerce and Atlas ERP: flows, requirements per module, integrations, open decisions.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9800 0.0018 80);
+  --foreground: oklch(0.2350 0.0050 70);
+  --card: oklch(0.9930 0.0012 80);
+  --card-foreground: oklch(0.2350 0.0050 70);
+  --popover: oklch(0.9930 0.0012 80);
+  --popover-foreground: oklch(0.2350 0.0050 70);
+  --primary: oklch(0.4050 0.1100 22);
+  --primary-foreground: oklch(0.9880 0.0015 80);
+  --secondary: oklch(0.9480 0.0035 78);
+  --secondary-foreground: oklch(0.3000 0.0060 72);
+  --muted: oklch(0.9560 0.0030 78);
+  --muted-foreground: oklch(0.4550 0.0070 73);
+  --accent: oklch(0.9350 0.0090 40);
+  --accent-foreground: oklch(0.3600 0.0750 24);
+  --destructive: oklch(0.5100 0.1700 28);
+  --destructive-foreground: oklch(0.9880 0.0015 80);
+  --border: oklch(0.8980 0.0040 77);
+  --input: oklch(0.8980 0.0040 77);
+  --ring: oklch(0.4050 0.1100 22);
+  --sidebar: oklch(0.9650 0.0025 79);
+  --sidebar-foreground: oklch(0.2350 0.0050 70);
+  --sidebar-primary: oklch(0.4050 0.1100 22);
+  --sidebar-primary-foreground: oklch(0.9880 0.0015 80);
+  --sidebar-accent: oklch(0.9350 0.0090 40);
+  --sidebar-accent-foreground: oklch(0.3600 0.0750 24);
+  --sidebar-border: oklch(0.8980 0.0040 77);
+  --sidebar-ring: oklch(0.4050 0.1100 22);
+  --chart-1: oklch(0.4050 0.1100 22);
+  --chart-2: oklch(0.5600 0.0850 28);
+  --chart-3: oklch(0.7000 0.0600 35);
+  --chart-4: oklch(0.4400 0.0450 250);
+  --chart-5: oklch(0.5500 0.0050 75);
+  --shadow-sm: 0 1px 2px oklch(0.24 0.005 70 / 0.06);
+  --shadow-md: 0 2px 8px oklch(0.24 0.005 70 / 0.09);
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --font-sans: "Source Sans 3", "Gill Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Charter", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-serif: "Charter", "Iowan Old Style", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.8125rem;
+  --text-3xl: clamp(2rem, 4.5vw, 2.5rem);
+  --leading-tight: 1.22;
+  --leading-normal: 1.64;
+  --leading-relaxed: 1.78;
+  --tracking-label: 0.07em;
+  --spacing: 1rem;
+  --space-section: 3.25rem;
+  --measure: 42rem;
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 180ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2100 0.0040 60);
+  --foreground: oklch(0.9300 0.0030 75);
+  --card: oklch(0.2420 0.0045 62);
+  --card-foreground: oklch(0.9300 0.0030 75);
+  --popover: oklch(0.2420 0.0045 62);
+  --popover-foreground: oklch(0.9300 0.0030 75);
+  --primary: oklch(0.7000 0.0850 28);
+  --primary-foreground: oklch(0.1950 0.0045 62);
+  --secondary: oklch(0.2850 0.0050 64);
+  --secondary-foreground: oklch(0.8950 0.0040 74);
+  --muted: oklch(0.2750 0.0048 63);
+  --muted-foreground: oklch(0.7700 0.0045 73);
+  --accent: oklch(0.3050 0.0180 30);
+  --accent-foreground: oklch(0.8400 0.0550 32);
+  --destructive: oklch(0.6800 0.1450 28);
+  --destructive-foreground: oklch(0.1900 0.0040 62);
+  --border: oklch(0.3250 0.0055 64);
+  --input: oklch(0.3250 0.0055 64);
+  --ring: oklch(0.7000 0.0850 28);
+  --sidebar: oklch(0.2280 0.0042 61);
+  --sidebar-foreground: oklch(0.9300 0.0030 75);
+  --sidebar-primary: oklch(0.7000 0.0850 28);
+  --sidebar-primary-foreground: oklch(0.1950 0.0045 62);
+  --sidebar-accent: oklch(0.3050 0.0180 30);
+  --sidebar-accent-foreground: oklch(0.8400 0.0550 32);
+  --sidebar-border: oklch(0.3250 0.0055 64);
+  --sidebar-ring: oklch(0.7000 0.0850 28);
+  --chart-1: oklch(0.7000 0.0850 28);
+  --chart-2: oklch(0.6100 0.0700 30);
+  --chart-3: oklch(0.5100 0.0550 33);
+  --chart-4: oklch(0.6400 0.0450 250);
+  --chart-5: oklch(0.6800 0.0045 73);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
+  --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2100 0.0040 60);
+    --foreground: oklch(0.9300 0.0030 75);
+    --card: oklch(0.2420 0.0045 62);
+    --card-foreground: oklch(0.9300 0.0030 75);
+    --popover: oklch(0.2420 0.0045 62);
+    --popover-foreground: oklch(0.9300 0.0030 75);
+    --primary: oklch(0.7000 0.0850 28);
+    --primary-foreground: oklch(0.1950 0.0045 62);
+    --secondary: oklch(0.2850 0.0050 64);
+    --secondary-foreground: oklch(0.8950 0.0040 74);
+    --muted: oklch(0.2750 0.0048 63);
+    --muted-foreground: oklch(0.7700 0.0045 73);
+    --accent: oklch(0.3050 0.0180 30);
+    --accent-foreground: oklch(0.8400 0.0550 32);
+    --destructive: oklch(0.6800 0.1450 28);
+    --destructive-foreground: oklch(0.1900 0.0040 62);
+    --border: oklch(0.3250 0.0055 64);
+    --input: oklch(0.3250 0.0055 64);
+    --ring: oklch(0.7000 0.0850 28);
+    --sidebar: oklch(0.2280 0.0042 61);
+    --sidebar-foreground: oklch(0.9300 0.0030 75);
+    --sidebar-primary: oklch(0.7000 0.0850 28);
+    --sidebar-primary-foreground: oklch(0.1950 0.0045 62);
+    --sidebar-accent: oklch(0.3050 0.0180 30);
+    --sidebar-accent-foreground: oklch(0.8400 0.0550 32);
+    --sidebar-border: oklch(0.3250 0.0055 64);
+    --sidebar-ring: oklch(0.7000 0.0850 28);
+    --chart-1: oklch(0.7000 0.0850 28);
+    --chart-2: oklch(0.6100 0.0700 30);
+    --chart-3: oklch(0.5100 0.0550 33);
+    --chart-4: oklch(0.6400 0.0450 250);
+    --chart-5: oklch(0.6800 0.0045 73);
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
+    --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+main { max-width: var(--measure); margin: 0 auto; padding: 3.5rem 1.25rem 5rem; }
+h1 {
+  font-family: var(--font-display); font-size: var(--text-3xl);
+  line-height: var(--leading-tight); font-weight: 600; margin: 0 0 0.5rem;
+}
+h2 {
+  font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 600;
+  margin: var(--space-section) 0 1rem; padding-top: 1.4rem;
+  border-top: 1px solid var(--border); display: flex; gap: 0.75rem; align-items: baseline;
+}
+h2 .no {
+  font-family: var(--font-sans); font-size: var(--text-sm); font-weight: 600;
+  color: var(--primary); letter-spacing: var(--tracking-label); min-width: 1.9rem;
+}
+h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; margin: 1.9rem 0 0.5rem; }
+p { margin: 0.75rem 0; }
+.subtitle { color: var(--muted-foreground); font-size: var(--text-lg); margin: 0 0 1.75rem; }
+dl.meta {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1.4rem;
+  font-size: var(--text-sm); margin: 0 0 1rem;
+  border-top: 1px solid var(--border); padding-top: 1.1rem;
+}
+dl.meta dt {
+  color: var(--muted-foreground); text-transform: uppercase;
+  letter-spacing: var(--tracking-label); font-size: var(--text-xs); align-self: baseline;
+}
+dl.meta dd { margin: 0; }
+nav.toc { margin: 1.75rem 0 0; font-size: var(--text-sm); }
+nav.toc ol { list-style: none; margin: 0.4rem 0 0; padding: 0; column-count: 2; column-gap: 2.5rem; }
+nav.toc li { margin: 0.3rem 0; break-inside: avoid; }
+nav.toc a { color: var(--foreground); text-decoration: none; }
+nav.toc a .no { color: var(--primary); font-weight: 600; margin-right: 0.5rem; font-size: var(--text-xs); }
+ol.flow { counter-reset: step; list-style: none; padding: 0; margin: 1.1rem 0; }
+ol.flow li {
+  counter-increment: step; padding: 0.65rem 0 0.65rem 2.5rem; position: relative;
+  border-bottom: 1px solid var(--border);
+}
+ol.flow li::before {
+  content: counter(step); position: absolute; left: 0; top: 0.7rem;
+  width: 1.65rem; height: 1.65rem; border: 1px solid var(--primary); color: var(--primary);
+  border-radius: 50%; display: grid; place-items: center;
+  font: 600 0.78rem/1 var(--font-sans);
+}
+ol.flow .actor { font-weight: 600; }
+ul.req { list-style: none; padding: 0; margin: 0.9rem 0; }
+ul.req li { padding: 0.55rem 0 0.55rem 1.4rem; position: relative; border-bottom: 1px solid var(--border); }
+ul.req li::before { content: "—"; position: absolute; left: 0; color: var(--primary); }
+table { border-collapse: collapse; width: 100%; margin: 1.1rem 0; font-size: var(--text-sm); }
+th {
+  text-align: left; font-size: var(--text-xs); letter-spacing: var(--tracking-label);
+  text-transform: uppercase; color: var(--muted-foreground); font-weight: 500;
+  border-bottom: 2px solid var(--border); padding: 0.5rem 0.65rem;
+}
+td { border-bottom: 1px solid var(--border); padding: 0.6rem 0.65rem; vertical-align: top; }
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--muted); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
+.decision { border-top: 1px solid var(--border); padding: 0.9rem 0; }
+.decision:last-of-type { border-bottom: 1px solid var(--border); }
+.decision .q { font-weight: 600; }
+.decision .blocks { font-size: var(--text-sm); color: var(--primary); margin-top: 0.25rem; }
+.decision .blocks.none { color: var(--muted-foreground); }
+@media (max-width: 640px) {
+  main { padding-top: 2.25rem; }
+  h1 { font-size: 1.65rem; }
+  nav.toc ol { column-count: 1; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Order Sync Specification</h1>
+    <p class="subtitle">How orders will stay in sync between Lumen Commerce and Atlas ERP, for confirmation by Atlas operations.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Draft for client review — five decisions open</dd>
+      <dt>Prepared by</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>For</dt><dd>Atlas ERP operations and IT</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+      <dt>Spec version</dt><dd>0.3</dd>
+    </dl>
+    <nav class="toc" aria-label="Contents">
+      <ol>
+        <li><a href="#business-context"><span class="no">01</span>Business context</a></li>
+        <li><a href="#scope"><span class="no">02</span>Scope</a></li>
+        <li><a href="#flows"><span class="no">03</span>Flows</a></li>
+        <li><a href="#requirements"><span class="no">04</span>Requirements per module</a></li>
+        <li><a href="#integrations"><span class="no">05</span>Integrations</a></li>
+        <li><a href="#open-decisions"><span class="no">06</span>Open decisions</a></li>
+      </ol>
+    </nav>
+  </header>
+
+  <h2 id="business-context"><span class="no">01</span>Business context</h2>
+  <p>Customers order in the Lumen Commerce storefront; Atlas ERP owns stock, invoicing,
+  and fulfillment. The two systems talk once a day, through a CSV export that runs at
+  night. During campaigns this delay sells stock that is already gone, and every morning
+  someone in support compares order lists by hand to find the states that no longer match.</p>
+  <p>This specification describes the replacement: an event-driven sync in which an order
+  placed in Lumen is visible in Atlas within seconds, and stock is held before the
+  customer ever sees a confirmation screen. The nightly export disappears; a
+  reconciliation job remains as a guard.</p>
+
+  <h2 id="scope"><span class="no">02</span>Scope</h2>
+  <p><strong>Covered.</strong> Order creation, stock reservation, payment confirmation,
+  and cancellation before shipment.</p>
+  <p><strong>Not covered.</strong> Returns and refunds (specified separately as Phase 2),
+  product catalog synchronization, customer master data. Each remains on its current
+  process until its own specification is confirmed.</p>
+  <p><strong>Assumptions.</strong> SKUs exist in the Atlas item master before they are
+  sold; Lumen is the authority for order identifiers; the Atlas staging tenant mirrors
+  production data during the test period.</p>
+
+  <h2 id="flows"><span class="no">03</span>Flows</h2>
+
+  <h3 id="flow-order-placement">Order placement (happy path)</h3>
+  <ol class="flow">
+    <li><span class="actor">Customer</span> places the order in Lumen Commerce.</li>
+    <li><span class="actor">Atlas</span> reserves stock for each line item. The
+        reservation must complete within the 8-second SLA.</li>
+    <li><span class="actor">Lumen</span> sends the confirmation once stock is held; the
+        order shows as <code>confirmed</code> in both systems.</li>
+    <li><span class="actor">Payment provider</span> captures payment;
+        <span class="actor">Lumen</span> emits the <code>order.paid</code> event to Atlas.</li>
+    <li><span class="actor">Atlas</span> creates the fulfillment order and returns its
+        order number, which Lumen stores as <code>external_ref</code>.</li>
+  </ol>
+
+  <h3 id="flow-reservation-timeout">Reservation timeout</h3>
+  <ol class="flow">
+    <li><span class="actor">Atlas</span> does not answer within 8 seconds.</li>
+    <li><span class="actor">Lumen</span> shows the customer a "confirming your order"
+        state and retries once, with the same idempotency key.</li>
+    <li><span class="actor">Atlas</span> treats the repeated key as a status query,
+        never as a second reservation, so a slow first attempt cannot double-hold stock.</li>
+    <li>If the retry also fails, behavior follows decision 1 in section 06.</li>
+  </ol>
+
+  <h3 id="flow-rejected-lines">Rejected lines</h3>
+  <ol class="flow">
+    <li><span class="actor">Atlas</span> cannot reserve one or more line items and
+        rejects the whole order, with a reason code per failed line.</li>
+    <li><span class="actor">Lumen</span> releases the cart and shows the customer which
+        items are out of stock.</li>
+    <li>Partial reservations are deliberately unsupported: split shipments create
+        invoicing cases Atlas operations asked to avoid.</li>
+  </ol>
+
+  <h2 id="requirements"><span class="no">04</span>Requirements per module</h2>
+
+  <h3 id="requirements-order-module">Order module (Lumen)</h3>
+  <ul class="req">
+    <li>An order that fails reservation is released within one minute, and the customer
+        sees which lines caused it.</li>
+    <li>Every event carries a monotonic sequence number per order; consumers can discard
+        stale deliveries.</li>
+    <li>The checkout "confirming" state resolves to confirmed or released; it never
+        strands the customer.</li>
+  </ul>
+
+  <h3 id="requirements-stock-module">Stock module (Atlas)</h3>
+  <ul class="req">
+    <li>A repeated idempotency key returns the current reservation status; it never
+        creates a second hold.</li>
+    <li>Reservations released by rollback expire automatically after 30 minutes; the
+        release runbook covers the manual case.</li>
+    <li>A rejected line's reason code is one the operator can read without a lookup
+        table.</li>
+  </ul>
+
+  <h3 id="requirements-reconciliation">Reconciliation (both)</h3>
+  <ul class="req">
+    <li>A nightly job compares order states across systems and flags divergence instead
+        of silently correcting it.</li>
+    <li>Divergence above 0.1% of daily orders pages the on-call.</li>
+  </ul>
+
+  <h2 id="integrations"><span class="no">05</span>Integrations</h2>
+  <table>
+    <thead><tr><th>System</th><th>Direction</th><th>Trigger</th><th>Format</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Atlas ERP — reservation API</td>
+        <td>Lumen → Atlas</td>
+        <td>Checkout submits an order</td>
+        <td>JSON over HTTPS, idempotency key per order</td>
+      </tr>
+      <tr>
+        <td>Atlas ERP — webhook consumer</td>
+        <td>Lumen → Atlas</td>
+        <td>Payment capture (<code>order.paid</code>)</td>
+        <td>Signed JSON webhook; payload documented in the webhook reference</td>
+      </tr>
+      <tr>
+        <td>Payment provider</td>
+        <td>Provider → Lumen</td>
+        <td>Capture confirmation</td>
+        <td>Provider's standard notification</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Field-level mappings (Lumen <code>order.id</code> → Atlas
+  <code>SalesOrder.ExtId</code>, minor-unit amounts, ISO 4217 currency) are maintained in
+  the field-mapping appendix of the Order Sync Integration document and are not repeated
+  here.</p>
+
+  <h2 id="open-decisions"><span class="no">06</span>Open decisions</h2>
+  <p>These are the questions only Atlas can answer; the review round exists for them.</p>
+  <div class="decision">
+    <p class="q">1. Second reservation timeout in a row: hold the order in a pending
+    queue, or fail fast and release the cart?</p>
+    <p class="blocks">Blocks the reservation flow and the checkout copy.</p>
+  </div>
+  <div class="decision">
+    <p class="q">2. Who issues sandbox credentials for the Atlas staging tenant, and by
+    when?</p>
+    <p class="blocks">Blocks all end-to-end testing.</p>
+  </div>
+  <div class="decision">
+    <p class="q">3. Do cancellations after picking has started require Atlas-side
+    approval?</p>
+    <p class="blocks none">Does not block: a manual process is acceptable at launch.</p>
+  </div>
+  <div class="decision">
+    <p class="q">4. Should the reconciliation report go to a shared channel or to named
+    recipients on both sides?</p>
+    <p class="blocks none">Does not block: defaults to the shared integration channel.</p>
+  </div>
+  <div class="decision">
+    <p class="q">5. Is the 30-minute automatic reservation expiry acceptable for
+    campaign periods, or does it need a shorter window?</p>
+    <p class="blocks">Blocks the stock module requirements sign-off.</p>
+  </div>
+</main>
+</body>
+</html>

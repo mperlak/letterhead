@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Sync Integration — Implementation Plan</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%232c3e5f'/%3E%3C/svg%3E">
+<meta property="og:title" content="Order Sync Integration — Implementation Plan">
+<meta property="og:description" content="Replacing the nightly batch between Lumen Commerce and Atlas ERP with event-driven order sync.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+:root {
+  color-scheme: light;
+
+  /* -- Shadcn-semantic core -------------------------------------- */
+  --background: oklch(0.9840 0.0030 240);
+  --foreground: oklch(0.2200 0.0180 252);
+  --card: oklch(0.9920 0.0020 240);
+  --card-foreground: oklch(0.2200 0.0180 252);
+  --popover: oklch(0.9920 0.0020 240);
+  --popover-foreground: oklch(0.2200 0.0180 252);
+
+  --primary: oklch(0.3300 0.0750 255);            /* ink navy */
+  --primary-foreground: oklch(0.9840 0.0030 240);
+  --secondary: oklch(0.9500 0.0060 242);
+  --secondary-foreground: oklch(0.2800 0.0300 253);
+  --muted: oklch(0.9560 0.0050 242);
+  --muted-foreground: oklch(0.4450 0.0220 250);
+  --accent: oklch(0.9300 0.0110 248);
+  --accent-foreground: oklch(0.2600 0.0400 254);
+  --destructive: oklch(0.4900 0.1750 27);
+  --destructive-foreground: oklch(0.9900 0.0030 240);
+
+  --border: oklch(0.9000 0.0070 244);
+  --input: oklch(0.9000 0.0070 244);
+  --ring: oklch(0.3300 0.0750 255);
+
+  --sidebar: oklch(0.9680 0.0040 241);
+  --sidebar-foreground: oklch(0.2200 0.0180 252);
+  --sidebar-primary: oklch(0.3300 0.0750 255);
+  --sidebar-primary-foreground: oklch(0.9840 0.0030 240);
+  --sidebar-accent: oklch(0.9300 0.0110 248);
+  --sidebar-accent-foreground: oklch(0.2600 0.0400 254);
+  --sidebar-border: oklch(0.9000 0.0070 244);
+  --sidebar-ring: oklch(0.3300 0.0750 255);
+
+  --chart-1: oklch(0.3300 0.0750 255);
+  --chart-2: oklch(0.5200 0.0700 245);
+  --chart-3: oklch(0.6800 0.0500 235);
+  --chart-4: oklch(0.5400 0.0800 80);
+  --chart-5: oklch(0.4200 0.0300 250);
+
+  /* -- Shape: boardroom is crisp; nothing rounder than 4px -------- */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+
+  /* -- Typography -------------------------------------------------- */
+  /* Serif carries display only; running text stays in a quiet sans. */
+  --font-display: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: "Inter", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.4375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: clamp(2rem, 4.5vw, 2.625rem);
+  --leading-tight: 1.2;
+  --leading-normal: 1.62;
+  --leading-relaxed: 1.75;
+  --tracking-label: 0.055em;
+
+  /* -- Space: generous; the whitespace is the ornament ------------ */
+  --spacing: 1rem;
+  --space-section: 3.25rem;
+  --measure: 44rem;
+
+  /* -- Elevation: hairlines, not shadows --------------------------- */
+  --shadow-sm: 0 1px 2px oklch(0.2200 0.0180 252 / 0.06);
+  --shadow-md: 0 2px 8px oklch(0.2200 0.0180 252 / 0.08);
+
+  /* -- Motion: restrained ------------------------------------------ */
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 180ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2150 0.0140 251);
+  --foreground: oklch(0.9300 0.0060 240);
+  --card: oklch(0.2450 0.0150 251);
+  --card-foreground: oklch(0.9300 0.0060 240);
+  --popover: oklch(0.2450 0.0150 251);
+  --popover-foreground: oklch(0.9300 0.0060 240);
+
+  --primary: oklch(0.7500 0.0700 250);
+  --primary-foreground: oklch(0.2000 0.0200 252);
+  --secondary: oklch(0.2900 0.0170 250);
+  --secondary-foreground: oklch(0.9000 0.0080 242);
+  --muted: oklch(0.2800 0.0160 250);
+  --muted-foreground: oklch(0.7800 0.0130 245);
+  --accent: oklch(0.3100 0.0220 250);
+  --accent-foreground: oklch(0.9200 0.0080 242);
+  --destructive: oklch(0.6600 0.1600 25);
+  --destructive-foreground: oklch(0.1800 0.0150 251);
+
+  --border: oklch(0.3300 0.0160 250);
+  --input: oklch(0.3300 0.0160 250);
+  --ring: oklch(0.7500 0.0700 250);
+
+  --sidebar: oklch(0.2350 0.0150 251);
+  --sidebar-foreground: oklch(0.9300 0.0060 240);
+  --sidebar-primary: oklch(0.7500 0.0700 250);
+  --sidebar-primary-foreground: oklch(0.2000 0.0200 252);
+  --sidebar-accent: oklch(0.3100 0.0220 250);
+  --sidebar-accent-foreground: oklch(0.9200 0.0080 242);
+  --sidebar-border: oklch(0.3300 0.0160 250);
+  --sidebar-ring: oklch(0.7500 0.0700 250);
+
+  --chart-1: oklch(0.7500 0.0700 250);
+  --chart-2: oklch(0.6300 0.0650 245);
+  --chart-3: oklch(0.5200 0.0500 240);
+  --chart-4: oklch(0.7300 0.0850 82);
+  --chart-5: oklch(0.6600 0.0200 248);
+
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
+  --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2150 0.0140 251);
+    --foreground: oklch(0.9300 0.0060 240);
+    --card: oklch(0.2450 0.0150 251);
+    --card-foreground: oklch(0.9300 0.0060 240);
+    --popover: oklch(0.2450 0.0150 251);
+    --popover-foreground: oklch(0.9300 0.0060 240);
+
+    --primary: oklch(0.7500 0.0700 250);
+    --primary-foreground: oklch(0.2000 0.0200 252);
+    --secondary: oklch(0.2900 0.0170 250);
+    --secondary-foreground: oklch(0.9000 0.0080 242);
+    --muted: oklch(0.2800 0.0160 250);
+    --muted-foreground: oklch(0.7800 0.0130 245);
+    --accent: oklch(0.3100 0.0220 250);
+    --accent-foreground: oklch(0.9200 0.0080 242);
+    --destructive: oklch(0.6600 0.1600 25);
+    --destructive-foreground: oklch(0.1800 0.0150 251);
+
+    --border: oklch(0.3300 0.0160 250);
+    --input: oklch(0.3300 0.0160 250);
+    --ring: oklch(0.7500 0.0700 250);
+
+    --sidebar: oklch(0.2350 0.0150 251);
+    --sidebar-foreground: oklch(0.9300 0.0060 240);
+    --sidebar-primary: oklch(0.7500 0.0700 250);
+    --sidebar-primary-foreground: oklch(0.2000 0.0200 252);
+    --sidebar-accent: oklch(0.3100 0.0220 250);
+    --sidebar-accent-foreground: oklch(0.9200 0.0080 242);
+    --sidebar-border: oklch(0.3300 0.0160 250);
+    --sidebar-ring: oklch(0.7500 0.0700 250);
+
+    --chart-1: oklch(0.7500 0.0700 250);
+    --chart-2: oklch(0.6300 0.0650 245);
+    --chart-3: oklch(0.5200 0.0500 240);
+    --chart-4: oklch(0.7300 0.0850 82);
+    --chart-5: oklch(0.6600 0.0200 248);
+
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
+    --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+main { max-width: var(--measure); margin: 0 auto; padding: 3.5rem 1.25rem 5rem; }
+h1 {
+  font-family: var(--font-display); font-size: var(--text-3xl);
+  line-height: var(--leading-tight); font-weight: 600; margin: 0 0 0.5rem;
+}
+h2 {
+  font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 600;
+  margin: var(--space-section) 0 1rem; padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+h3 { font-size: var(--text-lg); font-weight: 600; margin: 1.75rem 0 0.5rem; }
+p { margin: 0.75rem 0; }
+.subtitle { color: var(--muted-foreground); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: var(--tracking-label); margin: 0 0 1.1rem; }
+.coverline {
+  font-family: var(--font-display); font-size: var(--text-xl);
+  line-height: 1.4; font-weight: 400; color: var(--foreground);
+  margin: 0 0 1.6rem; max-width: 36rem;
+}
+.coverline b { font-weight: 600; }
+.onefig {
+  font-family: var(--font-display); font-weight: 600; color: var(--primary);
+  font-size: 1.6em; line-height: 1; letter-spacing: -0.01em; white-space: nowrap;
+}
+dl.meta {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1.25rem;
+  font-size: var(--text-sm); margin: 0 0 1rem; border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+dl.meta dt {
+  color: var(--muted-foreground); text-transform: uppercase;
+  letter-spacing: var(--tracking-label); font-size: var(--text-xs); align-self: baseline;
+}
+dl.meta dd { margin: 0; }
+.summary { font-size: var(--text-lg); line-height: var(--leading-relaxed); }
+.scope { display: grid; gap: 0.25rem; margin: 1rem 0; }
+.scope p { margin: 0.35rem 0; }
+.scope .k { color: var(--primary); font-weight: 600; }
+.phase { border-top: 1px solid var(--border); padding: 1.25rem 0 0.5rem; margin-top: 1.25rem; }
+.phase:first-of-type { border-top: 0; margin-top: 0; padding-top: 0; }
+.phase h3 { margin: 0 0 0.25rem; }
+.phase .tag {
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-label);
+  color: var(--muted-foreground); display: block; margin-bottom: 0.4rem;
+}
+.phase .accept { margin: 0.6rem 0 0.4rem; padding-left: 1.2rem; }
+.phase .accept li { margin: 0.3rem 0; }
+.accept-label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-label); color: var(--muted-foreground); }
+table { border-collapse: collapse; width: 100%; margin: 1.25rem 0; font-size: var(--text-sm); }
+th {
+  text-align: left; font-size: var(--text-xs); letter-spacing: var(--tracking-label);
+  text-transform: uppercase; color: var(--muted-foreground);
+  border-bottom: 2px solid var(--border); padding: 0.45rem 0.65rem; font-weight: 500;
+}
+td { border-bottom: 1px solid var(--border); padding: 0.55rem 0.65rem; vertical-align: top; }
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--muted); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
+.blocking { color: var(--destructive); font-weight: 600; }
+.nonblocking { color: var(--muted-foreground); }
+@media (max-width: 640px) {
+  main { padding-top: 2.25rem; }
+  h1 { font-size: 1.6rem; }
+  .summary { font-size: var(--text-base); }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Order Sync Integration</h1>
+    <p class="subtitle">Implementation plan · Lumen Commerce ↔ Atlas ERP</p>
+    <p class="coverline">The nightly batch goes. Orders will reach Atlas in
+    seconds, with stock held <b>before the customer sees a confirmation</b> —
+    delivered in four phases behind a reversible ramp.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Awaiting sign-off — two decisions open</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Lumen engineering leadership, Atlas ERP operations</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+      <dt>Target</dt><dd>Go-live in a Tuesday 06:00–08:00 CET window after phase 4 exit</dd>
+    </dl>
+  </header>
+
+  <h2 id="summary">Summary</h2>
+  <p class="summary">Orders currently reach Atlas ERP in a nightly CSV batch, which oversells
+  stock during campaigns and leaves support reconciling mismatched states by hand. We will
+  replace the batch with an event-driven sync: an order placed in Lumen is visible in Atlas
+  within seconds, with stock held before the customer sees a confirmation. The whole design
+  turns on one number — the reservation must complete inside an <span class="onefig">8s</span>
+  SLA, or checkout waits and retries. The work lands in four phases and goes live behind a
+  percentage ramp with the batch running as a shadow until the events prove clean. This plan
+  is waiting on two decisions listed at the end; one of them blocks phase 2.</p>
+
+  <h2 id="scope-boundary">Scope boundary</h2>
+  <div class="scope">
+    <p><span class="k">In scope.</span> Order creation, stock reservation with an 8-second SLA,
+    payment confirmation via the <code>order.paid</code> webhook, cancellation before shipment.</p>
+    <p><span class="k">Out of scope.</span> Returns and refunds (planned separately as Phase 2 of
+    the wider program), product catalog sync, customer master data.</p>
+    <p><span class="k">Assumptions.</span> SKUs pre-exist in the Atlas item master; Lumen remains
+    the order ID authority; Atlas staging tenant mirrors production data during testing.</p>
+  </div>
+
+  <h2 id="phases">Phases</h2>
+
+  <div class="phase">
+    <span class="tag">Phase 1 · no dependencies</span>
+    <h3 id="phase-1-event-contract">Event contract and field mapping agreed</h3>
+    <p>Both teams sign the payload spec for reservation requests and <code>order.paid</code>
+    (field mapping: Lumen <code>order.id</code> → Atlas <code>SalesOrder.ExtId</code>, minor-unit
+    amounts, ISO 4217 currency). The webhook reference document is the source of truth.</p>
+    <span class="accept-label">Done when</span>
+    <ul class="accept">
+      <li>Signed payload spec committed to both repos.</li>
+      <li>Sandbox credentials for the Atlas staging tenant issued (currently blocking — decision 2).</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Phase 2 · depends on phase 1</span>
+    <h3 id="phase-2-reservation-flow">Stock reservation flow</h3>
+    <p>Checkout calls Atlas to reserve each line item. Reservation completes within the 8-second
+    SLA; on timeout Lumen shows a "confirming your order" state and retries once with the same
+    idempotency key, which Atlas treats as a status query, never a double hold. Whole-order
+    rejection with per-line reason codes; partial reservations deliberately unsupported.</p>
+    <span class="accept-label">Done when</span>
+    <ul class="accept">
+      <li>End-to-end order placed, reserved, and confirmed in staging.</li>
+      <li>Duplicate reservation attempts provably never double-hold stock.</li>
+      <li>Timeout path exercised: second failure behavior per decision 1.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Phase 3 · depends on phase 2</span>
+    <h3 id="phase-3-webhook-fulfillment">Payment webhook and fulfillment</h3>
+    <p>Payment capture emits <code>order.paid</code> (HMAC-signed, at-least-once, sequence-numbered).
+    Atlas creates the fulfillment order and returns its order number, stored in Lumen as
+    <code>external_ref</code>. Retries back off from 30 seconds to hourly over 24 hours, then park
+    in a dead-letter queue that alerts the integration channel.</p>
+    <span class="accept-label">Done when</span>
+    <ul class="accept">
+      <li>Duplicate <code>order.paid</code> deliveries create exactly one fulfillment.</li>
+      <li>Signature verification rejects stale and mismatched deliveries in staging.</li>
+      <li>Dead-letter alerting fires in a forced-failure drill.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Phase 4 · depends on phase 3</span>
+    <h3 id="phase-4-shadow-rollout">Shadow rollout and cutover</h3>
+    <p>Event sync ramps 5% → 50% → 100% of orders while the nightly batch keeps running as a
+    shadow. A reconciliation job compares the two; divergence must be zero before each ramp step.
+    The batch is disabled only after 100% has run clean for 24 hours.</p>
+    <span class="accept-label">Done when</span>
+    <ul class="accept">
+      <li>Load test at 3× peak campaign volume holds reservation p95 under 8 seconds.</li>
+      <li>Shadow comparison shows zero divergence at every ramp step.</li>
+      <li>Batch export disabled; reconciliation continues as a nightly guard.</li>
+    </ul>
+  </div>
+
+  <h2 id="risks">Risks</h2>
+  <table>
+    <thead><tr><th>Risk</th><th>Trigger</th><th>Response</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Atlas reservation latency breaches the 8s SLA under load</td>
+        <td>Timeout rate over 0.5% of orders</td>
+        <td>Page on-call; check Atlas DB locks first; freeze ramp if mid-rollout</td>
+        <td>Atlas ops</td>
+      </tr>
+      <tr>
+        <td>Order states diverge between systems</td>
+        <td>Nightly reconciliation over 0.1% of daily orders</td>
+        <td>Page on-call; halt ramp; replay from sequence numbers</td>
+        <td>Integration team</td>
+      </tr>
+      <tr>
+        <td>Webhook consumer outage on the Atlas side</td>
+        <td>Retry queue over 100 events</td>
+        <td>Alert integration channel; 24h retry budget absorbs short outages</td>
+        <td>Atlas IT</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="decisions-needed">Decisions needed</h2>
+  <table>
+    <thead><tr><th>#</th><th>Decision</th><th>Blocks</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Second reservation timeout in a row: hold the order in a pending queue, or fail fast
+        and release the cart? Checkout UX copy depends on it.</td>
+        <td class="blocking">Phase 2</td>
+        <td>Lumen product</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Issue sandbox credentials for the Atlas staging tenant.</td>
+        <td class="blocking">Phase 1 exit</td>
+        <td>Atlas IT</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Should cancellations after picking start require Atlas-side approval?</td>
+        <td class="nonblocking">Nothing — manual process acceptable at launch</td>
+        <td>Atlas ops</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="rollout-and-rollback">Rollout and rollback</h2>
+  <p>Rollout is the phase 4 ramp itself: percentage-based, shadow-verified, reversible at every
+  step. Rollback is a switch, not a deploy: <code>ORDER_SYNC_MODE=batch</code> re-enables the
+  nightly export and stops event emission. Orders created during event mode keep their
+  <code>external_ref</code> and reconcile normally; the only manual step is releasing stock
+  reservations younger than 30 minutes, for which Atlas ops holds a runbook. Rollback is
+  practiced once in staging before launch day.</p>
+</main>
+</body>
+</html>

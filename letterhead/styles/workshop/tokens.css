@@ -1,0 +1,160 @@
+/**
+ * styles/workshop/tokens.css
+ *
+ * Reference style: documents for a session's participants — agendas,
+ * exercises, worksheets, recaps of the whiteboard. Warm coral energy,
+ * chunky rounded shapes, sticky-note accent surfaces, big friendly type.
+ * Playful but working. A worked example `teach` borrows structure from;
+ * not a brand.
+ */
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9900 0.0025 85);
+  --foreground: oklch(0.2400 0.0080 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2400 0.0080 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2400 0.0080 60);
+  --primary: oklch(0.5700 0.1600 38);
+  --primary-foreground: oklch(0.9950 0.0020 85);
+  --secondary: oklch(0.9520 0.0100 80);
+  --secondary-foreground: oklch(0.3100 0.0140 62);
+  --muted: oklch(0.9640 0.0070 82);
+  --muted-foreground: oklch(0.4750 0.0180 65);
+  --accent: oklch(0.9450 0.0480 95);
+  --accent-foreground: oklch(0.4300 0.0800 75);
+  --destructive: oklch(0.5300 0.1850 28);
+  --destructive-foreground: oklch(0.9950 0.0020 85);
+  --border: oklch(0.9000 0.0130 78);
+  --input: oklch(0.9000 0.0130 78);
+  --ring: oklch(0.5700 0.1600 38);
+  --sidebar: oklch(0.9700 0.0060 83);
+  --sidebar-foreground: oklch(0.2400 0.0080 60);
+  --sidebar-primary: oklch(0.5700 0.1600 38);
+  --sidebar-primary-foreground: oklch(0.9950 0.0020 85);
+  --sidebar-accent: oklch(0.9450 0.0480 95);
+  --sidebar-accent-foreground: oklch(0.4300 0.0800 75);
+  --sidebar-border: oklch(0.9000 0.0130 78);
+  --sidebar-ring: oklch(0.5700 0.1600 38);
+  --chart-1: oklch(0.5700 0.1600 38);
+  --chart-2: oklch(0.7200 0.1300 95);
+  --chart-3: oklch(0.6200 0.1000 210);
+  --chart-4: oklch(0.5800 0.1300 150);
+  --chart-5: oklch(0.5200 0.0100 65);
+  --shadow-sm: 0 2px 5px oklch(0.30 0.02 55 / 0.10);
+  --shadow-md: 0 6px 16px oklch(0.30 0.02 55 / 0.13);
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --font-sans: "Rubik", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Rubik", "Trebuchet MS", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-xs: 0.78125rem;
+  --text-sm: 0.90625rem;
+  --text-base: 1.03125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.9375rem;
+  --text-3xl: clamp(2.125rem, 5vw, 2.875rem);
+  --leading-tight: 1.18;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.72;
+  --tracking-label: 0.03em;
+  --spacing: 1rem;
+  --space-section: 3rem;
+  --measure: 42rem;
+  --motion-duration-fast: 160ms;
+  --motion-duration-base: 260ms;
+  --motion-ease: cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2200 0.0075 55);
+  --foreground: oklch(0.9400 0.0055 80);
+  --card: oklch(0.2600 0.0085 57);
+  --card-foreground: oklch(0.9400 0.0055 80);
+  --popover: oklch(0.2600 0.0085 57);
+  --popover-foreground: oklch(0.9400 0.0055 80);
+  --primary: oklch(0.7300 0.1250 42);
+  --primary-foreground: oklch(0.2050 0.0200 45);
+  --secondary: oklch(0.3000 0.0095 58);
+  --secondary-foreground: oklch(0.9000 0.0065 78);
+  --muted: oklch(0.2900 0.0090 58);
+  --muted-foreground: oklch(0.7800 0.0080 75);
+  --accent: oklch(0.3200 0.0350 90);
+  --accent-foreground: oklch(0.8700 0.0800 95);
+  --destructive: oklch(0.6900 0.1500 28);
+  --destructive-foreground: oklch(0.2000 0.0070 55);
+  --border: oklch(0.3350 0.0095 58);
+  --input: oklch(0.3350 0.0095 58);
+  --ring: oklch(0.7300 0.1250 42);
+  --sidebar: oklch(0.2400 0.0080 56);
+  --sidebar-foreground: oklch(0.9400 0.0055 80);
+  --sidebar-primary: oklch(0.7300 0.1250 42);
+  --sidebar-primary-foreground: oklch(0.2050 0.0200 45);
+  --sidebar-accent: oklch(0.3200 0.0350 90);
+  --sidebar-accent-foreground: oklch(0.8700 0.0800 95);
+  --sidebar-border: oklch(0.3350 0.0095 58);
+  --sidebar-ring: oklch(0.7300 0.1250 42);
+  --chart-1: oklch(0.7300 0.1250 42);
+  --chart-2: oklch(0.8200 0.1100 95);
+  --chart-3: oklch(0.7400 0.0950 212);
+  --chart-4: oklch(0.7300 0.1100 152);
+  --chart-5: oklch(0.7100 0.0090 70);
+  --shadow-sm: 0 2px 5px oklch(0 0 0 / 0.35);
+  --shadow-md: 0 6px 16px oklch(0 0 0 / 0.42);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2200 0.0075 55);
+    --foreground: oklch(0.9400 0.0055 80);
+    --card: oklch(0.2600 0.0085 57);
+    --card-foreground: oklch(0.9400 0.0055 80);
+    --popover: oklch(0.2600 0.0085 57);
+    --popover-foreground: oklch(0.9400 0.0055 80);
+    --primary: oklch(0.7300 0.1250 42);
+    --primary-foreground: oklch(0.2050 0.0200 45);
+    --secondary: oklch(0.3000 0.0095 58);
+    --secondary-foreground: oklch(0.9000 0.0065 78);
+    --muted: oklch(0.2900 0.0090 58);
+    --muted-foreground: oklch(0.7800 0.0080 75);
+    --accent: oklch(0.3200 0.0350 90);
+    --accent-foreground: oklch(0.8700 0.0800 95);
+    --destructive: oklch(0.6900 0.1500 28);
+    --destructive-foreground: oklch(0.2000 0.0070 55);
+    --border: oklch(0.3350 0.0095 58);
+    --input: oklch(0.3350 0.0095 58);
+    --ring: oklch(0.7300 0.1250 42);
+    --sidebar: oklch(0.2400 0.0080 56);
+    --sidebar-foreground: oklch(0.9400 0.0055 80);
+    --sidebar-primary: oklch(0.7300 0.1250 42);
+    --sidebar-primary-foreground: oklch(0.2050 0.0200 45);
+    --sidebar-accent: oklch(0.3200 0.0350 90);
+    --sidebar-accent-foreground: oklch(0.8700 0.0800 95);
+    --sidebar-border: oklch(0.3350 0.0095 58);
+    --sidebar-ring: oklch(0.7300 0.1250 42);
+    --chart-1: oklch(0.7300 0.1250 42);
+    --chart-2: oklch(0.8200 0.1100 95);
+    --chart-3: oklch(0.7400 0.0950 212);
+    --chart-4: oklch(0.7300 0.1100 152);
+    --chart-5: oklch(0.7100 0.0090 70);
+    --shadow-sm: 0 2px 5px oklch(0 0 0 / 0.35);
+    --shadow-md: 0 6px 16px oklch(0 0 0 / 0.42);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}

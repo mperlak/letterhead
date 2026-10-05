@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Sync Integration — Lumen Commerce ↔ Atlas ERP</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231f4e79'/%3E%3C/svg%3E">
+<meta property="og:title" content="Order Sync Integration — Lumen Commerce ↔ Atlas ERP">
+<meta property="og:description" content="How orders stay in sync between Lumen Commerce and Atlas ERP.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: oklch(1 0 0); --ink: oklch(0.229 0.009 255.6); --muted: oklch(0.487 0.015 255.6); --line: oklch(0.921 0.005 258.3);
+    --accent: oklch(0.414 0.088 249.1); --surface: oklch(0.976 0.002 247.8); --ok: oklch(0.48 0.104 152); --warn: oklch(0.508 0.108 73.3);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+    --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6); --ok: oklch(0.77 0.097 155.9); --warn: oklch(0.788 0.103 80.8);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+      color-scheme: dark;
+      --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+      --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6); --ok: oklch(0.77 0.097 155.9); --warn: oklch(0.788 0.103 80.8);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 Georgia, "Times New Roman", serif;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.3rem; margin: 2.5rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 1.75rem 0 0.5rem; }
+  p { margin: 0.75rem 0; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; }
+  dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  dl.meta dt { color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: 0.04em; }
+  dl.meta dd { margin: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+  th { text-align: left; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 0.4rem 0.6rem; }
+  td { border-bottom: 1px solid var(--line); padding: 0.5rem 0.6rem; vertical-align: top; }
+  code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.85em; }
+  code { background: var(--surface); padding: 0.1em 0.35em; border-radius: 3px; }
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem; overflow-x: auto; }
+  pre code { background: none; padding: 0; }
+  ol.flow { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
+  ol.flow li { counter-increment: step; padding: 0.6rem 0 0.6rem 2.4rem; position: relative; border-bottom: 1px solid var(--line); }
+  ol.flow li::before { content: counter(step); position: absolute; left: 0; top: 0.65rem; width: 1.6rem; height: 1.6rem; border: 1px solid var(--accent); color: var(--accent); border-radius: 50%; display: grid; place-items: center; font: 700 0.8rem/1 Georgia, serif; }
+  .q { border: 1px solid var(--line); border-radius: 6px; padding: 0.75rem 1rem; margin: 1rem 0; background: var(--surface); }
+  .q strong { color: var(--accent); }
+  @media (max-width: 640px) { h1 { font-size: 1.5rem; } main { padding-top: 2rem; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Order Sync Integration</h1>
+    <p class="subtitle">How orders stay in sync between Lumen Commerce and Atlas ERP.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Draft for review</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Atlas ERP operations, Lumen engineering</dd>
+      <dt>Last updated</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="context">1. Context</h2>
+  <p>Lumen Commerce is the storefront where customers place orders. Atlas ERP is the
+  system of record for stock, invoicing, and fulfillment. Today, orders are exported
+  to Atlas in a nightly CSV batch. That delay causes overselling during campaigns and
+  forces support to reconcile mismatched order states by hand.</p>
+  <p>This integration replaces the batch with an event-driven sync. The goal: an order
+  placed in Lumen is visible in Atlas within seconds, with stock held before the
+  customer sees a confirmation.</p>
+
+  <h2 id="scope">2. Scope</h2>
+  <p><strong>In scope:</strong> order creation, stock reservation, payment confirmation,
+  order cancellation before shipment.</p>
+  <p><strong>Out of scope:</strong> returns and refunds (covered in the Returns &amp;
+  Refunds Phase 2 document), product catalog sync, customer master data.</p>
+
+  <h2 id="flow">3. Flow</h2>
+  <p>The happy path from checkout to a confirmed order:</p>
+  <ol class="flow">
+    <li>Customer places the order in Lumen Commerce.</li>
+    <li>Atlas reserves stock for each line item. Reservation must complete within the
+        8-second SLA; on timeout, Lumen shows a "confirming your order" state and retries.</li>
+    <li>Confirmation is sent once stock is held. The order moves to
+        <code>confirmed</code> in both systems.</li>
+    <li>Payment capture triggers the <code>order.paid</code> webhook from Lumen to Atlas
+        (payload documented separately).</li>
+    <li>Atlas creates the fulfillment order and returns the Atlas order number, which
+        Lumen stores as <code>external_ref</code>.</li>
+  </ol>
+  <div class="q">
+    <strong>Open question:</strong> What should the customer see if the Atlas stock
+    reservation times out twice in a row — hold the order in a pending queue, or fail
+    fast and release the cart?
+  </div>
+
+  <h2 id="field-mapping">4. Field mapping</h2>
+  <table>
+    <thead><tr><th>Lumen field</th><th>Atlas field</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>order.id</code></td><td><code>SalesOrder.ExtId</code></td><td>Lumen is the ID authority</td></tr>
+      <tr><td><code>order.lines[].sku</code></td><td><code>OrderLine.ItemCode</code></td><td>SKUs must pre-exist in Atlas</td></tr>
+      <tr><td><code>order.lines[].qty</code></td><td><code>OrderLine.Quantity</code></td><td>Integer units only in v1</td></tr>
+      <tr><td><code>order.total_gross</code></td><td><code>SalesOrder.GrossAmount</code></td><td>Minor units (cents); Atlas converts</td></tr>
+      <tr><td><code>order.currency</code></td><td><code>SalesOrder.Currency</code></td><td>ISO 4217</td></tr>
+      <tr><td><code>customer.vat_id</code></td><td><code>Party.TaxNumber</code></td><td>Optional; required for B2B invoices</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="error-handling">5. Error handling and retries</h2>
+  <h3 id="reservation-timeout">Reservation timeout</h3>
+  <p>If Atlas does not answer within 8 seconds, Lumen retries once with the same
+  idempotency key. Atlas treats a repeated key as a status query, not a new
+  reservation, so a slow first attempt can never double-hold stock.</p>
+  <h3 id="rejected-lines">Rejected lines</h3>
+  <p>If any line item cannot be reserved, Atlas rejects the whole order with a
+  per-line reason code. Lumen releases the cart and shows which items went out of
+  stock. Partial reservations are deliberately not supported in v1 — split shipments
+  create invoicing edge cases Atlas operations asked to avoid.</p>
+  <h3 id="replay">Replay and reconciliation</h3>
+  <p>Every event carries a monotonic sequence number per order. A nightly
+  reconciliation job compares order states and flags divergence instead of silently
+  fixing it. Divergence above 0.1% of daily orders pages the on-call.</p>
+
+  <h2 id="open-decisions">6. Open decisions</h2>
+  <table>
+    <thead><tr><th>#</th><th>Decision needed</th><th>Blocking</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Timeout behavior after second failed reservation (queue vs. fail fast)</td><td>Yes — checkout UX copy depends on it</td><td>Lumen product</td></tr>
+      <tr><td>2</td><td>Should cancellations after picking start require Atlas-side approval?</td><td>No — can ship with manual process</td><td>Atlas ops</td></tr>
+      <tr><td>3</td><td>Sandbox credentials for the Atlas staging tenant</td><td>Yes — blocks integration testing</td><td>Atlas IT</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

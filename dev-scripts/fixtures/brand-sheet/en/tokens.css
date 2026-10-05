@@ -1,0 +1,121 @@
+/**
+ * Synthetic fixture tokens.css for brand-sheet.mjs smoke tests. Not a real
+ * brand. The light theme is the source; the dark theme is derived from it.
+ *
+ */
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9800 0.0020 90);
+  --foreground: oklch(0.2200 0.0100 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2200 0.0100 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2200 0.0100 260);
+
+  --primary: oklch(0.5600 0.1800 260);
+  --primary-foreground: oklch(0.9900 0 0);
+  --primary-ink: oklch(0.4200 0.1600 260);
+  --secondary: oklch(0.9500 0.0100 260);
+  --secondary-foreground: oklch(0.2200 0.0100 260);
+  --muted: oklch(0.9600 0.0050 260);
+  --muted-foreground: oklch(0.4600 0.0100 260);
+  --accent: oklch(0.9400 0.0500 260);
+  --accent-foreground: oklch(0.4000 0.1200 260);
+  --destructive: oklch(0.5100 0.1750 27);
+  --destructive-foreground: oklch(0.9900 0.0030 85);
+
+  --border: oklch(0.9000 0.0060 260);
+  --input: oklch(0.9000 0.0060 260);
+  --ring: oklch(0.5600 0.1800 260);
+
+  --brand-rule: oklch(0.5600 0.1800 260);
+  --brand-rule-height: 6px;
+  --font-heading-weight: 700;
+  --brand-logo: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20120%2040'%3E%3Crect%20width%3D'120'%20height%3D'40'%20fill%3D'none'%2F%3E%3Ctext%20x%3D'4'%20y%3D'28'%20font-family%3D'sans-serif'%20font-size%3D'24'%20fill%3D'%231c1f26'%3ENF%3C%2Ftext%3E%3C%2Fsvg%3E");
+  --brand-logo-on: light;
+
+  --font-sans: "Nimbus Sans", "Helvetica Neue", Arial, ui-sans-serif, sans-serif;
+  --font-display: "Nimbus Sans", "Helvetica Neue", Arial, ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: clamp(1.75rem, 4vw, 2.25rem);
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+  --tracking-label: 0.06em;
+  --measure: 44rem;
+  --space-section: 2.5rem;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2000 0.0100 260);
+  --foreground: oklch(0.9300 0.0050 260);
+  --card: oklch(0.2400 0.0100 260);
+  --card-foreground: oklch(0.9300 0.0050 260);
+  --popover: oklch(0.2400 0.0100 260);
+  --popover-foreground: oklch(0.9300 0.0050 260);
+
+  --primary: oklch(0.6600 0.1600 260);
+  --primary-foreground: oklch(0.1800 0.0100 260);
+  --primary-ink: oklch(0.7800 0.1200 260);
+  --secondary: oklch(0.2800 0.0100 260);
+  --secondary-foreground: oklch(0.8900 0.0050 260);
+  --muted: oklch(0.2700 0.0100 260);
+  --muted-foreground: oklch(0.7700 0.0080 260);
+  --accent: oklch(0.3200 0.0600 260);
+  --accent-foreground: oklch(0.8600 0.0900 260);
+  --destructive: oklch(0.6700 0.1550 26);
+  --destructive-foreground: oklch(0.1800 0.0060 300);
+
+  --border: oklch(0.3200 0.0070 260);
+  --input: oklch(0.3200 0.0070 260);
+  --ring: oklch(0.6600 0.1600 260);
+
+  --brand-rule: oklch(0.6600 0.1600 260);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2000 0.0100 260);
+    --foreground: oklch(0.9300 0.0050 260);
+    --card: oklch(0.2400 0.0100 260);
+    --card-foreground: oklch(0.9300 0.0050 260);
+    --popover: oklch(0.2400 0.0100 260);
+    --popover-foreground: oklch(0.9300 0.0050 260);
+
+    --primary: oklch(0.6600 0.1600 260);
+    --primary-foreground: oklch(0.1800 0.0100 260);
+    --primary-ink: oklch(0.7800 0.1200 260);
+    --secondary: oklch(0.2800 0.0100 260);
+    --secondary-foreground: oklch(0.8900 0.0050 260);
+    --muted: oklch(0.2700 0.0100 260);
+    --muted-foreground: oklch(0.7700 0.0080 260);
+    --accent: oklch(0.3200 0.0600 260);
+    --accent-foreground: oklch(0.8600 0.0900 260);
+    --destructive: oklch(0.6700 0.1550 26);
+    --destructive-foreground: oklch(0.1800 0.0060 300);
+
+    --border: oklch(0.3200 0.0070 260);
+    --input: oklch(0.3200 0.0070 260);
+    --ring: oklch(0.6600 0.1600 260);
+
+    --brand-rule: oklch(0.6600 0.1600 260);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}

@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Returns &amp; Refunds Phase 2 — Implementation Plan</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23e20c7b'/%3E%3C/svg%3E">
+<meta property="og:title" content="Returns &amp; Refunds Phase 2 — Implementation Plan">
+<meta property="og:description" content="Self-service returns portal, automated refunds, and the decisions needed before build.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9694 0.0059 60);          /* warm paper #f8f4f1 */
+  --foreground: oklch(0.2520 0 0);                /* #222 */
+  --card: oklch(0.9997 0.0013 106);
+  --card-foreground: oklch(0.2520 0 0);
+  --popover: oklch(0.9997 0.0013 106);
+  --popover-foreground: oklch(0.2520 0 0);
+
+  --primary: oklch(0.5946 0.2100 359);            /* raspberry #e20c7b */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.9300 0.0170 55);           /* warm beige */
+  --secondary-foreground: oklch(0.3558 0.0017 106);
+  --muted: oklch(0.9500 0.0100 58);
+  --muted-foreground: oklch(0.4700 0.0060 80);
+  --accent: oklch(0.9440 0.0270 359);             /* pink-tinted surface */
+  --accent-foreground: oklch(0.5000 0.1900 359);
+  --destructive: oklch(0.5400 0.1900 28);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.8910 0.0198 55);              /* #e6d8cf */
+  --input: oklch(0.8910 0.0198 55);
+  --ring: oklch(0.5946 0.2100 359);
+
+  --sidebar: oklch(0.9560 0.0090 58);
+  --sidebar-foreground: oklch(0.3558 0.0017 106);
+  --sidebar-primary: oklch(0.5946 0.2100 359);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.9440 0.0270 359);
+  --sidebar-accent-foreground: oklch(0.5000 0.1900 359);
+  --sidebar-border: oklch(0.9000 0.0180 55);
+  --sidebar-ring: oklch(0.5946 0.2100 359);
+
+  --chart-1: oklch(0.5946 0.2100 359);            /* raspberry */
+  --chart-2: oklch(0.8211 0.0655 240);            /* sky #9ecbeb */
+  --chart-3: oklch(0.6487 0.1127 224);            /* teal #249dc1 */
+  --chart-4: oklch(0.7600 0.1200 75);             /* warm amber */
+  --chart-5: oklch(0.5417 0 0);                   /* neutral */
+
+  /* Brand extras */
+  --brand-cta: oklch(0.6123 0.2200 7);            /* hot pink #f00069 */
+  --brand-sky: oklch(0.8211 0.0655 240);          /* pastel sky #9ecbeb */
+
+  /* Shape: rounded and friendly */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --font-sans: "Nunito Sans", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: clamp(2rem, 5vw, 2.75rem);
+  --leading-tight: 1.2;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+  --tracking-label: 0.04em;
+
+  --spacing: 1rem;
+  --space-section: 3rem;
+  --measure: 42rem;
+
+  --shadow-sm: 0 2px 6px oklch(0.35 0.02 55 / 0.10);
+  --shadow-md: 0 6px 18px oklch(0.35 0.02 55 / 0.14);
+
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 250ms;
+  --motion-ease: cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2150 0.0080 55);
+  --foreground: oklch(0.9350 0.0060 70);
+  --card: oklch(0.2500 0.0090 55);
+  --card-foreground: oklch(0.9350 0.0060 70);
+  --popover: oklch(0.2500 0.0090 55);
+  --popover-foreground: oklch(0.9350 0.0060 70);
+
+  --primary: oklch(0.7100 0.1500 359);
+  --primary-foreground: oklch(0.2000 0.0300 359);
+  --secondary: oklch(0.2900 0.0110 55);
+  --secondary-foreground: oklch(0.8900 0.0080 70);
+  --muted: oklch(0.2750 0.0100 55);
+  --muted-foreground: oklch(0.7800 0.0090 70);
+  --accent: oklch(0.3100 0.0350 359);
+  --accent-foreground: oklch(0.8300 0.0900 359);
+  --destructive: oklch(0.6900 0.1500 28);
+  --destructive-foreground: oklch(0.2000 0.0100 55);
+
+  --border: oklch(0.3300 0.0110 55);
+  --input: oklch(0.3300 0.0110 55);
+  --ring: oklch(0.7100 0.1500 359);
+
+  --sidebar: oklch(0.2350 0.0085 55);
+  --sidebar-foreground: oklch(0.9350 0.0060 70);
+  --sidebar-primary: oklch(0.7100 0.1500 359);
+  --sidebar-primary-foreground: oklch(0.2000 0.0300 359);
+  --sidebar-accent: oklch(0.3100 0.0350 359);
+  --sidebar-accent-foreground: oklch(0.8300 0.0900 359);
+  --sidebar-border: oklch(0.3300 0.0110 55);
+  --sidebar-ring: oklch(0.7100 0.1500 359);
+
+  --chart-1: oklch(0.7100 0.1500 359);
+  --chart-2: oklch(0.7800 0.0700 240);
+  --chart-3: oklch(0.7300 0.1000 224);
+  --chart-4: oklch(0.8000 0.1100 78);
+  --chart-5: oklch(0.7200 0 0);
+
+  --brand-cta: oklch(0.7200 0.1600 7);
+  --brand-sky: oklch(0.7800 0.0700 240);
+
+  --shadow-sm: 0 2px 6px oklch(0 0 0 / 0.35);
+  --shadow-md: 0 6px 18px oklch(0 0 0 / 0.40);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2150 0.0080 55);
+    --foreground: oklch(0.9350 0.0060 70);
+    --card: oklch(0.2500 0.0090 55);
+    --card-foreground: oklch(0.9350 0.0060 70);
+    --popover: oklch(0.2500 0.0090 55);
+    --popover-foreground: oklch(0.9350 0.0060 70);
+
+    --primary: oklch(0.7100 0.1500 359);
+    --primary-foreground: oklch(0.2000 0.0300 359);
+    --secondary: oklch(0.2900 0.0110 55);
+    --secondary-foreground: oklch(0.8900 0.0080 70);
+    --muted: oklch(0.2750 0.0100 55);
+    --muted-foreground: oklch(0.7800 0.0090 70);
+    --accent: oklch(0.3100 0.0350 359);
+    --accent-foreground: oklch(0.8300 0.0900 359);
+    --destructive: oklch(0.6900 0.1500 28);
+    --destructive-foreground: oklch(0.2000 0.0100 55);
+
+    --border: oklch(0.3300 0.0110 55);
+    --input: oklch(0.3300 0.0110 55);
+    --ring: oklch(0.7100 0.1500 359);
+
+    --sidebar: oklch(0.2350 0.0085 55);
+    --sidebar-foreground: oklch(0.9350 0.0060 70);
+    --sidebar-primary: oklch(0.7100 0.1500 359);
+    --sidebar-primary-foreground: oklch(0.2000 0.0300 359);
+    --sidebar-accent: oklch(0.3100 0.0350 359);
+    --sidebar-accent-foreground: oklch(0.8300 0.0900 359);
+    --sidebar-border: oklch(0.3300 0.0110 55);
+    --sidebar-ring: oklch(0.7100 0.1500 359);
+
+    --chart-1: oklch(0.7100 0.1500 359);
+    --chart-2: oklch(0.7800 0.0700 240);
+    --chart-3: oklch(0.7300 0.1000 224);
+    --chart-4: oklch(0.8000 0.1100 78);
+    --chart-5: oklch(0.7200 0 0);
+
+    --brand-cta: oklch(0.7200 0.1600 7);
+    --brand-sky: oklch(0.7800 0.0700 240);
+
+    --shadow-sm: 0 2px 6px oklch(0 0 0 / 0.35);
+    --shadow-md: 0 6px 18px oklch(0 0 0 / 0.40);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+main { max-width: var(--measure); margin: 0 auto; padding: 2.75rem 1.25rem 4.5rem; }
+h1 {
+  font-family: var(--font-display); font-size: var(--text-3xl);
+  line-height: var(--leading-tight); font-weight: 800; margin: 0 0 0.5rem;
+}
+h2 {
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: 800;
+  margin: var(--space-section) 0 0.9rem;
+}
+h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; margin: 0 0 0.3rem; }
+p { margin: 0.7rem 0; }
+.subtitle { color: var(--muted-foreground); font-size: var(--text-lg); margin: 0 0 1.5rem; }
+dl.meta {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); padding: 1rem 1.25rem;
+  display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1.25rem;
+  font-size: var(--text-sm); margin: 0 0 1rem;
+}
+dl.meta dt {
+  font-size: var(--text-xs); letter-spacing: var(--tracking-label);
+  text-transform: uppercase; font-weight: 700; color: var(--muted-foreground);
+  align-self: baseline;
+}
+dl.meta dd { margin: 0; }
+.summary { font-size: var(--text-lg); line-height: var(--leading-relaxed); }
+.scope-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  padding: 1.1rem 1.25rem; margin: 1rem 0;
+}
+.scope-card p { margin: 0.4rem 0; }
+.scope-card .k { color: var(--accent-foreground); font-weight: 700; }
+.phase {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  padding: 1.25rem 1.375rem; margin: 1rem 0;
+}
+.phase .tag {
+  display: inline-block; font-size: var(--text-xs); font-weight: 700;
+  color: var(--accent-foreground); background: var(--accent);
+  border-radius: 999px; padding: 0.15rem 0.65rem; margin-bottom: 0.5rem;
+}
+.phase ul { margin: 0.6rem 0 0.2rem; padding-left: 1.2rem; }
+.phase li { margin: 0.3rem 0; }
+.accept-label {
+  font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-label);
+  font-weight: 700; color: var(--muted-foreground);
+}
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: var(--text-sm); }
+th {
+  text-align: left; font-size: var(--text-xs); letter-spacing: var(--tracking-label);
+  text-transform: uppercase; font-weight: 700; color: var(--muted-foreground);
+  border-bottom: 2px solid var(--border); padding: 0.45rem 0.6rem;
+}
+td { border-bottom: 1px solid var(--border); padding: 0.55rem 0.6rem; vertical-align: top; }
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--muted); padding: 0.1em 0.35em; border-radius: 6px; }
+.blocking { color: var(--primary); font-weight: 700; }
+.nonblocking { color: var(--muted-foreground); }
+@media (max-width: 640px) {
+  main { padding-top: 2rem; }
+  h1 { font-size: 1.65rem; }
+  .summary { font-size: var(--text-base); }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Returns &amp; Refunds — Phase 2</h1>
+    <p class="subtitle">Implementation plan for the self-service returns portal and automated refunds.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Proposed — two decisions needed before build</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Project sponsor, Atlas operations</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+      <dt>Target</dt><dd>Pilot in week 7, general availability in week 9</dd>
+    </dl>
+  </header>
+
+  <h2 id="summary">What we are doing, in short</h2>
+  <p class="summary">Today a return means an email thread: customer writes to support, support
+  asks the warehouse, the refund happens days later with no record connecting the three. Phase 2
+  gives customers a self-service returns portal, creates the return in Atlas the moment it is
+  submitted, and refunds automatically for good-condition items. The work runs nine weeks from
+  contract to general availability, and it starts with two decisions listed at the end of this
+  plan.</p>
+
+  <h2 id="scope-boundary">What is in, what is out</h2>
+  <div class="scope-card">
+    <p><span class="k">In.</span> Self-service returns from order history, prepaid labels,
+    automatic refunds for grade A and B returns, a human queue for grade C, partial refunds per
+    line item.</p>
+    <p><span class="k">Out.</span> Exchanges (modeled as return plus new order), in-store
+    returns, refunds to store credit, cross-border returns beyond the EU.</p>
+    <p><span class="k">Assumed.</span> Phase 1 order sync is live; the warehouse grades returns
+    within two business days.</p>
+  </div>
+
+  <h2 id="phases">The four steps</h2>
+
+  <div class="phase">
+    <span class="tag">Step 1 · weeks 1–2</span>
+    <h3 id="phase-1-rma-contract">Agree the RMA event contract</h3>
+    <p>Both teams sign the payload spec for <code>rma.created</code> and
+    <code>rma.received</code>, following the pattern that worked for order sync.</p>
+    <span class="accept-label">Done when</span>
+    <ul>
+      <li>Signed spec committed to both repos.</li>
+      <li>Return window rule confirmed (decision 1).</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Step 2 · weeks 3–6</span>
+    <h3 id="phase-2-portal">Build the returns portal behind a flag</h3>
+    <p>Customers start a return from order history; eligible items get a prepaid label; the RMA
+    appears in Atlas the moment the customer submits. Grade A and B returns refund
+    automatically to the original payment method; grade C goes to a support queue with photos.</p>
+    <span class="accept-label">Done when</span>
+    <ul>
+      <li>Internal orders flow end to end in staging: portal → RMA → receive → refund.</li>
+      <li>Grade C queue routes to the owner chosen in decision 2.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Step 3 · weeks 7–8</span>
+    <h3 id="phase-3-pilot">Pilot with 10% of customers</h3>
+    <p>The flag opens for one customer in ten. We watch refund latency, error rate, and what
+    people actually click.</p>
+    <span class="accept-label">Done when</span>
+    <ul>
+      <li>Refund latency stays under 48 hours.</li>
+      <li>Error rate stays under 1%.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <span class="tag">Step 4 · week 9</span>
+    <h3 id="phase-4-general-availability">Open it to everyone</h3>
+    <p>Flag removed, portal linked from order emails, support macros switched to point at the
+    portal first.</p>
+    <span class="accept-label">Done when</span>
+    <ul>
+      <li>Support ticket volume for returns drops measurably against the pre-launch baseline.</li>
+    </ul>
+  </div>
+
+  <h2 id="risks">What could go wrong, and what we do then</h2>
+  <table>
+    <thead><tr><th>Risk</th><th>How we notice</th><th>Response</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Warehouse grading backlog delays refunds</td>
+        <td>Receiving queue over 2 days</td>
+        <td>Auto-refund ungraded returns after 5 business days, reconcile later</td>
+        <td>Atlas ops</td>
+      </tr>
+      <tr>
+        <td>Self-service invites fraudulent returns</td>
+        <td>Refund-to-return mismatch over 2%</td>
+        <td>Grade C keeps a human in the loop; per-customer velocity limits</td>
+        <td>Lumen risk</td>
+      </tr>
+      <tr>
+        <td>Payment provider rate-limits bulk refunds</td>
+        <td>Refund API errors during campaign returns</td>
+        <td>Refund queue with backoff instead of fire-and-forget calls</td>
+        <td>Lumen engineering</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="decisions-needed">Two decisions we need from you</h2>
+  <table>
+    <thead><tr><th>#</th><th>Decision</th><th>Blocks</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Return window: keep 30 days for everyone, or extend to 60 days for loyalty-tier
+        customers? This sets the portal's eligibility rules.</td>
+        <td class="blocking">Step 1 exit</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Who owns grade C disputes: support or the warehouse team? This decides which queue
+        tooling we build into.</td>
+        <td class="blocking">Step 2, from week 4</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Back-fill RMAs for returns currently in the email pipeline?</td>
+        <td class="nonblocking">Nothing — can migrate after launch</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="rollout-and-rollback">Rollout and the way back</h2>
+  <p>The pilot flag is the rollout: 10%, then everyone, reversible at any moment by closing the
+  flag. Returns already submitted keep flowing through Atlas even if the portal closes, and the
+  email path stays available throughout, so no customer is ever stuck mid-return.</p>
+</main>
+</body>
+</html>

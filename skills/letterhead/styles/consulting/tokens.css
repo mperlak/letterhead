@@ -1,0 +1,159 @@
+/**
+ * styles/consulting/tokens.css
+ *
+ * Reference style: the client deliverable. Charcoal ink on true-neutral
+ * paper, oxblood accent, serif display, numbered-section discipline.
+ * Quietly expensive; never showy. A worked example `teach` borrows
+ * structure from; not a brand.
+ */
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9800 0.0018 80);
+  --foreground: oklch(0.2350 0.0050 70);
+  --card: oklch(0.9930 0.0012 80);
+  --card-foreground: oklch(0.2350 0.0050 70);
+  --popover: oklch(0.9930 0.0012 80);
+  --popover-foreground: oklch(0.2350 0.0050 70);
+  --primary: oklch(0.4050 0.1100 22);
+  --primary-foreground: oklch(0.9880 0.0015 80);
+  --secondary: oklch(0.9480 0.0035 78);
+  --secondary-foreground: oklch(0.3000 0.0060 72);
+  --muted: oklch(0.9560 0.0030 78);
+  --muted-foreground: oklch(0.4550 0.0070 73);
+  --accent: oklch(0.9350 0.0090 40);
+  --accent-foreground: oklch(0.3600 0.0750 24);
+  --destructive: oklch(0.5100 0.1700 28);
+  --destructive-foreground: oklch(0.9880 0.0015 80);
+  --border: oklch(0.8980 0.0040 77);
+  --input: oklch(0.8980 0.0040 77);
+  --ring: oklch(0.4050 0.1100 22);
+  --sidebar: oklch(0.9650 0.0025 79);
+  --sidebar-foreground: oklch(0.2350 0.0050 70);
+  --sidebar-primary: oklch(0.4050 0.1100 22);
+  --sidebar-primary-foreground: oklch(0.9880 0.0015 80);
+  --sidebar-accent: oklch(0.9350 0.0090 40);
+  --sidebar-accent-foreground: oklch(0.3600 0.0750 24);
+  --sidebar-border: oklch(0.8980 0.0040 77);
+  --sidebar-ring: oklch(0.4050 0.1100 22);
+  --chart-1: oklch(0.4050 0.1100 22);
+  --chart-2: oklch(0.5600 0.0850 28);
+  --chart-3: oklch(0.7000 0.0600 35);
+  --chart-4: oklch(0.4400 0.0450 250);
+  --chart-5: oklch(0.5500 0.0050 75);
+  --shadow-sm: 0 1px 2px oklch(0.24 0.005 70 / 0.06);
+  --shadow-md: 0 2px 8px oklch(0.24 0.005 70 / 0.09);
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --font-sans: "Source Sans 3", "Gill Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Charter", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-serif: "Charter", "Iowan Old Style", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.8125rem;
+  --text-3xl: clamp(2rem, 4.5vw, 2.5rem);
+  --leading-tight: 1.22;
+  --leading-normal: 1.64;
+  --leading-relaxed: 1.78;
+  --tracking-label: 0.07em;
+  --spacing: 1rem;
+  --space-section: 3.25rem;
+  --measure: 42rem;
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 180ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2100 0.0040 60);
+  --foreground: oklch(0.9300 0.0030 75);
+  --card: oklch(0.2420 0.0045 62);
+  --card-foreground: oklch(0.9300 0.0030 75);
+  --popover: oklch(0.2420 0.0045 62);
+  --popover-foreground: oklch(0.9300 0.0030 75);
+  --primary: oklch(0.7000 0.0850 28);
+  --primary-foreground: oklch(0.1950 0.0045 62);
+  --secondary: oklch(0.2850 0.0050 64);
+  --secondary-foreground: oklch(0.8950 0.0040 74);
+  --muted: oklch(0.2750 0.0048 63);
+  --muted-foreground: oklch(0.7700 0.0045 73);
+  --accent: oklch(0.3050 0.0180 30);
+  --accent-foreground: oklch(0.8400 0.0550 32);
+  --destructive: oklch(0.6800 0.1450 28);
+  --destructive-foreground: oklch(0.1900 0.0040 62);
+  --border: oklch(0.3250 0.0055 64);
+  --input: oklch(0.3250 0.0055 64);
+  --ring: oklch(0.7000 0.0850 28);
+  --sidebar: oklch(0.2280 0.0042 61);
+  --sidebar-foreground: oklch(0.9300 0.0030 75);
+  --sidebar-primary: oklch(0.7000 0.0850 28);
+  --sidebar-primary-foreground: oklch(0.1950 0.0045 62);
+  --sidebar-accent: oklch(0.3050 0.0180 30);
+  --sidebar-accent-foreground: oklch(0.8400 0.0550 32);
+  --sidebar-border: oklch(0.3250 0.0055 64);
+  --sidebar-ring: oklch(0.7000 0.0850 28);
+  --chart-1: oklch(0.7000 0.0850 28);
+  --chart-2: oklch(0.6100 0.0700 30);
+  --chart-3: oklch(0.5100 0.0550 33);
+  --chart-4: oklch(0.6400 0.0450 250);
+  --chart-5: oklch(0.6800 0.0045 73);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
+  --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2100 0.0040 60);
+    --foreground: oklch(0.9300 0.0030 75);
+    --card: oklch(0.2420 0.0045 62);
+    --card-foreground: oklch(0.9300 0.0030 75);
+    --popover: oklch(0.2420 0.0045 62);
+    --popover-foreground: oklch(0.9300 0.0030 75);
+    --primary: oklch(0.7000 0.0850 28);
+    --primary-foreground: oklch(0.1950 0.0045 62);
+    --secondary: oklch(0.2850 0.0050 64);
+    --secondary-foreground: oklch(0.8950 0.0040 74);
+    --muted: oklch(0.2750 0.0048 63);
+    --muted-foreground: oklch(0.7700 0.0045 73);
+    --accent: oklch(0.3050 0.0180 30);
+    --accent-foreground: oklch(0.8400 0.0550 32);
+    --destructive: oklch(0.6800 0.1450 28);
+    --destructive-foreground: oklch(0.1900 0.0040 62);
+    --border: oklch(0.3250 0.0055 64);
+    --input: oklch(0.3250 0.0055 64);
+    --ring: oklch(0.7000 0.0850 28);
+    --sidebar: oklch(0.2280 0.0042 61);
+    --sidebar-foreground: oklch(0.9300 0.0030 75);
+    --sidebar-primary: oklch(0.7000 0.0850 28);
+    --sidebar-primary-foreground: oklch(0.1950 0.0045 62);
+    --sidebar-accent: oklch(0.3050 0.0180 30);
+    --sidebar-accent-foreground: oklch(0.8400 0.0550 32);
+    --sidebar-border: oklch(0.3250 0.0055 64);
+    --sidebar-ring: oklch(0.7000 0.0850 28);
+    --chart-1: oklch(0.7000 0.0850 28);
+    --chart-2: oklch(0.6100 0.0700 30);
+    --chart-3: oklch(0.5100 0.0550 33);
+    --chart-4: oklch(0.6400 0.0450 250);
+    --chart-5: oklch(0.6800 0.0045 73);
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
+    --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Returns &amp; Refunds — Phase 2 Scope</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231f4e79'/%3E%3C/svg%3E">
+<meta property="og:title" content="Returns &amp; Refunds — Phase 2 Scope">
+<meta property="og:description" content="Extending the Lumen–Atlas order sync to cover the reverse flow.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: oklch(1 0 0); --ink: oklch(0.229 0.009 255.6); --muted: oklch(0.487 0.015 255.6); --line: oklch(0.921 0.005 258.3);
+    --accent: oklch(0.414 0.088 249.1); --surface: oklch(0.976 0.002 247.8);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+    --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+      color-scheme: dark;
+      --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+      --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Georgia, "Times New Roman", serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.3rem; margin: 2.5rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 1.75rem 0 0.5rem; }
+  p { margin: 0.75rem 0; }
+  ul { margin: 0.75rem 0; padding-left: 1.4rem; }
+  li { margin: 0.35rem 0; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; }
+  dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  dl.meta dt { color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: 0.04em; }
+  dl.meta dd { margin: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+  th { text-align: left; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 0.4rem 0.6rem; }
+  td { border-bottom: 1px solid var(--line); padding: 0.5rem 0.6rem; vertical-align: top; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.85em; background: var(--surface); padding: 0.1em 0.35em; border-radius: 3px; }
+  @media (max-width: 640px) { h1 { font-size: 1.5rem; } main { padding-top: 2rem; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Returns &amp; Refunds — Phase 2 Scope</h1>
+    <p class="subtitle">Extending the Lumen ↔ Atlas order sync to cover the reverse flow.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Proposed — needs sign-off from Atlas ops</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Depends on</dt><dd>Order Sync Integration (Phase 1, live)</dd>
+      <dt>Last updated</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="phase-1-recap">1. Where Phase 1 left off</h2>
+  <p>Phase 1 shipped the forward flow: orders placed in Lumen Commerce reach Atlas ERP
+  within seconds, stock is reserved before confirmation, and <code>order.paid</code>
+  events drive fulfillment. Returns still live entirely in email. A customer writes to
+  support, support asks the warehouse, the warehouse checks Atlas, and a refund happens
+  in Lumen days later — with no record connecting the three.</p>
+
+  <h2 id="phase-2-scope">2. Phase 2 scope</h2>
+  <h3 id="returns-portal">Self-service returns portal</h3>
+  <p>Customers start a return from their order history in Lumen. Eligible items (within
+  the return window, not final-sale) get a prepaid label. The return request is created
+  in Atlas as an <code>RMA</code> the moment the customer submits.</p>
+  <h3 id="refund-flows">Refund flows</h3>
+  <p>When the warehouse receives and grades the item, Atlas emits
+  <code>rma.received</code>. Lumen refunds automatically for grade A and B returns;
+  grade C goes to a support queue with photos attached. Refunds always go to the
+  original payment method.</p>
+  <h3 id="partial-refunds">Partial refunds</h3>
+  <p>Supported per line item, not per unit fraction. Shipping fees refund only when the
+  whole order is returned, matching the published returns policy.</p>
+
+  <h2 id="out-of-scope">3. Out of scope for Phase 2</h2>
+  <ul>
+    <li>Exchanges (an exchange is modeled as a return plus a new order).</li>
+    <li>In-store returns for online orders — Atlas point-of-sale work, tracked separately.</li>
+    <li>Refunds to store credit; the wallet feature has no confirmed timeline.</li>
+    <li>Cross-border returns beyond the EU (customs paperwork is manual today and stays manual).</li>
+  </ul>
+
+  <h2 id="timeline">4. Timeline</h2>
+  <table>
+    <thead><tr><th>Milestone</th><th>Target</th><th>Exit criteria</th></tr></thead>
+    <tbody>
+      <tr><td>RMA event contract agreed</td><td>Week 1–2</td><td>Both teams sign the payload spec</td></tr>
+      <tr><td>Portal behind feature flag</td><td>Week 3–6</td><td>Internal orders flow end to end in staging</td></tr>
+      <tr><td>Pilot: 10% of customers</td><td>Week 7–8</td><td>Refund latency under 48h, error rate under 1%</td></tr>
+      <tr><td>General availability</td><td>Week 9</td><td>Support ticket volume for returns drops measurably</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="risks">5. Risks</h2>
+  <table>
+    <thead><tr><th>Risk</th><th>Trigger</th><th>Mitigation</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Warehouse grading backlog delays refunds</td><td>Receiving queue over 2 days</td><td>Auto-refund grade-unknown after 5 business days; reconcile later</td><td>Atlas ops</td></tr>
+      <tr><td>Fraudulent returns rise with self-service</td><td>Refund-to-return mismatch over 2%</td><td>Grade C queue keeps a human in the loop; velocity limits per customer</td><td>Lumen risk</td></tr>
+      <tr><td>Payment provider refund API rate limits</td><td>Bulk campaign returns</td><td>Refund queue with backoff, not fire-and-forget calls</td><td>Lumen engineering</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="decisions-needed">6. Decisions needed before build</h2>
+  <table>
+    <thead><tr><th>#</th><th>Question</th><th>Blocking</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Return window: keep 30 days, or extend to 60 for loyalty-tier customers?</td><td>Yes — drives eligibility rules in the portal</td></tr>
+      <tr><td>2</td><td>Who owns grade C disputes — Lumen support or Atlas warehouse team?</td><td>Yes — determines queue tooling</td></tr>
+      <tr><td>3</td><td>Do we back-fill RMAs for returns currently in the email pipeline?</td><td>No — can migrate after GA</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!-- title: Order Sync Phase 1 — Project Recap (matrix sample) -->
+<!-- description: Matrix sample exercising the project-recap structure. -->
+<header>
+    <h1>Order Sync Phase 1 — Recap</h1>
+    <p class="subtitle">Closing record of the batch-to-events migration, March–June 2026.</p>
+    <dl class="meta">
+      <dt>Status</dt><dd>Closed</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Audience</dt><dd>Sponsor, both teams</dd>
+      <dt>Date</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="what-was-delivered">What was delivered</h2>
+  <ul>
+    <li>Event-driven order sync live at 100%, batch retired after 24h clean shadow run.</li>
+    <li>Reservation flow with 8s SLA; p95 at 6.1s in production week one.</li>
+    <li>Runbooks: rollback switch, reconciliation, dead-letter handling.</li>
+  </ul>
+
+  <h2 id="against-the-plan">Against the plan</h2>
+  <p>Shipped two weeks late against the nine-week plan. The slip came from staging
+  credentials arriving in week 6 instead of week 1; scope itself did not move.</p>
+
+  <h2 id="how-it-went">How it went</h2>
+  <p>The shadow-run pattern caught one real divergence before customers could. The
+  decision to reject whole orders instead of partial reservations survived contact with
+  production and simplified support macros.</p>
+
+  <h2 id="what-we-learned">What we learned</h2>
+  <ul>
+    <li>External credentials belong on the critical path in week zero; next engagement
+    contracts a named owner and an SLA for them.</li>
+    <li>Shadow comparison is cheap insurance; keep it as a permanent nightly guard.</li>
+  </ul>
+
+  <h2 id="open-items-and-handoff">Open items and handoff</h2>
+  <table>
+    <thead><tr><th>Item</th><th>Owner now</th></tr></thead>
+    <tbody>
+      <tr><td>Returns flow (Phase 2 spec in review)</td><td>Integration team</td></tr>
+      <tr><td>Reconciliation alert tuning</td><td>Atlas ops</td></tr>
+    </tbody>
+  </table>

@@ -1,0 +1,15 @@
+*, ::before, ::after { border-color: #d1d1d1; }
+h1, h2, h3 { font-size: inherit; font-weight: inherit; }
+body { margin: 0; line-height: inherit; }
+.bg-body { --tw-bg-opacity: 1; background-color: rgb(14 15 17 / var(--tw-bg-opacity)); }
+.text-body { --tw-text-opacity: 1; color: rgb(255 255 255 / var(--tw-text-opacity)); }
+.font-body { font-family: Montserrat, -apple-system, sans-serif; }
+.font-heading { font-family: "Clash Grotesk", sans-serif; }
+.medium { font-weight: 500; }
+.bold { font-weight: 700; }
+.btn { background-color: #ccff00; color: #000000; }
+.btn--chatgpt svg { color: #10a37f; }
+.pricing-card { background: #cc785c; }
+.pricing-card .price { color: #cc785c; }
+.pricing-card .note { color: #cc785c; }
+.pricing-card .old { color: #cc785c; }

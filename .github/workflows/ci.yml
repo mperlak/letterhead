@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mirror byte-identical (canonical → skills/)
+        run: bash bin/sync-mounts.sh --check
+
+      - name: Node syntax check
+        run: |
+          node --check letterhead/scripts/check-document.mjs
+          node --check letterhead/scripts/check-tokens.mjs
+          node --check letterhead/scripts/lib/css.mjs
+          node --check letterhead/scripts/lib/report.mjs
+          node --check letterhead/scripts/brand-evidence.mjs
+          node --check letterhead/scripts/brand-tokens.mjs
+          node --check letterhead/scripts/brand-sheet.mjs
+          node --check letterhead/scripts/apply-tokens.mjs
+          node --check letterhead/scripts/lib/images.mjs
+          node --check letterhead/scripts/prepare-images.mjs
+          node --check letterhead/scripts/product-cards.mjs
+          node --check letterhead/scripts/build-presentation.mjs
+          node --check letterhead/templates/presentation/lightbox.js
+          node --check bin/check-html.mjs
+          node --check dev-scripts/build-matrix.mjs
+          node --check dev-scripts/check-document-smoke.mjs
+          node --check dev-scripts/check-tokens-smoke.mjs
+          node --check dev-scripts/brand-evidence-smoke.mjs
+          node --check dev-scripts/brand-tokens-smoke.mjs
+          node --check dev-scripts/brand-sheet-smoke.mjs
+          node --check dev-scripts/presentation-smoke.mjs
+
+      - name: Bash syntax check
+        run: |
+          bash -n bin/sync-mounts.sh
+          bash -n dev-scripts/build-vendor.sh
+
+      - name: Checker smoke (check-document, check-tokens)
+        run: |
+          node dev-scripts/check-document-smoke.mjs
+          node dev-scripts/check-tokens-smoke.mjs
+
+      - name: Brand scripts smoke (evidence, tokens incl. logo tint, sheet, apply-tokens)
+        run: |
+          node dev-scripts/brand-evidence-smoke.mjs
+          node dev-scripts/brand-tokens-smoke.mjs
+          node dev-scripts/brand-sheet-smoke.mjs
+
+      - name: Presentation scripts smoke (pictures, product pages, build in every style)
+        run: node dev-scripts/presentation-smoke.mjs
+
+      - name: Style token validation
+        run: node letterhead/scripts/check-tokens.mjs letterhead/styles/*/tokens.css
+
+      - name: Template x style matrix (all templates x all styles)
+        # Renders every template sample body in every style and fails on
+        # any check-document error.
+        run: node dev-scripts/build-matrix.mjs
+
+      - name: Document check on fixtures and examples
+        run: |
+          node letterhead/scripts/check-document.mjs letterhead/fixtures/*.html
+          find examples -name '*.html' -print0 | xargs -0 node letterhead/scripts/check-document.mjs
+
+      - name: Tag closure — fixtures and examples
+        run: |
+          node bin/check-html.mjs letterhead/fixtures/*.html
+          if compgen -G "examples/**/*.html" > /dev/null; then
+            find examples -name '*.html' -print0 | xargs -0 node bin/check-html.mjs
+          fi

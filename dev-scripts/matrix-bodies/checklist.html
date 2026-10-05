@@ -1,0 +1,43 @@
+<!-- title: Order Sync Go-Live Checklist (matrix sample) -->
+<!-- description: Matrix sample exercising the checklist structure. -->
+<header>
+    <h1>Order Sync Go-Live Checklist</h1>
+    <p class="subtitle">Everything that must be true before the event sync replaces the nightly batch.</p>
+    <dl class="meta">
+      <dt>Event</dt><dd>Go-live, Tuesday 06:00–08:00 CET</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Approvers</dt><dd>Engineering lead, Atlas operations manager</dd>
+      <dt>Status</dt><dd>At risk — one item blocked</dd>
+    </dl>
+  </header>
+
+  <h2 id="readiness">Readiness</h2>
+  <p>7 of 9 items done, 1 open, 1 blocked. The date holds only if staging credentials
+  arrive by Wednesday.</p>
+
+  <h2 id="before-launch">Before launch</h2>
+  <ul>
+    <li><span class="state ok">done</span> Staging mirrors the production item master. <em>Atlas IT</em></li>
+    <li><span class="state ok">done</span> End-to-end order confirmed in staging. <em>Lumen QA</em></li>
+    <li><span class="state warn">open</span> Load test at 3x peak volume, p95 under 8s. <em>Lumen engineering</em></li>
+    <li><span class="state blocked">blocked</span> Integration test suite against the staging tenant. <em>Integration team</em></li>
+  </ul>
+
+  <h2 id="launch-day">Launch day</h2>
+  <ul>
+    <li><span class="state ok">done</span> Item-master change freeze booked for the window. <em>Atlas ops</em></li>
+    <li><span class="state ok">done</span> Ramp plan (5% → 50% → 100%) with shadow comparison. <em>Integration team</em></li>
+  </ul>
+
+  <h2 id="blocked-items">Blocked items</h2>
+  <p>The integration test suite waits on Atlas staging credentials, requested three weeks
+  ago. Unblocker: Atlas IT. If not issued by Wednesday, go-live slips one week.</p>
+
+  <h2 id="sign-offs">Sign-offs</h2>
+  <table>
+    <thead><tr><th>Approver</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td>Engineering lead, Lumen</td><td><span class="state ok">approved</span></td></tr>
+      <tr><td>Operations manager, Atlas</td><td><span class="state warn">pending — waiting on load test</span></td></tr>
+    </tbody>
+  </table>

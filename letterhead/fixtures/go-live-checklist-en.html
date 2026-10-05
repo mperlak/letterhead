@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Sync Go-Live Checklist</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231f4e79'/%3E%3C/svg%3E">
+<meta property="og:title" content="Order Sync Go-Live Checklist">
+<meta property="og:description" content="Everything that must be true before the order sync replaces the nightly batch.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: oklch(1 0 0); --ink: oklch(0.229 0.009 255.6); --muted: oklch(0.487 0.015 255.6); --line: oklch(0.921 0.005 258.3);
+    --accent: oklch(0.414 0.088 249.1); --surface: oklch(0.976 0.002 247.8); --ok: oklch(0.48 0.104 152);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+    --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6); --ok: oklch(0.77 0.097 155.9);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+      color-scheme: dark;
+      --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+      --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6); --ok: oklch(0.77 0.097 155.9);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Georgia, "Times New Roman", serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.3rem; margin: 2.5rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  p { margin: 0.75rem 0; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; }
+  dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  dl.meta dt { color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: 0.04em; }
+  dl.meta dd { margin: 0; }
+  ul.check { list-style: none; padding: 0; margin: 1rem 0; }
+  ul.check li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--line); }
+  ul.check li::before { content: ""; position: absolute; left: 0.2rem; top: 0.85rem; width: 0.85rem; height: 0.85rem; border: 1.5px solid var(--muted); border-radius: 3px; }
+  ul.check li.done::before { border-color: var(--ok); background: var(--ok); }
+  ul.check li.done::after { content: "✓"; position: absolute; left: 0.35rem; top: 0.52rem; color: var(--bg); font-size: 0.7rem; font-weight: 700; }
+  ul.check .who { color: var(--muted); font-size: 0.85rem; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+  th { text-align: left; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 0.4rem 0.6rem; }
+  td { border-bottom: 1px solid var(--line); padding: 0.5rem 0.6rem; vertical-align: top; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.85em; background: var(--surface); padding: 0.1em 0.35em; border-radius: 3px; }
+  @media (max-width: 640px) { h1 { font-size: 1.5rem; } main { padding-top: 2rem; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Order Sync Go-Live Checklist</h1>
+    <p class="subtitle">Everything that must be true before the Lumen ↔ Atlas order sync replaces the nightly batch.</p>
+    <dl class="meta">
+      <dt>Go-live target</dt><dd>Tuesday, low-traffic window 06:00–08:00 CET</dd>
+      <dt>Owner</dt><dd>Integration team, Lumen Commerce</dd>
+      <dt>Approvers</dt><dd>Lumen engineering lead, Atlas operations manager</dd>
+      <dt>Last updated</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="pre-launch">1. Pre-launch (T minus 1 week)</h2>
+  <ul class="check">
+    <li class="done">Atlas staging tenant mirrors production item master <span class="who">— Atlas IT</span></li>
+    <li class="done">End-to-end order placed, reserved, confirmed, and fulfilled in staging <span class="who">— Lumen QA</span></li>
+    <li class="done">Idempotency verified: duplicate <code>order.paid</code> deliveries create one fulfillment <span class="who">— Lumen engineering</span></li>
+    <li>Load test at 3× peak campaign volume, reservation p95 under 8s <span class="who">— Lumen engineering</span></li>
+    <li>Reconciliation job dry-run compared against last week's batch exports <span class="who">— Atlas ops</span></li>
+    <li>Support macros updated for the new "confirming your order" state <span class="who">— Lumen support</span></li>
+  </ul>
+
+  <h2 id="launch-day">2. Launch day</h2>
+  <ul class="check">
+    <li>Freeze Atlas item-master changes during the cutover window <span class="who">— Atlas ops</span></li>
+    <li>Enable event sync for 5% of orders; nightly batch keeps running as shadow <span class="who">— Lumen engineering</span></li>
+    <li>Compare shadow batch vs. live events after 2 hours; divergence must be zero <span class="who">— Integration team</span></li>
+    <li>Ramp to 50%, then 100% if error budget holds <span class="who">— Integration team</span></li>
+    <li>Disable batch export only after 100% has run clean for 24 hours <span class="who">— Atlas IT</span></li>
+  </ul>
+
+  <h2 id="post-launch">3. Post-launch monitoring (first two weeks)</h2>
+  <table>
+    <thead><tr><th>Signal</th><th>Threshold</th><th>Response</th></tr></thead>
+    <tbody>
+      <tr><td>Reservation timeout rate</td><td>Over 0.5% of orders</td><td>Page on-call; check Atlas DB locks first</td></tr>
+      <tr><td>Order state divergence (nightly reconciliation)</td><td>Over 0.1% of daily orders</td><td>Page on-call; freeze ramp if mid-rollout</td></tr>
+      <tr><td>Webhook delivery failures</td><td>Retry queue over 100 events</td><td>Alert integration channel; investigate Atlas endpoint health</td></tr>
+      <tr><td>Support tickets mentioning order status</td><td>Above pre-launch baseline</td><td>Review checkout copy for the pending state</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="rollback">4. Rollback plan</h2>
+  <p>Rollback is a switch, not a deploy: setting <code>ORDER_SYNC_MODE=batch</code>
+  re-enables the nightly export and stops event emission. Orders created during event
+  mode keep their <code>external_ref</code> and reconcile normally. The only manual step
+  is releasing any stock reservations younger than 30 minutes, for which Atlas ops has
+  a runbook. Practice rollback once in staging before launch day.</p>
+
+  <h2 id="sign-offs">5. Sign-offs</h2>
+  <table>
+    <thead><tr><th>Role</th><th>Name</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Lumen engineering lead</td><td>K. Novak</td><td>Approved</td></tr>
+      <tr><td>Atlas operations manager</td><td>M. Brandt</td><td>Pending — waiting on load-test results</td></tr>
+      <tr><td>Lumen support lead</td><td>A. Ferreira</td><td>Approved</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

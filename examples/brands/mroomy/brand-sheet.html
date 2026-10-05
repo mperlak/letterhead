@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mroomy — Brand Sheet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23888'/%3E%3C/svg%3E">
+<meta property="og:title" content="Mroomy — Brand Sheet">
+<meta property="og:description" content="Palette, typography, and components of the Mroomy letterhead profile.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+
+:root {
+  color-scheme: light;
+
+  --background: oklch(0.9694 0.0059 60);          /* warm paper #f8f4f1 */
+  --foreground: oklch(0.2520 0 0);                /* #222 */
+  --card: oklch(0.9997 0.0013 106);
+  --card-foreground: oklch(0.2520 0 0);
+  --popover: oklch(0.9997 0.0013 106);
+  --popover-foreground: oklch(0.2520 0 0);
+
+  --primary: oklch(0.5946 0.2100 359);            /* raspberry #e20c7b */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.9300 0.0170 55);           /* warm beige */
+  --secondary-foreground: oklch(0.3558 0.0017 106);
+  --muted: oklch(0.9500 0.0100 58);
+  --muted-foreground: oklch(0.4700 0.0060 80);
+  --accent: oklch(0.9440 0.0270 359);             /* pink-tinted surface */
+  --accent-foreground: oklch(0.5000 0.1900 359);
+  --destructive: oklch(0.5400 0.1900 28);
+  --destructive-foreground: oklch(1 0 0);
+
+  --border: oklch(0.8910 0.0198 55);              /* #e6d8cf */
+  --input: oklch(0.8910 0.0198 55);
+  --ring: oklch(0.5946 0.2100 359);
+
+  --sidebar: oklch(0.9560 0.0090 58);
+  --sidebar-foreground: oklch(0.3558 0.0017 106);
+  --sidebar-primary: oklch(0.5946 0.2100 359);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.9440 0.0270 359);
+  --sidebar-accent-foreground: oklch(0.5000 0.1900 359);
+  --sidebar-border: oklch(0.9000 0.0180 55);
+  --sidebar-ring: oklch(0.5946 0.2100 359);
+
+  --chart-1: oklch(0.5946 0.2100 359);            /* raspberry */
+  --chart-2: oklch(0.8211 0.0655 240);            /* sky #9ecbeb */
+  --chart-3: oklch(0.6487 0.1127 224);            /* teal #249dc1 */
+  --chart-4: oklch(0.7600 0.1200 75);             /* warm amber */
+  --chart-5: oklch(0.5417 0 0);                   /* neutral */
+
+  /* Brand extras */
+  --brand-cta: oklch(0.6123 0.2200 7);            /* hot pink #f00069 */
+  --brand-sky: oklch(0.8211 0.0655 240);          /* pastel sky #9ecbeb */
+
+  /* Shape: rounded and friendly */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  --font-sans: "Nunito Sans", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito", "Trebuchet MS", "Segoe UI", Verdana, ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: clamp(2rem, 5vw, 2.75rem);
+  --leading-tight: 1.2;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+  --tracking-label: 0.04em;
+
+  --spacing: 1rem;
+  --space-section: 3rem;
+  --measure: 42rem;
+
+  --shadow-sm: 0 2px 6px oklch(0.35 0.02 55 / 0.10);
+  --shadow-md: 0 6px 18px oklch(0.35 0.02 55 / 0.14);
+
+  --motion-duration-fast: 150ms;
+  --motion-duration-base: 250ms;
+  --motion-ease: cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.2150 0.0080 55);
+  --foreground: oklch(0.9350 0.0060 70);
+  --card: oklch(0.2500 0.0090 55);
+  --card-foreground: oklch(0.9350 0.0060 70);
+  --popover: oklch(0.2500 0.0090 55);
+  --popover-foreground: oklch(0.9350 0.0060 70);
+
+  --primary: oklch(0.7100 0.1500 359);
+  --primary-foreground: oklch(0.2000 0.0300 359);
+  --secondary: oklch(0.2900 0.0110 55);
+  --secondary-foreground: oklch(0.8900 0.0080 70);
+  --muted: oklch(0.2750 0.0100 55);
+  --muted-foreground: oklch(0.7800 0.0090 70);
+  --accent: oklch(0.3100 0.0350 359);
+  --accent-foreground: oklch(0.8300 0.0900 359);
+  --destructive: oklch(0.6900 0.1500 28);
+  --destructive-foreground: oklch(0.2000 0.0100 55);
+
+  --border: oklch(0.3300 0.0110 55);
+  --input: oklch(0.3300 0.0110 55);
+  --ring: oklch(0.7100 0.1500 359);
+
+  --sidebar: oklch(0.2350 0.0085 55);
+  --sidebar-foreground: oklch(0.9350 0.0060 70);
+  --sidebar-primary: oklch(0.7100 0.1500 359);
+  --sidebar-primary-foreground: oklch(0.2000 0.0300 359);
+  --sidebar-accent: oklch(0.3100 0.0350 359);
+  --sidebar-accent-foreground: oklch(0.8300 0.0900 359);
+  --sidebar-border: oklch(0.3300 0.0110 55);
+  --sidebar-ring: oklch(0.7100 0.1500 359);
+
+  --chart-1: oklch(0.7100 0.1500 359);
+  --chart-2: oklch(0.7800 0.0700 240);
+  --chart-3: oklch(0.7300 0.1000 224);
+  --chart-4: oklch(0.8000 0.1100 78);
+  --chart-5: oklch(0.7200 0 0);
+
+  --brand-cta: oklch(0.7200 0.1600 7);
+  --brand-sky: oklch(0.7800 0.0700 240);
+
+  --shadow-sm: 0 2px 6px oklch(0 0 0 / 0.35);
+  --shadow-md: 0 6px 18px oklch(0 0 0 / 0.40);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.2150 0.0080 55);
+    --foreground: oklch(0.9350 0.0060 70);
+    --card: oklch(0.2500 0.0090 55);
+    --card-foreground: oklch(0.9350 0.0060 70);
+    --popover: oklch(0.2500 0.0090 55);
+    --popover-foreground: oklch(0.9350 0.0060 70);
+
+    --primary: oklch(0.7100 0.1500 359);
+    --primary-foreground: oklch(0.2000 0.0300 359);
+    --secondary: oklch(0.2900 0.0110 55);
+    --secondary-foreground: oklch(0.8900 0.0080 70);
+    --muted: oklch(0.2750 0.0100 55);
+    --muted-foreground: oklch(0.7800 0.0090 70);
+    --accent: oklch(0.3100 0.0350 359);
+    --accent-foreground: oklch(0.8300 0.0900 359);
+    --destructive: oklch(0.6900 0.1500 28);
+    --destructive-foreground: oklch(0.2000 0.0100 55);
+
+    --border: oklch(0.3300 0.0110 55);
+    --input: oklch(0.3300 0.0110 55);
+    --ring: oklch(0.7100 0.1500 359);
+
+    --sidebar: oklch(0.2350 0.0085 55);
+    --sidebar-foreground: oklch(0.9350 0.0060 70);
+    --sidebar-primary: oklch(0.7100 0.1500 359);
+    --sidebar-primary-foreground: oklch(0.2000 0.0300 359);
+    --sidebar-accent: oklch(0.3100 0.0350 359);
+    --sidebar-accent-foreground: oklch(0.8300 0.0900 359);
+    --sidebar-border: oklch(0.3300 0.0110 55);
+    --sidebar-ring: oklch(0.7100 0.1500 359);
+
+    --chart-1: oklch(0.7100 0.1500 359);
+    --chart-2: oklch(0.7800 0.0700 240);
+    --chart-3: oklch(0.7300 0.1000 224);
+    --chart-4: oklch(0.8000 0.1100 78);
+    --chart-5: oklch(0.7200 0 0);
+
+    --brand-cta: oklch(0.7200 0.1600 7);
+    --brand-sky: oklch(0.7800 0.0700 240);
+
+    --shadow-sm: 0 2px 6px oklch(0 0 0 / 0.35);
+    --shadow-md: 0 6px 18px oklch(0 0 0 / 0.40);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
+main { max-width: 52rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+h1 { font-family: var(--font-display); font-size: var(--text-3xl); line-height: var(--leading-tight); margin: 0 0 0.25rem; }
+h2 { font-family: var(--font-display); font-size: var(--text-xl); margin: 2.75rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+p { margin: 0.6rem 0; }
+.subtitle { color: var(--muted-foreground); margin: 0 0 1.25rem; }
+dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 1rem; font-size: var(--text-sm); margin: 0 0 1rem; }
+dl.meta dt { color: var(--muted-foreground); letter-spacing: var(--tracking-label); text-transform: uppercase; font-size: var(--text-xs); }
+dl.meta dd { margin: 0; }
+.toggle { position: fixed; top: 0.9rem; right: 0.9rem; background: var(--card); color: var(--foreground);
+  border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.35rem 0.8rem; font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; }
+.sw { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: var(--card); }
+.sw .chip { height: 3.2rem; }
+.sw .lbl { padding: 0.45rem 0.6rem; font-size: var(--text-xs); color: var(--muted-foreground); }
+.sw .lbl b { display: block; color: var(--card-foreground); font-size: var(--text-sm); }
+.ramp p { margin: 0.4rem 0; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: var(--text-sm); }
+th { text-align: left; font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase;
+  color: var(--muted-foreground); border-bottom: 2px solid var(--border); padding: 0.4rem 0.6rem; }
+td { border-bottom: 1px solid var(--border); padding: 0.5rem 0.6rem; }
+td.num { font-family: var(--font-mono); text-align: right; }
+.btn { display: inline-block; border: 0; border-radius: var(--radius-md); padding: 0.5rem 1.125rem;
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--text-sm); cursor: pointer; }
+.btn.primary { background: var(--primary); color: var(--primary-foreground); }
+.btn.secondary { background: var(--secondary); color: var(--secondary-foreground); border: 1px solid var(--border); }
+.card { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-md); max-width: 26rem; }
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--muted); border: 1px solid var(--border);
+  padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
+</style>
+</head>
+<body>
+<button class="toggle" onclick="var r=document.documentElement, d=r.getAttribute('data-theme')==='dark';r.setAttribute('data-theme', d?'light':'dark')">Toggle theme</button>
+<main>
+  <header>
+    <h1>Mroomy — Brand Sheet</h1>
+    <p class="subtitle">Warm, rounded, parent-friendly. Raspberry energy on warm paper, sky blue keeps it calm.</p>
+    <dl class="meta">
+      <dt>Profile</dt><dd>.letterhead/clients/mroomy/</dd>
+      <dt>Taught</dt><dd>2026-07-12, via letterhead teach</dd>
+      <dt>Sources</dt><dd>live site (mroomy.com)</dd>
+    </dl>
+  </header>
+
+  <h2 id="palette">Palette</h2>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:var(--primary)"></div><div class="lbl"><b>primary</b>identity, emphasis</div></div>
+    <div class="sw"><div class="chip" style="background:var(--accent)"></div><div class="lbl"><b>accent</b>tinted surface</div></div>
+    <div class="sw"><div class="chip" style="background:var(--secondary)"></div><div class="lbl"><b>secondary</b>quiet fills</div></div>
+    <div class="sw"><div class="chip" style="background:var(--muted)"></div><div class="lbl"><b>muted</b>recessed surface</div></div>
+    <div class="sw"><div class="chip" style="background:var(--destructive)"></div><div class="lbl"><b>destructive</b>risk, loss</div></div>
+    <div class="sw"><div class="chip" style="background:var(--border)"></div><div class="lbl"><b>border</b>hairlines</div></div>
+    <div class="sw"><div class="chip" style="background:var(--chart-1)"></div><div class="lbl"><b>chart-1</b></div></div>
+    <div class="sw"><div class="chip" style="background:var(--chart-2)"></div><div class="lbl"><b>chart-2</b></div></div>
+    <div class="sw"><div class="chip" style="background:var(--chart-3)"></div><div class="lbl"><b>chart-3</b></div></div>
+    <div class="sw"><div class="chip" style="background:var(--chart-4)"></div><div class="lbl"><b>chart-4</b></div></div>
+  </div>
+
+  <h2 id="typography">Typography</h2>
+  <div class="ramp">
+    <p style="font-family:var(--font-display); font-size:var(--text-3xl); line-height:var(--leading-tight); font-weight:700">Pokój, który rośnie razem z dzieckiem</p>
+    <p style="font-family:var(--font-display); font-size:var(--text-xl); font-weight:650">Projekt, moodboard i lista zakupów</p>
+    <p>Zaprojektuj z nami najlepszy pokój dla Twojego dziecka i oszczędź swój czas. Pracujemy w pełni online.</p>
+    <p style="font-size:var(--text-sm); color:var(--muted-foreground)">Nunito (600–800) for display and headings; Nunito Sans for body. Self-contained documents fall back to system rounded faces.</p>
+    <p><code>PROJ-2026-0412</code></p>
+  </div>
+
+  <h2 id="components">Components</h2>
+  <p>
+    <button class="btn primary" type="button">Zamów projekt</button>
+    &nbsp;
+    <button class="btn secondary" type="button">Zobacz pakiety</button>
+  </p>
+  <div class="card">
+    <p style="margin-top:0; font-weight:600">Pakiet Komfort</p>
+    <p style="margin-bottom:0; font-size:var(--text-sm); color:var(--muted-foreground)">Projekt koncepcyjny + wizualizacje + lista zakupów · realizacja 14 dni</p>
+  </div>
+  <table>
+    <thead><tr><th>Pakiet</th><th>Zakres</th><th style="text-align:right">Cena</th></tr></thead>
+    <tbody>
+      <tr><td>Start</td><td>moodboard + rzut pokoju</td><td class="num">899 zł</td></tr>
+      <tr><td>Komfort</td><td>pełny projekt + wizualizacje</td><td class="num">1 899 zł</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="themes">Themes</h2>
+  <p>Light and dark ship together in this profile. Use the toggle in the corner, or let the OS decide: raw files honor <code>prefers-color-scheme</code>.</p>
+</main>
+</body>
+</html>
