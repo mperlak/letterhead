@@ -1,7 +1,7 @@
 {
   "name": "letterhead",
   "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Marcin Perlak",
     "url": "https://github.com/mperlak"

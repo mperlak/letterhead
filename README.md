@@ -1,9 +1,3 @@
-<!--
-  TODO before going public:
-  - the 60–90 s screen recording (see the comment under Quick start)
-  - Settings → Pages → Source: GitHub Actions, then add .github/workflows/pages.yml
-  - tag a release (v0.2.0) so letterhead.zip exists for the Claude app install
--->
 
 <h1>
   <picture>
