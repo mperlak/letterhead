@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Build the gallery (matrix, presentation, examples, index)
+      - name: Build the gallery (examples, styles, index)
         run: node dev-scripts/build-gallery.mjs
 
       - uses: actions/configure-pages@v5

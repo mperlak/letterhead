@@ -4,262 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>letterhead · gallery</title>
-<meta name="description" content="Your agent writes the document. letterhead puts it on your client's letterhead. Documents, every template in every style, and brand sheets.">
+<meta name="description" content="Documents an agent wrote with letterhead, each on a brand it learned from a website, and the {{STYLE_COUNT}} built-in styles.">
 <meta property="og:title" content="letterhead">
 <meta property="og:description" content="Your agent writes the document. letterhead puts it on your client's letterhead.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%231c1a17'/%3E%3Crect x='3' y='4' width='10' height='1.4' fill='%23f6f4ef'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
-<script>
-  // Theme before first paint: a stored choice, else the OS.
-  (function () {
-    var t = null;
-    try { t = localStorage.getItem('lh-gallery-theme'); } catch (e) {}
-    if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-  })();
-</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400..500&display=swap">
 <style>
 :root {
   --paper: #f6f4ef;
   --ink: #1c1a17;
   --muted: #625d55;
-  --faint: #8a847a;
   --rule: #d6d1c6;
   --accent: #8c2a1c;
   --field: #fbfaf7;
-  --stage: #e9e5dc;
-  --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --wide: 76rem;
-  --gutter: clamp(1rem, 4vw, 3rem);
-  color-scheme: light;
-}
-[data-theme="dark"] {
-  --paper: #141311;
-  --ink: #ebe6dc;
-  --muted: #a8a195;
-  --faint: #7f796f;
-  --rule: #36332e;
-  --accent: #e58b75;
-  --field: #1b1a17;
-  --stage: #1e1c19;
-  color-scheme: dark;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+  :root {
     --paper: #141311;
     --ink: #ebe6dc;
     --muted: #a8a195;
-    --faint: #7f796f;
     --rule: #36332e;
     --accent: #e58b75;
     --field: #1b1a17;
-    --stage: #1e1c19;
-    color-scheme: dark;
   }
 }
-
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
 body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--serif);
-  font-size: 1.125rem;
-  line-height: 1.55;
-  font-optical-sizing: auto;
-  -webkit-font-smoothing: antialiased;
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 1.0625rem/1.5 var(--serif); -webkit-font-smoothing: antialiased;
 }
-a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-a:hover { color: var(--accent); text-decoration-color: currentColor; }
+a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-code { font-family: var(--mono); font-size: 0.86em; }
-button, select { font: inherit; color: inherit; }
-.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 var(--gutter); }
-.label {
-  font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
-}
+img { display: block; width: 100%; height: auto; }
+.wrap { max-width: 72rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem); }
+.small { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--muted); }
 
-/* Masthead ---------------------------------------------------------------- */
-.bar {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: 0.9rem 0; border-bottom: 1px solid var(--ink);
-}
-.bar-left { display: flex; gap: 1.5rem; align-items: baseline; flex-wrap: wrap; }
-.bar a { text-decoration: none; }
-.bar a:hover { text-decoration: underline; }
-.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 2px; }
-.seg button {
-  background: none; border: 0; padding: 0.3rem 0.65rem; cursor: pointer;
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
-}
-.seg button + button { border-left: 1px solid var(--rule); }
-.seg button[aria-pressed="true"] { color: var(--paper); background: var(--ink); }
-.seg button:hover:not([aria-pressed="true"]) { color: var(--ink); }
-
-.mast { padding: clamp(2.5rem, 8vw, 6rem) 0 0; }
-.wordmark {
-  font-weight: 400; font-size: clamp(3.4rem, 13vw, 9.5rem); line-height: 0.9;
-  letter-spacing: -0.035em; margin: 0 0 clamp(1.5rem, 4vw, 2.75rem);
-  font-variation-settings: "opsz" 72;
-}
-.mast-grid { display: grid; gap: 2rem; border-top: 1px solid var(--rule); padding-top: 1.75rem; }
-.tagline {
-  font-size: clamp(1.45rem, 3.2vw, 2.1rem); line-height: 1.22; letter-spacing: -0.01em;
-  margin: 0; max-width: 24ch; font-variation-settings: "opsz" 36;
-}
-.tagline em { font-style: italic; }
-.mast-grid > * { min-width: 0; }
-.install-block { align-self: end; }
-.install {
-  display: flex; align-items: stretch; border: 1px solid var(--ink); border-radius: 2px;
-  background: var(--field); margin: 0.5rem 0 0.75rem; max-width: 100%;
-}
-.install code {
-  flex: 1 1 auto; min-width: 0; padding: 0.7rem 0.85rem; font-size: 0.86rem;
-  overflow-x: auto; white-space: nowrap; scrollbar-width: none;
-}
+header { padding: clamp(2rem, 6vw, 4rem) 0 clamp(1.5rem, 4vw, 2.5rem); }
+h1 { font-weight: 400; font-size: clamp(2.6rem, 8vw, 4.5rem); line-height: 1; letter-spacing: -0.03em; margin: 0 0 0.75rem; }
+.tagline { font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.3; margin: 0 0 1.5rem; max-width: 30ch; }
+.install { display: flex; max-width: 34rem; border: 1px solid var(--ink); border-radius: 2px; background: var(--field); }
+.install code { flex: 1; min-width: 0; padding: 0.6rem 0.8rem; font: 0.85rem var(--mono); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
 .install code::-webkit-scrollbar { display: none; }
 .install button {
-  flex: none; border: 0; border-left: 1px solid var(--ink); background: none; cursor: pointer;
-  padding: 0 0.9rem; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+  border: 0; border-left: 1px solid var(--ink); background: none; color: inherit; cursor: pointer;
+  padding: 0 0.9rem; font: 500 0.72rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
 }
 .install button:hover { background: var(--ink); color: var(--paper); }
-.install-note { font-size: 0.95rem; color: var(--muted); margin: 0; }
-.install-note code { color: var(--ink); overflow-wrap: anywhere; }
+.links { margin: 0.75rem 0 0; }
 
-.contents { list-style: none; margin: clamp(2rem, 5vw, 3rem) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 2rem; }
-.contents a { text-decoration: none; font-size: 1rem; }
-.contents a:hover { text-decoration: underline; }
-.contents .n { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-right: 0.45rem; }
+.hero { margin: 0 0 clamp(3rem, 8vw, 5rem); }
+.hero img { border: 1px solid var(--rule); }
 
-@media (min-width: 820px) {
-  .mast-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 4rem; }
-}
+h2 { font-weight: 400; font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 1rem; padding-top: 0.75rem; border-top: 1px solid var(--ink); }
+.lede { color: var(--muted); margin: -0.5rem 0 1.5rem; max-width: 40rem; }
+.brand { margin-bottom: clamp(2.5rem, 6vw, 4rem); }
 
-/* Sections ---------------------------------------------------------------- */
-.section { padding: clamp(2.75rem, 7vw, 5rem) 0 0; }
-.section-head { border-top: 1px solid var(--ink); padding-top: 1.1rem; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); display: grid; gap: 0.25rem 2rem; }
-.section-no { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); margin: 0.55rem 0 0; }
-.section h2 {
-  font-weight: 400; font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0;
-  font-variation-settings: "opsz" 60;
-}
-.section-lede { color: var(--muted); max-width: 40rem; margin: 0.75rem 0 0; }
-@media (min-width: 820px) {
-  .section-head { grid-template-columns: 5rem minmax(0, 1fr); }
-  .section-head > :not(.section-no) { grid-column: 2; }
-  .section-no { grid-row: 1; }
-}
+.grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.75rem 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr)); }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr 1fr; gap: 1.25rem 0.75rem; } .grid span { font-size: 0.9rem; } }
+.grid a { display: block; text-decoration: none; }
+.grid img { aspect-ratio: 4 / 5; object-fit: cover; object-position: top; border: 1px solid var(--rule); transition: border-color 0.15s; }
+.grid a:hover img { border-color: var(--ink); }
+.grid span { display: block; margin-top: 0.5rem; font-size: 1rem; }
 
-/* Hero pair ---------------------------------------------------------------- */
-.pair { display: grid; gap: 1.5rem; }
-.pair-item { margin: 0; min-width: 0; }
-.pair-item figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0 0 0.6rem; }
-.pair-label { font-size: 1.15rem; }
-.pair-item figcaption a { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; }
-.pair-frame { border: 1px solid var(--rule); background: var(--stage); height: min(78vh, 860px); }
-.pair-frame iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
-@media (min-width: 820px) { .pair { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 819px) {
-  .pair-frame { display: none; }
-  .pair-item { border-top: 1px solid var(--rule); padding-top: 0.75rem; }
-  .pair-item figcaption { padding: 0; }
-}
+.styles img { max-width: 52rem; border: 1px solid var(--rule); }
+.styles p { margin: 1rem 0 0; }
 
-/* Documents ---------------------------------------------------------------- */
-.docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.75rem 2.5rem; }
-@media (min-width: 720px) { .docs { grid-template-columns: 1fr 1fr; } }
-.doc { min-width: 0; }
-.doc > a { display: block; text-decoration: none; }
-.shot {
-  display: block; aspect-ratio: 1280 / 900; overflow: hidden; border: 1px solid var(--rule);
-  background: var(--stage); margin-bottom: 0.9rem; transition: border-color 0.15s;
-}
-.shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; transform: scale(1.4); transform-origin: 50% 0; }
-.doc > a:hover .shot { border-color: var(--ink); }
-.doc-meta { display: block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
-.doc-title { display: block; font-size: 1.3rem; line-height: 1.25; letter-spacing: -0.005em; }
-.doc > a:hover .doc-title { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
-.doc-desc { color: var(--muted); font-size: 1rem; margin: 0.4rem 0 0; max-width: 34rem; }
-
-/* Viewer ------------------------------------------------------------------- */
-.viewer { display: grid; gap: 1.25rem; }
-.picker { min-width: 0; }
-.picker ol { list-style: none; margin: 0.6rem 0 0; padding: 0; }
-.picker button {
-  display: block; width: 100%; text-align: left; background: none; border: 0; cursor: pointer;
-  padding: 0.28rem 0 0.28rem 0.9rem; font-size: 1.02rem; color: var(--muted); position: relative;
-}
-.picker button:hover { color: var(--ink); }
-.picker button[aria-pressed="true"] { color: var(--ink); }
-.picker button[aria-pressed="true"]::before {
-  content: ""; position: absolute; left: 0; top: 0.45rem; bottom: 0.45rem; width: 2px; background: var(--accent);
-}
-.styles-row ol { display: flex; flex-wrap: wrap; gap: 0 1.35rem; margin-top: 0.4rem; }
-.styles-row button { padding: 0.3rem 0 0.35rem; width: auto; border-bottom: 2px solid transparent; }
-.styles-row button[aria-pressed="true"]::before { content: none; }
-.styles-row button[aria-pressed="true"] { border-bottom-color: var(--accent); }
-
-.selects { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.selects label { display: grid; gap: 0.3rem; min-width: 0; }
-.selects select {
-  width: 100%; min-width: 0; appearance: none; -webkit-appearance: none; background: var(--field);
-  border: 1px solid var(--ink); border-radius: 2px; padding: 0.55rem 2rem 0.55rem 0.65rem; font-size: 1rem;
-}
-.select { position: relative; display: block; min-width: 0; }
-.select::after {
-  content: ""; position: absolute; right: 0.8rem; top: 50%; width: 0.4rem; height: 0.4rem; margin-top: -0.3rem;
-  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); pointer-events: none;
-}
-
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
-.toolbar-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.stage {
-  border: 1px solid var(--rule); background: var(--stage); height: clamp(560px, 80vh, 940px);
-  display: flex; justify-content: center; overflow: hidden;
-}
-.stage iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
-.stage.phone { padding: 1.5rem 0; }
-.stage.phone iframe { width: 390px; max-width: 100%; border: 1px solid var(--rule); }
-.caption { display: grid; gap: 0.6rem; font-size: 1rem; color: var(--muted); }
-.caption p { margin: 0; max-width: 46rem; }
-.caption b { font-weight: 500; color: var(--ink); }
-.caption .open { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--ink); }
-.now { font-size: 1.15rem; color: var(--ink); }
-.now .x { color: var(--faint); margin: 0 0.35rem; }
-
-.selects { display: none; }
-@media (max-width: 819px) {
-  .picker { display: none; }
-  .selects { display: grid; }
-  .width-seg { display: none; }
-  .stage { height: 78vh; }
-}
-@media (min-width: 820px) {
-  .viewer { grid-template-columns: 13.5rem minmax(0, 1fr); gap: 2.5rem; }
-  .viewer-main { display: grid; gap: 1rem; min-width: 0; }
-  .picker-templates { grid-row: 1; padding-top: 0.2rem; }
-}
-@media (max-width: 819px) {
-  .viewer-main { display: grid; gap: 1rem; min-width: 0; }
-}
-
-/* Footer ------------------------------------------------------------------- */
-.foot { margin-top: clamp(3.5rem, 9vw, 6rem); border-top: 1px solid var(--ink); padding: 1.1rem 0 2.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; }
-.foot p { margin: 0; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--muted); }
-.foot a { color: var(--ink); }
-
-@media (max-width: 480px) {
-  body { font-size: 1.0625rem; }
-  .install code { white-space: normal; }
-  .contents { flex-direction: column; }
-  .bar-left .hide-sm { display: none; }
-}
+footer { margin-top: clamp(3rem, 8vw, 5rem); border-top: 1px solid var(--rule); padding: 1rem 0 2.5rem; }
+footer p { margin: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -267,259 +85,36 @@ button, select { font: inherit; color: inherit; }
 <div class="wrap">
 
 <header>
-<div class="bar">
-  <div class="bar-left">
-    <span class="label">Agent skill <span class="hide-sm">· MIT</span></span>
-    <a class="label" href="{{REPO}}">GitHub</a>
-  </div>
-  <div class="seg" role="group" aria-label="Page theme">
-    <button type="button" data-page-theme="light" aria-pressed="false">Light</button>
-    <button type="button" data-page-theme="dark" aria-pressed="false">Dark</button>
-  </div>
-</div>
-
-<div class="mast">
-  <h1 class="wordmark">letterhead</h1>
-  <div class="mast-grid">
-    <p class="tagline">Your agent writes the document. letterhead puts it on your client&rsquo;s letterhead.</p>
-    <div class="install-block">
-      <span class="label">Install in Claude Code</span>
-      <div class="install"><code id="install-line">{{INSTALL}}</code><button type="button" id="copy-install">Copy</button></div>
-      <p class="install-note">Then <code>/plugin install letterhead@letterhead</code>. Codex, Cursor and other hosts: <a href="{{REPO}}#install">install guide</a> in the <a href="{{REPO}}">repository</a>.</p>
-    </div>
-  </div>
-  <nav aria-label="On this page">
-    <ol class="contents">
-      {{CONTENTS}}
-    </ol>
-  </nav>
-</div>
+  <h1>letterhead</h1>
+  <p class="tagline">Your agent writes the document. letterhead puts it on your client&rsquo;s letterhead.</p>
+  <div class="install"><code id="install-line">{{INSTALL}}</code><button type="button" id="copy">Copy</button></div>
+  <p class="links small">Claude Code. Other hosts: <a href="{{REPO}}#install">install guide</a> · <a href="{{REPO}}">GitHub</a></p>
 </header>
 
 <main>
-{{HERO}}
+<figure class="hero">{{HERO}}</figure>
 
-<section class="section" id="documents" aria-labelledby="h-docs">
-<div class="section-head">
-<p class="section-no">{{N_DOCS}}</p>
-<h2 id="h-docs">Documents</h2>
-<p class="section-lede">{{DOC_COUNT_CAP}} documents for four fictional companies, each written by the skill from short notes and left unedited. Every one is on a brand letterhead was taught from that company's website.</p>
-</div>
-<ul class="docs">
-{{DOCUMENTS}}
-</ul>
-</section>
-
-<section class="section" id="templates-and-styles" aria-labelledby="h-viewer">
-<div class="section-head">
-<p class="section-no">{{N_VIEWER}}</p>
-<h2 id="h-viewer">Every template in every style</h2>
-<p class="section-lede">{{T_COUNT}} templates, {{S_COUNT}} styles, light and dark. These samples are short on purpose: each shows one template&rsquo;s structure in one style&rsquo;s tokens, and each passes the same document check the skill runs on its own output. The presentation is built from drawn stand-in pictures.</p>
-</div>
-
-<div class="viewer" id="viewer">
-  <div class="picker picker-templates">
-    <span class="label" id="t-label">Template</span>
-    <ol aria-labelledby="t-label" id="t-list">{{TEMPLATE_LIST}}</ol>
-  </div>
-  <div class="viewer-main">
-    <div class="selects">
-      <label><span class="label">Template</span><span class="select"><select id="t-select">{{TEMPLATE_OPTIONS}}</select></span></label>
-      <label><span class="label">Style</span><span class="select"><select id="s-select">{{STYLE_OPTIONS}}</select></span></label>
-    </div>
-    <div class="picker styles-row">
-      <span class="label" id="s-label">Style</span>
-      <ol aria-labelledby="s-label" id="s-list">{{STYLE_LIST}}</ol>
-    </div>
-    <div class="toolbar">
-      <p class="now" id="now" aria-live="polite"></p>
-      <div class="toolbar-controls">
-        <div class="seg" role="group" aria-label="Document theme">
-          <button type="button" data-theme-btn="light" aria-pressed="false">Light</button>
-          <button type="button" data-theme-btn="dark" aria-pressed="false">Dark</button>
-        </div>
-        <div class="seg width-seg" role="group" aria-label="Width">
-          <button type="button" data-width="desktop" aria-pressed="true">Desktop</button>
-          <button type="button" data-width="phone" aria-pressed="false">Phone</button>
-        </div>
-      </div>
-    </div>
-    <div class="stage" id="stage"><iframe id="frame" title="Template preview"></iframe></div>
-    <div class="caption">
-      <p id="t-desc"></p>
-      <p id="s-desc"></p>
-      <p><a class="open" id="open-full" href="#">Open full page<span aria-hidden="true"> ↗</span></a></p>
-    </div>
-  </div>
-</div>
-</section>
-
-<section class="section" id="brand-sheets" aria-labelledby="h-brands">
-<div class="section-head">
-<p class="section-no">{{N_BRANDS}}</p>
-<h2 id="h-brands">Brand sheets</h2>
-<p class="section-lede">When letterhead learns a brand, the first thing it writes is a brand sheet: one page that shows the brand&rsquo;s owner the logo, colors, type and tone it captured, and asks only what a wrong guess would ruin.</p>
-</div>
-<ul class="docs">
 {{BRANDS}}
-</ul>
+
+<section class="styles" id="styles">
+<h2>{{STYLE_COUNT}} built-in styles</h2>
+<p class="lede">For when there is no brand to learn. The same status update in each one.</p>
+{{STYLES_SHEET}}
+<p>{{STYLE_LINKS}}</p>
 </section>
 </main>
 
-<footer class="foot">
-  <p>letterhead · MIT License</p>
-  <p><a href="{{REPO}}">github.com/mperlak/letterhead</a></p>
-</footer>
+<footer><p class="small">letterhead · MIT License · <a href="{{REPO}}">github.com/mperlak/letterhead</a></p></footer>
 
 </div>
-
-<script id="gallery-data" type="application/json">{{DATA}}</script>
 <script>
-(function () {
-  var root = document.documentElement;
-  var data = JSON.parse(document.getElementById('gallery-data').textContent);
-  var tSlugs = data.templates.map(function (t) { return t.slug; });
-  var sSlugs = data.styles.map(function (s) { return s.slug; });
-  var dark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function stored(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-
-  // Page theme -------------------------------------------------------------
-  function pageTheme() {
-    var t = root.getAttribute('data-theme');
-    if (t === 'light' || t === 'dark') return t;
-    return dark && dark.matches ? 'dark' : 'light';
-  }
-  function paintPageTheme() {
-    var t = pageTheme();
-    document.querySelectorAll('[data-page-theme]').forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.getAttribute('data-page-theme') === t));
-    });
-    document.querySelectorAll('img[data-light]').forEach(function (img) {
-      var want = img.getAttribute(t === 'dark' ? 'data-dark' : 'data-light');
-      if (img.getAttribute('src') !== want) img.setAttribute('src', want);
-    });
-  }
-  document.querySelectorAll('[data-page-theme]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var t = b.getAttribute('data-page-theme');
-      root.setAttribute('data-theme', t);
-      store('lh-gallery-theme', t);
-      paintPageTheme();
-      if (!state.themeSet) { state.theme = t; render(false); }
-    });
-  });
-  if (dark && dark.addEventListener) {
-    dark.addEventListener('change', function () {
-      if (stored('lh-gallery-theme')) return;
-      paintPageTheme();
-      if (!state.themeSet) { state.theme = pageTheme(); render(false); }
-    });
-  }
-
-  // Install line -----------------------------------------------------------
-  var copy = document.getElementById('copy-install');
-  copy.addEventListener('click', function () {
-    var text = document.getElementById('install-line').textContent;
-    var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy'; }, 1600); };
-    try {
-      navigator.clipboard.writeText(text).then(done, function () {});
-    } catch (e) {}
-  });
-
-  // Viewer ---------------------------------------------------------------------
-  var frame = document.getElementById('frame');
-  var stage = document.getElementById('stage');
-  var state = { t: 'status-update', s: 'consulting', theme: pageTheme(), w: 'desktop', themeSet: false };
-  if (tSlugs.indexOf(state.t) < 0) state.t = tSlugs[0];
-  if (sSlugs.indexOf(state.s) < 0) state.s = sSlugs[0];
-  var loaded = null;
-
-  function find(list, slug) { for (var i = 0; i < list.length; i++) if (list[i].slug === slug) return list[i]; return null; }
-  function href() { return 'matrix/' + state.t + '--' + state.s + '.html'; }
-  function applyFrameTheme() {
-    try {
-      var doc = frame.contentDocument;
-      if (doc && doc.documentElement) doc.documentElement.setAttribute('data-theme', state.theme);
-    } catch (e) {}
-  }
-  frame.addEventListener('load', applyFrameTheme);
-
-  function writeHash() {
-    var h = '#t=' + state.t + '&s=' + state.s + '&theme=' + state.theme + (state.w === 'phone' ? '&w=phone' : '');
-    if (location.hash !== h) history.replaceState(null, '', h);
-  }
-  function readHash() {
-    var h = location.hash.replace(/^#/, '');
-    if (!/(^|&)(t|s)=/.test(h)) return false;
-    h.split('&').forEach(function (kv) {
-      var p = kv.split('=');
-      var k = p[0], v = decodeURIComponent(p[1] || '');
-      if (k === 't' && tSlugs.indexOf(v) >= 0) state.t = v;
-      if (k === 's' && sSlugs.indexOf(v) >= 0) state.s = v;
-      if (k === 'theme' && (v === 'light' || v === 'dark')) { state.theme = v; state.themeSet = true; }
-      if (k === 'w' && (v === 'phone' || v === 'desktop')) state.w = v;
-    });
-    return true;
-  }
-
-  function render(fromUser) {
-    var t = find(data.templates, state.t);
-    var s = find(data.styles, state.s);
-    var url = href();
-    if (loaded !== url) { frame.setAttribute('src', url); loaded = url; } else applyFrameTheme();
-    frame.setAttribute('title', t.name + ' in the ' + s.name + ' style');
-    stage.classList.toggle('phone', state.w === 'phone');
-    document.querySelectorAll('[data-t]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-t') === state.t)); });
-    document.querySelectorAll('[data-s]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-s') === state.s)); });
-    document.querySelectorAll('[data-theme-btn]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-btn') === state.theme)); });
-    document.querySelectorAll('[data-width]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-width') === state.w)); });
-    document.getElementById('t-select').value = state.t;
-    document.getElementById('s-select').value = state.s;
-    var now = document.getElementById('now');
-    now.textContent = '';
-    now.appendChild(document.createTextNode(t.name));
-    var x = document.createElement('span'); x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-hidden', 'true');
-    now.appendChild(x);
-    now.appendChild(document.createTextNode(s.name));
-    setDesc('t-desc', t.name, t.description);
-    setDesc('s-desc', s.name + ' style', s.description);
-    document.getElementById('open-full').setAttribute('href', url);
-    if (fromUser || location.hash.indexOf('t=') >= 0) writeHash();
-  }
-  function setDesc(id, name, text) {
-    var el = document.getElementById(id);
-    el.textContent = '';
-    var b = document.createElement('b'); b.textContent = name + '. ';
-    el.appendChild(b);
-    el.appendChild(document.createTextNode(text));
-  }
-
-  document.querySelectorAll('[data-t]').forEach(function (b) {
-    b.addEventListener('click', function () { state.t = b.getAttribute('data-t'); render(true); });
-  });
-  document.querySelectorAll('[data-s]').forEach(function (b) {
-    b.addEventListener('click', function () { state.s = b.getAttribute('data-s'); render(true); });
-  });
-  document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
-    b.addEventListener('click', function () { state.theme = b.getAttribute('data-theme-btn'); state.themeSet = true; render(true); });
-  });
-  document.querySelectorAll('[data-width]').forEach(function (b) {
-    b.addEventListener('click', function () { state.w = b.getAttribute('data-width'); render(true); });
-  });
-  document.getElementById('t-select').addEventListener('change', function (e) { state.t = e.target.value; render(true); });
-  document.getElementById('s-select').addEventListener('change', function (e) { state.s = e.target.value; render(true); });
-  window.addEventListener('hashchange', function () { if (readHash()) { render(false); scrollToViewer(); } });
-  function scrollToViewer() {
-    var v = document.getElementById('viewer');
-    if (v) setTimeout(function () { v.scrollIntoView(); }, 0);
-  }
-
-  var fromHash = readHash();
-  paintPageTheme();
-  render(false);
-  if (fromHash) scrollToViewer();
-})();
+document.getElementById('copy').addEventListener('click', function (e) {
+  var b = e.currentTarget;
+  navigator.clipboard.writeText(document.getElementById('install-line').textContent).then(function () {
+    b.textContent = 'Copied';
+    setTimeout(function () { b.textContent = 'Copy'; }, 1600);
+  }, function () {});
+});
 </script>
 </body>
 </html>

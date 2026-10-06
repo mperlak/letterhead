@@ -19,7 +19,7 @@ the client's comments carry over to version two.
 <a href="examples/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, get comments and version 2.<br>
 <sub>Recreated from a real run: the brand sheet and the status update are the unedited files in <a href="examples/">examples/</a>, the notes are shown in full; the terminal is scripted and sped up.</sub></p>
 
-**[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 13 templates × 9 styles, light and dark.
+**[Browse the live gallery →](https://mperlak.github.io/letterhead/)** Every example document, grouped by brand, and the 9 styles.
 
 ---
 
