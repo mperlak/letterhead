@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webhook Reference — order.paid</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231f4e79'/%3E%3C/svg%3E">
+<meta property="og:title" content="Webhook Reference — order.paid">
+<meta property="og:description" content="Emitted by Lumen Commerce when payment is captured. Consumed by Atlas ERP.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: oklch(1 0 0); --ink: oklch(0.229 0.009 255.6); --muted: oklch(0.487 0.015 255.6); --line: oklch(0.921 0.005 258.3);
+    --accent: oklch(0.414 0.088 249.1); --surface: oklch(0.976 0.002 247.8);
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+    --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]):not([data-theme="dark"]) {
+      color-scheme: dark;
+      --bg: oklch(0.208 0.007 258.4); --ink: oklch(0.936 0.005 258.3); --muted: oklch(0.729 0.013 255.5); --line: oklch(0.335 0.01 254);
+      --accent: oklch(0.754 0.073 247.6); --surface: oklch(0.246 0.009 255.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Georgia, "Times New Roman", serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1.25rem 5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 0.5rem; }
+  h2 { font-size: 1.3rem; margin: 2.5rem 0 0.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+  p { margin: 0.75rem 0; }
+  .subtitle { color: var(--muted); margin: 0 0 1.5rem; }
+  dl.meta { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  dl.meta dt { color: var(--muted); font-variant-caps: all-small-caps; letter-spacing: 0.04em; }
+  dl.meta dd { margin: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+  th { text-align: left; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 0.4rem 0.6rem; }
+  td { border-bottom: 1px solid var(--line); padding: 0.5rem 0.6rem; vertical-align: top; }
+  code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.85em; }
+  code { background: var(--surface); padding: 0.1em 0.35em; border-radius: 3px; }
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1rem; overflow-x: auto; line-height: 1.5; }
+  pre code { background: none; padding: 0; }
+  @media (max-width: 640px) { h1 { font-size: 1.5rem; } main { padding-top: 2rem; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Webhook Reference: <code>order.paid</code></h1>
+    <p class="subtitle">Emitted by Lumen Commerce when payment is captured. Consumed by Atlas ERP to start fulfillment.</p>
+    <dl class="meta">
+      <dt>Version</dt><dd>v1 — stable</dd>
+      <dt>Direction</dt><dd>Lumen Commerce → Atlas ERP</dd>
+      <dt>Delivery</dt><dd>HTTPS POST, JSON body, at-least-once</dd>
+      <dt>Last updated</dt><dd>June 2026</dd>
+    </dl>
+  </header>
+
+  <h2 id="when-it-fires">1. When it fires</h2>
+  <p>The event fires when the payment provider confirms capture — not on authorization.
+  For orders paid by invoice, it fires when the order passes credit check. It never
+  fires for zero-value orders (full gift-card coverage); those emit
+  <code>order.confirmed</code> only.</p>
+
+  <h2 id="payload-schema">2. Payload schema</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>event_id</code></td><td>string (UUID)</td><td>Unique per delivery attempt group; use for idempotency</td></tr>
+      <tr><td><code>event_type</code></td><td>string</td><td>Always <code>order.paid</code></td></tr>
+      <tr><td><code>sequence</code></td><td>integer</td><td>Monotonic per order; discard if lower than last processed</td></tr>
+      <tr><td><code>occurred_at</code></td><td>string (RFC 3339)</td><td>Capture time, UTC</td></tr>
+      <tr><td><code>order.id</code></td><td>string</td><td>Lumen order ID; maps to <code>SalesOrder.ExtId</code></td></tr>
+      <tr><td><code>order.total_gross</code></td><td>integer</td><td>Minor units (cents)</td></tr>
+      <tr><td><code>order.currency</code></td><td>string</td><td>ISO 4217</td></tr>
+      <tr><td><code>payment.method</code></td><td>string</td><td><code>card</code>, <code>paypal</code>, <code>invoice</code>, or <code>apple_pay</code></td></tr>
+      <tr><td><code>payment.provider_ref</code></td><td>string</td><td>Provider transaction ID, for refund routing</td></tr>
+      <tr><td><code>lines[]</code></td><td>array</td><td>One entry per order line, schema below</td></tr>
+      <tr><td><code>lines[].sku</code></td><td>string</td><td>Must exist in the Atlas item master</td></tr>
+      <tr><td><code>lines[].qty</code></td><td>integer</td><td>Units; always positive</td></tr>
+      <tr><td><code>lines[].unit_price_gross</code></td><td>integer</td><td>Minor units, after line-level discounts</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="example">3. Example</h2>
+  <pre><code>{
+  "event_id": "5f0c4b2e-9d1a-4c37-8b0e-2a6d9e4f1c88",
+  "event_type": "order.paid",
+  "sequence": 3,
+  "occurred_at": "2026-06-18T09:41:07Z",
+  "order": {
+    "id": "LUM-240618-004217",
+    "total_gross": 14980,
+    "currency": "EUR"
+  },
+  "payment": {
+    "method": "card",
+    "provider_ref": "ch_3PQr8w2eZvKYlo2C1kXhT9Ba"
+  },
+  "lines": [
+    { "sku": "LMN-TEE-BLK-M", "qty": 2, "unit_price_gross": 2990 },
+    { "sku": "LMN-HOOD-GRY-L", "qty": 1, "unit_price_gross": 9000 }
+  ]
+}</code></pre>
+
+  <h2 id="delivery-retries">4. Delivery and retries</h2>
+  <p>Atlas must answer <code>2xx</code> within 10 seconds. On any other outcome, Lumen
+  retries with exponential backoff: 30s, 2m, 10m, 1h, then hourly up to 24 hours. The
+  <code>event_id</code> stays constant across retries; the delivery header
+  <code>X-Lumen-Attempt</code> carries the attempt number. After 24 hours the event
+  parks in a dead-letter queue and the integration channel is alerted.</p>
+  <p>Deliveries are at-least-once and ordering is not guaranteed across events.
+  Consumers must treat <code>sequence</code> as the ordering authority per order.</p>
+
+  <h2 id="signature">5. Signature verification</h2>
+  <p>Every delivery is signed. The <code>X-Lumen-Signature</code> header carries
+  <code>t=&lt;unix-ts&gt;,v1=&lt;hex&gt;</code> where <code>v1</code> is
+  HMAC-SHA256 over <code>"&lt;t&gt;.&lt;raw-body&gt;"</code> with the shared endpoint
+  secret. Reject deliveries older than 5 minutes or with a mismatched signature.
+  Secrets rotate via the Atlas integration console; two secrets stay valid during a
+  rotation window.</p>
+
+  <h2 id="changelog">6. Changelog</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Change</th></tr></thead>
+    <tbody>
+      <tr><td>2026-06-18</td><td><code>payment.method</code> gains <code>apple_pay</code> value</td></tr>
+      <tr><td>2026-05-30</td><td><code>sequence</code> field added; consumers should start enforcing it</td></tr>
+      <tr><td>2026-05-12</td><td>Initial stable release</td></tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>

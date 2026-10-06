@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Mirror byte-identical (canonical → skills/)
+      - name: Mirrors byte-identical (canonical → skills/, plugin/skills/)
         run: bash bin/sync-mounts.sh --check
 
       - name: Node syntax check

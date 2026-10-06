@@ -1,0 +1,267 @@
+/* Presentation layout (templates/presentation), put into the document by
+   scripts/build-presentation.mjs. Colors, fonts, radii and the logo come
+   from the brand or style tokens; the only fixed colors are the lightbox
+   (dark in both themes, so pictures keep their colors) and the light tile
+   behind shop photos (shops shoot on light backdrops). */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-base, 1rem);
+  line-height: var(--leading-normal, 1.6);
+  --page: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --gap: 14px;
+  --hero-h: clamp(420px, 52vw, 700px);
+  --accent-ink: var(--primary-ink, var(--primary));
+}
+h1, h2 { font-family: var(--font-display, var(--font-sans)); font-weight: var(--font-heading-weight, 700); letter-spacing: -0.015em; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+
+.cover, main { max-width: var(--page); margin: 0 auto; padding-inline: var(--gutter); }
+
+/* ── Cover ─────────────────────────────────────────── */
+.cover {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 32px clamp(32px, 6vw, 96px);
+  align-items: end;
+  padding-top: clamp(28px, 5vw, 64px);
+  padding-bottom: clamp(24px, 4vw, 48px);
+}
+.brand-mark {
+  display: block; box-sizing: content-box;
+  height: 30px; width: calc(30px * var(--brand-logo-ratio, 4));
+  padding: 6px 10px; margin: -6px -10px; border-radius: 3px;
+  background: var(--brand-logo) left center / contain no-repeat;
+  background-origin: content-box;
+  background-color: var(--brand-logo-plate, transparent);
+  print-color-adjust: exact; -webkit-print-color-adjust: exact;
+}
+.brand-mark.is-mask {
+  box-sizing: border-box; padding: 0; margin: 0; border-radius: 0;
+  background: none;
+  background-color: var(--brand-logo-color, var(--foreground));
+  -webkit-mask: var(--brand-logo-mask) left center / contain no-repeat;
+  mask: var(--brand-logo-mask) left center / contain no-repeat;
+}
+.brand-name { font-family: var(--font-display, var(--font-sans)); font-weight: var(--font-heading-weight, 700); font-size: var(--text-lg, 1.25rem); letter-spacing: -0.01em; }
+.cover-main { display: flex; flex-direction: column; gap: 28px; }
+.cover h1 {
+  font-size: clamp(3rem, 7.4vw, 5.75rem);
+  line-height: 0.98;
+  margin-top: clamp(40px, 9vw, 140px);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+/* Long titles take the full width; the contents list follows below. */
+.cover.long-title { grid-template-columns: minmax(0, 1fr); align-items: start; }
+.cover.long-title h1 { font-size: clamp(2.5rem, 6vw, 4.75rem); max-width: 20ch; }
+.cover.long-title .toc { max-width: 46rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 0; }
+.meta div { display: flex; flex-direction: column; }
+.meta dt { font-size: var(--text-xs, .75rem); color: var(--muted-foreground); letter-spacing: var(--tracking-label, .04em); }
+.meta dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.intro { max-width: 30rem; color: var(--muted-foreground); font-size: var(--text-sm, .9rem); }
+/* The designer's own words: a lede under the title, a short text per room. */
+.lede { display: flex; flex-direction: column; gap: .75em; max-width: 34rem; font-size: clamp(1.0625rem, 1.4vw, 1.1875rem); line-height: 1.6; color: var(--foreground); text-wrap: pretty; }
+.cover-main .lede + .intro { margin-top: -12px; }
+.room-text { display: flex; flex-direction: column; gap: .75em; margin: 6px 0 0; max-width: 34ch; font-size: var(--text-base, 1rem); line-height: 1.6; color: var(--foreground); text-wrap: pretty; }
+.room-open.stacked .room-text { max-width: 60ch; }
+
+.toc h2 { font-size: var(--text-xs, .75rem); font-family: var(--font-sans); font-weight: 700; letter-spacing: var(--tracking-label, .04em); color: var(--muted-foreground); margin-bottom: 8px; }
+.toc ol { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: 32px; }
+.toc li { break-inside: avoid; border-top: 1px solid var(--border); }
+.toc a {
+  display: grid; grid-template-columns: 2.25rem 1fr auto; align-items: baseline;
+  padding: 12px 0; text-decoration: none;
+  transition: color var(--motion-duration-fast, 150ms) var(--motion-ease, ease);
+}
+.toc a:hover .toc-name { color: var(--accent-ink); }
+.toc-no { font-size: var(--text-xs, .75rem); font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+.toc-name { font-weight: 700; }
+.toc-count { font-size: var(--text-sm, .9rem); color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+
+/* ── Rooms ─────────────────────────────────────────── */
+.room { padding-top: clamp(56px, 8vw, 120px); }
+.room-open { display: flex; gap: clamp(24px, 3vw, 44px); align-items: flex-start; margin-bottom: var(--gap); }
+.room-head { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.room-no {
+  font-size: var(--text-sm, .9rem); font-weight: 700; color: var(--accent-ink);
+  font-variant-numeric: tabular-nums; padding-top: 14px; border-top: 2px solid var(--primary);
+  align-self: flex-start;
+}
+.room h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.08; scroll-margin-top: 24px; text-wrap: balance; }
+.room-facts { font-size: var(--text-sm, .9rem); color: var(--muted-foreground); }
+.hero { flex: 0 1 auto; width: min(calc(var(--hero-h) * var(--r)), 74%); }
+.room-open.stacked { margin-bottom: 20px; }
+.row.lead { margin-top: 0; }
+
+/* Justified rows: flex-grow = aspect ratio, so every picture in a row has
+   the same height and the row is flush at any width. */
+.row { display: flex; gap: var(--gap); margin-top: var(--gap); }
+.row > .shot { flex: var(--r) 1 0; min-width: 0; }
+
+.shot { margin: 0; }
+.zoom {
+  display: block; width: 100%; padding: 0; border: 0; margin: 0;
+  background: var(--muted); border-radius: var(--radius-sm, 4px); overflow: hidden;
+  font: inherit; color: inherit; cursor: default;
+}
+.js .zoom { cursor: zoom-in; }
+.zoom img {
+  display: block; width: 100%; height: auto;
+  transition: transform 700ms var(--motion-ease, ease), opacity var(--motion-duration-base, 250ms) var(--motion-ease, ease);
+}
+.js .zoom:hover img { transform: scale(1.015); }
+@media (prefers-reduced-motion: reduce) { .js .zoom:hover img { transform: none; } }
+.zoom:focus-visible { outline: 2px solid var(--ring, var(--primary)); outline-offset: 3px; }
+.shot figcaption {
+  display: flex; flex-wrap: wrap; gap: 0 10px; align-items: baseline;
+  margin-top: 8px; font-size: var(--text-xs, .75rem); line-height: 1.4; color: var(--muted-foreground);
+}
+.tag { font-weight: 700; color: var(--foreground); }
+
+/* Variant choice: one quiet panel per view, the versions side by side */
+.choice {
+  margin-top: calc(var(--gap) * 3);
+  padding: clamp(16px, 2vw, 24px);
+  border: 1px solid var(--border); border-radius: var(--radius-xl, 12px);
+  background: var(--card, var(--background));
+}
+.choice-label { font-weight: 700; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.choice-kicker { font-size: var(--text-xs, .75rem); letter-spacing: var(--tracking-label, .04em); color: var(--accent-ink); }
+.choice .row { margin-top: 12px; }
+.choice .tag::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--primary); margin-right: 6px; vertical-align: 1px;
+}
+
+main { padding-bottom: clamp(64px, 10vw, 140px); }
+
+/* ── Tablet and phone ──────────────────────────────── */
+@media (max-width: 900px) {
+  .cover { grid-template-columns: 1fr; align-items: start; }
+  .cover h1 { margin-top: 40px; }
+  /* Heading, then hero, then the next picture: one column in reading order */
+  .room-open { flex-direction: column; gap: 10px; }
+  .room-head { width: 100%; }
+  .hero { width: 100%; }
+}
+@media (max-width: 640px) {
+  body { --gap: 12px; }
+  .toc ol { columns: 1; }
+  .row { flex-direction: column; }
+  .row > .shot { flex: none; }
+  .choice { padding: 14px; margin-inline: -4px; }
+  .room h2 { font-size: 1.875rem; }
+}
+
+/* ── One room: the room is the document ── */
+.cover.single { display: block; }
+.cover.single .cover-main { max-width: 46rem; }
+/* The big gap sits between logo and kicker; the kicker then hugs the title. */
+.cover-kicker { margin: clamp(40px, 9vw, 140px) 0 -18px; font-size: var(--text-sm, .9rem); font-weight: 700; letter-spacing: var(--tracking-label, .04em); color: var(--accent-ink); }
+.cover.single h1 { margin-top: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.single-hero { margin-bottom: var(--gap); }
+.single-hero .hero-full { width: 100%; }
+.single-products .products { border-top: 0; padding-top: 0; }
+.single-products .products-head h2 { margin: 0; font-size: var(--text-lg, 1.25rem); line-height: 1.3; }
+
+/* ── Products used in a room ── */
+.products { margin-top: clamp(28px, 4vw, 44px); padding-top: 22px; border-top: 1px solid var(--border); }
+.products-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; margin-bottom: 16px; }
+.products-head h3 { margin: 0; font-family: var(--font-display, var(--font-sans)); font-size: var(--text-lg, 1.25rem); font-weight: var(--font-heading-weight, 700); }
+.products-note { margin: 0; font-size: var(--text-xs, .8rem); color: var(--muted-foreground); }
+.product-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px 14px; }
+.product { display: flex; flex-direction: column; min-width: 0; }
+/* Shop photos are nearly always 3:4 on their own light backdrop: a 3:4 tile
+   the photo fills edge to edge, light in both themes, so no box sits inside
+   a box and no photo sits on a dark square. */
+/* Square and whole, like a shop grid: a cropped tile cuts the ends off a desk. */
+.product-img { aspect-ratio: 1 / 1; background: #fff; border-radius: var(--radius-md, 8px); overflow: hidden; }
+.product-img img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.product-body { padding-top: 10px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.product-where { margin: 0; font-size: var(--text-xs, .75rem); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent-ink); }
+.product-name { margin: 2px 0 0; font-size: var(--text-sm, .9rem); font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-maker { margin: 0; font-size: var(--text-xs, .8rem); color: var(--muted-foreground); }
+.product-price { margin: 6px 0 0; font-size: var(--text-sm, .9rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+.product-link { margin-top: auto; padding-top: 6px; font-size: var(--text-xs, .8rem); font-weight: 600; color: var(--accent-ink); text-decoration: none; align-self: flex-start; }
+.product-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 640px) {
+  .product-list { grid-template-columns: 1fr; gap: 12px; }
+  .product { flex-direction: row; gap: 14px; align-items: flex-start; }
+  .product-img { flex: 0 0 84px; }
+  .product-body { padding-top: 0; }
+}
+
+/* ── Lightbox (always dark: the pictures keep their colors) ── */
+.lb {
+  position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+  margin: 0; padding: 0; border: 0; overflow: hidden;
+  background: oklch(0.17 0.005 60); color: oklch(0.94 0.006 80);
+  font-family: var(--font-sans);
+}
+.lb::backdrop { background: oklch(0.17 0.005 60); }
+.lb[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); }
+/* The page stays put behind the open viewer: on a phone a vertical swipe on
+   a picture would otherwise scroll the document underneath. */
+html:has(.lb[open]) { overflow: hidden; }
+/* Without the explicit column the strip's width stretches the grid past the
+   screen, and focusing the close button then scrolls the whole viewer sideways. */
+.lb-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px 10px clamp(16px, 3vw, 28px); }
+.lb-where { font-size: var(--text-sm, .9rem); display: flex; gap: 12px; align-items: baseline; min-width: 0; }
+.lb-room { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lb-count { color: oklch(0.72 0.01 80); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lb-stage { position: relative; min-height: 0; }
+/* The room's pictures side by side; the browser scrolls and snaps the strip,
+   so a finger drags the picture and the next one slides in. */
+.lb-track {
+  display: flex; height: 100%; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.lb-track::-webkit-scrollbar { display: none; }
+.lb-slide {
+  flex: 0 0 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 clamp(8px, 7vw, 88px);
+  scroll-snap-align: center; scroll-snap-stop: always;
+  user-select: none; -webkit-user-select: none;
+}
+.lb-slide img {
+  display: block; width: auto; height: auto; max-width: 100%; max-height: 100%;
+  object-fit: contain; border-radius: 2px; -webkit-user-drag: none;
+}
+.lb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%; border: 0; padding: 0;
+  background: oklch(1 0 0 / 0.08); color: inherit; cursor: pointer;
+  transition: background-color var(--motion-duration-fast, 150ms) var(--motion-ease, ease);
+}
+.lb-btn:hover { background: oklch(1 0 0 / 0.16); }
+.lb-btn:focus-visible { outline: 2px solid oklch(0.94 0.006 80); outline-offset: 2px; }
+.lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; }
+.lb-prev { left: clamp(8px, 1.6vw, 24px); }
+.lb-next { right: clamp(8px, 1.6vw, 24px); }
+.lb-cap { text-align: center; font-size: var(--text-sm, .9rem); color: oklch(0.8 0.008 80); padding: 12px 16px 16px; min-height: 1.4em; }
+/* In Markloop the "Comment" button sits bottom-centre inside the viewer:
+   keep the caption above it. */
+[data-markloop-review~="mirror"] .lb-cap { padding-bottom: 72px; }
+@media (max-width: 640px) {
+  .lb-slide { padding: 0; }
+  .lb-prev, .lb-next { top: auto; bottom: 8px; transform: none; width: 44px; height: 44px; background: oklch(0.17 0.005 60 / 0.6); }
+}
+
+@media print {
+  .lb { display: none !important; }
+  .row, .room-open, .choice { break-inside: avoid; }
+  .room { break-before: page; }
+  .product { break-inside: avoid; }
+}

@@ -1,0 +1,203 @@
+/**
+ * styles/engineering/tokens.css
+ *
+ * Reference style: documents for technical teams. Denser rhythm, mono in
+ * working roles (labels, values, code), refined tables, explicit states
+ * (ok / warn / blocked), dark theme as a first-class citizen. A worked
+ * example `teach` borrows structure from; not a brand.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* -- Shadcn-semantic core -------------------------------------- */
+  --background: oklch(0.9850 0.0035 220);
+  --foreground: oklch(0.2100 0.0140 232);
+  --card: oklch(0.9700 0.0045 220);
+  --card-foreground: oklch(0.2100 0.0140 232);
+  --popover: oklch(0.9930 0.0020 220);
+  --popover-foreground: oklch(0.2100 0.0140 232);
+
+  --primary: oklch(0.4600 0.0780 212);            /* steel teal */
+  --primary-foreground: oklch(0.9880 0.0030 220);
+  --secondary: oklch(0.9450 0.0060 221);
+  --secondary-foreground: oklch(0.2700 0.0200 230);
+  --muted: oklch(0.9520 0.0055 221);
+  --muted-foreground: oklch(0.4400 0.0180 228);
+  --accent: oklch(0.9250 0.0140 215);
+  --accent-foreground: oklch(0.2500 0.0300 225);
+  --destructive: oklch(0.5000 0.1800 26);
+  --destructive-foreground: oklch(0.9900 0.0030 220);
+
+  --border: oklch(0.8950 0.0080 222);
+  --input: oklch(0.8950 0.0080 222);
+  --ring: oklch(0.4600 0.0780 212);
+
+  --sidebar: oklch(0.9650 0.0045 220);
+  --sidebar-foreground: oklch(0.2100 0.0140 232);
+  --sidebar-primary: oklch(0.4600 0.0780 212);
+  --sidebar-primary-foreground: oklch(0.9880 0.0030 220);
+  --sidebar-accent: oklch(0.9250 0.0140 215);
+  --sidebar-accent-foreground: oklch(0.2500 0.0300 225);
+  --sidebar-border: oklch(0.8950 0.0080 222);
+  --sidebar-ring: oklch(0.4600 0.0780 212);
+
+  --chart-1: oklch(0.4600 0.0780 212);
+  --chart-2: oklch(0.5800 0.1000 165);
+  --chart-3: oklch(0.6000 0.1100 80);
+  --chart-4: oklch(0.4500 0.0700 260);
+  --chart-5: oklch(0.6400 0.0350 225);
+
+  /* -- Status roles (the register's own vocabulary) ---------------- */
+  --status-ok: oklch(0.5300 0.1200 152);
+  --status-warn: oklch(0.5600 0.1150 78);
+  --status-blocked: oklch(0.5000 0.1800 26);
+  --status-neutral: oklch(0.4400 0.0180 228);
+
+  /* -- Shape --------------------------------------------------------- */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 7px;
+  --radius-xl: 10px;
+
+  /* -- Typography ---------------------------------------------------- */
+  /* Mono has working roles here: labels, values, identifiers, code.
+   * Display stays sans; there is no serif in this register. */
+  --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 0.71875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: clamp(1.75rem, 4vw, 2.25rem);
+  --leading-tight: 1.25;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+  --tracking-label: 0.06em;
+
+  /* -- Space: denser than boardroom; information per screen wins ---- */
+  --spacing: 0.875rem;
+  --space-section: 2.5rem;
+  --measure: 48rem;
+
+  /* -- Elevation ------------------------------------------------------ */
+  --shadow-sm: 0 1px 2px oklch(0.2100 0.0140 232 / 0.08);
+  --shadow-md: 0 2px 6px oklch(0.2100 0.0140 232 / 0.10);
+
+  /* -- Motion: functional only ---------------------------------------- */
+  --motion-duration-fast: 100ms;
+  --motion-duration-base: 160ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: oklch(0.1950 0.0100 232);
+  --foreground: oklch(0.9050 0.0070 222);
+  --card: oklch(0.2300 0.0110 231);
+  --card-foreground: oklch(0.9050 0.0070 222);
+  --popover: oklch(0.2300 0.0110 231);
+  --popover-foreground: oklch(0.9050 0.0070 222);
+
+  --primary: oklch(0.7300 0.0620 205);
+  --primary-foreground: oklch(0.1800 0.0120 232);
+  --secondary: oklch(0.2700 0.0120 230);
+  --secondary-foreground: oklch(0.8800 0.0080 222);
+  --muted: oklch(0.2600 0.0115 230);
+  --muted-foreground: oklch(0.7700 0.0110 224);
+  --accent: oklch(0.2950 0.0180 222);
+  --accent-foreground: oklch(0.9000 0.0090 220);
+  --destructive: oklch(0.6700 0.1550 25);
+  --destructive-foreground: oklch(0.1700 0.0110 232);
+
+  --border: oklch(0.3200 0.0120 230);
+  --input: oklch(0.3200 0.0120 230);
+  --ring: oklch(0.7300 0.0620 205);
+
+  --sidebar: oklch(0.2150 0.0105 231);
+  --sidebar-foreground: oklch(0.9050 0.0070 222);
+  --sidebar-primary: oklch(0.7300 0.0620 205);
+  --sidebar-primary-foreground: oklch(0.1800 0.0120 232);
+  --sidebar-accent: oklch(0.2950 0.0180 222);
+  --sidebar-accent-foreground: oklch(0.9000 0.0090 220);
+  --sidebar-border: oklch(0.3200 0.0120 230);
+  --sidebar-ring: oklch(0.7300 0.0620 205);
+
+  --chart-1: oklch(0.7300 0.0620 205);
+  --chart-2: oklch(0.7400 0.1100 160);
+  --chart-3: oklch(0.7800 0.1150 85);
+  --chart-4: oklch(0.6800 0.0800 262);
+  --chart-5: oklch(0.7000 0.0300 225);
+
+  --status-ok: oklch(0.7400 0.1150 155);
+  --status-warn: oklch(0.7800 0.1150 82);
+  --status-blocked: oklch(0.6700 0.1550 25);
+  --status-neutral: oklch(0.7700 0.0110 224);
+
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
+  --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --background: oklch(0.1950 0.0100 232);
+    --foreground: oklch(0.9050 0.0070 222);
+    --card: oklch(0.2300 0.0110 231);
+    --card-foreground: oklch(0.9050 0.0070 222);
+    --popover: oklch(0.2300 0.0110 231);
+    --popover-foreground: oklch(0.9050 0.0070 222);
+
+    --primary: oklch(0.7300 0.0620 205);
+    --primary-foreground: oklch(0.1800 0.0120 232);
+    --secondary: oklch(0.2700 0.0120 230);
+    --secondary-foreground: oklch(0.8800 0.0080 222);
+    --muted: oklch(0.2600 0.0115 230);
+    --muted-foreground: oklch(0.7700 0.0110 224);
+    --accent: oklch(0.2950 0.0180 222);
+    --accent-foreground: oklch(0.9000 0.0090 220);
+    --destructive: oklch(0.6700 0.1550 25);
+    --destructive-foreground: oklch(0.1700 0.0110 232);
+
+    --border: oklch(0.3200 0.0120 230);
+    --input: oklch(0.3200 0.0120 230);
+    --ring: oklch(0.7300 0.0620 205);
+
+    --sidebar: oklch(0.2150 0.0105 231);
+    --sidebar-foreground: oklch(0.9050 0.0070 222);
+    --sidebar-primary: oklch(0.7300 0.0620 205);
+    --sidebar-primary-foreground: oklch(0.1800 0.0120 232);
+    --sidebar-accent: oklch(0.2950 0.0180 222);
+    --sidebar-accent-foreground: oklch(0.9000 0.0090 220);
+    --sidebar-border: oklch(0.3200 0.0120 230);
+    --sidebar-ring: oklch(0.7300 0.0620 205);
+
+    --chart-1: oklch(0.7300 0.0620 205);
+    --chart-2: oklch(0.7400 0.1100 160);
+    --chart-3: oklch(0.7800 0.1150 85);
+    --chart-4: oklch(0.6800 0.0800 262);
+    --chart-5: oklch(0.7000 0.0300 225);
+
+    --status-ok: oklch(0.7400 0.1150 155);
+    --status-warn: oklch(0.7800 0.1150 82);
+    --status-blocked: oklch(0.6700 0.1550 25);
+    --status-neutral: oklch(0.7700 0.0110 224);
+
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
+    --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0ms;
+    --motion-duration-base: 0ms;
+  }
+}
