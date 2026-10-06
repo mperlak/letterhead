@@ -208,6 +208,20 @@ Every brand above was taught from its website in about a minute. The notes,
 the prompts and the HTML of every document are in
 [`examples/`](examples/).
 
+### A project, picture by picture
+
+Give it a folder of pictures, one subfolder per room, and it builds the
+presentation: a cover with the contents, then each room with its text and
+its pictures, full screen on a click. This one is a real interior project,
+House on Hill, by [BunnyFeelsHome](https://bunnyfeelshome.com): 19 renders in
+four rooms, brand taught from the live site, the whole thing in about two
+minutes.
+
+<p align="center"><a href="https://mperlak.github.io/letterhead/documents/presentation--bunnyfeelshome.html"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/presentation--bunnyfeelshome-wide-dark.webp">
+  <img src="examples/screenshots/presentation--bunnyfeelshome-wide-light.webp" alt="House on Hill, a BunnyFeelsHome interior presentation: the cover with four rooms, then the living room with its text and renders" width="720">
+</picture></a></p>
+
 ## Teach it a brand
 
 ```text

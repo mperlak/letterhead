@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "brand": "bunnyfeelshome",
+  "lang": "en",
+  "style": "atelier",
+  "collectedAt": "2026-10-06T00:00:00Z",
+  "sources": [
+    {
+      "id": "url1",
+      "type": "url",
+      "ref": "https://bunnyfeelshome.com/pl",
+      "fetchedAt": "2026-10-06T00:00:00Z"
+    }
+  ],
+  "fields": {
+    "name": {
+      "value": "BunnyFeelsHome",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Name from the site description, same as the logo."
+    },
+    "colors.primary": {
+      "value": "#1a3c34",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Dark green from the logo, the same colour as the text on the site."
+    },
+    "colors.foreground": {
+      "value": "#1a3c34",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Text on the site is set in the same dark green, not black."
+    },
+    "colors.secondary": {
+      "value": "#e8b4b8",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Powder pink from the dot in the logo, set on the site as the accent colour."
+    },
+    "typography.body": {
+      "value": "Nunito",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "The site's text face, available from Google Fonts."
+    },
+    "typography.heading": {
+      "value": "Playfair Display",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "The site's heading face, available from Google Fonts."
+    },
+    "typography.headingWeight": {
+      "value": 500,
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Headings on the site are medium (500), not bold."
+    },
+    "logo": {
+      "value": "Logo-BunnyFeelsHome.png",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ],
+      "note": "Logo from the site header, green with a pink dot."
+    },
+    "voice.register": {
+      "value": "warm, direct expert voice that speaks to the client as \"you\"",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ]
+    },
+    "voice.sample": {
+      "value": "You don't have to know everything. We'll prepare a complete design of your interior with a shopping list, so you know what to buy and how it all works together.",
+      "confidence": "inferred",
+      "sources": [
+        "url1"
+      ]
+    }
+  },
+  "questions": [],
+  "notes": {
+    "name": "We took the name from the site description; it matches the lettering in the logo.",
+    "logo": "We used the logo from the site header as it is; it sits well on a light page, and in dark mode its green is lightened.",
+    "tone": "We write warmly and plainly, speak to the client as \"you\" and take the weight of decisions off them, drawing on experience."
+  }
+}

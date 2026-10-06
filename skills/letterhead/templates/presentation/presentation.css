@@ -184,8 +184,9 @@ main { padding-bottom: clamp(64px, 10vw, 140px); }
 /* Shop photos are nearly always 3:4 on their own light backdrop: a 3:4 tile
    the photo fills edge to edge, light in both themes, so no box sits inside
    a box and no photo sits on a dark square. */
-.product-img { aspect-ratio: 3 / 4; background: oklch(0.955 0.004 80); border-radius: var(--radius-md, 8px); overflow: hidden; }
-.product-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Square and whole, like a shop grid: a cropped tile cuts the ends off a desk. */
+.product-img { aspect-ratio: 1 / 1; background: #fff; border-radius: var(--radius-md, 8px); overflow: hidden; }
+.product-img img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .product-body { padding-top: 10px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .product-where { margin: 0; font-size: var(--text-xs, .75rem); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent-ink); }
 .product-name { margin: 2px 0 0; font-size: var(--text-sm, .9rem); font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

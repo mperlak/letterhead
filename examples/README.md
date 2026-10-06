@@ -54,6 +54,7 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `spec--kestrel.html` | spec | engineering | Kestrel to a municipality and its contractor: missed-bin reports turned into same-day return stops |
 | `release-notes--kestrel.html` | release-notes | corporate | Kestrel to customers' fleet managers and developers: release 4.3, two breaking API changes |
 | `postmortem--kestrel.html` | postmortem | public-sector | Kestrel to municipal customers: the night the routes were not published by 05:00 |
+| `presentation--bunnyfeelshome.html` | presentation | atelier (the profile's base) | BunnyFeelsHome, a real brand taught from its live site, to a client: the House on Hill interior visualisations, room by room (19 pictures, 8.5 MB). Added 2026-10-06, see below. |
 
 All ten pass `check-document.mjs` with 0 errors, 0 warnings and 0 info
 notes. Each carries light and dark themes in one file, embeds its brand's
@@ -168,8 +169,49 @@ four use `apply-tokens.mjs` and `check-document.mjs`, and two changed their
 own output after the first write (fixes by `Edit`, and a `sed` that
 put non-breaking spaces after the euro signs).
 
+### Presentation: BunnyFeelsHome
+
+Added on 2026-10-06, separately from the set above and from a real brand, not
+a fictional one: the owner's own, taught fresh from the live site
+(`brands/bunnyfeelshome/`, no `site.html`, because it is a real page). The
+interior visualisations are one project, "House on Hill" (the owner's own work,
+published with permission). Version 1 was two turns of one headless session
+(same flags as above): teach the brand, then build the presentation from 19
+pictures in four rooms, no products. Version 2, the one in the repo, adds a
+fifth room (Home office, 4 pictures) and six products with links to English shop
+pages, no prices. Prompts, `links.txt`, and how each product was matched to the
+pictures: `notes/presentation--bunnyfeelshome.md`.
+
+| Version | Turn | Style (`--style`?) | Wall time | Tool calls | Cost |
+|---|---|---|---|---|---|
+| 1 | teach (live site) | atelier (the profile's base) | 69 s | 9 | $0.62 |
+| 1 | presentation, 4 rooms, no products | atelier (profile base, none) | 68 s | 11 | $0.99 |
+| 2 | presentation, 5 rooms, 6 products | atelier (profile base, none) | 381 s | 41 | $1.33 |
+
+Version 2 ran in a fresh session: the transcript of version 1 was gone, so
+there was nothing to resume, and the brand profile was copied into
+`.letterhead/brands/` instead of being taught again. One attempt, no retries.
+Skills invoked: `letterhead:letterhead`. Scripts: `prepare-images.mjs` (with
+`--budget-mb 6.5`, set in the prompt), `product-cards.mjs` (twice) and
+`build-presentation.mjs` (with `--no-prices`). The file is 8.6 MB; it passes
+`check-document.mjs` with 0 errors and 0 warnings and one info note (the room
+headings carry numbers, which the contents list refers to). The brand sheet is
+in Polish, the language of the site; the presentation is in English because the
+prompt asked for it.
+
+What the second run showed about the template, left unchanged (`letterhead/`
+was not edited): the two Nordlux pages fill in the product photo with
+JavaScript, so `product-cards.mjs` found "no photo on the page" and the
+"Blocked shops" procedure applied; a plain second run with `links.json` kept
+the photo-less entries it had already read, and only `--refresh` applied the
+given fields. The template does not mention `--refresh`. IKEA's English pages
+differ by market: the sofa and the lamp have no page on ikea.com/gb or
+ikea.com/pl (English), but do on ikea.com/de (English).
+
 ## screenshots/
 
 Captures of the documents and brand sheets are rebuilt separately
 (`dev-scripts/screenshots.mjs`). `hero-before-after-{light,dark}.webp` come
-from `hero/build-hero.sh`.
+from `hero/build-hero.sh`. `presentation--bunnyfeelshome-wide-{light,dark}.webp`
+are 1600 px wide at 2x and 2100 px tall (a taller crop than the 4:5 thumbnails,
+so the cover and the first room's pictures show together).

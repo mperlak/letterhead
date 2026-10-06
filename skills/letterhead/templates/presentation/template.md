@@ -140,7 +140,7 @@ node <skill>/scripts/build-presentation.mjs <work> --title "<title>" \
    heading; a square or portrait one opens a row under it. The rest follow
    in rows of equal height, then one "choose" panel per view with variants,
    then the products.
-3. **Products:** a 3:4 tile per product, where it sits, name, maker and
+3. **Products:** a square tile per product (the photo whole, never cropped), where it sits, name, maker and
    shop, price, a link to the shop, and the date the prices were read.
 
 **One room (`--only`):** the room is the document. Its name is the title,
