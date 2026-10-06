@@ -67,6 +67,7 @@ plugin/                     ← the Claude plugin folder (Claude Code marketplac
                               plugin directory): installs without examples/ or the gallery
 ├── .claude-plugin/plugin.json ← plugin manifest (edited by hand)
 ├── README.md               ← the listing text in the directory (edited by hand)
+├── icon.png                ← the directory listing icon (dev-scripts/promo/icon.html)
 ├── LICENSE                 ← copy of LICENSE (sync-mounts.sh)
 └── skills/letterhead/      ← byte-identical mirror (sync-mounts.sh)
 examples/                   ← generated demo documents + brand profiles
@@ -77,7 +78,8 @@ dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (no
                             ←   both on lib/shoot.mjs (headless shell + cwebp)
                             ← vendor-fonts.sh: fetch the style fonts into letterhead/fonts/
                             ← promo/: the README demo film and teaser (stage.html, teaser.html, render.mjs → examples/video/)
-                            ←   and the GitHub social preview (social-preview.html → examples/screenshots/social-preview.png)
+                            ←   the GitHub social preview (social-preview.html → examples/screenshots/social-preview.png)
+                            ←   and the plugin icon (icon.html → plugin/icon.png)
 bin/sync-mounts.sh          ← regenerate the mirrors (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
 .claude-plugin/             ← Claude Code marketplace manifest (points at plugin/)

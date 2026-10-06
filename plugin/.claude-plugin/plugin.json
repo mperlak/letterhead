@@ -9,6 +9,9 @@
   "homepage": "https://github.com/mperlak/letterhead",
   "repository": "https://github.com/mperlak/letterhead",
   "license": "MIT",
+  "icon": "./icon.png",
+  "documentationUrl": "https://github.com/mperlak/letterhead#readme",
+  "supportUrl": "https://github.com/mperlak/letterhead/issues",
   "keywords": [
     "documents",
     "html",
