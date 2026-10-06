@@ -14,15 +14,6 @@ allowed-tools:
   - Bash(node $SKILL_DIR/scripts/prepare-images.mjs*)
   - Bash(node $SKILL_DIR/scripts/product-cards.mjs*)
   - Bash(node $SKILL_DIR/scripts/build-presentation.mjs*)
-  - Bash(node */letterhead/scripts/check-document.mjs*)
-  - Bash(node */letterhead/scripts/check-tokens.mjs*)
-  - Bash(node */letterhead/scripts/brand-evidence.mjs*)
-  - Bash(node */letterhead/scripts/brand-tokens.mjs*)
-  - Bash(node */letterhead/scripts/brand-sheet.mjs*)
-  - Bash(node */letterhead/scripts/apply-tokens.mjs*)
-  - Bash(node */letterhead/scripts/prepare-images.mjs*)
-  - Bash(node */letterhead/scripts/product-cards.mjs*)
-  - Bash(node */letterhead/scripts/build-presentation.mjs*)
 description: >
   Generate branded HTML documents that go to a real reader: specs, plans,
   reports, proposals, status updates, meeting notes. Loads on creation
