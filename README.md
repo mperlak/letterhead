@@ -15,6 +15,10 @@ presentation of a project. It comes out in your client's brand (or yours),
 reads well on a phone and prints cleanly. Publish it as a review link and
 the client's comments carry over to version two.
 
+<p align="center"><a href="examples/video/letterhead-demo.mp4"><img src="examples/video/letterhead-teaser.webp" alt="Three cards in a loop. Show it your client's website: letterhead builds their brand book. Every document after that is on their letterhead: a status update, a go-live plan and a checklist. letterhead, a skill for Claude, Codex, Cursor and other agents." width="720"></a><br>
+<a href="examples/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, get comments and version 2.<br>
+<sub>Recreated from a real run: the brand sheet and the status update are the unedited files in <a href="examples/">examples/</a>, the notes are shown in full; the terminal is scripted and sped up.</sub></p>
+
 **[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 13 templates × 9 styles, light and dark.
 
 ---
@@ -80,8 +84,6 @@ its own when you ask for a document or mention a brand.
 In Claude Code you can also type `/letterhead teach`, `/letterhead polish
 <file>` or `/letterhead publish <file>` (`/letterhead:letterhead …` when
 installed as a plugin).
-
-<!-- TODO(asset): 60–90 s screen recording: URL → brand sheet → status update → a comment → version 2 at the same link. -->
 
 ## Why I built it
 

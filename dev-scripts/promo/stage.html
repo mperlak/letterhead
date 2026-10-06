@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>letterhead promo stage</title>
+<!--
+  The README demo film, as one deterministic page. window.seek(t) puts every
+  element in its state at t seconds; nothing animates on its own. Rendered
+  frame by frame by render.mjs (served over http from the repo root so the
+  iframes are same-origin). Open it in a browser with ?play to watch it live.
+
+  The documents are the unedited files in examples/; NOTES.md is read verbatim
+  from examples/notes/status-update--arkona.md. The terminal is scripted.
+-->
+<style>
+  @font-face { font-family: "Inter"; src: url("../../letterhead/fonts/inter/Inter.woff2") format("woff2"); font-weight: 400 700; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../../letterhead/fonts/jetbrains-mono/JetBrainsMono.woff2") format("woff2"); font-weight: 400 700; }
+  @font-face { font-family: "Fraunces"; src: url("../../letterhead/fonts/fraunces/Fraunces.woff2") format("woff2"); font-weight: 400 700; }
+
+  :root {
+    --paper: #f3efe7;
+    --ink: #1c1f1e;
+    --muted: #4f5452;
+    --line: #ddd6c9;
+    --spruce: #1d5c4d;
+    --term-bg: #15171c;
+    --term-fg: #d9dee4;
+    --term-dim: #9aa2ac;
+    --term-ok: #7cc9a6;
+    --term-prompt: #f0c674;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); }
+  body { width: 1280px; height: 720px; overflow: hidden; position: relative; font-family: "Inter", system-ui, sans-serif; color: var(--ink); }
+
+  /* caption + steps */
+  .caption { position: absolute; left: 40px; top: 24px; width: 900px; height: 76px; }
+  .cap { position: absolute; inset: 0; }
+  .cap h2 { margin: 0; font-size: 30px; font-weight: 650; letter-spacing: -0.015em; }
+  .cap p { margin: 6px 0 0; font-size: 17.5px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  .cap p img { height: 21px; }
+  .cap h2 img { height: 24px; vertical-align: -3px; margin-left: 12px; }
+
+  /* chapter cards: the narration, full screen, before each step */
+  .chapter { position: absolute; inset: 0; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 120px; }
+  .chapter .kicker { font-size: 22px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--spruce); }
+  .chapter h1 { margin: 18px 0 0; font-size: 64px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.05; }
+  .chapter p { margin: 24px 0 0; max-width: 940px; text-wrap: balance; font-size: 30px; line-height: 1.38; color: #3d413f; }
+  .chapter .ml { height: 40px; margin-top: 30px; }
+  .steps { position: absolute; right: 40px; top: 26px; display: flex; gap: 6px; font-size: 13.5px; font-weight: 550; }
+  .steps span { padding: 6px 11px; border-radius: 99px; color: var(--muted); border: 1px solid var(--line); background: #fbf9f4; }
+  .steps span.now { color: #fff; background: var(--ink); border-color: var(--ink); }
+
+  /* windows */
+  .win { position: absolute; top: 112px; height: 572px; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px rgba(30, 25, 15, .18), 0 2px 6px rgba(30, 25, 15, .12); }
+  .bar { height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 14px; font-size: 12.5px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #3a3e47; }
+  .bar .title { margin-left: 10px; }
+
+  /* terminal */
+  .term { left: 40px; width: 520px; background: var(--term-bg); }
+  .term .bar { color: var(--term-dim); border-bottom: 1px solid #252830; }
+  .page { position: absolute; left: 0; right: 0; top: 36px; padding: 16px 20px; font-family: "JetBrains Mono", monospace; font-size: 15.5px; line-height: 1.55; color: var(--term-fg); }
+  .ln { white-space: pre-wrap; word-break: break-word; min-height: 1.55em; }
+  .ln.prompt { color: #fff; margin-top: 4px; }
+  .ln.prompt::before { content: "› "; color: var(--term-prompt); font-weight: 700; }
+  .ok { color: var(--term-ok); }
+  .dim { color: var(--term-dim); }
+  .k { color: var(--term-dim); display: inline-block; width: 9ch; }
+  .sw { display: inline-block; width: 0.9em; height: 0.9em; border-radius: 2px; vertical-align: -0.1em; margin-right: 0.45em; }
+  .cursor { display: inline-block; width: 0.6em; height: 1.1em; vertical-align: -0.2em; background: var(--term-fg); margin-left: 1px; }
+
+  /* the notes file, opening shot */
+  .notewin { left: 40px; width: 520px; background: #fff; }
+  .notewin .bar { background: #ece8e0; border-bottom: 1px solid #d9d3c7; color: #4a4e4c; }
+  .notewin .dot, .browser .dot { background: #cfc8bb; }
+  .notewin .notes { font-size: 11.5px; }
+
+  /* browser */
+  .browser { left: 584px; width: 656px; background: #fff; }
+  .browser .bar { background: #ece8e0; border-bottom: 1px solid #d9d3c7; height: 40px; }
+  .url { position: relative; flex: 1; margin-left: 12px; height: 26px; border-radius: 7px; background: #fbf9f5; color: #4a4e4c; font-size: 13px; }
+  .url span { position: absolute; left: 12px; top: 5px; white-space: nowrap; }
+  .ver { margin-left: 8px; font-size: 12px; font-weight: 650; padding: 4px 9px; border-radius: 99px; background: var(--spruce); color: #fff; }
+  .view { position: absolute; left: 0; right: 0; top: 40px; bottom: 0; overflow: hidden; background: #fff; }
+  .scaled { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .scaled iframe { border: 0; display: block; background: #fff; }
+  .rings { position: absolute; inset: 0; pointer-events: none; }
+  .ring { position: absolute; border: 6px solid #e07a2e; border-radius: 8px; box-shadow: 0 0 0 8px rgba(224, 122, 46, .2); }
+  .notes { padding: 18px 22px; font-family: "JetBrains Mono", monospace; font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: #333; }
+  .notes-scroll { position: absolute; left: 0; right: 0; top: 0; }
+
+  /* review view: document + comment rail */
+  .rail { position: absolute; right: 0; top: 0; bottom: 0; width: 214px; background: #f6f4ef; border-left: 1px solid #e3ded4; padding: 14px 12px; font-size: 13px; }
+  .rail h4 { margin: 0 0 12px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 650; display: flex; align-items: center; gap: 7px; }
+  .rail h4 img { width: 18px; height: 18px; }
+  .card { background: #fff; border: 1px solid #e3ded4; border-radius: 9px; padding: 11px 12px; box-shadow: 0 3px 10px rgba(0, 0, 0, .06); }
+  .who { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 14px; }
+  .av { width: 26px; height: 26px; border-radius: 50%; background: #c98a5a; color: #fff; font-size: 11px; display: grid; place-items: center; font-weight: 700; }
+  .anchor { color: var(--muted); font-size: 12px; margin: 6px 0 6px; }
+  .card p { margin: 0; line-height: 1.45; font-size: 14px; }
+  .resolved { margin-top: 9px; font-size: 13px; font-weight: 650; color: var(--spruce); }
+
+  /* phone */
+  .phone { position: absolute; left: 170px; top: 120px; width: 270px; height: 560px; border-radius: 38px; background: #111; padding: 11px; box-shadow: 0 22px 50px rgba(0, 0, 0, .3); }
+  .phone .screen { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; background: #fff; }
+
+  /* end card */
+  .card-full { position: absolute; inset: 0; background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .word { font-family: "Fraunces", serif; font-weight: 600; font-size: 62px; letter-spacing: -0.02em; line-height: 1; }
+  .tag { margin-top: 14px; font-size: 23px; color: #3d413f; }
+  .thumbs { display: flex; gap: 22px; margin-top: 26px; }
+  .thumbs img { width: 196px; height: 245px; object-fit: cover; object-position: top; border-radius: 9px; border: 1px solid var(--line); box-shadow: 0 6px 16px rgba(30, 25, 15, .1); }
+  .install { margin-top: 26px; display: grid; grid-template-columns: auto auto; gap: 7px 18px; text-align: left; align-items: baseline; background: var(--term-bg); color: var(--term-fg); padding: 16px 22px; border-radius: 10px; font-size: 15px; }
+  .install dt { color: var(--term-dim); font-family: "Inter", sans-serif; }
+  .install dd { margin: 0; font-family: "JetBrains Mono", monospace; }
+  .install dd.plain { font-family: "Inter", sans-serif; }
+  .gh { margin-top: 16px; font-size: 19px; font-weight: 600; }
+  /* poster only: the play badge over a still */
+  .play { position: absolute; inset: 0; display: none; place-items: end center; padding-bottom: 60px; }
+  .play div { display: flex; align-items: center; gap: 16px; padding: 16px 28px 16px 20px; border-radius: 99px; background: var(--ink); color: #fff; font-size: 24px; font-weight: 600; box-shadow: 0 14px 40px rgba(0, 0, 0, .35); }
+  .play i { width: 0; height: 0; border-left: 24px solid #fff; border-top: 15px solid transparent; border-bottom: 15px solid transparent; margin-left: 10px; }
+</style>
+</head>
+<body>
+
+<div class="caption" id="caption"></div>
+<div class="steps" id="steps"><span>1 Teach</span><span>2 Write</span><span>3 Read anywhere</span><span>4 Review · optional</span></div>
+
+<div class="win notewin" id="notewin">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">NOTES.md</span></div>
+  <div class="notes" id="notes0"></div>
+</div>
+
+<div class="win term" id="term">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="title">~/clients/arkona — your agent</span></div>
+</div>
+
+<div class="win browser" id="browser">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="url"><span id="url"></span></div><span class="ver" id="ver">v1</span></div>
+
+  <div class="view" id="v-site"><div class="scaled" style="transform: scale(.5125)"><iframe id="f-site" src="../../examples/brands/arkona/site.html" width="1280" height="1040"></iframe><div class="rings" id="rings"></div></div></div>
+  <div class="view" id="v-sheet"><div class="scaled" style="transform: scale(.82)"><iframe id="f-sheet" src="../../examples/brands/arkona/brand-sheet.html" width="800" height="649"></iframe></div></div>
+  <div class="view" id="v-notes"><div class="notes-scroll" id="notes-scroll"><div class="notes" id="notes1"></div></div></div>
+  <div class="view" id="v-doc"><div class="scaled" style="transform: scale(.656)"><iframe id="f-doc" src="../../examples/documents/status-update--arkona.html" width="1000" height="811"></iframe></div></div>
+  <div class="view" id="v-zoom"><div class="scaled" id="zoom-wrap"><iframe id="f-zoom" src="../../examples/documents/status-update--arkona.html" width="1000" height="532"></iframe></div></div>
+  <div class="view" id="v-dark"><div class="scaled" style="transform: scale(.656)"><iframe id="f-dark" src="../../examples/documents/status-update--arkona.html" width="1000" height="811"></iframe></div></div>
+  <div class="view" id="v-review">
+    <div class="scaled" style="transform: scale(.69)"><iframe id="f-review" src="../../examples/documents/status-update--arkona.html" width="640" height="771"></iframe></div>
+    <div class="rail">
+      <h4><img src="assets/markloop-mark.png" alt="">Comments</h4>
+      <div class="card" id="comment">
+        <div class="who"><span class="av">KH</span>Karin Holm</div>
+        <div class="anchor">on “Decision for Karin and finance”</div>
+        <p>Finance agrees: option A. Freeze prices 27 Oct – 2 Nov.</p>
+        <div class="resolved" id="resolved">✓ Addressed in v2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="phone" id="phone"><div class="screen"><div class="scaled" style="transform: scale(.636)"><iframe id="f-phone" src="../../examples/documents/status-update--arkona.html" width="390" height="846"></iframe></div></div></div>
+
+<div id="chapters"></div>
+
+<div class="card-full" id="end">
+  <div class="word">letterhead</div>
+  <div class="tag">13 templates · 9 styles · any brand you teach it</div>
+  <div class="thumbs">
+    <img src="../../examples/screenshots/proposal--halde-light.webp" alt="">
+    <img src="../../examples/screenshots/spec--kestrel-light.webp" alt="">
+    <img src="../../examples/screenshots/project-recap--fieldwork-light.webp" alt="">
+  </div>
+  <dl class="install">
+    <dt>Claude Code</dt><dd>/plugin marketplace add mperlak/letterhead</dd>
+    <dt></dt><dd>/plugin install letterhead@letterhead</dd>
+    <dt>Codex, Cursor, others</dt><dd>npx skills add mperlak/letterhead</dd>
+    <dt>Claude app</dt><dd class="plain">Settings → Capabilities → Skills, upload letterhead.zip</dd>
+  </dl>
+  <div class="gh">github.com/mperlak/letterhead</div>
+</div>
+
+<div class="play" id="play"><div><i></i><span id="play-label">Watch the demo</span></div></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const eramp = (t, a, b) => ease(ramp(t, a, b));
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// visible inside [a, b], with fades of length f
+const win = (t, a, b, f = .35) => ramp(t, a, a + f) * (1 - ramp(t, b - f, b));
+
+const CPS = 70;          // prompts appear fast, as if pasted
+const GAP = .2;         // between agent output lines
+
+// ---- scenes ------------------------------------------------------------------
+// A chapter card (the narration, full screen) opens each step; the step's
+// action follows with only a short title on top, so nothing competes with it.
+const HOOK = 2.8, ENDLEN = 3.6;
+// [scene length, kicker, title, sentence]; a card stays up long enough to read
+// it: a second to find it, plus 0.2 s a word.
+const CHAPTERS = [
+  [8.0, 'Step 1 of 4', 'Learn a brand from a website', 'It builds the brand book for you: colors, fonts, logo and tone.'],
+  [10.0, 'Step 2 of 4', '13 templates, in your brand', 'Proposal, spec, status update, report: written from your notes, on your letterhead.'],
+  [6.0, 'Step 3 of 4', 'One file, read anywhere', 'Light, dark, phone and print, in one HTML file.'],
+  [8.4, 'Step 4 · optional', 'Publish it. Get comments.', 'Your client comments on one link, no sign-up. Your AI updates the doc.'],
+];
+const words = (...xs) => xs.join(' ').split(/\s+/).filter(Boolean).length;
+const cardLength = (h, p) => 1.0 + .2 * words(h, p);
+const C = [], S = [];
+let clock = HOOK;
+CHAPTERS.forEach(([scene, , h, p], i) => { C[i] = clock; S[i] = clock + cardLength(h, p); clock = S[i] + scene; });
+const [C1, C2, C3, C4] = C, [S1, S2, S3, S4] = S;
+const END = clock, TOTAL = END + ENDLEN;
+window.DURATION = TOTAL;
+
+CHAPTERS.forEach(([, kicker, h, p], i) => {
+  const d = document.createElement('div');
+  d.className = 'chapter';
+  d.innerHTML = `<div class="kicker">${kicker}</div><h1>${h}</h1><p>${p}</p>` +
+    (i === 3 ? '<img class="ml" src="assets/markloop-wordmark.png" alt="Markloop">' : '');
+  $('chapters').append(d);
+});
+
+const CAPS = [
+  [0, C1, 'Notes in. Your client’s letterhead out.', 'letterhead is a skill for Claude, Codex, Cursor and other agents.'],
+  [S1, C2, 'Learn a brand from a website', ''],
+  [S2, C3, '13 templates, in your brand', ''],
+  [S3, C4, 'One file, read anywhere', ''],
+  [S4, END, 'Publish it. Get comments.<img src="assets/markloop-wordmark.png" alt="Markloop">', ''],
+];
+CAPS.forEach(([a, b, h, p]) => {
+  const d = document.createElement('div');
+  d.className = 'cap';
+  d.innerHTML = `<h2>${h}</h2>` + (p ? `<p>${p}</p>` : '');
+  $('caption').append(d);
+});
+
+// ---- terminal script -------------------------------------------------------------
+// Each page is cleared at its start. ['>', text] is the user's prompt,
+// [html] is agent output ('' is a blank line). Numbers are pauses in seconds.
+const PAGES = [
+  [S1 + .3, [
+    ['>', 'learn the brand of https://arkona.example, it’s my client'],
+    .5,
+    ['<span class="ok">●</span> letterhead · teach'],
+    ['<span class="dim">  read the page, its CSS and its fonts</span>'],
+    ['<span class="dim">  counted the colors on buttons, links, nav</span>'],
+    ['<span class="dim">  saved the logo from the header</span>'],
+    [''],
+    ['Brand proposal for Arkona'],
+    ['  <span class="k">primary</span><i class="sw" style="background:#1d5c4d"></i>#1d5c4d spruce green'],
+    ['  <span class="k">accent</span><i class="sw" style="background:#e8dcc6"></i>#e8dcc6 sand'],
+    ['  <span class="k">headings</span>Fraunces 600'],
+    ['  <span class="k">body</span>Work Sans'],
+    ['  <span class="k">look</span>consulting, one of 9 styles'],
+    ['  Use this?'],
+    .9,
+    ['>', 'yes'],
+    .35,
+    ['<span class="ok">●</span> saved the brand as arkona'],
+    ['<span class="dim">  brand sheet to send the client →</span>'],
+  ]],
+  [S2 + .3, [
+    ['>', 'make a status update for Arkona from NOTES.md'],
+    .4,
+    ['<span class="ok">●</span> read NOTES.md'],
+    ['<span class="ok">●</span> plan <span class="dim">· nothing written yet</span>'],
+    ['  <span class="k">template</span>status-update'],
+    ['  <span class="k">brand</span>arkona'],
+    ['  <span class="k">sections</span>Done · In progress ·'],
+    ['  <span class="k"></span>Decisions needed · Risks · Next'],
+    ['  <span class="k">phone</span>first screen: on track for'],
+    ['  <span class="k"></span>2 Nov, 1 decision by Fri 9 Oct'],
+    ['  Go ahead?'],
+    1.1,
+    ['>', 'yes'],
+    .35,
+    ['<span class="ok">●</span> wrote status-update.html'],
+    ['<span class="ok">●</span> checked <span class="dim">contrast, both themes, no AI tells</span>'],
+    ['<span class="dim">  opened in the browser →</span>'],
+  ]],
+  [S4 + .3, [
+    ['>', '/letterhead publish status-update.html'],
+    .35,
+    ['<span class="ok">●</span> published on Markloop'],
+    ['<span class="dim">  markloop.io/share/9fK2qL</span>'],
+    ['<span class="dim">  Karin opens it, no account needed</span>'],
+    2.4,
+    ['>', 'Karin answered, make v2'],
+    .35,
+    ['<span class="ok">●</span> pulled 1 comment <span class="dim">· Karin Holm</span>'],
+    ['<span class="ok">●</span> edited the price-freeze decision'],
+    ['<span class="dim">  her comment stays on its section</span>'],
+    ['<span class="ok">●</span> published v2 at the same link'],
+  ]],
+];
+
+const pages = [];
+PAGES.forEach(([start, items]) => {
+  const el = document.createElement('div');
+  el.className = 'page';
+  $('term').append(el);
+  const lines = [];
+  let t = start;
+  for (const it of items) {
+    if (typeof it === 'number') { t += it; continue; }
+    const ln = document.createElement('div');
+    if (it[0] === '>') {
+      ln.className = 'ln prompt';
+      const t1 = t + it[1].length / CPS;
+      lines.push({ el: ln, t0: t, t1, text: it[1] });
+      t = t1 + .2;
+    } else {
+      ln.className = 'ln';
+      ln.innerHTML = it[0];
+      lines.push({ el: ln, t0: t, t1: t });
+      t += it[0] === '' ? .08 : GAP;
+    }
+    el.append(ln);
+  }
+  pages.push({ start, el, lines });
+});
+pages[0].end = C2 + .4; pages[1].end = C4 + .4; pages[2].end = END;
+
+const at = (pi, sub) => {
+  const l = pages[pi].lines.find((x) => (x.text ?? x.el.innerHTML).includes(sub));
+  if (!l) throw new Error(`no line "${sub}"`);
+  return l.t0;
+};
+
+function renderTerm(t) {
+  for (const p of pages) {
+    const vis = t >= p.start - .4 && t < p.end;
+    p.el.style.display = vis ? '' : 'none';
+    if (!vis) continue;
+    p.el.style.opacity = 1 - ramp(t, p.end - .3, p.end);
+    p.lines.forEach((l) => {
+      if (l.text == null) { l.el.style.visibility = t >= l.t0 ? 'visible' : 'hidden'; return; }
+      const n = Math.floor(clamp((t - l.t0) / (l.t1 - l.t0)) * l.text.length);
+      const typing = t >= l.t0 - .5 && t < l.t1 + .2;
+      l.el.style.visibility = t >= l.t0 - .5 ? 'visible' : 'hidden';
+      const blink = Math.floor(t * 2.2) % 2 === 0 || t < l.t1;
+      l.el.innerHTML = esc(l.text.slice(0, n)) + (typing && blink ? '<i class="cursor"></i>' : '');
+    });
+  }
+}
+
+// ---- moments ---------------------------------------------------------------------
+const tSheet = at(0, 'brand sheet to send');
+const tNotes = S2 + .3;
+const tDoc = at(1, 'opened in the browser');
+const tZoom = tDoc + 1.8;
+const tPub = at(2, 'published on Markloop');
+const tComment = tPub + 1.1;
+const tV2done = at(2, 'published v2');
+
+// views: id -> list of [in, out] windows; later views in the DOM sit on top
+const VIEWS = {
+  'v-doc':    [[-1, C1 + .5], [tDoc - .35, tZoom + .35], [S3 - .3, tPub + .4]],
+  'v-site':   [[C1 + .4, tSheet + .35]],
+  'v-sheet':  [[tSheet, tNotes + .35]],
+  'v-notes':  [[tNotes, tDoc + .35]],
+  'v-zoom':   [[tZoom, S3 + .1]],
+  'v-dark':   [[S3 + 1.4, tPub + .4]],   // stays until Markloop is up: no empty browser
+  'v-review': [[tPub - .35, END + 1]],
+};
+const URLS = [
+  [-1, '~/clients/arkona/status-update.html'],
+  [C1 + .4, 'arkona.example'],
+  [tSheet, '~/clients/arkona/.letterhead/brands/arkona/brand-sheet.html'],
+  [tNotes, '~/clients/arkona/NOTES.md'],
+  [tDoc, '~/clients/arkona/status-update.html'],
+  [tPub, 'markloop.io/share/9fK2qL'],
+];
+
+const frameWin = (id) => $(id).contentWindow;
+const scrollTo = (id, y) => frameWin(id).scrollTo(0, Math.round(y));
+const maxScroll = (id) => { const w = frameWin(id); return w.document.documentElement.scrollHeight - w.innerHeight; };
+const rectOf = (id, sel) => {
+  const w = frameWin(id); const e = w.document.querySelector(sel);
+  if (!e) return { top: 0, left: 0 };
+  const r = e.getBoundingClientRect();
+  return { top: r.top + w.scrollY, left: r.left + w.scrollX, width: r.width };
+};
+
+let V1HTML = null;
+const V2HTML = `<p class="label">Decided by Karin and finance, Tue 6 Oct</p>
+  <p><strong>Prices in the ERP are frozen during the cutover, 27 Oct to 2 Nov (option A).</strong></p>
+  <p>No manual reconciliation after go-live.</p>`;
+
+let layout = null;   // positions measured once the frames are in
+function measure() {
+  // zoom so the decision box fills the browser width
+  const box = rectOf('f-zoom', '#decision-price-freeze');
+  const zs = Math.min(1, (656 - 56) / box.width);
+  $('f-zoom').height = Math.ceil(532 / zs);
+  const head = rectOf('f-zoom', '#blocked-decisions-needed');
+  layout = {
+    sheetY: rectOf('f-sheet', '#logo-and-name').top - 24,
+    reviewY: rectOf('f-review', '#blocked-decisions-needed').top - 20,
+  };
+  scrollTo('f-sheet', layout.sheetY);
+  scrollTo('f-zoom', head.top - 20);
+  $('zoom-wrap').style.transform = `translateX(${-(box.left - 28) * zs}px) scale(${zs})`;
+}
+
+function renderBrowser(t) {
+  for (const [id, wins] of Object.entries(VIEWS)) {
+    const o = Math.max(...wins.map(([a, b]) => win(t, a, b, .35)));
+    $(id).style.opacity = o;
+    $(id).style.display = o > 0 ? '' : 'none';
+  }
+  let url = '';
+  for (const [a, u] of URLS) if (t >= a) url = u;
+  $('url').textContent = url;
+  $('ver').style.display = t >= tPub ? '' : 'none';
+  $('ver').textContent = t >= tV2done ? 'v2' : 'v1';
+
+  // site: rings over nav, button and logo while the agent reads
+  const ringT = [[S1 + .9, '.site-nav'], [S1 + 1.3, '.btn'], [S1 + 1.7, '.brand-link']];
+  $('rings').innerHTML = '';
+  const sw = frameWin('f-site');
+  for (const [a, sel] of ringT) {
+    const o = win(t, a, tSheet, .3);
+    if (o <= 0) continue;
+    const e = sw.document.querySelector(sel);
+    if (!e) continue;
+    const r = e.getBoundingClientRect();
+    const d = document.createElement('div');
+    d.className = 'ring';
+    Object.assign(d.style, { left: r.left - 12 + 'px', top: r.top + sw.scrollY - 10 + 'px', width: r.width + 24 + 'px', height: r.height + 20 + 'px', opacity: o });
+    $('rings').append(d);
+  }
+
+  // NOTES.md scrolls through, so every line the document uses is on screen
+  const nv = $('v-notes'), ns = $('notes-scroll');
+  const noteMax = Math.max(0, ns.scrollHeight - nv.clientHeight);
+  ns.style.transform = `translateY(${-eramp(t, tNotes + 1.2, tDoc - .6) * noteMax}px)`;
+
+  // phone scroll; dark copy wipes in from the left
+  const wipe = eramp(t, S3 + 1.4, S3 + 2.3);
+  $('v-dark').style.clipPath = `inset(0 ${100 - wipe * 100}% 0 0)`;
+
+  // review: highlight the decision, then swap in v2
+  scrollTo('f-review', layout.reviewY);
+  const rw = frameWin('f-review');
+  const callout = rw.document.getElementById('decision-price-freeze');
+  const verdict = callout && callout.nextElementSibling;
+  if (callout) {
+    if (V1HTML == null) V1HTML = callout.innerHTML;
+    const v2 = t >= tV2done;
+    const want = v2 ? V2HTML : V1HTML;
+    if (callout.innerHTML !== want) callout.innerHTML = want;
+    if (verdict && verdict.classList.contains('verdict')) verdict.style.display = v2 ? 'none' : '';
+    const hl = t >= tComment && !v2;
+    const flash = v2 ? 1 - .7 * ramp(t, tV2done + 1.2, tV2done + 2.6) : 0;
+    callout.style.outline = hl ? '5px solid #f0b43c' : flash > 0 ? `5px solid rgba(29,92,77,${flash})` : '';
+    callout.style.outlineOffset = '6px';
+    callout.style.background = hl ? 'rgba(240,180,60,.16)' : flash > 0 ? `rgba(29,92,77,${.14 * flash})` : '';
+  }
+  const c = ramp(t, tComment, tComment + .35);
+  $('comment').style.opacity = c;
+  $('comment').style.transform = `translateY(${(1 - ease(c)) * 14}px)`;
+  $('resolved').style.opacity = ramp(t, tV2done, tV2done + .3);
+
+  // phone slides up over the dimmed terminal, scrolls, and leaves
+  const pin = eramp(t, S3 + 2.5, S3 + 3.2), pout = eramp(t, C4 + .4, C4 + .8);
+  $('phone').style.display = pin > 0 && pout < 1 ? '' : 'none';
+  $('phone').style.transform = `translateY(${(1 - pin) * 640 + pout * 640}px)`;
+  scrollTo('f-phone', eramp(t, S3 + 3.6, C4 - .1) * Math.min(maxScroll('f-phone'), 1100));
+  $('term').style.opacity = 1 - .75 * (eramp(t, S3 + 2.3, S3 + 3.0) * (1 - eramp(t, C4 + .4, C4 + .8)));
+}
+
+function renderChrome(t) {
+  // opening shot: the notes window, then the terminal takes its place
+  const n = 1 - ramp(t, C1 + .4, C1 + .5);
+  $('notewin').style.opacity = n;
+  $('notewin').style.display = n > 0 ? '' : 'none';
+  $('term').style.display = t >= C1 + .4 ? '' : 'none';
+  [...$('chapters').children].forEach((el, i) => {
+    const o = win(t, C[i], S[i] + .35, .35);
+    el.style.opacity = o;
+    el.style.display = o > 0 ? '' : 'none';
+    el.style.transform = `translateY(${(1 - ease(ramp(t, C[i], C[i] + .5))) * 14}px)`;
+  });
+  $('end').style.opacity = ramp(t, END, END + .5);
+  $('end').style.display = t >= END ? '' : 'none';
+  const caps = [...$('caption').children];
+  CAPS.forEach(([a, b], i) => {
+    const o = i === 0 ? 1 - ramp(t, b - .35, b) : win(t, a, b, .35);
+    caps[i].style.opacity = o;
+    caps[i].style.display = o > 0 ? '' : 'none';
+    caps[i].style.transform = i === 0 ? '' : `translateY(${(1 - ease(ramp(t, a, a + .35))) * 10}px)`;
+  });
+  $('steps').style.opacity = ramp(t, S1 - .4, S1);
+  const steps = [...$('steps').children];
+  CAPS.slice(1).forEach(([a, b], i) => steps[i].classList.toggle('now', t >= a && t < b));
+}
+
+window.seek = (t) => { renderChrome(t); renderTerm(t); renderBrowser(t); };
+window.poster = (on) => {
+  $('play').style.display = on ? 'grid' : 'none';
+  $('play-label').textContent = `Watch the ${Math.round(TOTAL)}-second demo`;
+};
+
+// ---- loading -----------------------------------------------------------------------
+const frames = [...document.querySelectorAll('iframe')];
+const notesReady = fetch('../../examples/notes/status-update--arkona.md').then((r) => r.text()).then((md) => {
+  const m = md.match(/```text\n([\s\S]*?)```/);
+  if (!m) throw new Error('no notes block');
+  $('notes0').textContent = m[1].trimEnd();
+  $('notes1').textContent = m[1].trimEnd();
+});
+window.ready = Promise.all([notesReady, ...frames.map((f) => new Promise((res) => {
+  const done = () => {
+    const d = f.contentDocument;
+    const s = d.createElement('style');
+    s.textContent = 'html{scroll-behavior:auto!important}*,*::before,*::after{transition:none!important;animation:none!important}::-webkit-scrollbar{display:none}';
+    d.head.append(s);
+    if (f.id === 'f-dark') d.documentElement.setAttribute('data-theme', 'dark');
+    else if (f.id !== 'f-site') d.documentElement.setAttribute('data-theme', 'light');
+    res();
+  };
+  if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentDocument.URL !== 'about:blank') done();
+  else f.addEventListener('load', done, { once: true });
+}))]).then(() => Promise.all([document.fonts.ready, ...frames.map((f) => f.contentDocument.fonts.ready)]))
+  .then(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))))
+  .then(() => { measure(); window.seek(0); return true; });
+
+if (location.search.includes('play')) {
+  window.ready.then(() => {
+    const t0 = performance.now();
+    const tick = () => { window.seek(((performance.now() - t0) / 1000) % TOTAL); requestAnimationFrame(tick); };
+    tick();
+  });
+}
+</script>
+</body>
+</html>

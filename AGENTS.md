@@ -70,6 +70,7 @@ dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (no
                             ← contact-sheet.mjs (3x3 styles sheet, --brand <profile> for a brand in every style),
                             ←   both on lib/shoot.mjs (headless shell + cwebp)
                             ← vendor-fonts.sh: fetch the style fonts into letterhead/fonts/
+                            ← promo/: the README demo film and teaser (stage.html, teaser.html, render.mjs → examples/video/)
 bin/sync-mounts.sh          ← regenerate the mirror (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
 .claude-plugin/             ← Claude Code plugin + marketplace manifests

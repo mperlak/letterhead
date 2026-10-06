@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>letterhead teaser</title>
+<!--
+  The README teaser: an ~11-second loop of three cards that explain how
+  letterhead works to someone scrolling past. One idea per card, the words big
+  enough to read at README width, a picture or two under them as proof:
+  1. show it the client's website, once -> it builds the brand book
+  2. every document after that comes out on that brand, whatever the agent writes
+  3. what it is, and the full demo
+  Pictures are the unedited pages and screenshots in examples/. Same contract
+  as stage.html (window.seek(t), nothing animates on its own); rendered to an
+  animated WebP by render.mjs --teaser.
+-->
+<style>
+  @font-face { font-family: "Inter"; src: url("../../letterhead/fonts/inter/Inter.woff2") format("woff2"); font-weight: 400 700; }
+  @font-face { font-family: "Fraunces"; src: url("../../letterhead/fonts/fraunces/Fraunces.woff2") format("woff2"); font-weight: 400 700; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f3efe7; }
+  body { width: 960px; height: 600px; overflow: hidden; position: relative; font-family: "Inter", system-ui, sans-serif; color: #1c1f1e; }
+  .card { position: absolute; inset: 0; background: #f3efe7; display: flex; flex-direction: column; align-items: center; padding-top: 42px; text-align: center; }
+  .card h1 { margin: 0; max-width: 860px; text-wrap: balance; font-size: 46px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.08; }
+  .card p { margin: 12px 0 0; font-size: 23px; color: #3d413f; }
+  .row { display: flex; align-items: center; gap: 26px; margin-top: 34px; }
+  .shot { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; color: #3d413f; }
+  .frame { position: relative; overflow: hidden; border-radius: 10px; border: 1px solid #ddd6c9; background: #fff; box-shadow: 0 10px 26px rgba(30, 25, 15, .14); }
+  .frame .scaled { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .frame iframe { border: 0; display: block; }
+  .frame img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .arrow { font-size: 44px; color: #1d5c4d; font-weight: 700; margin-bottom: 30px; }
+  .end { justify-content: center; padding-top: 0; }
+  .word { font-family: "Fraunces", serif; font-weight: 600; font-size: 92px; letter-spacing: -0.02em; line-height: 1; }
+  .end p { margin-top: 20px; font-size: 25px; }
+  .watch { margin-top: 38px; display: inline-flex; align-items: center; gap: 14px; padding: 15px 28px 15px 22px; border-radius: 99px; background: #1c1f1e; color: #fff; font-size: 24px; font-weight: 650; }
+  .watch i { width: 0; height: 0; border-left: 20px solid #fff; border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+</style>
+</head>
+<body>
+
+<div class="card" id="c0">
+  <h1>Show it your client’s website</h1>
+  <p>letterhead builds their brand book: colors, fonts and logo.</p>
+  <div class="row">
+    <div class="shot rise"><div class="frame" style="width: 372px; height: 330px"><div class="scaled" style="transform: scale(.2906)"><iframe id="f-site" src="../../examples/brands/arkona/site.html" width="1280" height="1136"></iframe></div></div>arkona.example</div>
+    <div class="arrow rise">→</div>
+    <div class="shot rise"><div class="frame" style="width: 372px; height: 330px"><div class="scaled" style="transform: scale(.372)"><iframe id="f-sheet" src="../../examples/brands/arkona/brand-sheet.html" width="1000" height="888"></iframe></div></div>Arkona’s brand book</div>
+  </div>
+</div>
+
+<div class="card" id="c1">
+  <h1>Every document after that:<br>on their letterhead</h1>
+  <p>Status updates, plans, checklists: whatever your agent writes for them.</p>
+  <div class="row">
+    <div class="shot rise"><div class="frame" style="width: 232px; height: 290px"><img src="../../examples/screenshots/status-update--arkona-light.webp" alt=""></div>Status update</div>
+    <div class="shot rise"><div class="frame" style="width: 232px; height: 290px"><img src="../../examples/screenshots/implementation-plan--arkona-light.webp" alt=""></div>Go-live plan</div>
+    <div class="shot rise"><div class="frame" style="width: 232px; height: 290px"><img src="../../examples/screenshots/checklist--arkona-light.webp" alt=""></div>Checklist</div>
+  </div>
+</div>
+
+<div class="card end" id="c2">
+  <div class="word">letterhead</div>
+  <p>A skill for Claude, Codex, Cursor and other agents</p>
+  <div class="watch"><i></i><span id="watch">Watch the demo</span></div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ramp = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (x) => 1 - Math.pow(1 - x, 3);
+
+// seconds each card stays up: a second to find the words, 0.2 s a word, time to look at the pictures
+const HOLD = [4.4, 4.8, 2.6];
+const FADE = .4;
+const starts = [];
+let clock = 0;
+for (const h of HOLD) { starts.push(clock); clock += h; }
+const TOTAL = clock;
+window.DURATION = TOTAL;
+const cards = HOLD.map((_, i) => $(`c${i}`));
+
+// the demo length comes from the page (render.mjs passes it in ?demo=56)
+const demo = new URLSearchParams(location.search).get('demo');
+if (demo) $('watch').textContent = `Watch the ${demo}-second demo`;
+
+// the loop starts with card 1 already settled, so the first frame (what GitHub
+// shows before the animation runs) reads on its own
+const OFFSET = 1.3;
+
+window.seek = (t) => {
+  t = (((t + OFFSET) % TOTAL) + TOTAL) % TOTAL;
+  let i = starts.length - 1;
+  while (starts[i] > t) i--;
+  const next = (i + 1) % cards.length;
+  const end = starts[i] + HOLD[i];
+  const f = ramp(t, end - FADE, end);                 // the next card fades in over this one
+  cards.forEach((c, k) => {
+    const on = k === i || (k === next && f > 0);
+    c.style.display = on ? '' : 'none';
+    c.style.zIndex = k === next ? 2 : 1;
+    c.style.opacity = k === next && f > 0 ? f : 1;
+    // pictures rise in one after another, counted from the moment the card starts to fade in
+    const since = k === i ? t - starts[i] + FADE : t - (end - FADE);
+    [...c.querySelectorAll('.rise')].forEach((el, n) => {
+      const r = ease(ramp(since, .15 + n * .12, .65 + n * .12));
+      el.style.opacity = r;
+      el.style.transform = `translateY(${(1 - r) * 18}px)`;
+    });
+  });
+};
+
+const frames = [...document.querySelectorAll('iframe')];
+window.ready = Promise.all(frames.map((f) => new Promise((res) => {
+  const done = () => {
+    const d = f.contentDocument;
+    const s = d.createElement('style');
+    s.textContent = 'html{scroll-behavior:auto!important}*,*::before,*::after{transition:none!important;animation:none!important}::-webkit-scrollbar{display:none}';
+    d.head.append(s);
+    if (f.id !== 'f-site') d.documentElement.setAttribute('data-theme', 'light');
+    res();
+  };
+  if (f.contentDocument && f.contentDocument.readyState === 'complete' && f.contentDocument.URL !== 'about:blank') done();
+  else f.addEventListener('load', done, { once: true });
+}))).then(() => Promise.all([document.fonts.ready, ...frames.map((f) => f.contentDocument.fonts.ready)]))
+  .then(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))))
+  .then(() => {
+    // the brand book opens on its logo and colors
+    const w = $('f-sheet').contentWindow, e = w.document.querySelector('#logo-and-name');
+    if (e) w.scrollTo(0, e.getBoundingClientRect().top + w.scrollY - 30);
+    window.seek(0);
+    return true;
+  });
+
+if (location.search.includes('play')) {
+  window.ready.then(() => {
+    const t0 = performance.now();
+    const tick = () => { window.seek((performance.now() - t0) / 1000); requestAnimationFrame(tick); };
+    tick();
+  });
+}
+</script>
+</body>
+</html>
