@@ -1,7 +1,8 @@
 <!--
-  DRAFT README. Assets marked TODO(asset) do not exist yet:
-  - examples/screenshots/teach.gif (or a video uploaded to GitHub)
-  - the GitHub Pages gallery (https://mperlak.github.io/letterhead/)
+  TODO before going public:
+  - the 60–90 s screen recording (see the comment under Quick start)
+  - Settings → Pages → Source: GitHub Actions, then add .github/workflows/pages.yml
+  - tag a release (v0.2.0) so letterhead.zip exists for the Claude app install
 -->
 
 <h1>
@@ -13,21 +14,27 @@
 
 **Your agent writes the document. letterhead puts it on your client's letterhead.**
 
-A skill for Claude Code, Codex, Cursor and other coding agents. It turns
-notes, a repo or a conversation into a self-contained HTML document for
-someone outside your team: a client, a boss, a board. The plan, the status
-update, the proposal comes out in their brand (or yours), reads well on a
-phone, and is built to collect comments and come back as version two.
+A skill for Claude (the app, Cowork and Claude Code), Codex, Cursor and other
+agents. It turns notes, a repo or a conversation into one HTML file for
+someone outside your team: a proposal, a status update, a plan, a
+presentation of a project. It comes out in your client's brand (or yours),
+reads well on a phone, prints cleanly, and, published as a review link,
+keeps the client's comments when you send version two.
 
-No Figma, no template hunting, and no "this was clearly written by a bot" moment
-when the client opens it.
-
-<!-- TODO(asset): https://mperlak.github.io/letterhead/ -->
-**[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 12 templates × 9 styles, light and dark.
+**[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 13 templates × 9 styles, light and dark.
 
 ---
 
 ## Install
+
+**Claude app (desktop and web) and Cowork**
+
+Download `letterhead.zip` from the
+[latest release](https://github.com/mperlak/letterhead/releases/latest), then
+in Claude open **Settings → Capabilities → Skills** and upload it. Code
+execution has to be on. The app's sandbox may not reach the internet, so if
+teaching a brand from a URL fails, give it the brand book PDF or a saved copy
+of the page instead. Then just ask for a document.
 
 **Claude Code**
 
@@ -54,7 +61,9 @@ npx skills add mperlak/letterhead
 ```
 
 Or clone the repo and point your agent at `skills/letterhead/`. The scripts
-need Node.js and nothing else.
+need Node.js and nothing else; no npm install. Shrinking pictures for a
+presentation uses `sips` (built into macOS), ImageMagick or Python with
+Pillow when one is there; without them the pictures keep their size.
 
 ## Quick start
 
@@ -67,42 +76,43 @@ its own when you ask for a document or mention a brand.
 > polish status-update.html
 ```
 
-1. **Brand, about two minutes.** The agent reads the site, proposes a profile
-   (primary color, fonts, logo, closest style) and waits for your yes. Then
-   it writes the profile and opens a one-page **brand sheet**.
-2. **Document.** Before writing any HTML, the agent shows the shape: which
-   template, which brand, the sections in order, what the first two phone
-   screens say. You say yes, change it, or say no.
-3. **Done.** One `.html` file, both themes inside, opens offline with a
-   double-click.
+1. **Brand, about two minutes.** The agent reads the site, proposes colors,
+   fonts and logo, and waits for your yes. Then it shows a one-page
+   **brand sheet**.
+2. **Document.** Before writing anything, the agent shows the plan: template,
+   brand, sections, what the first phone screen says. You say yes or change it.
+3. **Done.** One `.html` file, light and dark inside, opens offline.
 
-You can also call the skill directly: `/letterhead teach`, `/letterhead
-polish <file>`, `/letterhead publish <file>` (when installed as a plugin in
-Claude Code, the prefix is `/letterhead:letterhead`).
+In Claude Code you can also type `/letterhead teach`, `/letterhead polish
+<file>` or `/letterhead publish <file>` (`/letterhead:letterhead …` when
+installed as a plugin).
 
 <!-- TODO(asset): 60–90 s screen recording: URL → brand sheet → status update → a comment → version 2 at the same link. -->
 
 ## Why I built it
 
-<!-- TODO(marcin): rewrite in your own words; this is a placeholder of the facts. -->
+I run two companies. One is BunnyFeelsHome, an interior design studio. The other builds
+agent systems for clients as a consultancy, which means a steady stream of
+specs, proposals, plans and meeting notes going out the door.
 
-I run an interior design studio and build a review tool on the side. Every
-week an agent writes something for me that goes to a client: a project plan,
-a status update, a proposal, a presentation of a room. The content was fine.
-The look was always the same: Inter, a purple accent, three cards with icons.
-The client could tell, and every time I fixed it by hand or sent it anyway.
+Agents write most of those documents now, and the writing is fine. The look
+was the problem: every document came out different. Claude made one thing,
+ChatGPT another, the same agent a third thing next week. None of it looked
+like it came from my company, let alone in the client's brand.
 
-So I taught my agent one brand per client, once, and made every document
-follow it. letterhead is that skill, cleaned up.
+What I wanted was boring: teach the agent once what my brand looks like, and
+what each client's brand looks like, and get a matching set of documents
+every time, whichever agent wrote them. letterhead is that.
 
 ## What it makes
 
-Twelve templates, one per thing a client actually receives:
+Thirteen templates, one per thing a client actually receives:
 
 | Template | Use it for |
 |---|---|
 | `implementation-plan` | how a piece of work will be done, step by step |
 | `status-update` | where a project stands this week |
+| `meeting-notes` | decisions, action items with owners, what we need from you |
 | `spec` | what will be built, for sign-off |
 | `proposal` | an offer: scope, price, timeline |
 | `report` | findings with evidence |
@@ -120,8 +130,8 @@ Nine styles, chosen by who reads the document: `boardroom`, `engineering`,
 A style is a complete look: layout, type and color. A taught brand replaces
 its colors, fonts and logo and keeps its layout.
 
-Ten documents for four fictional companies, each made by the skill from
-short notes, unedited:
+One document for each of the twelve templates, for four fictional companies, each made by the
+skill from short notes and left unedited:
 
 <table>
   <tr>
@@ -152,13 +162,31 @@ short notes, unedited:
   </tr>
   <tr>
     <td align="center" width="33%">
-      <a href="https://mperlak.github.io/letterhead/documents/proposal--fieldwork.html"><picture>
-        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/proposal--fieldwork-dark.webp">
-        <img src="examples/screenshots/proposal--fieldwork-light.webp" alt="Fixed-price proposal, Fieldwork Digital · agency to a client · consulting" width="100%">
+      <a href="https://mperlak.github.io/letterhead/documents/meeting-notes--fieldwork.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/meeting-notes--fieldwork-dark.webp">
+        <img src="examples/screenshots/meeting-notes--fieldwork-light.webp" alt="Meeting notes with action items, Fieldwork Digital · decisions and owners · consulting" width="100%">
       </picture></a><br>
-      <b>Fixed-price proposal</b><br>
-      <sub>Fieldwork Digital · agency to a client · consulting</sub>
+      <b>Meeting notes with action items</b><br>
+      <sub>Fieldwork Digital · decisions and owners · consulting</sub>
     </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/implementation-plan--arkona.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/implementation-plan--arkona-dark.webp">
+        <img src="examples/screenshots/implementation-plan--arkona-light.webp" alt="Cutover and go-live plan, Arkona · a plan to sign off · boardroom" width="100%">
+      </picture></a><br>
+      <b>Cutover and go-live plan</b><br>
+      <sub>Arkona · a plan to sign off · boardroom</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/checklist--arkona.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/checklist--arkona-dark.webp">
+        <img src="examples/screenshots/checklist--arkona-light.webp" alt="Go-live weekend checklist, Arkona · owners and sign-offs · workshop" width="100%">
+      </picture></a><br>
+      <b>Go-live weekend checklist</b><br>
+      <sub>Arkona · owners and sign-offs · workshop</sub>
+    </td>
+  </tr>
+  <tr>
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/project-recap--fieldwork.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/project-recap--fieldwork-dark.webp">
@@ -168,12 +196,20 @@ short notes, unedited:
       <sub>Fieldwork Digital · results at the end · startup</sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://mperlak.github.io/letterhead/documents/checklist--arkona.html"><picture>
-        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/checklist--arkona-dark.webp">
-        <img src="examples/screenshots/checklist--arkona-light.webp" alt="Go-live weekend checklist, Arkona · owners and sign-offs · workshop" width="100%">
+      <a href="https://mperlak.github.io/letterhead/documents/change-walkthrough--fieldwork.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/change-walkthrough--fieldwork-dark.webp">
+        <img src="examples/screenshots/change-walkthrough--fieldwork-light.webp" alt="Change walkthrough for acceptance, Fieldwork Digital · what changed, how to check · consulting" width="100%">
       </picture></a><br>
-      <b>Go-live weekend checklist</b><br>
-      <sub>Arkona · owners and sign-offs · workshop</sub>
+      <b>Change walkthrough for acceptance</b><br>
+      <sub>Fieldwork Digital · what changed, how to check · consulting</sub>
+    </td>
+    <td align="center" width="33%">
+      <a href="https://mperlak.github.io/letterhead/documents/audit--kestrel.html"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/audit--kestrel-dark.webp">
+        <img src="examples/screenshots/audit--kestrel-light.webp" alt="Access and integration audit, Kestrel Labs · findings by severity · engineering" width="100%">
+      </picture></a><br>
+      <b>Access and integration audit</b><br>
+      <sub>Kestrel Labs · findings by severity · engineering</sub>
     </td>
   </tr>
   <tr>
@@ -212,14 +248,14 @@ the prompts and the HTML of every document are in
 
 Give it a folder of pictures, one subfolder per room, and it builds the
 presentation: a cover with the contents, then each room with its text and
-its pictures, full screen on a click. This one is a real interior project,
-House on Hill, by [BunnyFeelsHome](https://bunnyfeelshome.com): 19 renders in
-four rooms, brand taught from the live site, the whole thing in about two
-minutes.
+its pictures, full screen on a click. This one is a real project from my
+studio, House on Hill by [BunnyFeelsHome](https://bunnyfeelshome.com): 23 renders in
+five rooms, the products under each room linked to their shops, brand taught
+from the live site, the whole thing in a few minutes.
 
 <p align="center"><a href="https://mperlak.github.io/letterhead/documents/presentation--bunnyfeelshome.html"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/presentation--bunnyfeelshome-wide-dark.webp">
-  <img src="examples/screenshots/presentation--bunnyfeelshome-wide-light.webp" alt="House on Hill, a BunnyFeelsHome interior presentation: the cover with four rooms, then the living room with its text and renders" width="720">
+  <img src="examples/screenshots/presentation--bunnyfeelshome-wide-light.webp" alt="House on Hill, a BunnyFeelsHome interior presentation: the cover with five rooms, then the living room with its text and renders" width="720">
 </picture></a></p>
 
 ## Teach it a brand
@@ -234,65 +270,55 @@ You:    yes, but use the dark logo
 Agent:  → writes .letterhead/brands/arkona/ and opens the brand sheet
 ```
 
-| Taken from | Becomes |
-|---|---|
-| colors used on buttons, links, navigation (counted, not guessed) | primary and accent |
-| `font-family` rules on body and headings, with their weights | text and heading fonts |
-| the logo in the site header, light or dark version | the logo on every document |
-| how the site writes | voice notes in `PRODUCT.md` |
+Every value records **where it came from and how sure the agent is**; when
+something is missing, it asks rather than picking a random color. A brand
+book PDF, HTML files or a short interview work as sources too.
 
-Every value records **where it came from and how sure the agent is**
-(`profile.meta.json`). The agent never fills a gap with a random color.
-When something is missing, it asks.
-
-Besides a website, `teach` reads a brand book PDF, HTML files, design tokens
-already in your repo, or a short interview.
-
-**The brand sheet** is a one-page document showing the colors, fonts and
-logo, with their sources and the agent's open questions. Send it to whoever
-owns the brand before the first real document. It catches "that is not our
-blue" before a twenty-page spec does.
+**The brand sheet** shows the colors, fonts and logo with their sources and
+the agent's open questions. Send it to whoever owns the brand first: it
+catches "that is not our blue" before a twenty-page spec does.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/brand-sheet--halde-dark.webp">
   <img src="examples/screenshots/brand-sheet--halde-light.webp" alt="The brand sheet for Studio Halde: palette, fonts and logo, each with its source" width="420">
 </picture></p>
 
-**One profile per client.** Your own brand lives in `.letterhead/brand/`,
-every other brand in `.letterhead/brands/<name>/`. Say "for Arkona" and the
-document ships in Arkona's identity.
+**One profile per client.** Say "for Arkona" and the document ships in
+Arkona's identity; your own brand is the default.
 
-## Built to be commented on
+## Sending it to a client
 
-A document for a client is a draft until they answer. letterhead makes every
-document easy to review:
+- **As a file.** Attach the `.html` to an email. It opens in any browser,
+  offline, with nothing to install. A presentation with many pictures can be
+  8–10 MB.
+- **As a PDF.** Open it in a browser and print to PDF. Every style has print
+  rules; check the print preview before you send it.
+- **As a link people comment on.** `/letterhead publish` sends it to
+  [Markloop](https://markloop.io) (a paid service from the author of this
+  skill; you need an account and its connector in your agent): the client
+  comments on the exact line without an account, your agent pulls the
+  comments and uploads version two to the same link. Every section heading
+  keeps a stable id, so a comment on "Timeline" stays on "Timeline" in
+  version two. Any other host works too; you just lose the
+  comment loop.
 
-- every section heading gets a stable id derived from its text, so a comment
-  on "Timeline" still points at "Timeline" in version two
-- the title, date, owner and status are labeled fields, not decoration
-- the file is self-contained: no build step, no external scripts, both
-  themes inside
+## What runs on your machine, and what leaves it
 
-`/letterhead publish` sends a document to [Markloop](https://markloop.io),
-which turns it into one link people comment on without an account. Your
-agent pulls the comments and uploads the next version to the same link.
-Markloop is a paid service from the author of this skill. You don't need it:
-without it, letterhead gives you a plain HTML file you can share any way
-you like.
+The skill is Node.js scripts that run wherever your agent runs code: no npm
+install, no telemetry, no account (publishing to Markloop needs one). Your
+notes and the document go to whichever model your agent uses, as with
+anything you ask it. Beyond that, three things touch the network, and only
+when you ask for them:
 
-## It's working if…
+- **teach** reads the website you give it (the page, its stylesheets, the
+  logo) and downloads the brand's fonts from Google Fonts so they can be
+  embedded. Give it a brand book PDF or font files instead and it stays
+  offline.
+- **Product cards** in a presentation read the shop pages you link and
+  download the product photos.
+- **publish** uploads the document to Markloop.
 
-- Before writing HTML, the agent shows you the template, the brand, the
-  sections and the first two phone screens, and waits for your yes.
-- `teach` ends with a brand sheet on screen, and every color on it names its
-  source.
-- The document opens offline with a double-click and looks right on a phone,
-  in light and in dark.
-- `node <skill>/scripts/check-document.mjs <file>.html` reports no errors.
-- No gradient text, no icon tile in front of every heading, no
-  three-card grid, no "Generated by AI" footer.
-
-If one of these fails, please [open an issue](https://github.com/mperlak/letterhead/issues).
+Writing and checking a document needs no network at all.
 
 ## When not to use it
 
@@ -308,11 +334,13 @@ If one of these fails, please [open an issue](https://github.com/mperlak/letterh
 
 ## How it is checked
 
-CI builds every template in every style (11 × 9 documents, plus the
-presentation in all nine styles) and fails on any error from
-`check-document.mjs`. Brand tokens are checked by `check-tokens.mjs`. Both
-scripts ship with the skill, so your agent runs the same checks on your
-documents.
+Every document the agent writes goes through `check-document.mjs`: one
+file, no external requests, a title, labeled metadata, stable section ids,
+readable text contrast, the brand's colors checked for contrast in both
+themes, none of the usual AI tells (gradient
+text, an icon on every heading, a "Generated by AI" footer). CI runs the
+same check on every template in every style. If a document of yours fails
+it, please [open an issue](https://github.com/mperlak/letterhead/issues).
 
 ## Contributing
 

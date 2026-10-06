@@ -1,6 +1,6 @@
 {
   "name": "letterhead",
-  "description": "Branded HTML documents for a real reader: implementation plans, status updates, specs, proposals, reports. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
+  "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
   "version": "0.1.0",
   "author": {
     "name": "Marcin Perlak",
@@ -19,6 +19,8 @@
     "status-update",
     "specs",
     "design-tokens",
-    "review"
+    "review",
+    "meeting-notes",
+    "presentation"
   ]
 }

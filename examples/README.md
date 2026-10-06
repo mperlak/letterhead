@@ -7,8 +7,10 @@ The set was regenerated on 2026-10-05 with the current skill, which builds
 documents on the style layer (a `style.css` per style, the shared markup
 vocabulary in `letterhead/reference/markup.md`, style fonts embedded, and
 `apply-tokens.mjs --style`), by real headless runs of Claude `opus` (resolved
-to `claude-opus-5-5`). Four fictional businesses, ten documents, nine
-templates, nine styles. No HTML file here was edited by hand; where a run
+to `claude-opus-5-5`). Four fictional businesses, thirteen documents (the
+meeting notes, an audit and a change walkthrough were added later), twelve
+templates, nine styles, plus a real
+presentation from BunnyFeelsHome, the author's studio. No HTML file here was edited by hand; where a run
 polished its own output after writing it, that is the agent's own work and is
 counted in the runs log.
 
@@ -49,6 +51,9 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `checklist--arkona.html` | checklist | workshop | Fieldwork for both teams: the go-live weekend checklist, printed and ticked by hand |
 | `proposal--fieldwork.html` | proposal | consulting | Fieldwork, on its own letterhead, to Arkona: phase 2 trade portal, price table in DKK, the ask |
 | `project-recap--fieldwork.html` | project-recap | startup | Fieldwork to another client, Saltværk: a finished shop migration, budget and results |
+| `meeting-notes--fieldwork.html` | meeting-notes | consulting (the profile's base; the prompt names none) | Fieldwork, on its own letterhead, to Arkona's team: notes from the weekly go-live call, decisions, action items with owners, two asks for Karin. Added 2026-10-06, see below. |
+| `audit--kestrel.html` | audit | engineering (the profile's base; the prompt names none) | Kestrel to Gemeente Westerhaven's waste operations head, her security officer and the contractor's dispatch lead: an access and integration review of the tenant before the pilot, 8 findings by severity, a remediation table with owners and dates. Added 2026-10-06, see below. |
+| `change-walkthrough--fieldwork.html` | change-walkthrough | consulting (the profile's base; the prompt names none) | Fieldwork to Arkona's customer service, warehouse and e-commerce leads: how order sync now handles out-of-stock lines after go-live, what changes for their staff, six steps to try on staging, four decisions to confirm. Added 2026-10-06, see below. |
 | `proposal--halde.html` | proposal | atelier | Studio Halde to a private couple: an apartment, scope per room, three packages in EUR, timeline |
 | `report--halde.html` | report | gazette | Studio Halde to new homeowners: what the pre-design survey of their 1932 house found |
 | `spec--kestrel.html` | spec | engineering | Kestrel to a municipality and its contractor: missed-bin reports turned into same-day return stops |
@@ -56,7 +61,7 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `postmortem--kestrel.html` | postmortem | public-sector | Kestrel to municipal customers: the night the routes were not published by 05:00 |
 | `presentation--bunnyfeelshome.html` | presentation | atelier (the profile's base) | BunnyFeelsHome, a real brand taught from its live site, to a client: the House on Hill interior visualisations, room by room (19 pictures, 8.5 MB). Added 2026-10-06, see below. |
 
-All ten pass `check-document.mjs` with 0 errors, 0 warnings and 0 info
+All thirteen pass `check-document.mjs` with 0 errors, 0 warnings and 0 info
 notes. Each carries light and dark themes in one file, embeds its brand's
 fonts and its logo, and carries two generated head blocks:
 `<style data-letterhead-tokens>` (fonts and tokens) and
@@ -207,6 +212,83 @@ the photo-less entries it had already read, and only `--refresh` applied the
 given fields. The template does not mention `--refresh`. IKEA's English pages
 differ by market: the sofa and the lamp have no page on ikea.com/gb or
 ikea.com/pl (English), but do on ikea.com/de (English).
+
+### Meeting notes: Fieldwork
+
+Added on 2026-10-06 with the new `meeting-notes` template, separately from the
+set above: one turn of a fresh headless session, same flags, the taught
+`fieldwork` profile copied into `.letterhead/brands/fieldwork/` beforehand. The
+raw notes are Signe's notes from Fieldwork's weekly go-live call with Arkona on
+Wednesday 21 October 2026, between the status update (week 41) and the go-live
+walkthrough (Thu 29 Oct); weekdays checked against the 2026 calendar. The
+prompt names neither the template nor a style; the agent picked
+`meeting-notes` and the profile's base style. Prompt and notes:
+`notes/meeting-notes--fieldwork.md`.
+
+| Attempt | Template version | Style (`--style`?) | Wall time | Tool calls | Cost |
+|---|---|---|---|---|---|
+| 1 (discarded) | first draft | consulting (profile base, none) | 123 s | 10 | $0.65 |
+| 2 (in the repo) | header rule added | consulting (profile base, none) | 104 s | 10 | $0.72 |
+
+Attempt 1 was a good document with a crowded header: seven metadata fields
+written as sentences (roles, why Henrik and Jens were away, the next meeting),
+which pushed the summary to the third phone screen. The template then got the
+rule that header fields hold names and the reasons go in the notes (failure
+mode "The crowded header"), and the decisions markup (a plain `ul`, the name in
+`<em>`). Attempt 2 ran in a fresh directory with the same prompt and notes: five
+short fields, the summary at the foot of the first phone screen. Both attempts
+invoked `letterhead:letterhead` only and ran `apply-tokens.mjs` and
+`check-document.mjs`; attempt 2 changed its own output once by `Edit` before the
+final check. The file passes `check-document.mjs` with 0 errors, 0 warnings and
+0 info notes; its own `<style>` is 0.5 KB (a `ul.decisions` class it added for
+the decision list). The agent kept the gaps in the notes visible instead of
+filling them: Ines's "asap" item says "no date set", and Fieldwork's people
+keep the first names the notes give.
+
+### Audit and change walkthrough: Kestrel, Fieldwork
+
+Added on 2026-10-06 with the `audit` and `change-walkthrough` templates, so that
+every template has a document here. Each is one turn of a fresh headless
+session (same flags), the taught profile of the brand copied into
+`.letterhead/brands/<slug>/` of the run directory beforehand; the two sessions
+ran in parallel. The raw notes are fictional and follow the 2026 calendar
+(weekdays checked): Ruth Okafor's notes from a two-day access review of
+Gemeente Westerhaven's Kestrel tenant (Tue 13 and Wed 14 Oct, issued Thu 15
+Oct), and the notes of Signe and Tomasz on the out-of-stock change Fieldwork
+shipped to Arkona's shop on Wed 11 Nov, written up on Thu 12 Nov. Neither
+prompt names a template or a style; the agents picked `audit` and
+`change-walkthrough` and each profile's base style. Prompts and notes:
+`notes/audit--kestrel.md`, `notes/change-walkthrough--fieldwork.md`.
+
+| Attempt | Document | Template version | Wall time | Tool calls | Cost |
+|---|---|---|---|---|---|
+| 1 (discarded) | audit--kestrel | before the head rule | 135 s | 9 | $0.83 |
+| 1 (discarded) | change-walkthrough--fieldwork | before the head rule | 150 s | 16 | $0.97 |
+| 2 (in the repo) | audit--kestrel | head rule in `reference/markup.md` | 155 s | 14 | $1.00 |
+| 2 (in the repo) | change-walkthrough--fieldwork | head rule in `reference/markup.md` | 162 s | 19 | $1.03 |
+
+Both used the profile's base style (no `--style`). Attempt 1 was good in content
+but had a crowded head: nine metadata fields in the audit (in the engineering
+style's left column, so the title column had empty space beside it) and eight
+in the walkthrough (a second, short row in the meta grid). The skill then got a
+general rule in `reference/markup.md`: `dl.meta` holds five fields at most, the
+rest goes in the first section or the close. Attempt 2 ran in fresh run
+directories with the same prompts and notes: five fields in each head (audit:
+date, prepared by, for, subject, status; walkthrough: for, from, date, live
+since, reply by), the verdict and the "what we need from you" box still on the
+first screen. Attempt 2 of the audit has the same eight findings, now with an
+"Annex C at a glance" tile grid of the twelve requirements before them.
+
+Both attempts invoked `letterhead:letterhead` once and ran `apply-tokens.mjs`
+and `check-document.mjs`; the files in the repo pass with 0 errors, 0
+warnings and 0 info notes. The attempt-2 audit did not change its output
+after the first write; the attempt-2 walkthrough made three `Edit`s to its own
+output before the final check. Together the attempts cost $3.83. The documents follow their template's
+structure: the audit has the verdict directly under the header, a severity
+scale, findings of identical anatomy with ids from their short names, a pass
+list and a remediation table with owners and dates; the walkthrough has the
+what-we-need box, six tour stops, an honest "things that surprised us"
+section, a six-step check on staging, and what a yes and a no set off.
 
 ## screenshots/
 

@@ -25,10 +25,11 @@ allowed-tools:
   - Bash(node */letterhead/scripts/build-presentation.mjs*)
 description: >
   Generate branded HTML documents that go to a real reader: specs, plans,
-  reports, proposals, status updates. Loads on creation intents ("create a
-  plan", "write this up as a document", "make me a status update", "draft a
-  spec for review", "generate an HTML report", "turn these notes into a
-  doc", "prepare a project recap") and brand intents ("use my brand", "make
+  reports, proposals, status updates, meeting notes. Loads on creation
+  intents ("create a plan", "write this up as a document", "make me a status
+  update", "draft a spec for review", "generate an HTML report", "turn these
+  notes into a doc", "prepare a project recap", "write up the meeting notes",
+  "send the notes from the call", "minutes of the meeting") and brand intents ("use my brand", "make
   this look like our company", "on our letterhead", "in their brand",
   "match our colors", "polish this document", "learn this brand", "brand
   sheet", "what does their brand look like"). Learns a brand once, yours or

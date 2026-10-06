@@ -1,6 +1,6 @@
 {
   "name": "letterhead",
-  "description": "Branded HTML documents for a real reader: implementation plans, status updates, specs, proposals, reports. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
+  "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
   "version": "0.1.0",
   "author": {
     "name": "Marcin Perlak",
@@ -19,13 +19,15 @@
     "status-update",
     "specs",
     "design-tokens",
-    "review"
+    "review",
+    "meeting-notes",
+    "presentation"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "letterhead",
     "shortDescription": "Branded documents from your agent",
-    "longDescription": "letterhead turns notes, a repo or a conversation into a self-contained HTML document for someone outside your team: an implementation plan, a status update, a spec, a proposal, a report. Point it at a website once and it reads the brand's colors, fonts and logo, shows you a one-page brand sheet to confirm, and puts every later document on that brand. One profile per client.\n\nBefore writing any HTML it shows you the template, the sections and the first two phone screens, and waits for your yes. Every document carries light and dark themes, reads well on a phone, and has stable section ids so comments survive the next version.",
+    "longDescription": "letterhead turns notes, a repo or a conversation into a self-contained HTML document for someone outside your team: a proposal, a status update, an implementation plan, a spec, a report, meeting notes or a presentation of a project from a folder of pictures. Point it at a website once and it reads the brand's colors, fonts and logo, shows you a one-page brand sheet to confirm, and puts every later document on that brand. One profile per client.\n\nBefore writing any HTML it shows you the template, the sections and the first two phone screens, and waits for your yes. Every document carries light and dark themes, reads well on a phone, and has stable section ids so comments survive the next version.",
     "developerName": "Marcin Perlak",
     "category": "Productivity",
     "capabilities": [

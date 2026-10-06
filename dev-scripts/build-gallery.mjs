@@ -418,7 +418,7 @@ const nViewer = num();
 const nBrands = num();
 
 const data = { templates: viewerTemplates, styles: viewerStyles };
-const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen'];
 const word = (n) => words[n] || String(n);
 const brandDocs = documents.filter((d) => d.brand).length;
 

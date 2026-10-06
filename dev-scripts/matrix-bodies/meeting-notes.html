@@ -1,0 +1,64 @@
+<!-- title: Order Sync Go-Live Call — Meeting Notes, 17 June (matrix sample) -->
+<!-- description: Matrix sample exercising the meeting-notes structure. -->
+<header class="doc-head">
+  <p class="kicker">Meeting notes</p>
+  <h1>Order Sync Go-Live Call</h1>
+  <p class="lede">Weekly call to confirm the Tuesday go-live date and settle the rollback plan.</p>
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wednesday 17 June 2026, 10:00–10:45 CET, video call</dd></div>
+    <div><dt>Atlas</dt><dd>Maria Okafor (operations manager), Jonas Berg (IT)</dd></div>
+    <div><dt>Lumen Commerce</dt><dd>Priya Shah (integration lead), Tom Reyes (QA)</dd></div>
+    <div><dt>Absent</dt><dd>Atlas finance (sent questions by email)</dd></div>
+    <div><dt>Notes by</dt><dd>Priya Shah</dd></div>
+  </dl>
+</header>
+
+<div class="summary">
+  <p class="label">Summary</p>
+  <p>Go-live stays on Tuesday 23 June at 06:00, with a rollback to the nightly batch if
+  reconciliation fails. Three decisions, four action items. One answer is needed from Atlas
+  by Friday: who signs off the ramp to 100%.</p>
+</div>
+
+<section>
+  <h2 id="decisions">Decisions</h2>
+  <ul>
+    <li id="go-live-stays-on-tuesday">Go-live stays on Tuesday 23 June, 06:00–08:00 CET. <em>Maria Okafor</em></li>
+    <li id="batch-job-stays-as-shadow">The nightly batch runs as a shadow for two weeks after go-live. <em>Jonas Berg</em></li>
+    <li id="rollback-if-totals-differ">If the 07:00 reconciliation totals differ from the batch, we roll back the same morning. <em>Maria Okafor, Priya Shah</em></li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="what-we-need-from-you">What we need from you</h2>
+  <div class="callout">
+    <p class="label">Needed from Atlas operations, by Friday 19 June</p>
+    <p>The name of the person who approves the ramp from 50% to 100% on the morning.
+    Without a name, the ramp stops at 50% until someone is found.</p>
+  </div>
+</section>
+
+<section>
+  <h2 id="action-items">Action items</h2>
+  <ul class="checks">
+    <li id="staging-credentials-issued" class="done"><span class="tick" role="img" aria-label="done"></span><div>Issue the Atlas staging credentials (carried over from last week).</div><span class="who">Jonas Berg, done Mon 15 June</span></li>
+    <li id="rollback-drill-in-staging"><span class="tick" aria-hidden="true"></span><div>Run the rollback drill in staging and send the timings.</div><span class="who">Tom Reyes, by Thu 18 June</span></li>
+    <li id="support-desk-briefing-booked"><span class="tick" aria-hidden="true"></span><div>Book the support desk briefing on the new order states.</div><span class="who">Maria Okafor, by Fri 19 June</span></li>
+    <li id="finance-questions-answered"><span class="tick" aria-hidden="true"></span><div>Answer the finance team's two questions on refund timing.</div><span class="who">Priya Shah, date not set</span></li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="discussion-notes">Discussion notes</h2>
+  <h3 id="load-test-results">Load test results</h3>
+  <p>Tom reported p95 of 6.1 s at three times peak volume, against the 8 s SLA. No one asked
+  for a second run.</p>
+  <h3 id="reconciliation">Reconciliation</h3>
+  <p>The three rounding false positives from last week are fixed. Jonas asked for the report
+  by 07:00 rather than 07:30, so the rollback decision fits inside the window.</p>
+</section>
+
+<section>
+  <h2 id="next-meeting">Next meeting</h2>
+  <p>Monday 22 June, 15:00 CET, video call: final go/no-go for Tuesday.</p>
+</section>

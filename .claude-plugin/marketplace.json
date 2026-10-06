@@ -5,7 +5,7 @@
     "url": "https://github.com/mperlak"
   },
   "metadata": {
-    "description": "Branded HTML documents from your coding agent: plans, status updates, specs, proposals, reports, in your brand or your client's."
+    "description": "Branded HTML documents from your agent: proposals, status updates, plans, specs, meeting notes and project presentations, in your brand or your client's."
   },
   "plugins": [
     {

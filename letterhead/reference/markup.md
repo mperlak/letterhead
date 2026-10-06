@@ -55,7 +55,7 @@ a summary and two sections; it has no contents, no figure and no close.
 ## Procedure
 
 1. Write the head: kicker if the document type helps, `h1`, `lede`,
-   `dl.meta` with real fields.
+   `dl.meta` with real fields, five at most.
 2. Wrap each section: `<section>`, optional kicker, `<h2 id>` with the
    stable id (`reference/create.md` step 7), content.
 3. Reach for a vocabulary element only where the content has that shape:
@@ -67,6 +67,13 @@ a summary and two sections; it has no contents, no figure and no close.
    tokens only.
 
 ## Failure modes
+
+**The crowded head.** Eight or nine fields in `dl.meta`: reviewer, scope,
+standard, version, environment, distribution. In a style that sets the
+metadata beside the title the rail runs far below it; in a grid the last row
+wraps half-empty. Keep the head to the five fields the reader needs to place
+the document (usually status, owner, audience or recipients, date, and one
+the template names); the rest goes in the first section or the close.
 
 **A div soup the style cannot see.** The document invents `.hero`,
 `.tldr-box` and `.meta-grid`, so `style.css` styles none of it, and the
