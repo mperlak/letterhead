@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- GitHub social preview, 1280x640. Rendered to examples/screenshots/social-preview.png:
+     chrome-headless-shell --screenshot=out.png --window-size=1280,640 --hide-scrollbars file://.../social-preview.html
+     A #hash overrides the claim, for trying wordings. -->
+<title>letterhead · social preview</title>
+<style>
+@font-face { font-family: "Newsreader"; src: url("../../letterhead/fonts/newsreader/Newsreader.woff2") format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "IBM Plex Mono"; src: url("../../letterhead/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2") format("woff2"); font-weight: 400; }
+:root { --paper: #f6f4ef; --ink: #1c1a17; --muted: #625d55; --rule: #d6d1c6; --accent: #8c2a1c; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; }
+body {
+  background: var(--paper); color: var(--ink); padding: 64px 80px 56px;
+  display: flex; flex-direction: column; font-family: "Newsreader", Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+.head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 18px; border-bottom: 2px solid var(--ink); }
+.mark { font-size: 44px; line-height: 1; letter-spacing: -0.03em; }
+.mark::after { content: ""; display: inline-block; width: 10px; height: 10px; margin-left: 6px; background: var(--accent); }
+.mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 20px; letter-spacing: 0.04em; color: var(--muted); }
+.claim { flex: 1; display: flex; align-items: center; margin: 0; font-weight: 400; font-size: 80px; line-height: 1.04; letter-spacing: -0.025em; max-width: 17ch; text-wrap: balance; }
+.foot { display: flex; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--rule); }
+</style>
+</head>
+<body>
+<div class="head"><span class="mark">letterhead</span><span class="mono">agent skill</span></div>
+<h1 class="claim" id="claim">Every document your AI agent writes, in your brand or your client’s.</h1>
+<div class="foot"><span class="mono">Claude · Codex · Cursor</span><span class="mono">github.com/mperlak/letterhead</span></div>
+<script>
+if (location.hash.length > 1) document.getElementById('claim').textContent = decodeURIComponent(location.hash.slice(1));
+</script>
+</body>
+</html>

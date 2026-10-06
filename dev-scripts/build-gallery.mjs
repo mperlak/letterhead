@@ -34,6 +34,7 @@ const SITE = join(ROOT, 'temp', 'site');
 
 const REPO = 'https://github.com/mperlak/letterhead';
 const INSTALL = '/plugin marketplace add mperlak/letterhead';
+const DOWNLOAD = `${REPO}/releases/latest/download/letterhead.zip`;
 const STYLE_SAMPLE = 'status-update';
 
 function fail(msg) {
@@ -144,6 +145,7 @@ const sheet = shots('styles-contact-sheet');
 const fill = {
   REPO: esc(REPO),
   INSTALL: esc(INSTALL),
+  DOWNLOAD: esc(DOWNLOAD),
   HERO: picture(hero, 'The same weekly status update twice: on the left the usual agent-made page, on the right on the client\'s letterhead.', 2400, 1728, 'eager'),
   BRANDS: groupsHtml,
   STYLES_SHEET: picture(sheet, `One status update in each of the ${styles.length} styles.`, 1800, 2154),

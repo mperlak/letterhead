@@ -12,11 +12,12 @@ A skill for Claude (the app, Cowork and Claude Code), Codex, Cursor and other
 agents. It turns notes, a repo or a conversation into one HTML file for
 someone outside your team: a proposal, a status update, a plan, a
 presentation of a project. It comes out in your client's brand (or yours),
-reads well on a phone and prints cleanly. Publish it as a review link and
-the client's comments carry over to version two.
+reads well on a phone and prints cleanly. Publish it as a link your client
+can comment on; your agent reads the comments and updates the document at
+the same link.
 
 <p align="center"><a href="examples/video/letterhead-demo.mp4"><img src="examples/video/letterhead-teaser.webp" alt="Three cards in a loop. Show it your client's website: letterhead builds their brand book. Every document after that is on their letterhead: a status update, a go-live plan and a checklist. letterhead, a skill for Claude, Codex, Cursor and other agents." width="720"></a><br>
-<a href="examples/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, get comments and version 2.<br>
+<a href="examples/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, take the client's comments and update the document.<br>
 <sub>Recreated from a real run: the brand sheet and the status update are the unedited files in <a href="examples/">examples/</a>, the notes are shown in full; the terminal is scripted and sped up.</sub></p>
 
 **[Browse the live gallery →](https://mperlak.github.io/letterhead/)** Every example document, grouped by brand, and the 9 styles.
@@ -27,8 +28,8 @@ the client's comments carry over to version two.
 
 **Claude app (desktop and web) and Cowork**
 
-Download `letterhead.zip` from the
-[latest release](https://github.com/mperlak/letterhead/releases/latest), then
+Download [`letterhead.zip`](https://github.com/mperlak/letterhead/releases/latest/download/letterhead.zip)
+(the [latest release](https://github.com/mperlak/letterhead/releases/latest)), then
 in Claude open **Settings → Capabilities → Skills** and upload it. Code
 execution has to be on. The app's sandbox may not reach the internet, so if
 teaching a brand from a URL fails, give it the brand book PDF or a saved copy
@@ -293,8 +294,9 @@ Arkona's identity; your own brand is the default.
 - **As a link people comment on.** `/letterhead publish` sends it to
   [Markloop](https://markloop.io) (a paid service from the author of this
   skill; you need an account and its connector in your agent): the client
-  comments on the exact line without an account, your agent pulls the
-  comments and uploads version two to the same link. Every section heading
+  comments on the exact line without an account; your agent reads the
+  comments, fixes the document and publishes the new version at the same
+  link. Every section heading
   keeps a stable id, so a comment on "Timeline" stays on "Timeline" in
   version two. Any other host works too; you just lose the
   comment loop.

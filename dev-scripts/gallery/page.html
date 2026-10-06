@@ -58,6 +58,15 @@ h1 { font-weight: 400; font-size: clamp(2.6rem, 8vw, 4.5rem); line-height: 1; le
 }
 .install button:hover { background: var(--ink); color: var(--paper); }
 .links { margin: 0.75rem 0 0; }
+.get { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 1.25rem; }
+.download {
+  display: inline-block; padding: 0.7rem 1.1rem; border: 1px solid var(--ink); border-radius: 2px;
+  background: var(--ink); color: var(--paper); text-decoration: none;
+  font: 500 0.8rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.download:hover { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.steps { margin: 0; max-width: 34rem; }
+.or { margin: 0 0 0.5rem; }
 
 .hero { margin: 0 0 clamp(3rem, 8vw, 5rem); }
 .hero img { border: 1px solid var(--rule); }
@@ -87,8 +96,13 @@ footer p { margin: 0; }
 <header>
   <h1>letterhead</h1>
   <p class="tagline">Your agent writes the document. letterhead puts it on your client&rsquo;s letterhead.</p>
+  <div class="get">
+    <a class="download" href="{{DOWNLOAD}}">Install in Claude</a>
+    <p class="steps small">Download letterhead.zip, then in Claude open Settings → Capabilities → Skills and upload it. Code execution has to be on.</p>
+  </div>
+  <p class="or small">Claude Code:</p>
   <div class="install"><code id="install-line">{{INSTALL}}</code><button type="button" id="copy">Copy</button></div>
-  <p class="links small">Claude Code. Other hosts: <a href="{{REPO}}#install">install guide</a> · <a href="{{REPO}}">GitHub</a></p>
+  <p class="links small">Codex, Cursor and other hosts: <a href="{{REPO}}#install">install guide</a> · <a href="{{REPO}}">GitHub</a></p>
 </header>
 
 <main>
