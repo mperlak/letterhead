@@ -18,8 +18,8 @@ A skill for Claude (the app, Cowork and Claude Code), Codex, Cursor and other
 agents. It turns notes, a repo or a conversation into one HTML file for
 someone outside your team: a proposal, a status update, a plan, a
 presentation of a project. It comes out in your client's brand (or yours),
-reads well on a phone, prints cleanly, and, published as a review link,
-keeps the client's comments when you send version two.
+reads well on a phone and prints cleanly. Publish it as a review link and
+the client's comments carry over to version two.
 
 **[Browse the live gallery →](https://mperlak.github.io/letterhead/)** 13 templates × 9 styles, light and dark.
 
@@ -95,14 +95,14 @@ I run two companies. One is BunnyFeelsHome, an interior design studio. The other
 agent systems for clients as a consultancy, which means a steady stream of
 specs, proposals, plans and meeting notes going out the door.
 
-Agents write most of those documents now, and the writing is fine. The look
-was the problem: every document came out different. Claude made one thing,
+Agents write most of those documents now, and the writing is fine. The
+problem was the look. Every document came out different. Claude made one thing,
 ChatGPT another, the same agent a third thing next week. None of it looked
-like it came from my company, let alone in the client's brand.
+like it came from my company, let alone like my client's.
 
-What I wanted was boring: teach the agent once what my brand looks like, and
-what each client's brand looks like, and get a matching set of documents
-every time, whichever agent wrote them. letterhead is that.
+I wanted something boring: teach the agent once what my brand looks like,
+and what each client's brand looks like, and get a matching set of documents
+every time, whichever agent wrote them. That is what letterhead does.
 
 ## What it makes
 
@@ -270,13 +270,14 @@ You:    yes, but use the dark logo
 Agent:  → writes .letterhead/brands/arkona/ and opens the brand sheet
 ```
 
-Every value records **where it came from and how sure the agent is**; when
+Every value records where it came from and how sure the agent is; when
 something is missing, it asks rather than picking a random color. A brand
 book PDF, HTML files or a short interview work as sources too.
 
 **The brand sheet** shows the colors, fonts and logo with their sources and
-the agent's open questions. Send it to whoever owns the brand first: it
-catches "that is not our blue" before a twenty-page spec does.
+the agent's open questions. Send it to whoever owns the brand before the
+first document, so a wrong blue gets fixed on one page, not in a
+twenty-page spec.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/brand-sheet--halde-dark.webp">
@@ -328,7 +329,8 @@ Writing and checking a document needs no network at all.
   picture, not for a keynote.
 - **A diagram on its own.** Use
   [diagram-design](https://github.com/cathrynlavery/diagram-design).
-- **A landing page or app UI.** That is a frontend job, not a document.
+- **A landing page or app UI.** letterhead makes documents, so use a
+  frontend skill.
 - **The recipient must edit a Word or PowerPoint file.** letterhead writes
   HTML.
 
@@ -356,5 +358,4 @@ MIT. See [LICENSE](LICENSE) and [`letterhead/NOTICES.md`](letterhead/NOTICES.md)
 ---
 
 Made by **Marcin Perlak**. <!-- TODO(marcin): link to X / site --> If
-letterhead saved you an evening, **star the repo**. That is how other people
-find it.
+letterhead saved you an evening, star the repo.
