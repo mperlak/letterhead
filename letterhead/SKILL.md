@@ -4,16 +4,6 @@ version: 0.2.0
 license: MIT
 user-invocable: true
 argument-hint: "[teach | polish | publish] [<topic-or-path>]"
-allowed-tools:
-  - Bash(node $SKILL_DIR/scripts/check-document.mjs*)
-  - Bash(node $SKILL_DIR/scripts/check-tokens.mjs*)
-  - Bash(node $SKILL_DIR/scripts/brand-evidence.mjs*)
-  - Bash(node $SKILL_DIR/scripts/brand-tokens.mjs*)
-  - Bash(node $SKILL_DIR/scripts/brand-sheet.mjs*)
-  - Bash(node $SKILL_DIR/scripts/apply-tokens.mjs*)
-  - Bash(node $SKILL_DIR/scripts/prepare-images.mjs*)
-  - Bash(node $SKILL_DIR/scripts/product-cards.mjs*)
-  - Bash(node $SKILL_DIR/scripts/build-presentation.mjs*)
 description: >
   Generate branded HTML documents that go to a real reader: specs, plans,
   reports, proposals, status updates, meeting notes. Loads on creation
