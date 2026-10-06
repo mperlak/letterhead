@@ -731,7 +731,7 @@ async function embedFonts({ families, headingWeight, lang, fontFiles, warn }) {
   const order = (f) => `${f.family}\u0000${String(f.weight).padStart(7, '0')}\u0000${f.subset === 'latin' ? 'z' : f.subset || ''}`;
   faces.sort((a, b) => order(a).localeCompare(order(b)));
   const css = faces.length ? `${FONTS_BEGIN}\n${faces.map(fontFaceCss).join('\n')}\n${FONTS_END}\n` : '';
-  return { css, report: report.sort((a, b) => families.findIndex((f) => f.family === a.family) - families.findIndex((f) => f.family === b.family)), base64Bytes: total };
+  return { css, faces, report: report.sort((a, b) => families.findIndex((f) => f.family === a.family) - families.findIndex((f) => f.family === b.family)), base64Bytes: total };
 }
 
 function stripFontsSection(css) {
@@ -1102,6 +1102,320 @@ function loadLogo(filePath, warn) {
 }
 
 // ---------------------------------------------------------------------------
+// logo dark copy: multi-color artwork, recolored for the dark page
+// ---------------------------------------------------------------------------
+
+// Multi-color artwork cannot be one mask color, and a light plate behind it
+// in dark mode looks pasted on. Most such logos are a brand color plus a
+// dark ink (a red mark with a black wordmark): only the ink disappears on a
+// dark page. The dark copy keeps every color that reads there (3:1 on the
+// dark paper), turns near-neutral ink into the dark theme's text color, and
+// lifts a brand color that is too dark to 3:1 at the same hue. Gradients,
+// JPGs and PNGs this script cannot read get no copy (the plate stays).
+
+function pngMapColors(buf, mapRgb) {
+  const png = decodePng(buf);
+  const cache = new Map();
+  const map = (r, g, b) => {
+    const key = (r << 16) | (g << 8) | b;
+    if (!cache.has(key)) cache.set(key, mapRgb([r, g, b]));
+    return cache.get(key);
+  };
+  if (png.kind === 'palette') {
+    const out = Buffer.from(buf);
+    let off = 8;
+    while (off + 8 <= out.length) {
+      const len = out.readUInt32BE(off);
+      const type = out.toString('ascii', off + 4, off + 8);
+      if (type === 'PLTE') {
+        for (let i = 0; i + 2 < len; i += 3) {
+          const [r, g, b] = map(out[off + 8 + i], out[off + 9 + i], out[off + 10 + i]);
+          out[off + 8 + i] = r;
+          out[off + 9 + i] = g;
+          out[off + 10 + i] = b;
+        }
+        out.writeUInt32BE(crc32(out.subarray(off + 4, off + 8 + len)) >>> 0, off + 8 + len);
+      }
+      if (type === 'IEND') break;
+      off += 12 + len;
+    }
+    return out;
+  }
+  const { width, height, bpp, pixels, ihdr } = png;
+  const outRaw = Buffer.alloc(height * (width * 4 + 1));
+  for (let y = 0; y < height; y++) {
+    const rowOut = y * (width * 4 + 1);
+    for (let x = 0; x < width; x++) {
+      const o = (y * width + x) * bpp;
+      const d = rowOut + 1 + x * 4;
+      const [r, g, b] = bpp === 4 ? map(pixels[o], pixels[o + 1], pixels[o + 2]) : map(pixels[o], pixels[o], pixels[o]);
+      outRaw[d] = r;
+      outRaw[d + 1] = g;
+      outRaw[d + 2] = b;
+      outRaw[d + 3] = pixels[o + bpp - 1];
+    }
+  }
+  const newIhdr = Buffer.from(ihdr);
+  newIhdr[8] = 8;
+  newIhdr[9] = 6;
+  return Buffer.concat([
+    buf.subarray(0, 8),
+    pngChunk('IHDR', newIhdr),
+    pngChunk('IDAT', deflateSync(outRaw, { level: 9 })),
+    pngChunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
+// Returns { logo, changed: [{ from, to }] } or throws TintError when the
+// artwork cannot be recolored color by color.
+function darkLogoCopy(logo, { darkBackground, darkForeground }) {
+  const changed = [];
+  const toDark = (rgb) => {
+    const c = toOklch({ mode: 'rgb', r: rgb[0] / 255, g: rgb[1] / 255, b: rgb[2] / 255 });
+    if (contrastOklch(c, darkBackground) >= 3) return null;
+    // Near-neutral ink becomes the dark theme's text color; a brand color
+    // keeps its hue and rises just far enough to read.
+    // (computeDarkPrimary returns a bare { l, c, h }; culori needs the mode.)
+    return (c.c || 0) < 0.04 ? darkForeground : { mode: 'oklch', ...computeDarkPrimary(c, darkBackground) };
+  };
+  const buf = Buffer.from(logo.base64, 'base64');
+  let out;
+  if (logo.mime === 'image/svg+xml') {
+    const text = buf.toString('utf8');
+    svgColors(text); // throws on gradients or unreadable colors
+    const painted = [...text.matchAll(SVG_COLOR_RE)].length;
+    let svg = painted ? text : text.replace(/<svg\b/i, '<svg fill="#000000"');
+    svg = svg.replace(SVG_COLOR_RE, (m, prefix, value) => {
+      const rgb = toRgb(parse(value.toLowerCase()));
+      const next = rgb ? toDark([rgb.r * 255, rgb.g * 255, rgb.b * 255]) : null;
+      if (!next) return m;
+      const hex = formatHex(next);
+      if (!changed.some((c) => c.from === formatHex(rgb))) changed.push({ from: formatHex(rgb), to: hex });
+      return `${prefix}${hex}`;
+    });
+    out = Buffer.from(svg, 'utf8');
+  } else if (logo.mime === 'image/png') {
+    out = pngMapColors(buf, (rgb) => {
+      const next = toDark(rgb);
+      if (!next) return rgb;
+      const n = toRgb(next);
+      const res = [n.r, n.g, n.b].map((v) => Math.round(Math.min(1, Math.max(0, v)) * 255));
+      if (changed.length < 8) changed.push({ from: formatHex({ mode: 'rgb', r: rgb[0] / 255, g: rgb[1] / 255, b: rgb[2] / 255 }), to: formatHex(n) });
+      return res;
+    });
+  } else {
+    throw new TintError('a JPG has no transparency, so there is no shape to recolor');
+  }
+  return { logo: { ...logo, base64: out.toString('base64'), bytes: out.length }, changed };
+}
+
+// ---------------------------------------------------------------------------
+// live text in an SVG logo: carry its font inside the SVG
+// ---------------------------------------------------------------------------
+
+// Documents draw the logo as a mask or a background image. An SVG drawn as
+// an image is sealed off from the page: it cannot use the document's fonts,
+// so a wordmark set as <text> renders in whatever fallback the reader's
+// machine has, with other widths, and runs out of its viewBox (clipped
+// letters). The script embeds the font the <text> names into the SVG
+// itself, as an @font-face with a data: URI, which an image may load. The
+// browser then shapes the text exactly as the site did, kerning and variable
+// weights included. When no file for that font can be found, the run stops
+// and says how to fix it, instead of shipping a logo in the wrong face.
+
+class LogoTextError extends Error {}
+
+const LOGO_TEXT_RE = /<text\b/i;
+
+function svgLiveText(svg) {
+  if (!LOGO_TEXT_RE.test(svg)) return null;
+  const families = new Set();
+  const weights = new Set();
+  for (const m of svg.matchAll(/font-family\s*(?:=\s*"([^"]*)"|=\s*'([^']*)'|:\s*([^;"'}]+))/gi)) {
+    const first = splitStack(m[1] ?? m[2] ?? m[3]).map(unquote).find((f) => f && !GENERIC_FAMILIES.has(f.toLowerCase()));
+    if (first) families.add(first);
+  }
+  for (const m of svg.matchAll(/font-weight\s*(?:=\s*["']\s*|:\s*)(\d{3}|bold|normal)/gi)) {
+    weights.add(m[1] === 'bold' ? 700 : m[1] === 'normal' ? 400 : Number(m[1]));
+  }
+  if (!weights.size) weights.add(400);
+  const chars = new Set();
+  for (const m of svg.matchAll(/<(?:text|tspan)\b[^>]*>([^<]*)/gi)) for (const ch of m[1]) chars.add(ch.codePointAt(0));
+  return { families: [...families], weights: [...weights].sort((a, b) => a - b), chars, selfContained: /@font-face/i.test(svg) };
+}
+
+// unicode-range "U+0000-00FF, U+0131, U+02??" -> the code points of `chars`
+// it covers (all of them when the face has no range).
+function rangeHits(range, chars) {
+  const wanted = [...chars].filter((c) => c > 32);
+  if (!range) return new Set(wanted);
+  const spans = range.split(',').map((s) => s.trim().replace(/^U\+/i, '')).filter(Boolean).map((s) => {
+    if (s.includes('?')) return [parseInt(s.replace(/\?/g, '0'), 16), parseInt(s.replace(/\?/g, 'F'), 16)];
+    const [a, b] = s.split('-');
+    return [parseInt(a, 16), parseInt(b ?? a, 16)];
+  });
+  return new Set(wanted.filter((c) => spans.some(([a, b]) => c >= a && c <= b)));
+}
+
+// The faces the wordmark needs: upright, at a weight it uses (any weight
+// when no file has one), and only the subsets that hold its letters, so a
+// Google family split into latin and latin-ext ships one file, not five.
+// Returns [] when the letters are not all covered; `missing` lists the
+// weights the wordmark uses that none of the picked files has.
+function pickLogoFaces(faces, live) {
+  let pool = faces.filter((f) => f.style === 'normal');
+  const spanOf = (f) => {
+    const [lo, hi] = trueWeight(f).split(' ').map(Number);
+    return [lo, hi || lo];
+  };
+  const atWeight = pool.filter((f) => {
+    const [lo, hi] = spanOf(f);
+    return live.weights.some((w) => w >= lo && w <= hi);
+  });
+  if (atWeight.length) pool = atWeight;
+  const need = new Set([...live.chars].filter((c) => c > 32));
+  const covered = new Set();
+  const picked = [];
+  for (const f of pool) {
+    const hits = [...rangeHits(f.unicodeRange, need)];
+    if (!hits.length) continue;
+    picked.push(f);
+    hits.forEach((c) => covered.add(c));
+  }
+  if (covered.size !== need.size) return { faces: [], missing: [] };
+  const missing = live.weights.filter((w) => !picked.some((f) => {
+    const [lo, hi] = spanOf(f);
+    return w >= lo && w <= hi;
+  }));
+  return { faces: picked, missing };
+}
+
+// A face's weight as the file declares it: a variable font's whole wght
+// axis, so a wordmark at 800 is not clamped to the 400-700 a document asked
+// Google for.
+function trueWeight(face) {
+  try {
+    const facts = fontFileFacts(Buffer.from(face.base64, 'base64'));
+    if (facts.weight && facts.weight.includes(' ')) return facts.weight;
+  } catch {
+    // keep the declared weight
+  }
+  return String(face.weight);
+}
+
+function facesFromCss(css, family) {
+  const out = [];
+  for (const m of css.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
+    const body = m[1];
+    const prop = (name) => (new RegExp(`${name}\\s*:\\s*([^;]+);`).exec(body) || [])[1]?.trim() || null;
+    if (unquote(prop('font-family') || '').toLowerCase() !== family.toLowerCase()) continue;
+    const src = /url\(\s*["']?data:([^;]+);base64,([A-Za-z0-9+/=]+)["']?\s*\)/.exec(body);
+    if (!src) continue;
+    out.push({ family, style: prop('font-style') || 'normal', weight: prop('font-weight') || '400', unicodeRange: prop('unicode-range'), mime: src[1], format: fontFormat(Buffer.from(src[2].slice(0, 16), 'base64'))?.format || 'woff2', base64: src[2] });
+  }
+  return out;
+}
+
+async function googleLogoFaces(family, weights) {
+  const got = await googleFaces(family, weights);
+  const byUrl = new Map();
+  for (const f of got.faces) {
+    if (f.style !== 'normal') continue;
+    const cur = byUrl.get(f.url) || { family, style: 'normal', unicodeRange: f.unicodeRange, url: f.url, ws: new Set() };
+    cur.ws.add(f.weight);
+    byUrl.set(f.url, cur);
+  }
+  const faces = [];
+  for (const face of byUrl.values()) {
+    const buf = await download(face.url);
+    faces.push({ family, style: 'normal', weight: weightRange(face.ws), unicodeRange: face.unicodeRange, mime: 'font/woff2', format: 'woff2', base64: buf.toString('base64') });
+  }
+  return { faces, reason: got.reason };
+}
+
+function fileLogoFaces(family, fontFiles) {
+  const faces = [];
+  for (const f of fontFiles.filter((x) => x.family.toLowerCase() === family.toLowerCase())) {
+    let buf;
+    try {
+      buf = readFileSync(resolvePath(process.cwd(), f.path));
+    } catch {
+      continue;
+    }
+    const fmt = fontFormat(buf);
+    if (!fmt) continue;
+    let facts = { weight: null, italic: false };
+    try {
+      facts = fontFileFacts(buf);
+    } catch {
+      // declared or default weight
+    }
+    faces.push({ family, style: facts.italic ? 'italic' : 'normal', weight: f.weight || facts.weight || '400', unicodeRange: null, ...fmt, base64: buf.toString('base64') });
+  }
+  return faces;
+}
+
+// Embeds the fonts an SVG logo's <text> uses. Sources, in order: fonts this
+// run embedded for the document, the --style file's own font section, the
+// owner's --font-file, Google Fonts. Returns { logo, families: [...] }.
+async function embedLogoText(logo, { runFaces, baseCss, fontFiles, warn }) {
+  if (logo.mime !== 'image/svg+xml') return { logo, families: [] };
+  const svg = Buffer.from(logo.base64, 'base64').toString('utf8');
+  const live = svgLiveText(svg);
+  if (!live || live.selfContained) return { logo, families: [] };
+  const fix = 'Ask the brand owner for the logo with its text converted to outlines (paths) or as a PNG, or pass the font file with --font-file "<Family>=<file>"';
+  if (!live.families.length) {
+    throw new LogoTextError(`the logo sets text without naming a font, so every reader's machine would pick its own face. ${fix}.`);
+  }
+  const rules = [];
+  for (const family of live.families) {
+    // Each source in turn. The first whose files hold every letter at every
+    // weight wins; the run's own files are often clipped to the document's
+    // 400-700 (a wordmark at 800) or to latin (a wordmark's "ł"). Failing
+    // that, the first source that holds every letter, at the nearest weight.
+    let reason = null;
+    const sources = [
+      async () => (runFaces || []).filter((f) => f.family.toLowerCase() === family.toLowerCase()),
+      async () => facesFromCss(baseCss, family),
+      async () => fileLogoFaces(family, fontFiles),
+      async () => {
+        try {
+          const got = await googleLogoFaces(family, live.weights);
+          if (!got.faces.length) reason = got.reason;
+          return got.faces;
+        } catch (e) {
+          reason = `download failed: ${e.cause?.code || e.message}`;
+          return [];
+        }
+      },
+    ];
+    let best = null;
+    for (const source of sources) {
+      const got = pickLogoFaces(await source(), live);
+      if (!got.faces.length) continue;
+      if (!best) best = got;
+      if (!got.missing.length) {
+        best = got;
+        break;
+      }
+    }
+    if (!best) {
+      throw new LogoTextError(`the logo sets its text as live <text> in "${family}", and no file for that font was found${reason ? ` (${reason})` : ''}. As an image the logo cannot use the document's fonts, so it would render in a fallback face and clip. ${fix}.`);
+    }
+    if (best.missing.length) warn(`the logo uses ${family} at ${best.missing.join(', ')}, which no file found has; the browser takes the nearest weight`);
+    for (const f of best.faces) {
+      rules.push(`@font-face{font-family:"${family}";font-style:${f.style};font-weight:${trueWeight(f)};src:url(data:${f.mime};base64,${f.base64}) format("${f.format}")}`);
+    }
+  }
+  const out = svg.replace(/(<svg\b[^>]*>)/i, `$1<defs><style>${rules.join('')}</style></defs>`);
+  const base64 = Buffer.from(out, 'utf8').toString('base64');
+  if (base64.length > MAX_LOGO_BASE64_BYTES) {
+    throw new LogoTextError(`with its font embedded the logo comes to ${Math.round(base64.length / 1024)} KB, over the ${Math.round(MAX_LOGO_BASE64_BYTES / 1024)} KB cap. ${fix}.`);
+  }
+  return { logo: { ...logo, base64, bytes: Buffer.byteLength(out) }, families: live.families };
+}
+
+// ---------------------------------------------------------------------------
 // main
 // ---------------------------------------------------------------------------
 
@@ -1235,9 +1549,24 @@ async function main() {
   let logoOn = null;
   let logoRatioValue = null;
   let logoColors = null; // mask mode: { light, dark }
-  let logoDark = null; // { mode: 'mask' | 'plate' | 'band', ... }
+  let logoDark = null; // { mode: 'mask' | 'copy' | 'same' | 'plate' | 'band', ... }
+  let logoTextFonts = []; // families embedded into an SVG wordmark
   if (args.logo) {
-    const source = loadLogo(args.logo, warn);
+    let source = loadLogo(args.logo, warn);
+    // A wordmark set as live <text> carries its font inside the SVG before
+    // anything reads or recolors it; without it the logo renders in a
+    // fallback face and clips.
+    if (source) {
+      try {
+        const embedded = await embedLogoText(source, { runFaces: fonts?.faces, baseCss, fontFiles: args.fontFiles, warn });
+        source = embedded.logo;
+        logoTextFonts = embedded.families;
+      } catch (e) {
+        if (!(e instanceof LogoTextError)) throw e;
+        console.error(`--logo: ${e.message}`);
+        process.exit(1);
+      }
+    }
     logo = source;
     const tint = source && args.logoTint ? parseColorArg(args.logoTint, '--logo-tint') : null;
     if (logo && tint) {
@@ -1285,7 +1614,18 @@ async function main() {
         logoColors = { light: formatOklch(clampChromaToGamut(lightColor.l, lightColor.c, lightColor.h)), dark: foregroundDarkRaw || 'oklch(0.930 0.000 0.0)' };
         logoDark = { mode: 'mask' };
       } else if (logoOn === 'light') {
-        logoDark = { mode: 'plate', plate: formatOklch(backgroundLightForContrast), reason: art.reason };
+        // Multi-color artwork: a dark copy with each color made to read on
+        // the dark page. The light plate is only for artwork this script
+        // cannot read color by color (gradients, JPGs, unusual PNGs).
+        const darkForeground = toOklch(parse(foregroundDarkRaw || 'oklch(0.930 0.000 0.0)'));
+        try {
+          const copy = darkLogoCopy(logo, { darkBackground: backgroundDarkForContrast, darkForeground });
+          if (copy.logo.base64.length > MAX_LOGO_BASE64_BYTES) throw new TintError('the dark copy is over the logo size cap');
+          logoDark = copy.changed.length ? { mode: 'copy', logo: copy.logo, changed: copy.changed } : { mode: 'same' };
+        } catch (e) {
+          if (!(e instanceof TintError)) throw e;
+          logoDark = { mode: 'plate', plate: formatOklch(backgroundLightForContrast), reason: e.message };
+        }
       } else {
         // Light artwork on a dark band keeps the band in both themes; the
         // band is the light theme's (dark) text color, not the dark theme's.
@@ -1345,6 +1685,14 @@ async function main() {
   if (logo) {
     if (logoDark.mode === 'mask') {
       darkOverrides.push(['brand-logo-color', logoColors.dark]);
+      darkOverrides.push(['brand-logo-on', 'dark']);
+    } else if (logoDark.mode === 'copy') {
+      // --brand-logo follows the theme, so a document that draws
+      // var(--brand-logo) gets the dark copy with no markup of its own.
+      darkOverrides.push(['brand-logo-dark', `url("data:${logoDark.logo.mime};base64,${logoDark.logo.base64}")`]);
+      darkOverrides.push(['brand-logo', 'var(--brand-logo-dark)']);
+      darkOverrides.push(['brand-logo-on', 'dark']);
+    } else if (logoDark.mode === 'same') {
       darkOverrides.push(['brand-logo-on', 'dark']);
     } else if (logoDark.mode === 'plate') {
       darkOverrides.push(['brand-logo-on', 'light']);
@@ -1480,12 +1828,13 @@ async function main() {
         dark: logoDark
           ? {
               mode: logoDark.mode,
-              tint: null,
-              bytes: null,
+              bytes: logoDark.logo ? logoDark.logo.bytes : null,
+              changed: logoDark.changed || [],
               plate: logoDark.plate || null,
               reason: logoDark.reason || null,
             }
           : null,
+        textFonts: logoTextFonts,
       },
       fonts: fonts ? fonts.report : null,
       fontsBase64Bytes: fonts ? fonts.base64Bytes : null,
@@ -1505,7 +1854,17 @@ async function main() {
           : `font: ${f.family} NOT embedded (${f.reason})\n`);
       }
     }
-    if (logoDark) process.stdout.write(`logo in dark mode: ${logoDark.mode === 'mask' ? 'mask (one copy, recolored per theme)' : logoDark.mode}${logoDark.reason ? ` (${logoDark.reason})` : ''}\n`);
+    if (logoTextFonts.length) process.stdout.write(`logo: its <text> font embedded in the SVG (${logoTextFonts.join(', ')})\n`);
+    if (logoDark) {
+      const label = {
+        mask: 'mask (one copy, recolored per theme)',
+        copy: `dark copy (${logoDark.changed?.map((c) => `${c.from} -> ${c.to}`).join(', ')})`,
+        same: 'as is (every color reads on the dark page)',
+        plate: 'light plate',
+        band: 'dark band in both themes',
+      }[logoDark.mode];
+      process.stdout.write(`logo in dark mode: ${label}${logoDark.reason ? ` (${logoDark.reason})` : ''}\n`);
+    }
     process.stdout.write(`check: exit ${checkRes.status}, ${findings.length} finding(s)\n`);
   }
 

@@ -1,6 +1,6 @@
 /* styles/gazette/style.css — the newsprint layout on the shared markup
  * (reference/markup.md). Masthead between a heavy and a double rule,
- * dateline metadata, kickers over headlines, a drop cap on the lead, double
+ * dateline metadata, kickers over headlines, a drop cap on p.dropcap, double
  * rules between sections. Colors and fonts come from tokens only. */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -9,7 +9,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) { display: block; max-width: calc(var(--measure) + 8rem); margin: 0 auto; padding: 1.75rem 1.5rem 4rem; }
 :where(.doc) a { color: inherit; text-decoration-color: var(--primary); text-underline-offset: 0.18em; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.7rem 0; }
-:where(.doc) section > p:not([class]) { hyphens: auto; }
+:where(.doc) section > p:is(:not([class]), .dropcap) { hyphens: auto; }
 :where(.doc) .kicker, :where(.doc) .label, :where(.doc) dt, :where(.doc) th, :where(.doc) .state, :where(.doc) .when, :where(.doc) .from {
   font-family: var(--font-label, var(--font-sans)); }
 :where(.doc) .kicker, :where(.doc) .label { margin: 0; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.16em;
@@ -52,7 +52,9 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   line-height: 1.08; letter-spacing: -0.01em; margin: 0.2rem 0 0.6rem; }
 :where(.doc) h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; margin: 1.3rem 0 0.3rem;
   padding-top: 0.6rem; border-top: 1px solid var(--border); }
-:where(.doc) section:first-of-type h2 + p:not([class])::first-letter { float: left; font-family: var(--font-display); font-weight: 800;
+/* The drop cap is opt-in: CSS cannot tell a letter from a digit, and a
+   section that opens "21 days" would get a giant "2". */
+:where(.doc) p.dropcap::first-letter { float: left; font-family: var(--font-display); font-weight: 800;
   font-size: 3.5em; line-height: 0.82; padding: 0.06em 0.08em 0 0; color: var(--primary); }
 
 /* Pieces */
@@ -112,7 +114,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) pre code { background: none; padding: 0; }
 
 @media (min-width: 760px) {
-  :where(.doc) section > p:not([class]) { text-align: justify; }
+  :where(.doc) section > p:is(:not([class]), .dropcap) { text-align: justify; }
 }
 @media (max-width: 640px) {
   :where(.doc) { padding: 1rem 1rem 3rem; }
@@ -126,3 +128,26 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 }
 @media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; } }
 @media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) section { break-inside: avoid-page; } }
+
+/* Checks: ink squares on hairline rows, owners as tracked sans bylines. ul.checks items are a tick box, the condition and an
+   optional owner/when slot; .write-in holds fill-in fields drawn as .line.
+   Boxes print as empty squares; a done item prints its check. */
+:where(.doc) .checks { list-style: none; padding: 0; border-top: 1px solid var(--foreground); }
+:where(.doc) .checks > li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.15rem 0.8rem;
+  align-items: start; padding: 0.45rem 0; border-bottom: 1px solid var(--border); break-inside: avoid; }
+:where(.doc) .checks > li > .tick { grid-column: 1; position: relative; display: block; box-sizing: border-box; margin-top: 0.18em;
+  width: 0.95em; height: 0.95em; border: 1.5px solid var(--foreground); border-radius: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+:where(.doc) .checks > li.done > .tick::after { content: ""; position: absolute; left: 32%; top: 8%; width: 30%; height: 58%;
+  border: solid var(--foreground); border-width: 0 0.15em 0.15em 0; transform: rotate(45deg); }
+:where(.doc) .checks > li > div { grid-column: 2; min-width: 0; }
+:where(.doc) .checks > li > .who { grid-column: 3; text-align: right; white-space: nowrap; font-family: var(--font-label, var(--font-sans)); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-foreground); }
+:where(.doc) .write-in { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; margin: 1.2rem 0; padding-top: 0.6rem; border-top: 3px double var(--foreground); break-inside: avoid; }
+:where(.doc) .write-in > p { flex: 1 1 14rem; display: flex; align-items: baseline; gap: 0.5rem; margin: 0; }
+:where(.doc) .line { display: inline-block; flex: 1 1 6rem; min-width: 6rem; height: 1.3em; vertical-align: bottom; border-bottom: 1px solid var(--foreground); }
+@media (max-width: 640px) {
+  :where(.doc) .checks > li { grid-template-columns: auto minmax(0, 1fr); }
+  :where(.doc) .checks > li > .who { grid-column: 2; text-align: left; white-space: normal; }
+}
+@media print {
+  :where(.doc) .checks > li:not(.done) > .tick { background: none; }
+}

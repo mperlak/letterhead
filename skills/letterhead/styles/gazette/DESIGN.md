@@ -186,6 +186,11 @@ serif memo.
   the headline — the register's signature.
 - **The front-page lead.** Exactly one item gets the vermilion lead treatment
   and the largest headline; double rules separate the major sections.
+- **The drop cap.** The opening paragraph of the first section takes
+  `class="dropcap"` and starts with a three-line vermilion initial. Only
+  when that paragraph starts with a letter: a paragraph that opens with a
+  number ("21 days…", "2026…") or a quotation mark gets no class, because a
+  giant "2" reads as a misprint. The style never adds a drop cap on its own.
 
 ## 6. Do's and Don'ts
 

@@ -773,8 +773,8 @@ function renderDocument(model, t) {
     // the owner has confirmed the logo there is nothing left to compare.
     //
     // Artwork on paper: the second panel is a dark-theme panel, where
-    // the mask takes the dark theme's --brand-logo-color (or the logo sits on
-    // its light plate), which is what a reader in dark mode sees. Artwork on
+    // the mask takes the dark theme's --brand-logo-color (or --brand-logo turns
+    // into the dark copy, or the logo sits on its light plate), which is what a reader in dark mode sees. Artwork on
     // a dark band: the second panel is bare paper, showing why the band is
     // there.
     const onDark = model.logoOn === 'dark';

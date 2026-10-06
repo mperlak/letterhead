@@ -11,8 +11,15 @@
 // Dark-mode logo: single-color artwork is embedded once as
 // --brand-logo-mask with --brand-logo-color per theme (tint or the artwork's
 // own color in :root, the dark foreground in the dark blocks) and a
-// --brand-logo-ratio; multi-color artwork gets a light --brand-logo-plate in
-// the dark blocks; --logo-on dark keeps a dark plate in all three blocks.
+// --brand-logo-ratio; multi-color artwork (SVG or PNG) gets a recolored
+// --brand-logo-dark in both dark blocks, with --brand-logo pointing at it
+// (ink turned light, colors that read kept); artwork the script cannot read
+// (a gradient) gets a light --brand-logo-plate; --logo-on dark keeps a dark
+// plate in all three blocks.
+//
+// Live text: an SVG wordmark set as <text> carries its font as an
+// @font-face with a data: URI (from --font-file, offline); a family nobody
+// can supply stops the run with exit 1 and names the fix.
 //
 // Dark theme colors: six brand colors (plus a navy that needs lifting) on
 // every style: the dark primary is the brand color when it has 3:1 on the
@@ -385,11 +392,49 @@ console.log('neutrals take the brand hue at low chroma');
   check('--muted, --border, --muted-foreground carry the red hue at chroma <= 0.012', hueOk);
 }
 
-console.log('dark-mode logo: multi-color artwork gets a light plate');
+const dataOf = (value) => {
+  const m = /url\("data:([^;]+);base64,([^"]+)"\)/.exec(value || '');
+  return m ? { mime: m[1], buf: Buffer.from(m[2], 'base64') } : null;
+};
+
+console.log('dark-mode logo: two-color SVG (brand color + black ink) gets a dark copy');
 {
-  const p = join(TMP, 'plate.png');
+  const p = join(TMP, 'two-color-ink.svg');
+  writeFileSync(p, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 10"><path fill="#e20c7b" d="M0 0h10v10H0z"/><path fill="#141414" d="M12 0h28v10H12z"/></svg>');
+  const { res, css, json } = run([...base, '--logo', p]);
+  const b = blocks(css);
+  check('exits 0', res.status === 0);
+  const light = dataOf(tok(b.light, 'brand-logo'))?.buf.toString('utf8') || '';
+  check(':root keeps the artwork as it is', /#e20c7b/.test(light) && /#141414/.test(light));
+  const dark = dataOf(tok(b.dark, 'brand-logo-dark'));
+  check('both dark blocks carry --brand-logo-dark', !!dark && tok(b.os, 'brand-logo-dark') === tok(b.dark, 'brand-logo-dark'));
+  check('dark blocks point --brand-logo at the dark copy', ['dark', 'os'].every((k) => tok(b[k], 'brand-logo') === 'var(--brand-logo-dark)'));
+  const svg = dark?.buf.toString('utf8') || '';
+  const fg = parse(tok(b.dark, 'foreground'));
+  const fills = [...svg.matchAll(/fill="(#[0-9a-f]{6})"/g)].map((m) => m[1]);
+  check('ink recolored to the dark text color', !/#141414/.test(svg) && fills.some((h) => Math.abs(parse(h).l - fg.l) < 0.01));
+  check('brand color kept (it reads on the dark page)', /#e20c7b/.test(svg));
+  check('no plate', !/--brand-logo-plate/.test(css));
+  check('json reports dark mode "copy"', json?.logo?.dark?.mode === 'copy' && json.logo.dark.changed.length === 1);
+}
+
+console.log('dark-mode logo: two-color PNG gets a dark copy');
+{
+  const p = join(TMP, 'two-color.png');
   writeFileSync(p, rgbaPng((x) => (x < 2 ? [20, 20, 20] : [226, 12, 123])));
   const { res, css, json } = run([...base, '--logo', p, '--logo-on', 'light']);
+  const b = blocks(css);
+  check('exits 0', res.status === 0);
+  const px = rgbaPixels(dataOf(tok(b.os, 'brand-logo-dark'))?.buf || Buffer.alloc(0));
+  check('ink pixels turned light, brand pixels kept', px.length === 16 && px.some((q) => q[3] > 0 && q[0] > 200 && q[1] > 200) && px.some((q) => same(q.slice(0, 3), [226, 12, 123])));
+  check('json reports dark mode "copy"', json?.logo?.dark?.mode === 'copy');
+}
+
+console.log('dark-mode logo: artwork the script cannot read gets a light plate');
+{
+  const p = join(TMP, 'gradient.svg');
+  writeFileSync(p, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 10"><linearGradient id="g"><stop offset="0" stop-color="#e20c7b"/><stop offset="1" stop-color="#141414"/></linearGradient><path fill="url(#g)" d="M0 0h40v10H0z"/></svg>');
+  const { res, css, json } = run([...base, '--logo', p]);
   const b = blocks(css);
   check('exits 0', res.status === 0);
   check(':root plate is transparent', tok(b.light, 'brand-logo-plate') === 'transparent');
@@ -397,6 +442,26 @@ console.log('dark-mode logo: multi-color artwork gets a light plate');
   check('dark blocks carry a light plate', /^oklch\(0\.9\d\d /.test(plate) && tok(b.os, 'brand-logo-plate') === plate);
   check('no --brand-logo-dark copy', !/--brand-logo-dark/.test(css));
   check('json reports dark mode "plate"', json?.logo?.dark?.mode === 'plate');
+}
+
+console.log('logo: live <text> carries its font (offline, --font-file)');
+{
+  const pop = join(FIXTURES, 'poppins-500-subset.woff2');
+  const rob = join(FIXTURES, 'roboto-variable-subset.woff2');
+  const p = join(TMP, 'wordmark.svg');
+  writeFileSync(p, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><text x="0" y="24" font-family="Poppins, sans-serif" font-weight="500" fill="#1a2b6d">Acme</text></svg>');
+  const { res, css, json } = run([...base.slice(0, -2), '--font-body', 'Roboto', '--embed-fonts', '--lang', 'en', '--font-file', `Roboto=${rob}`, '--font-file', `Poppins=${pop}`, '--logo', p]);
+  check('exits 0', res.status === 0);
+  const svg = dataOf(tok(blocks(css).light, 'brand-logo-mask'))?.buf.toString('utf8') || '';
+  check('the SVG carries @font-face for Poppins with a data: font', /@font-face\{font-family:"Poppins";[^}]*src:url\(data:font\/woff2;base64,/.test(svg));
+  check('the text is still live text', /<text\b[^>]*>Acme<\/text>/.test(svg));
+  check('json names the embedded family', json?.logo?.textFonts?.[0] === 'Poppins');
+
+  const q = join(TMP, 'wordmark-unknown.svg');
+  writeFileSync(q, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><text font-family="Nonesuch Grotesk" fill="#1a2b6d">Acme</text></svg>');
+  const miss = run([...base, '--logo', q], { LETTERHEAD_FONTS_API: 'http://127.0.0.1:9/css2' });
+  check('a font nobody can supply stops the run with exit 1', miss.res.status === 1);
+  check('and says how to fix it', /Nonesuch Grotesk/.test(miss.res.stderr) && /--font-file/.test(miss.res.stderr));
 }
 
 console.log('dark-mode logo: artwork on a dark band keeps the band');

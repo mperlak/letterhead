@@ -412,10 +412,22 @@ either accepts the substitute or sends the licensed file.
 
 **Logo in dark mode.** Nothing to decide. Single-color artwork is embedded
 once and drawn as a mask in each theme's color (dark on paper, light in dark
-mode), multi-color artwork gets a light plate to stand on, and artwork that
-needs a dark band keeps the band in both themes. The script prints which one
-it used, and writes `--brand-logo-ratio` so documents can size the logo
-without reading the file.
+mode). Multi-color artwork gets a dark copy, `--brand-logo-dark`: colors that
+read on the dark page stay, near-black ink turns into the dark text color,
+and a brand color too dark to read is lifted at its own hue. Only artwork the
+script cannot read color by color (gradients, JPGs) falls back to a light
+plate, and artwork that needs a dark band keeps the band in both themes. The
+script prints which one it used, and writes `--brand-logo-ratio` so
+documents can size the logo without reading the file.
+
+**Logo with live text.** An SVG whose wordmark is `<text>` in a named font
+gets that font embedded in the SVG itself: a logo drawn as an image cannot
+use the document's fonts, so the text would fall back to another face and
+run out of its box. The font comes from the faces this run embedded, a
+`--font-file`, or Google Fonts. When none has it, or the logo comes out over
+200 KB with it, the script stops and says so. Ask the owner for the logo
+with its text as outlines, or pass the font with
+`--font-file "<Family>=<file>"`.
 
 `brand-tokens.mjs` derives the full three-block `tokens.css` from the base
 style plus the overrides: it computes a text-safe ink variant when the

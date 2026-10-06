@@ -27,10 +27,13 @@ on the same element wins without `!important`.
 | `<section>` + `<h2 id>` | A section. Every `h2` opens its own `section`; `h3` stays inside it. | All content after the head. |
 | `<p class="figure"><strong>78%</strong> rest of the sentence</p>` | The key figure, in the sentence that needs it. | At most one per section, only for a number the source states. |
 | `<p class="verdict">` | One judgment sentence standing apart from its prose. | A recommendation or conclusion per section, not more. |
+| `<p class="dropcap">` | A paragraph that opens with a drop cap, in the styles that draw one (gazette); the others set it as a plain paragraph. | Once, on the opening paragraph of the first section, and only when that paragraph starts with a letter. A paragraph starting with a digit or a quotation mark gets no class: CSS cannot see what the first character is, and a three-line "2" reads as a misprint. |
 | `<div class="callout">`, `.callout.warn` | Something the reader must act on or must not miss; `warn` for risk. Starts with `<p class="label">`. | Required actions, blockers, decisions made on the reader's behalf. |
 | `<dl class="status">` | A status ledger: `<div><dt>Load test</dt><dd><span class="state ok">passed</span></dd></div>`. | Status updates, checklists, audits: the state of things in one strip. |
 | `<span class="state ok\|warn\|blocked\|neutral">` | A state word, colored from `--status-ok`, `-warn`, `-blocked`, `-neutral`. | In a table cell, the status ledger or a `ul.states`. Always a word ("passed", "blocked", "held"): the word carries the state, the color only repeats it, so a reader who cannot tell red from green, or prints in grey, loses nothing. |
 | `<ul class="states">` | A list where every item leads with its state: `<li><span class="state ok">done</span><div>Load test at 3x peak.</div></li>`. | Done / open / blocked lists in status updates and checklists. A plain `ul` with a state inside gets a bullet and a marker on one line. |
+| `<ul class="checks">` | A list of tick boxes: `<li id="…"><span class="tick" aria-hidden="true"></span><div>Condition.</div><span class="who">Sofie, by Thu 29 Oct</span></li>`. The `who` slot (owner, deadline, or both) is optional. A done item is `<li class="done">` with `<span class="tick" role="img" aria-label="done"></span>`: the style draws a check in the box, the label says it to a screen reader. | Checklists meant to be printed and ticked by hand, or read as a to-do list. The boxes print as empty squares; a state the box cannot show (blocked, waiting) goes in words as a `.state` inside the `div`. |
+| `<div class="write-in">` + `<span class="line"></span>` | Fields to fill in by hand: one `<p>` per field, the label then a `line`: `<div class="write-in"><p>Signed off by <span class="line"></span></p><p>Time <span class="line"></span></p></div>`. A `line` also works on its own inside text, as a blank. | Sign-offs, times and names on printed checklists and forms. |
 | `<div class="table-wrap"><table>` | A table; `class="num"` on numeric `th`/`td`. | Every table, so it scrolls on a phone instead of squeezing. |
 | `<ol class="steps">` | A sequence: next steps, an agenda, a timeline, a flow. Each item is `<li><span class="when">Mon</span><div>…</div></li>`; leave out the `when` and the style numbers the step. The step the reader is at now is `<li aria-current="step">`. | Order matters and each step has a time or an owner. Mark a current step only when the source says where things stand. |
 | `<ol class="recs">` | Recommendations, numbered R1, R2 by the style. Each item is `<li><div>…</div><span class="from">From finding 2</span></li>`. | Reports, audits, reviews. |
@@ -39,8 +42,9 @@ on the same element wins without `!important`.
 | `<section class="ask">` | The section the document exists for: the decision requested. | Proposals, walkthroughs, anything that ends in a yes or no. |
 | `<footer class="doc-close">` | The sign-off: `<p class="label">Prepared by</p>`, `<p class="from">`, optional `dl.meta`. | Deliverables that close like a letter. |
 
-Items in `steps`, `recs` and `states` hold one marker element (`.when`,
-`.state`) and one `<div>` with the content, nothing loose beside them. Some
+Items in `steps`, `recs`, `states` and `checks` hold one marker element
+(`.when`, `.state`, `.tick`) and one `<div>` with the content (plus the
+optional `.from` or `.who` after it), nothing loose beside them. Some
 styles lay these items out as a grid with the marker in its own column;
 loose text with a `<strong>` or a `<code>` in it falls into that grid as
 separate pieces, and the step reads in fragments.
@@ -77,6 +81,12 @@ The style already did the composition; add to it, do not replace it.
 reader in grey print, in the dark theme or with red-green color blindness
 cannot tell the states apart. Write the state as a word in a `.state`; the
 style colors it.
+
+**Home-made tick boxes.** A printed checklist that draws its own boxes
+and blank lines in the document's CSS: two kilobytes of one-off rules that
+no style lays out, boxes that print as filled grey squares in one browser
+and vanish in another. Use `ul.checks` and `.write-in`; the style draws
+them on screen and in print.
 
 **Labels without fields.** `dl.meta` written as bare `dt`/`dd` pairs, or as
 chips with no labels. The styles lay out each `div` as one field; without

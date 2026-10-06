@@ -52,8 +52,8 @@ Seven sections, always the same, always in this order:
    artwork on paper, captioned as the document header, at the artwork's own
    proportions. While the `logo` field is not `confirmed`, a second panel
    beside it: for artwork on paper, a dark-mode panel showing what a reader
-   in dark mode gets (the mark in the dark theme's color, or the logo on its
-   light plate); for artwork on a band, bare paper, so the reason for the band is visible
+   in dark mode gets (the mark in the dark theme's color, the recolored dark copy, or the logo on
+   its light plate); for artwork on a band, bare paper, so the reason for the band is visible
    rather than described. Once the owner has confirmed the logo, the header
    panel stands alone. With no usable logo, the text mark from the name
    stands in and says so. Carries `notes.name` and `notes.logo`.

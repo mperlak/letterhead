@@ -18,7 +18,10 @@ Four fictional brands, each taught by `teach` from a one-page homepage
 written for the purpose (`site.html` in each folder, the only brand
 evidence the teaching run saw). The profiles come from the first generation of
 this set and were reused as they are for the regeneration: no run taught a
-brand again. Each folder holds the taught profile as `teach`
+brand again. The `tokens.css` of Arkona, Fieldwork and Kestrel was derived
+again later with `brand-tokens.mjs`, after its logo fixes, with the command
+`teach` prescribes and the values in each `profile.meta.json`, and their
+brand sheets were rendered again (see the second pass below). Each folder holds the taught profile as `teach`
 wrote it: `profile.meta.json`, `DESIGN.md`, `PRODUCT.md`, `tokens.css`
 (fonts embedded as woff2 data URIs, logo embedded), `logo.svg` and
 `brand-sheet.html`. In a real project the profile would live in
@@ -131,6 +134,39 @@ style's `DESIGN.md`, and most also looked at the style's `style.css`.
 own output after the first write and before the final check: wording fixes
 by `Edit`, `sed`, `perl` or a short Python script, and in the Halde proposal
 a rebuilt price table. The generated head blocks were never touched.
+
+### Second pass: logo fixes
+
+All three logos set their wordmark as live SVG `<text>`. Drawn as an image,
+an SVG cannot reach the document's fonts, so the wordmarks fell back to
+another face and clipped; the first Arkona documents redrew the logo by
+hand instead. `brand-tokens.mjs` now embeds the wordmark's font in the SVG,
+and gives multi-color artwork a recolored dark copy (`--brand-logo-dark`)
+instead of a light plate. The Arkona, Fieldwork and Kestrel tokens were
+derived again with it (Arkona: mask, wordmark in Fraunces; Fieldwork and
+Kestrel: dark copy, ink turned light), and the tokens were applied again to
+all ten documents with `apply-tokens.mjs` and the same `--style` as before.
+
+Four documents were generated again, because their markup had to change:
+the three Arkona documents (logo drawn from the tokens instead of by hand;
+the checklist with `ul.checks` tick boxes) and the Halde report (the gazette
+drop cap is now opt-in with `p.dropcap`). Same method, prompts and notes as
+above: one arkona session of three turns, and the Halde report as the first
+turn of a fresh session. The other six documents kept their text and only
+took the new tokens.
+
+| Session | Turn | Style (`--style`?) | Wall time | Tool calls | Cost |
+|---|---|---|---|---|---|
+| arkona | status-update | consulting (profile base, none) | 79 s | 12 | $0.68 |
+| arkona | implementation-plan | boardroom (`--style boardroom`) | 115 s | 13 | $1.21 |
+| arkona | checklist | workshop (`--style workshop`) | 89 s | 10 | $1.66 |
+| halde | report | gazette (`--style gazette`) | 144 s | 22 | $0.98 |
+
+Total: 4 turns, 7 minutes of model time, $4.53, 57 tool calls. Every turn
+succeeded on the first attempt. No document draws its logo by hand; all
+four use `apply-tokens.mjs` and `check-document.mjs`, and two changed their
+own output after the first write (fixes by `Edit`, and a `sed` that
+put non-breaking spaces after the euro signs).
 
 ## screenshots/
 

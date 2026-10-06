@@ -126,7 +126,10 @@ the shape gate, the brand lock and the phone and theme review still apply.
      }
      ```
    - **Otherwise** (multi-color artwork, or artwork on a dark band): draw
-     `--brand-logo` as the background. When the tokens define
+     `--brand-logo` as the background. In dark mode the tokens point
+     `--brand-logo` at `--brand-logo-dark`, a copy recolored for the dark
+     page, so the same rule shows the right artwork in each theme; never
+     add a theme rule of your own for it. When the tokens define
      `--brand-logo-plate`, the padding goes outside the sized box, so the
      plate hugs the artwork instead of leaving an empty strip beside it:
      ```css
@@ -140,11 +143,14 @@ the shape gate, the brand lock and the phone and theme review still apply.
        print-color-adjust: exact; -webkit-print-color-adjust: exact;
      }
      ```
-     The plate is transparent in light mode and light in dark mode, so
-     multi-color artwork keeps a surface it can be read on. When `:root`
+     A plate is there only for artwork the script could not recolor
+     (gradients, JPGs): transparent in light mode, light in dark mode. When `:root`
      says `--brand-logo-on: dark`, the header band behind the logo is
      `var(--brand-logo-plate)`, which stays dark in both themes.
    Without a logo token, set the name as a text mark in the display face.
+   Never redraw the logo in the document (inline SVG, text set to look like
+   it): a hand-made copy drifts from the brand's artwork, and a logo that
+   looks wrong is fixed in the profile by running `brand-tokens.mjs` again.
 5. Write the content in the brand's voice. Facts come from the source; open
    points become labeled open questions, never invented filler.
    - **Content given verbatim** (`polish`, or text the user wrote and wants

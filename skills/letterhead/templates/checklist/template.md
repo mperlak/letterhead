@@ -38,6 +38,12 @@ they gate; that is a notes file, not a document worth a reader's time.
 5. **Sign-offs:** the named approvers and their state (approved, pending,
    with what condition). This section is where reviewer answers land.
 
+A checklist that will be printed and ticked by hand puts its items in
+`ul.checks` (a tick box, the condition, the owner in `.who`) and its
+sign-off fields in `.write-in` (`reference/markup.md`); the style draws
+the boxes and lines. One read on screen as a status list uses
+`ul.states` instead.
+
 ## Creation guidance
 
 Items come from the source (runbooks, plans, prior checklists), never

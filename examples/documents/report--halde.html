@@ -1,11 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Mulder house in Haarlem: what our survey found</title>
-<meta property="og:title" content="The Mulder house in Haarlem: what our survey found">
-<meta property="og:description" content="Your house needs € 28,300 – 45,800 of necessary work before any of your wishes. The extension fits your € 240,000; the loft makes it tight, so we advise keeping it for a second phase.">
+<title>Survey report: the Mulder house, Haarlem</title>
+<meta property="og:title" content="Survey report: the Mulder house, Haarlem">
+<meta property="og:description" content="What we found at the survey on 29 September, what it costs, and what we advise for the brief.">
+<meta name="description" content="What we found at the survey on 29 September, what it costs, and what we advise for the brief.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'4'%20y%3D'4'%20width%3D'24'%20height%3D'24'%20rx%3D'4'%20fill%3D'%239a5b3f'%2F%3E%3C%2Fsvg%3E">
 <style data-letterhead-tokens data-style="gazette">
 /* letterhead:fonts */
@@ -359,7 +360,7 @@
 <style data-letterhead-style="gazette">
 /* styles/gazette/style.css — the newsprint layout on the shared markup
  * (reference/markup.md). Masthead between a heavy and a double rule,
- * dateline metadata, kickers over headlines, a drop cap on the lead, double
+ * dateline metadata, kickers over headlines, a drop cap on p.dropcap, double
  * rules between sections. Colors and fonts come from tokens only. */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -368,7 +369,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) { display: block; max-width: calc(var(--measure) + 8rem); margin: 0 auto; padding: 1.75rem 1.5rem 4rem; }
 :where(.doc) a { color: inherit; text-decoration-color: var(--primary); text-underline-offset: 0.18em; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.7rem 0; }
-:where(.doc) section > p:not([class]) { hyphens: auto; }
+:where(.doc) section > p:is(:not([class]), .dropcap) { hyphens: auto; }
 :where(.doc) .kicker, :where(.doc) .label, :where(.doc) dt, :where(.doc) th, :where(.doc) .state, :where(.doc) .when, :where(.doc) .from {
   font-family: var(--font-label, var(--font-sans)); }
 :where(.doc) .kicker, :where(.doc) .label { margin: 0; font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.16em;
@@ -411,7 +412,9 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   line-height: 1.08; letter-spacing: -0.01em; margin: 0.2rem 0 0.6rem; }
 :where(.doc) h3 { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; margin: 1.3rem 0 0.3rem;
   padding-top: 0.6rem; border-top: 1px solid var(--border); }
-:where(.doc) section:first-of-type h2 + p:not([class])::first-letter { float: left; font-family: var(--font-display); font-weight: 800;
+/* The drop cap is opt-in: CSS cannot tell a letter from a digit, and a
+   section that opens "21 days" would get a giant "2". */
+:where(.doc) p.dropcap::first-letter { float: left; font-family: var(--font-display); font-weight: 800;
   font-size: 3.5em; line-height: 0.82; padding: 0.06em 0.08em 0 0; color: var(--primary); }
 
 /* Pieces */
@@ -471,7 +474,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) pre code { background: none; padding: 0; }
 
 @media (min-width: 760px) {
-  :where(.doc) section > p:not([class]) { text-align: justify; }
+  :where(.doc) section > p:is(:not([class]), .dropcap) { text-align: justify; }
 }
 @media (max-width: 640px) {
   :where(.doc) { padding: 1rem 1rem 3rem; }
@@ -485,8 +488,36 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 }
 @media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; } }
 @media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) section { break-inside: avoid-page; } }
+
+/* Checks: ink squares on hairline rows, owners as tracked sans bylines. ul.checks items are a tick box, the condition and an
+   optional owner/when slot; .write-in holds fill-in fields drawn as .line.
+   Boxes print as empty squares; a done item prints its check. */
+:where(.doc) .checks { list-style: none; padding: 0; border-top: 1px solid var(--foreground); }
+:where(.doc) .checks > li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.15rem 0.8rem;
+  align-items: start; padding: 0.45rem 0; border-bottom: 1px solid var(--border); break-inside: avoid; }
+:where(.doc) .checks > li > .tick { grid-column: 1; position: relative; display: block; box-sizing: border-box; margin-top: 0.18em;
+  width: 0.95em; height: 0.95em; border: 1.5px solid var(--foreground); border-radius: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+:where(.doc) .checks > li.done > .tick::after { content: ""; position: absolute; left: 32%; top: 8%; width: 30%; height: 58%;
+  border: solid var(--foreground); border-width: 0 0.15em 0.15em 0; transform: rotate(45deg); }
+:where(.doc) .checks > li > div { grid-column: 2; min-width: 0; }
+:where(.doc) .checks > li > .who { grid-column: 3; text-align: right; white-space: nowrap; font-family: var(--font-label, var(--font-sans)); font-size: var(--text-xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-foreground); }
+:where(.doc) .write-in { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; margin: 1.2rem 0; padding-top: 0.6rem; border-top: 3px double var(--foreground); break-inside: avoid; }
+:where(.doc) .write-in > p { flex: 1 1 14rem; display: flex; align-items: baseline; gap: 0.5rem; margin: 0; }
+:where(.doc) .line { display: inline-block; flex: 1 1 6rem; min-width: 6rem; height: 1.3em; vertical-align: bottom; border-bottom: 1px solid var(--foreground); }
+@media (max-width: 640px) {
+  :where(.doc) .checks > li { grid-template-columns: auto minmax(0, 1fr); }
+  :where(.doc) .checks > li > .who { grid-column: 2; text-align: left; white-space: normal; }
+}
+@media print {
+  :where(.doc) .checks > li:not(.done) > .tick { background: none; }
+}
 </style>
 <style>
+  /* Halde sets headings at medium weight, never bold: carry that into the
+     pieces the gazette style sets heavy. */
+  .doc h3, .doc .summary li, .doc .figure strong, .doc p.dropcap::first-letter {
+    font-weight: var(--font-heading-weight);
+  }
   .doc .brand-mark {
     display: block; height: 40px; width: calc(40px * var(--brand-logo-ratio));
     background-color: var(--brand-logo-color);
@@ -494,138 +525,175 @@ body { margin: 0; background: var(--background); color: var(--foreground);
     mask: var(--brand-logo-mask) center / contain no-repeat;
     print-color-adjust: exact; -webkit-print-color-adjust: exact;
   }
-  .doc td.num, .doc th.num { white-space: nowrap; }
+  .doc .table-wrap td.num, .doc .table-wrap th.num { white-space: nowrap; }
+  .doc tfoot td { font-weight: 600; border-top: 1px solid var(--foreground); }
 </style>
 </head>
 <body>
 <main class="doc">
 
 <header class="doc-head">
-  <div class="brand-mark" role="img" aria-label="Studio Halde"></div>
+  <span class="brand-mark" role="img" aria-label="Studio Halde"></span>
   <p class="kicker">Survey report</p>
   <h1>The Mulder house, Haarlem</h1>
-  <p class="lede">What we found in your 1932 house in Kleverpark, what it costs to put right, and what we advise you put in the design brief.</p>
+  <p class="lede">The house is sound, but it needs about €&nbsp;28,000 to €&nbsp;46,000 of necessary work first. The kitchen extension fits your budget alongside it; the loft is better left for a second phase.</p>
   <dl class="meta">
-    <div><dt>Prepared for</dt><dd>Priya and Daan Mulder</dd></div>
-    <div><dt>Prepared by</dt><dd>Liv Halde and Daan Visser, Studio Halde</dd></div>
-    <div><dt>Survey</dt><dd>Tuesday 29 September 2026, 4 hours</dd></div>
-    <div><dt>Date</dt><dd>Friday 2 October 2026</dd></div>
-    <div><dt>Your decision by</dt><dd>Friday 16 October 2026</dd></div>
+    <div><dt>For</dt><dd>Priya and Daan Mulder</dd></div>
+    <div><dt>Survey</dt><dd>Tue 29 Sep 2026</dd></div>
+    <div><dt>Date</dt><dd>Fri 2 Oct 2026</dd></div>
+    <div><dt>From</dt><dd>Liv Halde, Daan Visser</dd></div>
+    <div><dt>Status</dt><dd>Your decision on the loft by Fri 16 Oct</dd></div>
   </dl>
 </header>
 
 <div class="summary">
-  <p class="label">In short</p>
+  <p class="label">What we found</p>
   <ul>
-    <li>Before any of your wishes, the house needs €&nbsp;28,300 – 45,800 of necessary work: a full rewire, the damp front bay, two rotten floor joists and secondary glazing for the stained glass.</li>
-    <li>The kitchen extension and the necessary work fit your €&nbsp;240,000, with room left for the bathroom, floors and paint.</li>
-    <li>Adding the loft makes it tight, and at the top of the ranges it does not fit. We advise designing it now and building it later.</li>
-    <li>We need your decision on the loft by Friday 16 October, so we can start the concept on Monday 19 October.</li>
+    <li>The 1970s wiring has to be replaced in full before any plastering: €&nbsp;14,000 – 18,000.</li>
+    <li>The front bay is damp and two floor joists under it have rotted; both have a clear, contained fix.</li>
+    <li>Two materials may contain asbestos. The test is on Wed 7 Oct, results around Wed 21 Oct.</li>
+    <li>With the necessary works, the extension fits your €&nbsp;240,000. Adding the loft makes it tight, and at the top of the ranges it does not fit.</li>
   </ul>
 </div>
 
+<nav class="contents" aria-label="Contents">
+  <ol>
+    <li><a href="#how-we-surveyed-the-house">How we surveyed the house</a></li>
+    <li><a href="#the-wiring-needs-replacing-in-full">The wiring needs replacing in full</a></li>
+    <li><a href="#the-front-bay-is-damp-from-the-garden-side">The front bay is damp from the garden side</a></li>
+    <li><a href="#two-floor-joists-under-the-bay-have-rotted">Two floor joists under the bay have rotted</a></li>
+    <li><a href="#two-materials-may-contain-asbestos">Two materials may contain asbestos</a></li>
+    <li><a href="#the-leaded-top-lights-are-worth-keeping">The leaded top lights are worth keeping</a></li>
+    <li><a href="#a-kitchen-extension-fits-the-garden">A kitchen extension fits the garden</a></li>
+    <li><a href="#the-loft-can-take-a-study-at-a-cost">The loft can take a study, at a cost</a></li>
+    <li><a href="#what-it-adds-up-to">What it adds up to</a></li>
+    <li><a href="#our-advice">Our advice</a></li>
+    <li><a href="#next-steps">Next steps</a></li>
+    <li><a href="#what-we-need-from-you">What we need from you</a></li>
+  </ol>
+</nav>
+
 <section>
   <p class="kicker">Method</p>
-  <h2 id="what-we-examined">What we examined</h2>
-  <p>On Tuesday 29 September, Liv Halde and Daan Visser from the studio spent four hours in the house with Joost van Eck of Van Eck Bouw, the builder we work with most. We went through the house over its three floors (168 m²), including the crawl space and the loft, and took moisture readings in the front bay. Prices are rough ranges from Joost and us, for budgeting, not quotes.</p>
+  <h2 id="how-we-surveyed-the-house">How we surveyed the house</h2>
+  <p class="dropcap">On Tuesday 29 September we spent four hours in the house: Liv Halde and Daan Visser from the studio, with Joost van Eck of Van Eck Bouw, the builder we work with most. We went through all three floors, the crawl space and the loft, took moisture readings in the front bay and looked at the fuse box, the wiring and the windows.</p>
+  <p>The house is a 1932 semi-detached in Kleverpark, Haarlem-Noord, 168 m² over three floors, handed over to you on 1 September. The costs below are Joost's and our rough ranges from what we could see; they are for deciding what goes in the design brief, not quotes.</p>
 </section>
 
 <section>
   <p class="kicker">Finding 1 · Necessary</p>
-  <h2 id="the-electrics-need-a-full-rewire">The electrics need a full rewire</h2>
-  <p>The fuse box is from the 1970s with 6 groups, three rooms have no earth, and the attic still has cloth-covered wiring. This is not optional. It is best done before any plastering, so it comes first on site.</p>
-  <p class="figure"><strong>€&nbsp;14,000 – 18,000</strong> for the full rewire.</p>
+  <h2 id="the-wiring-needs-replacing-in-full">The wiring needs replacing in full</h2>
+  <p>The fuse box dates from the 1970s and has six groups. Three rooms have no earth, and the wiring in the attic is still cloth-covered.</p>
+  <p>This is not optional, and it is best done before any plastering, so it sets the order for everything else.</p>
+  <p class="figure"><strong>€&nbsp;14,000 – 18,000</strong> for a full rewire.</p>
 </section>
 
 <section>
   <p class="kicker">Finding 2 · Necessary</p>
-  <h2 id="the-front-bay-is-damp">The front bay is damp</h2>
-  <p>We measured 22–28% moisture in the lower 60 cm of the bay wall in the living room; a dry wall here would be under 15%. The most likely cause is blocked air bricks and the garden bed against the facade, with soil above the damp course.</p>
-  <p>The fix is to clear the air bricks, lower the bed, let the wall dry out over a winter, then re-plaster with lime: €&nbsp;4,500 – 7,000.</p>
+  <h2 id="the-front-bay-is-damp-from-the-garden-side">The front bay is damp from the garden side</h2>
+  <p>The lower 60 cm of the bay wall in the living room reads 22–28% moisture. A dry wall here would be under 15%.</p>
+  <p>The most likely cause is outside the house: the air bricks are blocked, and the garden bed against the facade puts soil above the damp course.</p>
+  <p>The fix is to clear the air bricks, lower the bed, let the wall dry out over a winter and then re-plaster it with lime: €&nbsp;4,500 – 7,000.</p>
 </section>
 
 <section>
   <p class="kicker">Finding 3 · Necessary</p>
-  <h2 id="two-floor-joists-are-rotten">Two floor joists are rotten</h2>
-  <p>The ground floor is suspended timber over a crawl space. Two joists at the front are rotten at the ends, where the damp is; the rest are sound. Three of the five crawl space vents are blocked.</p>
-  <p>We would replace or splice the two joists, open the vents and insulate under the floor while it is open: €&nbsp;6,000 – 9,000. The floor insulation would be needed anyway.</p>
+  <h2 id="two-floor-joists-under-the-bay-have-rotted">Two floor joists under the bay have rotted</h2>
+  <p>The ground floor is suspended timber over a crawl space. Two joists at the front are rotten at the ends, where the damp is; the rest are sound. Three of the five crawl-space vents are blocked.</p>
+  <p>We would replace or splice the two joists, open the vents and insulate under the floor while it is open. The floor needs insulating anyway, so this is the moment: €&nbsp;6,000 – 9,000.</p>
 </section>
 
 <section>
-  <p class="kicker">Finding 4 · To be tested</p>
-  <h2 id="there-may-be-asbestos">There may be asbestos</h2>
-  <p>Two things look suspect: a flat sheet panel in the boiler cupboard, and floor tiles under the carpet in the back room that look like 1960s vinyl tiles. A test is booked for Wednesday 7 October (€&nbsp;450), with results in about 10 working days, around Wednesday 21 October.</p>
-  <p>If the test is positive, the material needs certified removal: €&nbsp;3,000 – 8,000, depending on what is found and how much. If it is negative, this costs nothing more.</p>
+  <p class="kicker">Finding 4 · Waiting on a test</p>
+  <h2 id="two-materials-may-contain-asbestos">Two materials may contain asbestos</h2>
+  <p>A flat sheet panel in the boiler cupboard, and the floor tiles under the carpet in the back room, which look like 1960s vinyl tiles.</p>
+  <p>The test is booked for Wed 7 Oct (€&nbsp;450), with results in about ten working days, around Wed 21 Oct. If either is positive, a certified firm removes it: €&nbsp;3,000 – 8,000, depending on what is found and how much.</p>
+  <div class="callout warn">
+    <p class="label">Until the results are in</p>
+    <p>Please leave the boiler cupboard panel and the back-room tiles as they are: no drilling, sanding or lifting.</p>
+  </div>
 </section>
 
 <section>
   <p class="kicker">Finding 5 · Keep</p>
-  <h2 id="the-stained-glass-stays">The stained glass stays</h2>
-  <p>The leaded stained-glass top lights at the front are original and in good shape. We advise keeping them and adding inner secondary glazing for heat and noise: €&nbsp;3,800. The rear windows are 1990s double glazing and fine as they are.</p>
+  <h2 id="the-leaded-top-lights-are-worth-keeping">The leaded top lights are worth keeping</h2>
+  <p>The stained-glass top lights (glas-in-lood) at the front are original and in good shape. We would keep them and add inner secondary glazing for warmth and quiet: €&nbsp;3,800.</p>
+  <p>The rear windows are 1990s double glazing and are fine as they are.</p>
 </section>
 
 <section>
   <p class="kicker">Finding 6 · Your wish</p>
-  <h2 id="the-extension-is-probably-permit-free">The kitchen extension is probably permit-free</h2>
-  <p>The garden is 14 m deep. An extension of 3.5–4 m deep across the full width, at the back and on the ground floor, is probably permit-free. We still need to confirm this with the municipality; Joost has built several in Haarlem.</p>
-  <p class="figure"><strong>€&nbsp;85,000 – 110,000</strong> for the extension, including a new kitchen.</p>
+  <h2 id="a-kitchen-extension-fits-the-garden">A kitchen extension fits the garden</h2>
+  <p>The garden is 14 m deep. An extension 3.5 to 4 m deep across the full width of the back is probably permit-free, as a ground-floor rear extension. We will confirm that with the municipality; Joost has built several in Haarlem.</p>
+  <p>Rough cost including the new kitchen: €&nbsp;85,000 – 110,000.</p>
 </section>
 
 <section>
   <p class="kicker">Finding 7 · Your wish</p>
-  <h2 id="a-loft-study-is-possible-at-a-cost">A loft study is possible, at a cost</h2>
-  <p>The loft is 2.10 m high under the ridge, with boards over joists. A study up there works, but a proper stair would take about 1.2 m² off the smallest bedroom. A rough cost for the conversion, with the stair, insulation, a dormer at the back and a window, is €&nbsp;28,000 – 36,000.</p>
+  <h2 id="the-loft-can-take-a-study-at-a-cost">The loft can take a study, at a cost</h2>
+  <p>The ridge is 2.10 m high in the middle and the floor is boards over joists. A study up there is possible, but a proper stair would take about 1.2 m² off the smallest bedroom.</p>
+  <p>Rough cost for the conversion, with the stair, insulation, a dormer at the back and a window: €&nbsp;28,000 – 36,000.</p>
 </section>
 
 <section>
-  <p class="kicker">The sums</p>
+  <p class="kicker">Budget</p>
   <h2 id="what-it-adds-up-to">What it adds up to</h2>
+  <p>Your budget for the works is €&nbsp;240,000, not counting our fee or furniture. The necessary works come first, whatever else you decide; the low end assumes no asbestos is found.</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Works</th><th class="num">Rough cost</th></tr></thead>
+      <thead>
+        <tr><th>Package</th><th class="num">Low</th><th class="num">High</th><th class="num">Left of €&nbsp;240,000</th></tr>
+      </thead>
       <tbody>
-        <tr><td>Rewire</td><td class="num">€&nbsp;14,000 – 18,000</td></tr>
-        <tr><td>Damp front bay</td><td class="num">€&nbsp;4,500 – 7,000</td></tr>
-        <tr><td>Floor joists, vents, floor insulation</td><td class="num">€&nbsp;6,000 – 9,000</td></tr>
-        <tr><td>Asbestos removal, only if the test is positive</td><td class="num">€&nbsp;0 – 8,000</td></tr>
-        <tr><td>Secondary glazing, front</td><td class="num">€&nbsp;3,800</td></tr>
-        <tr><th scope="row">Necessary work</th><td class="num"><strong>€&nbsp;28,300 – 45,800</strong></td></tr>
-        <tr><td>Kitchen extension</td><td class="num">€&nbsp;85,000 – 110,000</td></tr>
-        <tr><th scope="row">Necessary work + extension</th><td class="num"><strong>€&nbsp;113,300 – 155,800</strong></td></tr>
-        <tr><td>Loft conversion</td><td class="num">€&nbsp;28,000 – 36,000</td></tr>
-        <tr><th scope="row">With the loft</th><td class="num"><strong>€&nbsp;141,300 – 191,800</strong></td></tr>
+        <tr><td>Necessary works (findings 1–5)</td><td class="num">€&nbsp;28,000</td><td class="num">€&nbsp;46,000</td><td class="num">€&nbsp;194,000 – 212,000</td></tr>
+        <tr><td>Necessary works + extension</td><td class="num">€&nbsp;113,000</td><td class="num">€&nbsp;156,000</td><td class="num">€&nbsp;84,000 – 127,000</td></tr>
+        <tr><td>Necessary works + extension + loft</td><td class="num">€&nbsp;141,000</td><td class="num">€&nbsp;192,000</td><td class="num">€&nbsp;48,000 – 99,000</td></tr>
       </tbody>
     </table>
   </div>
-  <p>Against your budget of €&nbsp;240,000 for the works (not counting our fee or furniture), the necessary work and the extension leave €&nbsp;84,200 – 126,700 for the rest of the house: the bathroom, floors and paint. With the loft that drops to €&nbsp;48,200 – 98,700. The rest of the house is not priced yet; at the top of the ranges, we do not think it fits. The asbestos test (€&nbsp;450) comes on top.</p>
+  <p>What is left has to cover the rest of the house: the bathroom, floors and paint. With the extension there is room for that. With the loft as well it gets tight, and at the top of the ranges it does not fit.</p>
+  <p class="verdict">The extension and the necessary works fit your budget together; the loft is the part that puts it at risk.</p>
 </section>
 
 <section>
-  <p class="kicker">Our advice</p>
-  <h2 id="recommendations">Recommendations</h2>
+  <p class="kicker">Advice</p>
+  <h2 id="our-advice">Our advice</h2>
   <ol class="recs">
-    <li><div>Do the necessary work first, whatever else you decide. The rewire and the damp come before any finishing.</div><span class="from">From findings 1 to 3</span></li>
+    <li><div>Do the necessary works first, whatever else you decide. The rewire and the damp come before any finishing.</div><span class="from">From findings 1–4</span></li>
     <li><div>Design the kitchen extension now.</div><span class="from">From finding 6</span></li>
-    <li><div>Keep the loft as phase 2: we design the house with the stair position reserved, and you build it later.</div><span class="from">From finding 7 and the sums</span></li>
-    <li><div>Decide by Friday 16 October whether the loft goes in the brief or into phase 2, so we can start the concept on Monday 19 October.</div><span class="from">From the sums</span></li>
+    <li><div>Keep the loft as phase 2: we design the house with the stair position reserved, and you build it later.</div><span class="from">From finding 7 and the budget</span></li>
+    <li><div>Decide by Fri 16 Oct whether the loft goes in the brief or waits for phase 2, so we can start the concept on Mon 19 Oct.</div><span class="from">From the budget</span></li>
   </ol>
 </section>
 
 <section>
-  <p class="kicker">Calendar</p>
+  <p class="kicker">Planning</p>
   <h2 id="next-steps">Next steps</h2>
   <ol class="steps">
-    <li><span class="when">This week</span><div>Daan Visser asks the municipality to confirm the extension is permit-free.</div></li>
-    <li><span class="when">Wed 7 Oct</span><div>Asbestos test, arranged by Van Eck Bouw. Someone needs to let them in: can Priya do this?</div></li>
-    <li><span class="when">Fri 16 Oct</span><div>You decide: the loft in the brief, or phase 2.</div></li>
+    <li><span class="when">Now</span><div>Daan Visser asks the municipality whether the extension is permit-free.</div></li>
+    <li><span class="when">Wed 7 Oct</span><div>Asbestos test, arranged by Van Eck Bouw. Someone needs to let them in.</div></li>
+    <li><span class="when">Fri 16 Oct</span><div>Your decision on the loft: in the brief, or phase 2.</div></li>
     <li><span class="when">Mon 19 Oct</span><div>We start the concept.</div></li>
-    <li><span class="when">Around Wed 21 Oct</span><div>Asbestos test results, and with them the final figure for the necessary work.</div></li>
+    <li><span class="when">~Wed 21 Oct</span><div>Asbestos results; we send you the removal cost if anything is positive.</div></li>
   </ol>
+</section>
+
+<section class="ask">
+  <p class="kicker">Over to you</p>
+  <h2 id="what-we-need-from-you">What we need from you</h2>
+  <ul>
+    <li><strong>Wed 7 Oct:</strong> who lets Van Eck Bouw in for the asbestos test? We had Priya in mind; let us know if that works.</li>
+    <li><strong>Fri 16 Oct:</strong> the loft in this brief, or as phase 2.</li>
+  </ul>
 </section>
 
 <footer class="doc-close">
   <p class="label">Prepared by</p>
   <p class="from">Liv Halde and Daan Visser, Studio Halde</p>
+  <dl class="meta">
+    <div><dt>Builder on the survey</dt><dd>Joost van Eck, Van Eck Bouw</dd></div>
+    <div><dt>Date</dt><dd>Fri 2 Oct 2026</dd></div>
+  </dl>
 </footer>
 
 </main>

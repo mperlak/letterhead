@@ -22,7 +22,7 @@
   "questions": [],
   "notes": {
     "name": "We took the name from the page title data, the logo and the footer; documents say Kestrel Labs and leave the legal form B.V. to the footer of contracts.",
-    "logo": "The cobalt mark with the kestrel labs wordmark from your site header, used as it is; in dark mode it sits on a light plate so the navy lettering stays readable.",
+    "logo": "The cobalt mark with the kestrel labs wordmark from your site header, used as it is; in dark mode the navy lettering turns into the light text color and the cobalt is lifted a shade, so both stay readable on the dark page.",
     "tone": "Short sentences with the actual time, number or street in them: what happened, what Kestrel did, what the driver or the developer sees next.",
     "avoid": ["seamless", "revolutionary", "leverage"]
   }

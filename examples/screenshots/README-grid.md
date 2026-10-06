@@ -65,9 +65,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/report--halde.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="report--halde-dark.webp">
-        <img src="report--halde-light.webp" alt="The Mulder house in Haarlem" width="100%">
+        <img src="report--halde-light.webp" alt="Survey report" width="100%">
       </picture></a><br>
-      <b>The Mulder house in Haarlem</b><br>
+      <b>Survey report</b><br>
       <sub>Report · halde brand</sub>
     </td>
     <td align="center" width="33%">
@@ -83,9 +83,9 @@
     <td align="center" width="33%">
       <a href="https://mperlak.github.io/letterhead/documents/status-update--arkona.html"><picture>
         <source media="(prefers-color-scheme: dark)" srcset="status-update--arkona-dark.webp">
-        <img src="status-update--arkona-light.webp" alt="Arkona webshop and ERP sync" width="100%">
+        <img src="status-update--arkona-light.webp" alt="Arkona webshop and ERP order sync" width="100%">
       </picture></a><br>
-      <b>Arkona webshop and ERP sync</b><br>
+      <b>Arkona webshop and ERP order sync</b><br>
       <sub>Status update · arkona brand</sub>
     </td>
     <td align="center" width="33%">

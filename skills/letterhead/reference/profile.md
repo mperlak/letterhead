@@ -193,7 +193,9 @@ The logo tokens:
   logo makes every document a multi-megabyte attachment that mail clients
   refuse. For single-color artwork the data URI sits in
   `--brand-logo-mask` and `--brand-logo` points at it, so there is one copy
-  either way.
+  either way. An SVG wordmark set as `<text>` carries its font inside the
+  data URI, counted against the same limit; an image cannot reach the
+  document's fonts.
 - **`--brand-logo-on`** names the background the logo is legible on, not
   the background of the page. `dark` means the artwork is light-colored and
   needs something dark behind it.
@@ -230,10 +232,15 @@ looks empty, which every reader reads as a broken file.
   blocks set it to the dark theme's text color. The logo turns light in
   dark mode with no second copy and nothing behind it. Documents that still
   draw `var(--brand-logo)` as a background get the light-theme image.
-- **Multi-color artwork on paper:** recoloring would flatten it, so the
-  dark blocks set `--brand-logo-plate` to a light color and `:root` sets it
-  to `transparent`. Documents put the logo on that plate, with the padding
-  outside the sized box so the plate fits the artwork.
+- **Multi-color artwork on paper:** one mask color would flatten it, so
+  both dark blocks carry `--brand-logo-dark`, a copy recolored color by
+  color (colors with 3:1 on the dark page stay, near-neutral ink becomes
+  the dark text color, a too-dark brand color is lifted at its hue), and
+  point `--brand-logo` at it. Documents draw `var(--brand-logo)` and get the
+  right artwork in each theme. A light plate on a dark page looks pasted
+  on, so it is only the fallback for artwork the script cannot read color
+  by color (gradients, JPGs): the dark blocks then set `--brand-logo-plate`
+  to a light color and `:root` sets it to `transparent`.
 - **Artwork on a dark band** (`--brand-logo-on: dark`): `--brand-logo-plate`
   is the same dark color in all three blocks, so the band stays dark in
   both themes instead of turning into the dark theme's light text color.
