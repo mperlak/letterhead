@@ -1489,6 +1489,10 @@ async function main() {
 
   const primaryLight = parseColorArg(args.primary, '--primary');
   const primaryForegroundLight = pickInkForFill(primaryLight);
+  // A black, white or grey primary (Vercel) has no hue. Derived from it, the
+  // accent took hue 0 and came out pink, and the dark theme lifted black to
+  // a mid grey just past 3:1; the brand's own dark mode inverts instead.
+  const achromatic = !(primaryLight.c >= 0.02) || !Number.isFinite(primaryLight.h);
 
   // The brand's own accent (a named secondary color, or the logo's second
   // color) when --accent names one; otherwise a light tint of the primary.
@@ -1502,10 +1506,12 @@ async function main() {
     accentArg = quantize(clampChromaToGamut(given.l, given.c || 0, h));
     if ((given.c || 0) - accentArg.c > 0.002) warn(`--accent ${args.accent} is outside sRGB; chroma lowered to ${round3(accentArg.c)}`);
   }
-  const accentLight = accentArg || clampChromaToGamut(0.95, 0.05, primaryLight.h);
+  const tintChroma = achromatic ? 0 : 0.05;
+  const tintHue = achromatic ? 0 : primaryLight.h;
+  const accentLight = accentArg || clampChromaToGamut(0.95, tintChroma, tintHue);
   const accentDark = accentArg
     ? quantize(clampChromaToGamut(0.3, Math.min(accentArg.c, 0.05), accentArg.h))
-    : clampChromaToGamut(0.25, 0.05, primaryLight.h);
+    : clampChromaToGamut(0.25, tintChroma, tintHue);
 
   const foregroundLight = args.foreground ? parseColorArg(args.foreground, '--foreground') : null;
   const backgroundLight = args.background ? parseColorArg(args.background, '--background') : null;
@@ -1542,11 +1548,16 @@ async function main() {
   // Dark theme: the brand color as it is when it reads on the dark page,
   // lifted just enough when it does not; the ink is the same hue at full
   // chroma, as dark as 4.5:1 allows.
-  const primaryDark = computeDarkPrimary(primaryLight, backgroundDarkForContrast);
+  // A dark achromatic primary turns into the dark theme's own text color,
+  // both as the fill and as the ink: black buttons become white ones.
+  const foregroundDarkColor = foregroundDarkRaw && parse(foregroundDarkRaw) ? toOklch(parse(foregroundDarkRaw)) : null;
+  const invertsInDark = achromatic && primaryLight.l < 0.5 && foregroundDarkColor
+    && contrastOklch(foregroundDarkColor, backgroundDarkForContrast) >= 4.5;
+  const primaryDark = invertsInDark ? quantize(foregroundDarkColor) : computeDarkPrimary(primaryLight, backgroundDarkForContrast);
   const primaryForegroundDark = pickInkForFill(primaryDark);
 
   const primaryInkLight = computeInk(primaryLight, backgroundLightForContrast, 'darker');
-  const primaryInkDark = computeDarkInk(primaryLight, backgroundDarkForContrast);
+  const primaryInkDark = invertsInDark ? primaryDark : computeDarkInk(primaryLight, backgroundDarkForContrast);
 
   // ---- fonts ---------------------------------------------------------------------
 

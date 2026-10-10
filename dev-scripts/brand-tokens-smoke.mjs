@@ -276,6 +276,19 @@ console.log('dark-mode logo: single-color artwork is one copy, drawn as a mask')
   check('rerun on its own output keeps one logo copy', (again.css.match(/data:image\/png;base64/g) || []).length === 1 && (again.css.match(/--brand-logo-color:/g) || []).length === 3);
 }
 
+console.log('an achromatic primary (black, Vercel): no hue to tint with');
+{
+  const { res, css } = run(['--style', STYLE, '--primary', '#000000', '--font-body', 'Geist']);
+  const b = blocks(css);
+  const darkFg = tok(b.dark, 'foreground');
+  check('exits 0', res.status === 0);
+  check('the derived accent is a neutral grey, not hue-0 pink', /^oklch\(0\.950 0\.000 /.test(tok(b.light, 'accent') || '') && /^oklch\(0\.250 0\.000 /.test(tok(b.dark, 'accent') || ''));
+  const nums = (v) => (v || '').match(/[\d.]+/g)?.map(Number).join(',');
+  check('in both dark blocks black turns into the dark text color, fill and ink', !!darkFg && ['dark', 'os'].every((k) => nums(tok(b[k], 'primary')) === nums(tok(b[k], 'foreground')) && nums(tok(b[k], 'primary-ink')) === nums(tok(b[k], 'foreground'))));
+  const red = run(['--style', STYLE, '--primary', '#c60507', '--font-body', 'Geist']);
+  check('a saturated primary keeps its hue in dark mode', nums(tok(blocks(red.css).dark, 'primary')) !== nums(tok(blocks(red.css).dark, 'foreground')));
+}
+
 console.log('--logo-tint on fill="none" + currentColor (Cursor\'s header logo)');
 {
   const p = join(TMP, 'current-color.svg');

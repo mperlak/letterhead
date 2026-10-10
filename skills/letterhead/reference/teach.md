@@ -147,7 +147,13 @@ exist because the obvious reading of the evidence is often wrong.
   context does not earn that context. A variable named
   `primary` / `brand` / `accent` wins when the script does not flag it
   `vendor` and it paints elements on this page; a page builder's untouched
-  default (`vendorReason: builder-default`) is not a decision. Plugin and
+  default (`vendorReason: builder-default`) is not a decision. When two
+  such variables both paint the page (a `--brand` the logo is drawn in and
+  an `--accent` on the buttons and links), the name decides nothing:
+  elements decide, and the other one is the secondary color. Markloop's
+  logo plum on six elements otherwise beat the violet of its seventeen
+  buttons and links, and the sheet's links came out a shade from its body
+  text. Plugin and
   widget variables (`--gf-*`, `--tw-*`, `--stk-*`, `--fupi-*`, chat and
   consent widgets), colors used only in the WordPress
   admin bar, and colors from a cookie banner are not brand colors; the
@@ -171,7 +177,18 @@ exist because the obvious reading of the evidence is often wrong.
   the same color to the eye): the logo is the color the owner recognizes as
   theirs. A primary that differs from the logo by a shade reads as a
   mistake on the sheet. The number is already computed; converting colors
-  by hand to compare them is a round trip that decides nothing new.
+  by hand to compare them is a round trip that decides nothing new. Close
+  means the runner-up paints at least half as many elements as the leader.
+  A variable named as a shade of another candidate's (`--accent-dark`
+  beside `--accent`, or `-hover`, `-light`, `-600`) is that color's text or
+  hover shade, not a rival; taken as one, Markloop's darker link violet
+  beat its button violet on logo distance. When
+  no saturated candidate paints an element and the logo is black or grey,
+  the brand is monochrome (Vercel): the primary is the black or near-black
+  its buttons and links use, from `colors[]` in the full JSON
+  (`saturated: false`), and there is no secondary. A saturated color that
+  paints nothing is a stylesheet leftover; made the primary, it hands a
+  black-and-white brand a yellow sheet.
 - **Secondary color:** never a question. Record it as
   `fields["colors.secondary"]` and pass it to `brand-tokens.mjs` as
   `--accent` (step 5) when the brand names one: a non-vendor variable
