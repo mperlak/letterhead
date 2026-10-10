@@ -23,7 +23,7 @@ this set and were reused as they are for the regeneration: no run taught a
 brand again. The `tokens.css` of Arkona, Fieldwork and Kestrel was derived
 again later with `brand-tokens.mjs`, after its logo fixes, with the command
 `teach` prescribes and the values in each `profile.meta.json`, and their
-brand sheets were rendered again (see the second pass below). Each folder holds the taught profile as `teach`
+brand sheets were rendered again (see the second and third passes below). Each folder holds the taught profile as `teach`
 wrote it: `profile.meta.json`, `DESIGN.md`, `PRODUCT.md`, `tokens.css`
 (fonts embedded as woff2 data URIs, logo embedded), `logo.svg` and
 `brand-sheet.html`. In a real project the profile would live in
@@ -173,6 +173,20 @@ succeeded on the first attempt. No document draws its logo by hand; all
 four use `apply-tokens.mjs` and `check-document.mjs`, and two changed their
 own output after the first write (fixes by `Edit`, and a `sed` that
 put non-breaking spaces after the euro signs).
+
+### Third pass: styles and brand sheet, 10 October 2026
+
+No document was written again and no text changed. The styles had moved on
+(the brand's second color as the soft fill of the summary, workshop's state
+pills on the paper, startup's headings at the brand's weight), so the style
+and token blocks of the thirteen styled documents and of `hero/after.html`
+were replaced with `apply-tokens.mjs` and the same `--style` as before; the
+`<body>` of every file is byte for byte what it was. The presentation has no
+style block and was left as it is. The five brand sheets were rendered again
+with `brand-sheet.mjs` from their unchanged profiles, for its new first
+screen (the open questions under the title, status and date on one line,
+the rest of the metadata in the footer). The screenshots, the hero images,
+the teaser and the demo film were rebuilt from these files.
 
 ### Presentation: BunnyFeelsHome
 

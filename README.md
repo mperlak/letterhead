@@ -271,10 +271,10 @@ Every value records where it came from and how sure the agent is; when
 something is missing, it asks rather than picking a random color. A brand
 book PDF, HTML files or a short interview work as sources too.
 
-**The brand sheet** shows the colors, fonts and logo with their sources and
-the agent's open questions. Send it to whoever owns the brand before the
-first document, so a wrong blue gets fixed on one page, not in a
-twenty-page spec.
+**The brand sheet** opens with the agent's open questions, then shows the
+colors, fonts and logo with their sources. Send it to whoever owns the
+brand before the first document, so a wrong blue gets fixed on one page,
+not in a twenty-page spec.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/brand-sheet--halde-dark.webp">
