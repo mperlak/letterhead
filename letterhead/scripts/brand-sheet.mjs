@@ -248,6 +248,28 @@ function extractCssVar(tokensCss, name) {
   return m ? m[1].trim() : null;
 }
 
+// Whether the light theme's text ink is a darker copy of the primary, or
+// the primary itself. brand-tokens.mjs writes --primary-ink equal to
+// --primary when the brand color already reaches 4.5:1 on the paper (a
+// dark green, a navy); then the sheet must not tell the owner their color
+// is swapped for a darker one in text. No --primary-ink at all (a hand-made
+// file) counts as a separate ink: documents then set that text in the
+// foreground, not in the brand color.
+function primaryInkIsPrimary(tokensCss) {
+  const primary = extractCssVar(tokensCss, '--primary');
+  const ink = extractCssVar(tokensCss, '--primary-ink');
+  if (!primary || !ink) return false;
+  const oklch = (v) => {
+    const m = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)/i.exec(v);
+    return m ? { l: Number(m[1]) / (m[2] ? 100 : 1), c: Number(m[3]), h: Number(m[4]) } : null;
+  };
+  const a = oklch(primary);
+  const b = oklch(ink);
+  if (!a || !b) return primary.replace(/\s+/g, '').toLowerCase() === ink.replace(/\s+/g, '').toLowerCase();
+  const dh = Math.abs(((a.h - b.h + 540) % 360) - 180);
+  return Math.abs(a.l - b.l) < 0.005 && Math.abs(a.c - b.c) < 0.005 && (dh < 1 || Math.max(a.c, b.c) < 0.01);
+}
+
 // Intrinsic width/height of the logo artwork, so the sheet draws it at its
 // own proportions instead of a fixed box (a 3.6:1 wordmark squeezed into
 // 3:1 reads as a different logo). PNG IHDR, SVG viewBox/width/height, JPEG
@@ -345,6 +367,7 @@ const STRINGS = {
     fromStyle: 'Ze stylu.',
     confirmPill: 'do sprawdzenia',
     colorClosing: 'Kolor główny służy do wypełnień i linii; do tekstu w tym kolorze używamy jego przyciemnionej wersji.',
+    colorClosingSameInk: 'Kolor główny jest czytelny na jasnej kartce, więc tekst w kolorze marki używa go bez zmian, tak jak wypełnienia i linie.',
     bodyFace: 'Krój tekstu',
     headingFace: 'Krój nagłówków',
     headingWeight: 'Waga nagłówków',
@@ -416,6 +439,7 @@ const STRINGS = {
     fromStyle: 'From the style.',
     confirmPill: 'please check',
     colorClosing: 'The primary color is used for fills and rules; text set in that color uses its darkened ink variant instead.',
+    colorClosingSameInk: 'The primary color reads on the light page as it is, so text in the brand color uses it unchanged, like fills and rules.',
     bodyFace: 'Body face',
     headingFace: 'Heading face',
     headingWeight: 'Heading weight',
@@ -592,6 +616,7 @@ function buildModel(profile, warn) {
   const ratioToken = Number(extractCssVar(tokensCss, '--brand-logo-ratio'));
   const logoDims = ratioToken > 0 ? { width: ratioToken, height: 1 } : logoDimensions(logoDataUri);
   const logoPlate = /--brand-logo-plate\s*:/.test(tokensCss);
+  const inkIsPrimary = primaryInkIsPrimary(tokensCss);
   if (!logoDataUri) warn('no --brand-logo data URI found in tokens.css — falling back to a text mark');
   else if (!logoDims) warn('could not read the logo\'s own proportions — drawing it at 3:1');
 
@@ -685,7 +710,7 @@ function buildModel(profile, warn) {
     name, slug, style, lang, sources,
     primary, foreground, secondary, backgroundTokenValue, foregroundTokenValue, backgroundFromBrand,
     bodyFace, headingFace, headingWeight,
-    logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask,
+    logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask, inkIsPrimary,
     notesName, notesLogo, notesTone, voiceSample, nowords,
     composition, questions, previewSample, previewTitle, previewNextStep, notesPreview,
   };
@@ -1095,7 +1120,7 @@ ${renderMasthead(model, t)}
   <div class="swatches">
 ${swatches.join('\n')}
   </div>
-  <p>${escapeHtml(t.colorClosing)}</p>
+  <p>${escapeHtml(model.inkIsPrimary ? t.colorClosingSameInk : t.colorClosing)}</p>
 </section>
 
 <section>

@@ -17,7 +17,8 @@
 // block, before the document's own style, a favicon, idempotent on a second
 // run, and check-document passes. A profile without `preview` gets a
 // neutral sample labeled as one, and prose in the wrong language is a
-// warning.
+// warning. The sentence under Colors says the primary is darkened for text
+// only when --primary-ink differs from --primary.
 //
 // Usage: node dev-scripts/brand-sheet-smoke.mjs
 // Exit codes: 0 all assertions passed, 1 a run or assertion failed.
@@ -191,6 +192,36 @@ console.log('generated tokens: dark-mode logo copy and embedded fonts');
   check('marks keep the 180 / 40 proportions from --brand-logo-ratio', (html.match(/<span class="mark-img[^>]*>/g) || []).every((m) => Math.abs(markRatio(m) - 4.5) < 0.02));
   check('embedded @font-face reaches the sheet', /@font-face\s*\{\s*font-family: "Roboto";[^}]*data:font\/woff2;base64,/.test(html));
   check('no http(s):// external resource reference', !hasExternalHttpRef(html));
+}
+
+console.log('the ink sentence under Colors follows the tokens');
+{
+  const DARKER = { pl: 'używamy jego przyciemnionej wersji', en: 'uses its darkened ink variant' };
+  const SAME = { pl: 'używa go bez zmian', en: 'uses it unchanged' };
+  for (const lang of ['pl', 'en']) {
+    const fixtureHtml = readFileSync(join(tmp, `${lang}.html`), 'utf8');
+    check(`${lang}: a separate --primary-ink gets the darkened-ink sentence`, fixtureHtml.includes(DARKER[lang]) && !fixtureHtml.includes(SAME[lang]));
+    const dir = join(tmp, `same-ink-${lang}`);
+    cpSync(join(FIXTURES, lang), dir, { recursive: true });
+    const tokensPath = join(dir, 'tokens.css');
+    const css = readFileSync(tokensPath, 'utf8');
+    const primary = /--primary:\s*([^;]+);/.exec(css)[1];
+    writeFileSync(tokensPath, css.replace(/--primary-ink:\s*[^;]+;/, `--primary-ink: ${primary};`));
+    const outPath = join(tmp, `same-ink-${lang}.html`);
+    const res = runBrandSheet(dir, outPath);
+    let html = '';
+    try { html = readFileSync(outPath, 'utf8'); } catch {}
+    check(`${lang}: --primary-ink equal to --primary says the color is used unchanged`, res.status === 0 && html.includes(SAME[lang]) && !html.includes(DARKER[lang]));
+  }
+  // End to end: a dark green that reaches 4.5:1 on paper gets no darker ink.
+  const dir = join(tmp, 'dark-green');
+  cpSync(join(FIXTURES, 'en'), dir, { recursive: true });
+  const tok = spawnSync(process.execPath, [TOKENS_SCRIPT, '--style', CORPORATE, '--primary', '#016337', '--foreground', '#1c1f26',
+    '--font-body', 'Roboto, sans-serif', '--embed-fonts', '--lang', 'en', '--font-file', `Roboto=${FONT_FIXTURE}`, '--out', join(dir, 'tokens.css')], { encoding: 'utf8' });
+  const res = runBrandSheet(dir, join(tmp, 'dark-green.html'));
+  let html = '';
+  try { html = readFileSync(join(tmp, 'dark-green.html'), 'utf8'); } catch {}
+  check('brand-tokens.mjs on #016337, then the sheet says the color is used unchanged', tok.status === 0 && res.status === 0 && html.includes(SAME.en));
 }
 
 console.log('apply-tokens.mjs: tokens into a document');
