@@ -446,20 +446,6 @@ const STRINGS = {
     nowordsLabel: 'Trzy słowa, których nie użyjemy',
     nowordsEmpty: 'Nie mamy jeszcze listy słów do wykluczenia.',
     compositionFallback: 'Układ dokumentów (odstępy, ramki, listy, podział na sekcje) pokazujemy w podglądzie na końcu arkusza. Jeśli Państwa dokumenty wyglądają inaczej, prosimy o przykład albo komentarz.',
-    density: {
-      compact: 'Gęstość: ciasna — mało powietrza wokół elementów, dużo treści na ekranie.',
-      regular: 'Gęstość: zwykła — powietrze i treść są w równowadze.',
-      airy: 'Gęstość: przewiewna — dużo powietrza wokół elementów.',
-    },
-    imagery: {
-      none: 'Zdjęcia: brak — marka nie korzysta z fotografii.',
-      spot: 'Zdjęcia: punktowe — pojedyncze, celowo wybrane obrazy.',
-      'full-bleed': 'Zdjęcia: na całą szerokość — obrazy sięgają od krawędzi do krawędzi.',
-    },
-    rhythm: {
-      continuous: 'Rytm: ciągły — sekcje płynnie przechodzą jedna w drugą.',
-      sectioned: 'Rytm: dzielony — każda sekcja zaczyna się widoczną przerwą.',
-    },
     questionsClosing: 'Jeśli coś tutaj nie jest Państwa, prosimy o komentarz w tym miejscu.',
     previewIntro: 'Tak zacznie się pierwszy dokument złożony w Państwa barwach.',
     previewIntroSample: 'Tak będą wyglądać Państwa dokumenty. Ten przykład opisuje pracę nad Państwa marką, więc nic w nim nie jest zmyślone.',
@@ -539,20 +525,6 @@ const STRINGS = {
     nowordsLabel: 'Three words we will not use',
     nowordsEmpty: 'No words are excluded yet.',
     compositionFallback: 'The layout of your documents (spacing, boxes, lists, how sections break) is shown in the preview at the end of this sheet. If your documents look different, please send an example or a comment.',
-    density: {
-      compact: 'Density: compact — little air around elements, more content per screen.',
-      regular: 'Density: regular — air and content are balanced.',
-      airy: 'Density: airy — generous space around elements.',
-    },
-    imagery: {
-      none: 'Imagery: none — the brand does not use photography.',
-      spot: 'Imagery: spot — single, deliberately chosen images.',
-      'full-bleed': 'Imagery: full-bleed — images run edge to edge.',
-    },
-    rhythm: {
-      continuous: 'Rhythm: continuous — sections flow into one another.',
-      sectioned: 'Rhythm: sectioned — each section opens with a visible break.',
-    },
     questionsClosing: 'If anything here is not yours, say so in a comment on that place.',
     previewIntro: 'This is how the first document set in your colors will open.',
     previewIntroSample: 'This is how your documents will look. The example describes the work on your brand, so nothing in it is made up.',
@@ -783,18 +755,6 @@ function buildModel(profile, warn) {
     if (nowords.length === 0) warn('no anti-reference words found in PRODUCT.md and no notes.avoid — "words we will not use" list omitted');
   }
 
-  // Composition ------------------------------------------------------------
-  let composition = meta.composition && typeof meta.composition === 'object' ? { ...meta.composition } : null;
-  if (!composition) {
-    const density = fieldValue(meta, 'composition.density');
-    const imagery = fieldValue(meta, 'composition.imagery');
-    const rhythm = fieldValue(meta, 'composition.rhythm');
-    if (density || imagery || rhythm) {
-      composition = { density, imagery, rhythm };
-      warn('meta.composition object missing — assembled from fields["composition.*"] instead');
-    }
-  }
-
   // Questions ----------------------------------------------------------
   let questions = Array.isArray(meta.questions) ? meta.questions : [];
   if (questions.length === 0 && !Array.isArray(meta.questions)) {
@@ -837,7 +797,7 @@ function buildModel(profile, warn) {
     bodyFace, headingFace, headingWeight,
     logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask, inkIsPrimary, previewCss, fieldStates,
     notesName, notesLogo, notesTone, voiceSample, nowords,
-    composition, questions, previewSample, previewTitle, previewNextStep, notesPreview,
+    questions, previewSample, previewTitle, previewNextStep, notesPreview,
   };
 }
 
@@ -1101,16 +1061,10 @@ ${model.nowords.map((w) => `    <li>${escapeHtml(w)}</li>`).join('\n')}
     : `<p>${escapeHtml(t.nowordsEmpty)}</p>`;
 
   // ---- Section 5: composition ----
-  let compositionBody;
-  if (model.composition && (model.composition.density || model.composition.imagery || model.composition.rhythm)) {
-    const lines = [];
-    if (model.composition.density && t.density[model.composition.density]) lines.push(`<p>${escapeHtml(t.density[model.composition.density])}</p>`);
-    if (model.composition.imagery && t.imagery[model.composition.imagery]) lines.push(`<p>${escapeHtml(t.imagery[model.composition.imagery])}</p>`);
-    if (model.composition.rhythm && t.rhythm[model.composition.rhythm]) lines.push(`<p>${escapeHtml(t.rhythm[model.composition.rhythm])}</p>`);
-    compositionBody = lines.join('\n  ');
-  } else {
-    compositionBody = `<p>${escapeHtml(t.compositionFallback)}</p>`;
-  }
+  // Always the pointer to the preview. The profile's composition fields
+  // (density, imagery, rhythm) are a record nothing applies: listed here
+  // they read as settings, and the owner's correction changes no document.
+  const compositionBody = `<p>${escapeHtml(t.compositionFallback)}</p>`;
 
   // ---- Section 6: questions ----
   let questionsBody;

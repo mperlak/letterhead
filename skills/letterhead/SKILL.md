@@ -191,9 +191,11 @@ When sources disagree, higher wins:
 composition, register. A brand profile overrides the style's colors (in both
 themes), fonts, voice, and logo, and keeps the style's layout. Putting a
 brand in a style other than its base one is one flag:
-`apply-tokens.mjs <profile> <file> --style <slug>`. A filled `Composition` section in the profile also
-overrides the style's composition; an empty one leaves composition to the
-style, because a brand nobody measured should not dictate layout. The user
+`apply-tokens.mjs <profile> <file> --style <slug>`. Layout always comes from
+the style. A profile's `Composition` section records how the brand lays
+things out, for people and other tools; nothing applies it, so a brand
+whose documents should look different gets a different base style, not
+edited composition fields that change no document. The user
 may say "ignore the brand" for one document; record that choice in the
 shape gate and as an HTML comment in the file, so the next person to open
 it does not read an off-brand document as a mistake.

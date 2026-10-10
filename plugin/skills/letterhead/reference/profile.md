@@ -87,10 +87,14 @@ composition:
 - **rhythm** — whether sections flow into each other or each one opens with
   a visible break.
 
-Absent keys mean the style governs composition. Do not write a value you
-cannot point at a source for: composition comes from a screenshot, a PDF,
-or the user's answers, never from the palette. A guessed `airy` outranks a
-calibrated style and produces a layout nobody chose.
+These keys are a record, not a setting: no script or style applies them,
+and documents take their layout from the base style. They tell people and
+other tools that read `DESIGN.md` how the brand lays things out, and the
+brand sheet does not list them, because a value shown as a setting invites
+a correction that changes no document. To change a brand's layout, change
+its base style. Do not write a value you cannot point at a source for:
+composition comes from a screenshot, a PDF, or the user's answers, never
+from the palette; a guessed `airy` is a fact nobody measured.
 
 The prose section says the same thing in sentences a human can argue with,
 one short paragraph. When the keys are absent, the section says so and
@@ -347,8 +351,8 @@ shows on the sheet and never in a document.
 | `typography.headingWeight` | `--heading-weight` | `--font-heading-weight` |
 | `logo` | `--logo` (plus `--logo-on`, `--logo-tint`) | `--brand-logo*` |
 
-`name`, `voice.*` and `composition.*` are read by the sheet and by
-`create`, not by the tokens script.
+`name` and `voice.*` are read by the sheet and by `create`, not by the
+tokens script. `composition.*` is a record only: nothing applies it.
 
 **Confidence.**
 
@@ -397,10 +401,10 @@ an opinion.
    are binding. Without this rule a style
    repaints a confirmed primary color, and the reader receives a document in
    somebody else's blue.
-3. **A filled `composition` block overrides the style's composition; an
-   empty one leaves composition to the style.** Without this rule a density
-   guessed from one screenshot outranks a calibrated style, and documents
-   drift airy or cramped for no reason anyone recorded.
+3. **Composition is the style's; a `composition` block is a record.**
+   Nothing applies the block, so a document never drifts airy or cramped
+   from a density guessed off one screenshot; a brand that needs another
+   layout gets another base style.
 4. **A one-off override from the user wins over both, and gets recorded.**
    "Ignore the brand" or "in the engineering style anyway" applies to that
    document only, is stated in the shape gate, and goes into the file as an

@@ -79,10 +79,10 @@ Seven sections, always the same, always in this order:
    named, three words verifiably absent from the brand's own copy. The three
    words are what makes this section answerable; a tone paragraph alone gets
    a nod and no correction.
-5. **Composition** (`composition`). When the profile's composition block is
-   filled, density, imagery and rhythm as three plain sentences. When it is
-   empty, which is the normal case, one sentence pointing at the preview,
-   where the layout is shown rather than named. A style's name means
+5. **Composition** (`composition`). One sentence pointing at the preview,
+   where the layout is shown rather than named. The profile's composition
+   fields are not listed: nothing applies them, and a sheet that shows them
+   as settings invites a correction that changes no document. A style's name means
    nothing to the brand's owner; "composition from the atelier style" is a
    sentence nobody can comment on. Never a question.
 6. **Questions** (`questions`). The `questions[]` from the meta file, in

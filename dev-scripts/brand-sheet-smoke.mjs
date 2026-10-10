@@ -174,6 +174,7 @@ for (const lang of ['pl', 'en']) {
   const n = meta.questions.length;
   check(`${lang}: the questions are counted in the callout`, n === 3 && preview.includes(lang === 'pl' ? '3 pytania czekają' : '3 questions wait'));
   check(`${lang}: the composition section speaks plainly`, !/Kompozycję przyjmujemy|We take composition from/.test(html));
+  check(`${lang}: the composition fields are not listed as settings`, !/Gęstość:|Zdjęcia:|Rytm:|Density:|Imagery:|Rhythm:/.test(html) && Boolean(meta.fields['composition.density']));
   check(`${lang}: the typography sample uses the same title`, html.includes(`<p class="t-display">${title}</p>`));
   check(`${lang}: no preview fallback warnings`, !/preview/.test(res.stderr || ''));
 }

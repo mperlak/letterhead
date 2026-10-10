@@ -123,9 +123,11 @@ document the profile styles.
 you density, imagery and rhythm, and nothing else does. Take one only when
 the user asks for composition or the agent already has a browser open and
 the time to spare; otherwise leave the composition fields out and let the
-style govern composition. An absent section is an honest answer, the style
-is calibrated, and a screenshot round costs more than it returns on the
-first sheet.
+style govern composition. The fields are a record in any case: documents
+take their layout from the base style, so a brand that should look
+different gets a different style, not composition fields. An absent
+section is an honest answer, the style is calibrated, and a screenshot
+round costs more than it returns on the first sheet.
 
 ### 2. Judge the evidence
 
