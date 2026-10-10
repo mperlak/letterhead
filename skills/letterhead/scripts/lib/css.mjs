@@ -1,4 +1,5 @@
-// Small CSS helpers shared by check-document.mjs and check-tokens.mjs.
+// Small CSS helpers shared by check-document.mjs, check-tokens.mjs and
+// brand-evidence.mjs.
 //
 // Not a full CSS parser. It reads the shapes letterhead documents and
 // tokens files actually use: style rules, @media / @supports / @layer /
@@ -173,6 +174,120 @@ export const DARK_ATTR_RE = /\[\s*data-theme\s*=\s*(["']?)dark\1\s*\]/i;
 // is [data-theme="dark"] appears outside any :not(...).
 export function isExplicitDark(selector) {
   return DARK_ATTR_RE.test(selector.replace(/:not\((?:[^()]|\([^()]*\))*\)/g, ''));
+}
+
+// ---------------------------------------------------------------------------
+// A site's other color theme
+// ---------------------------------------------------------------------------
+//
+// A site with a light and a dark theme writes both into one stylesheet:
+// `:root{--accent:#3135c9}` and later `:root[data-theme="dark"]{--accent:#7a7ef0}`.
+// Read as one flat list, the later write wins and the evidence describes
+// the theme nobody sees by default (Markloop's periwinkle, Cursor's
+// near-black). splitThemeCss() removes the other theme's rules so the
+// evidence reads the default one.
+
+const THEME_ATTR_NAME = String.raw`[\w-]*(?:theme|mode|scheme|appearance|color)[\w-]*`;
+const themeAttrRe = (v) => new RegExp(String.raw`\[\s*${THEME_ATTR_NAME}\s*[~|^$*]?=\s*["']?${v}["']?\s*(?:[is]\s*)?\]`, 'i');
+// [data-dark], [data-origin-dark]: a flag attribute that names the theme
+const flagAttrRe = (v) => new RegExp(String.raw`\[\s*data-[\w-]*\b${v}\b[\w-]*\s*\]`, 'i');
+// .dark, html.dark, :where(.dark, .dark *), .theme-dark at the start of a
+// selector or inside a functional pseudo-class; never .dark\:bg-x (an
+// escaped Tailwind class) or .card-dark (a component variant).
+const rootClassRe = (v) =>
+  new RegExp(String.raw`(?:^|[(,])\s*(?:html|:root|body)?\.(?:${v}|theme-${v}|${v}-mode|${v}-theme|is-${v})(?![\w\\-])`, 'i');
+const SCOPE_RES = {
+  dark: [themeAttrRe('dark'), flagAttrRe('dark'), rootClassRe('dark')],
+  light: [themeAttrRe('light'), flagAttrRe('light'), rootClassRe('light')],
+};
+const schemeMediaRe = (v) => new RegExp(String.raw`prefers-color-scheme\s*:\s*${v}`, 'i');
+
+// True when `selector` only matches under the `scheme` theme ("dark" or
+// "light"); :not(...) guards are ignored.
+export function selectorInTheme(selector, scheme) {
+  const bare = selector.replace(/:not\((?:[^()]|\([^()]*\))*\)/g, '');
+  return SCOPE_RES[scheme].some((re) => re.test(bare));
+}
+
+// The stylesheet as the default theme renders it. `scheme` is the theme
+// the page opens in ("light" unless the markup says otherwise). Drops
+// @media (prefers-color-scheme: <other>) blocks, rules whose every selector
+// is scoped to the other theme (a mixed selector list keeps its other
+// selectors), and resolves light-dark(a, b). Returns { css, other } where
+// `other` lists how the other theme was written ('media', 'selector',
+// 'light-dark'), empty when the site has one theme.
+export function splitThemeCss(source, scheme = 'light') {
+  const otherScheme = scheme === 'dark' ? 'light' : 'dark';
+  const css = blankComments(source);
+  const other = new Set();
+  const mediaRe = schemeMediaRe(otherScheme);
+
+  const walk = (from, to) => {
+    let out = '';
+    let i = from;
+    while (i < to) {
+      const stmtStart = i;
+      let depth = 0;
+      let end = -1;
+      let kind = null;
+      for (; i < to; i++) {
+        const ch = css[i];
+        if (ch === '"' || ch === "'") { i = skipString(css, i); continue; }
+        if (ch === '(' || ch === '[') depth++;
+        else if (ch === ')' || ch === ']') depth = Math.max(0, depth - 1);
+        else if (depth === 0 && (ch === '{' || ch === ';' || ch === '}')) { end = i; kind = ch; break; }
+      }
+      if (end === -1) { out += css.slice(stmtStart, to); break; }
+      if (kind !== '{') { out += css.slice(stmtStart, end + 1); i = end + 1; continue; }
+      const close = Math.min(matchBrace(css, end), to);
+      const prelude = css.slice(stmtStart, end);
+      const head = prelude.trim();
+      i = close + 1;
+      if (head.startsWith('@')) {
+        const name = head.slice(1).split(/[\s({]/)[0].toLowerCase();
+        if (name === 'media' && mediaRe.test(head)) { other.add('media'); continue; }
+        if (GROUP_AT_RULES.has(name) && !name.endsWith('keyframes')) {
+          out += `${prelude}{${walk(end + 1, close)}}`;
+        } else {
+          out += css.slice(stmtStart, close + 1);
+        }
+        continue;
+      }
+      const sels = selectorList(head);
+      const keep = sels.filter((s) => !selectorInTheme(s, otherScheme));
+      if (!keep.length) { other.add('selector'); continue; }
+      const sel = keep.length === sels.length ? prelude : `${prelude.match(/^\s*/)[0]}${keep.join(',')}`;
+      if (keep.length !== sels.length) other.add('selector');
+      out += `${sel}{${css.slice(end + 1, close)}}`;
+    }
+    return out;
+  };
+
+  let out = walk(0, css.length);
+  const pick = scheme === 'dark' ? 2 : 1;
+  out = out.replace(/light-dark\(\s*((?:[^,()]|\([^()]*\))+?)\s*,\s*((?:[^,()]|\([^()]*\))+?)\s*\)/gi, (...m) => {
+    other.add('light-dark');
+    return m[pick];
+  });
+  return { css: out, other: [...other] };
+}
+
+// The theme a page opens in, from its markup: data-theme="dark" (or
+// data-mode / data-color-scheme / data-bs-theme), a `dark` class or
+// color-scheme: dark on <html> or <body>, or <meta name="color-scheme"
+// content="dark"> without "light". Anything else is "light".
+export function defaultColorScheme(html) {
+  const tags = [html.match(/<html\b[^>]*>/i)?.[0], html.match(/<body\b[^>]*>/i)?.[0]].filter(Boolean);
+  for (const tag of tags) {
+    if (new RegExp(String.raw`\s${THEME_ATTR_NAME}\s*=\s*["']?dark\b`, 'i').test(tag)) return 'dark';
+    const cls = tag.match(/\sclass\s*=\s*["']([^"']*)["']/i)?.[1] || '';
+    if (/(?:^|\s)(?:dark|theme-dark|dark-mode|dark-theme)(?:\s|$)/i.test(cls)) return 'dark';
+    if (/style\s*=\s*["'][^"']*color-scheme\s*:\s*dark\b/i.test(tag)) return 'dark';
+  }
+  const meta = html.match(/<meta\b[^>]*name\s*=\s*["']color-scheme["'][^>]*>/i)?.[0];
+  const content = meta?.match(/content\s*=\s*["']([^"']*)["']/i)?.[1] || '';
+  if (/\bdark\b/i.test(content) && !/\blight\b/i.test(content)) return 'dark';
+  return 'light';
 }
 
 // Replace var(--x[, fallback]) using `lookup(name)`. Returns null when a

@@ -10,6 +10,10 @@
 //     :root:not([data-theme="light"]):not([data-theme="dark"]) { ... }
 //   }                                               dark, from the system
 //
+// The embedded logo (--brand-logo*) is checked as a file: an SVG that is
+// not well-formed XML, draws nothing, or <use>s an id it does not contain
+// renders as an empty box, and nothing else on the page says so.
+//
 // Only readability is checked here. Whether a palette looks good is the
 // brand owner's call, not a script's.
 //
@@ -220,7 +224,56 @@ function checkFile(file) {
     }
   }
 
+  const logoSeen = new Set();
+  for (const key of ['light', 'dark', 'system']) {
+    for (const [name, entry] of blocks[key].tokens) {
+      if (!name.startsWith('brand-logo')) continue;
+      const svg = svgFromDataUrl(entry.value);
+      if (svg == null || logoSeen.has(svg)) continue;
+      logoSeen.add(svg);
+      const problem = svgProblem(svg);
+      if (problem) add('error', 'tokens/broken-logo', entry.start, `${blocks[key].label} --${name}: the SVG ${problem}, so the logo renders as an empty box.`);
+    }
+  }
+
   return { file, findings };
+}
+
+// The SVG text inside url("data:image/svg+xml...") or null.
+function svgFromDataUrl(value) {
+  const m = /url\(\s*["']?data:image\/svg\+xml([^,]*),([^"')]*)/i.exec(value || '');
+  if (!m) return null;
+  try {
+    return /;base64/i.test(m[1]) ? Buffer.from(m[2], 'base64').toString('utf8') : decodeURIComponent(m[2]);
+  } catch {
+    return null;
+  }
+}
+
+// Why the SVG would draw nothing, or null. Not a full XML parser: it checks
+// the faults that have reached a sheet (a second fill on the root, a <use>
+// whose target was left on the web page, no artwork at all).
+function svgProblem(svg) {
+  const body = svg.replace(/<!--[\s\S]*?-->/g, '').replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, '');
+  const stack = [];
+  for (const m of body.matchAll(/<(\/?)([a-zA-Z][\w:.-]*)((?:\s+[^\s=>/]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?)*)\s*(\/?)>/g)) {
+    const [, close, tag, attrs, self] = m;
+    if (close) {
+      if (stack.pop() !== tag) return `is not well-formed XML (</${tag}> closes nothing open)`;
+      continue;
+    }
+    const names = [...attrs.matchAll(/\s([^\s=>/]+)(?=\s*=)/g)].map((a) => a[1].toLowerCase());
+    const dup = names.find((n, i) => names.indexOf(n) !== i);
+    if (dup) return `is not well-formed XML (<${tag}> has two ${dup} attributes)`;
+    if (!self) stack.push(tag);
+  }
+  if (stack.length) return `is not well-formed XML (<${stack[stack.length - 1]}> is never closed)`;
+  if (!/<(?:path|rect|circle|ellipse|line|polyline|polygon|text|image)\b/i.test(body)) return 'draws nothing (no path, shape, text or image)';
+  const ids = new Set([...body.matchAll(/\sid\s*=\s*["']([^"']+)["']/gi)].map((m) => m[1]));
+  for (const m of body.matchAll(/<use\b[^>]*?\b(?:xlink:)?href\s*=\s*["']#([^"']+)["']/gi)) {
+    if (!ids.has(m[1])) return `uses #${m[1]}, which is not in the file`;
+  }
+  return null;
 }
 
 const { files, json } = parseArgs(process.argv.slice(2), USAGE);

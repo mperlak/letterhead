@@ -39,11 +39,25 @@
 // original file with optimizedUrl beside it, the largest srcset candidate
 // only when there is no optimizer, and --save-logo saving the original.
 //
+// two-themes covers the 2026-10-10 round 2: a site with a light and a dark
+// theme in one stylesheet is read in the theme it opens in. The dark
+// theme's later writes (:root[data-theme=dark], html:has([data-*-dark]),
+// @media (prefers-color-scheme: dark), the same inside @supports, .dark
+// at the root) no longer win, light-dark() takes its light value, and
+// site.themes reports the other theme.
+//
+// svg-logos / svg-use / data-logo cover the same round's logos: an inline
+// SVG saved as a file carries what the page supplied from outside it (fills
+// from page CSS classes resolved against :root, not a header override; the
+// target of a <use>; var() in a fill attribute, with a nested fallback;
+// currentColor from the enclosing link), and a data: URI logo is read and
+// saved like a file.
+//
 // Usage: node dev-scripts/brand-evidence-smoke.mjs
 // Exit codes: 0 all assertions passed, 1 a script run or assertion failed.
 
 import { spawnSync } from 'node:child_process';
-import { readFileSync, existsSync, mkdtempSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -392,6 +406,51 @@ console.log('fixture: lazy-cta.html (elements on the page, not hex count; lazy-l
   const sum = spawnSync(process.execPath, [SCRIPT, join(FIXTURES, 'lazy-cta.html'), '--summary'], { encoding: 'utf8' });
   check('--summary prints elements beside the CSS count', /#016337 {2}13 el \(3x in CSS\)/.test(sum.stdout));
   check('--summary lists light surfaces and icon colors', /light surfaces .*#ebf7da/.test(sum.stdout) && /icon colors .*#bde783 3x lazy-cta-ring\.svg/.test(sum.stdout));
+}
+
+console.log('fixture: two-themes.html (light default, dark theme in the same stylesheet)');
+{
+  const site = runOn('two-themes.html');
+  const byHex = Object.fromEntries((site?.colors || []).map((c) => [c.hex, c]));
+  check('the light accent is the candidate, painting the links and the button', byHex['#3135c9']?.elements > 0);
+  check('no dark-theme accent is a candidate', ['#7a7ef0', '#8e92ff', '#9599ff'].every((h) => !byHex[h]));
+  check('the page background is the light one', site?.page.pageBackground.value === '#f8f7f3');
+  check('the text color is the light theme ink, and the site is not dark', site?.page.bodyTextColor.value === '#23222a' && site.page.siteIsDark === false);
+  check('a component variant (.card-dark) stays: it is not a theme', !!byHex['#2a2140']);
+  check('site.themes reports the dark theme and how it is written', site?.themes?.default === 'light' && site.themes.other === 'dark' && ['selector', 'media', 'light-dark'].every((v) => site.themes.otherVia.includes(v)));
+  const sum = spawnSync(process.execPath, [SCRIPT, join(FIXTURES, 'two-themes.html'), '--summary'], { encoding: 'utf8' });
+  check('--summary says the dark theme is left out', /themes: the page opens in its light theme; a dark theme/.test(sum.stdout));
+  const darkFirst = readFileSync(join(FIXTURES, 'two-themes.html'), 'utf8').replace('<html lang="en">', '<html lang="en" data-theme="dark">');
+  const dir = mkdtempSync(join(tmpdir(), 'two-themes-'));
+  const darkPath = join(dir, 'dark-first.html');
+  writeFileSync(darkPath, darkFirst);
+  const res = spawnSync(process.execPath, [SCRIPT, darkPath], { encoding: 'utf8' });
+  const dark = res.status === 0 ? JSON.parse(res.stdout).sites[0] : null;
+  check('a page that opens dark (data-theme="dark" on <html>) is read in its dark theme', dark?.themes?.default === 'dark' && dark.page.pageBackground.value !== '#f8f7f3' && dark.page.siteIsDark === true);
+}
+
+console.log('fixture: svg-logos.html / svg-use.html / data-logo.html (logos made self-contained)');
+{
+  const dir = mkdtempSync(join(tmpdir(), 'svg-logos-'));
+  const save = (fixture, name, extra = []) => {
+    const res = spawnSync(process.execPath, [SCRIPT, join(FIXTURES, fixture), '--save-logo', join(dir, name), ...extra], { encoding: 'utf8' });
+    const site = res.status === 0 ? JSON.parse(res.stdout).sites[0] : null;
+    const path = site?.savedLogo?.path;
+    return { site, svg: path && existsSync(path) ? readFileSync(path, 'utf8') : (path && existsSync(join(process.cwd(), path)) ? readFileSync(join(process.cwd(), path), 'utf8') : '') };
+  };
+  const a = save('svg-logos.html', 'classes');
+  check('class fills resolve against :root: the logo is red and grey, not the header\'s light override', a.site?.logo[0]?.colors?.[0]?.hex === '#c60507' && /\.logo_text\{fill:#c60507\}/.test(a.svg) && /\.logo_icon\{fill:#98979c\}/.test(a.svg));
+  check('the saved file carries the page CSS (selfContained: page-css)', a.site?.logo[0]?.selfContained?.includes('page-css'));
+  check('distances are measured against the home-link logo', a.site?.logoDistanceFrom?.colors?.[0] === '#c60507');
+  const nav = a.site?.logo.find((l) => !l.homeLink && l.kind === 'svg-inline');
+  check('currentColor takes the enclosing link\'s color, and is not white', !nav || (nav.whiteOnTransparent === false && nav.selfContained?.includes('current-color')));
+  const b = save('svg-use.html', 'use');
+  check('a <use> target from elsewhere on the page is copied in', /<defs><svg viewBox="0 0 88 17"[^>]*id="wordmark"/.test(b.svg) && /<path fill="#ffffff"/.test(b.svg));
+  check('the outer <svg> takes the target\'s viewBox', /^<svg\b[^>]*\sviewBox="0 0 88 17"/.test(b.svg));
+  check('var() with a nested fallback in a fill resolves; the white wordmark is flagged', b.site?.logo[0]?.whiteOnTransparent === true);
+  const c = save('data-logo.html', 'data');
+  check('a data: URI logo is saved as a file', /<rect[^>]*fill='#FF6600'/.test(c.svg) && /^data: URI \(\d+ bytes\)$/.test(c.site?.savedLogo?.url || ''));
+  check('a data: URI logo reports its colors, and distances are measured from it', c.site?.logo[0]?.colors?.[0]?.hex === '#ff6600' && c.site.colors.find((x) => x.hex === '#ff6600')?.logoDistance === 0);
 }
 
 if (failures > 0) {

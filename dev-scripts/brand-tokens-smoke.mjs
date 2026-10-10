@@ -276,6 +276,23 @@ console.log('dark-mode logo: single-color artwork is one copy, drawn as a mask')
   check('rerun on its own output keeps one logo copy', (again.css.match(/data:image\/png;base64/g) || []).length === 1 && (again.css.match(/--brand-logo-color:/g) || []).length === 3);
 }
 
+console.log('--logo-tint on fill="none" + currentColor (Cursor\'s header logo)');
+{
+  const p = join(TMP, 'current-color.svg');
+  writeFileSync(p, '<svg fill="none" viewBox="0 0 40 10" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path d="M0 0h40v10H0z"/></g></svg>');
+  const { res, css } = run([...base, '--logo', p, '--logo-tint', '#414042']);
+  const svg = Buffer.from((css.match(/--brand-logo(?:-mask)?:\s*url\("data:image\/svg\+xml;base64,([^"]+)"\)/) || [])[1] || '', 'base64').toString('utf8');
+  const root = (svg.match(/<svg\b[^>]*>/) || [''])[0];
+  check('exits 0', res.status === 0);
+  check('the root keeps one fill attribute', (root.match(/\sfill=/g) || []).length === 1);
+  check('currentColor is recolored to the tint', /fill="#414042"/.test(svg) && !/currentcolor/i.test(svg));
+  const plain = join(TMP, 'root-fill.svg');
+  writeFileSync(plain, '<svg fill="none" stroke-width="0" viewBox="0 0 40 10" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h40v10H0z"/></svg>');
+  const again = run([...base, '--logo', plain, '--logo-tint', '#414042']);
+  const svg2 = Buffer.from((again.css.match(/base64,([^"]+)"/) || [])[1] || '', 'base64').toString('utf8');
+  check('a root fill with no painted colors is replaced, not duplicated', ((svg2.match(/<svg\b[^>]*>/) || [''])[0].match(/\sfill=/g) || []).length === 1);
+}
+
 console.log('dark-mode logo: untinted single-color artwork keeps its own color');
 {
   const p = join(TMP, 'navy.svg');

@@ -68,7 +68,11 @@ const LIGHT_CHART5 = '--chart-5: oklch(0.5600 0.0250 250);';
 const noLight = cutBlock(BASE, ':root {');
 const noDark = cutBlock(cutBlock(BASE, '[data-theme="dark"] {'), '@media (prefers-color-scheme: dark) {');
 
+const logoCss = (svg) => swapFirst(BASE, LIGHT_CHART5, `${LIGHT_CHART5}\n  --brand-logo: url("data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}");`);
 const ERRORS = [
+  ['a logo with two fill attributes on <svg>', 'tokens/broken-logo', logoCss('<svg xmlns="http://www.w3.org/2000/svg" fill="#111513" fill="none" viewBox="0 0 10 10"><path d="M0 0h10v10z"/></svg>')],
+  ['a logo that <use>s an id it does not contain', 'tokens/broken-logo', logoCss('<svg xmlns="http://www.w3.org/2000/svg"><use href="#wordmark"/><path d="M0 0h1v1z"/></svg>')],
+  ['a logo with no artwork', 'tokens/broken-logo', logoCss('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><g fill="#000"></g></svg>')],
   ['no :root block', 'tokens/no-light-block', noLight],
   ['no dark block at all', 'tokens/no-dark-block', noDark],
   ['--primary missing from :root', 'tokens/missing-token', swapFirst(BASE, LIGHT_PRIMARY, '')],

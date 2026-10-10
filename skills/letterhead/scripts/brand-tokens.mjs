@@ -69,8 +69,9 @@
 //   6. With --embed-fonts, the body and heading families are embedded as
 //      @font-face rules with data: URIs, between /* letterhead:fonts */ and
 //      /* /letterhead:fonts */ at the top of the file (a later run replaces
-//      that section). Families come from Google Fonts (weights 400, 700 and
-//      --heading-weight; subsets from --lang: "en" → latin, anything else →
+//      that section). Families come from Google Fonts (weights 400, 700,
+//      --heading-weight and the weights the base style's style.css sets,
+//      such as 500 and 600 for labels; subsets from --lang: "en" → latin, anything else →
 //      latin + latin-ext) or from --font-file. A family that cannot be
 //      fetched is reported and skipped; the run never fails over a font.
 //   7. The base style's header comment is replaced with one naming the
@@ -622,13 +623,32 @@ function fontFaceCss(face) {
   ].join('\n');
 }
 
+// The font weights the base style sets (labels at 600, a lede at 500), read
+// from style.css next to the --style tokens. Embedding only 400 and 700 left
+// those to a synthesized bold or the nearest file. A var(--font-heading-weight, N)
+// fallback counts only when no heading weight was given.
+function styleFontWeights(stylePath, haveHeadingWeight) {
+  let css;
+  try {
+    css = readFileSync(join(dirname(resolvePath(process.cwd(), stylePath)), 'style.css'), 'utf8');
+  } catch {
+    return [];
+  }
+  const weights = new Set();
+  for (const m of css.matchAll(/font-weight\s*:\s*(?:var\(\s*--font-heading-weight\s*,\s*(\d{3})\s*\)|(\d{3})\b)/g)) {
+    if (m[2]) weights.add(Number(m[2]));
+    else if (!haveHeadingWeight) weights.add(Number(m[1]));
+  }
+  return [...weights].filter((w) => w >= 100 && w <= 900).sort((a, b) => a - b);
+}
+
 // Collects the @font-face rules for every family in `families`
 // ({ family, roles }), from --font-file entries first and Google Fonts
 // otherwise. Never throws: a family that cannot be embedded is reported.
-async function embedFonts({ families, headingWeight, lang, fontFiles, warn }) {
+async function embedFonts({ families, headingWeight, styleWeights = [], lang, fontFiles, warn }) {
   const subsets = !lang || lang.toLowerCase() !== 'en' ? ['latin', 'latin-ext'] : ['latin'];
   const baseWeights = [400, 700];
-  const wanted = [...new Set([...baseWeights, headingWeight].filter(Boolean))].sort((a, b) => a - b);
+  const wanted = [...new Set([...baseWeights, headingWeight, ...styleWeights].filter(Boolean))].sort((a, b) => a - b);
   const extraWeights = wanted.filter((w) => !baseWeights.includes(w));
   const report = [];
   let faces = [];
@@ -970,13 +990,25 @@ function tintPng(buf, [R, G, B]) {
   ]);
 }
 
-const SVG_COLOR_RE = /((?:fill|stroke|stop-color|color)\s*(?:=\s*["']|:\s*))\s*(#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|white|black)/gi;
+// currentColor counts as a color: in a file drawn as an image it is black
+// (there is no text color to inherit), and a tint replaces it like any other.
+const SVG_COLOR_RE = /((?:fill|stroke|stop-color|color)\s*(?:=\s*["']|:\s*))\s*(#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|white|black|currentcolor)/gi;
+const readSvgColor = (value) => toRgb(parse(/^currentcolor$/i.test(value) ? '#000000' : value.toLowerCase()));
+
+// The root <svg> with its fill set to `hex`: the attribute replaced when it
+// has one (Cursor's fill="none"), added otherwise. Adding a second fill
+// attribute made the file invalid XML, and the logo vanished from the sheet.
+function withRootFill(text, hex) {
+  return text.replace(/<svg\b[^>]*>/i, (tag) =>
+    /\sfill\s*=\s*["'][^"']*["']/i.test(tag) ? tag.replace(/(\sfill\s*=\s*["'])[^"']*(["'])/i, `$1${hex}$2`) : tag.replace(/^<svg\b/i, `<svg fill="${hex}"`)
+  );
+}
 
 // The colors an SVG paints with. No explicit color at all means everything
 // paints in the default black.
 function svgColors(text) {
   const found = [...text.matchAll(SVG_COLOR_RE)].map((m) => {
-    const rgb = toRgb(parse(m[2].toLowerCase()));
+    const rgb = readSvgColor(m[2]);
     return rgb ? [rgb.r * 255, rgb.g * 255, rgb.b * 255] : null;
   });
   if (found.some((c) => c === null)) throw new TintError('the SVG uses a color this script cannot read');
@@ -991,7 +1023,7 @@ function tintSvg(text, hex) {
   if (![...text.matchAll(SVG_COLOR_RE)].length) {
     // No explicit color: everything paints in the default black, so a fill
     // on the root element recolors all of it.
-    return text.replace(/<svg\b/i, `<svg fill="${hex}"`);
+    return withRootFill(text, hex);
   }
   assertSingleColor(found);
   return text.replace(SVG_COLOR_RE, (_, prefix) => `${prefix}${hex}`);
@@ -1187,9 +1219,9 @@ function darkLogoCopy(logo, { darkBackground, darkForeground }) {
     const text = buf.toString('utf8');
     svgColors(text); // throws on gradients or unreadable colors
     const painted = [...text.matchAll(SVG_COLOR_RE)].length;
-    let svg = painted ? text : text.replace(/<svg\b/i, '<svg fill="#000000"');
+    let svg = painted ? text : withRootFill(text, '#000000');
     svg = svg.replace(SVG_COLOR_RE, (m, prefix, value) => {
-      const rgb = toRgb(parse(value.toLowerCase()));
+      const rgb = readSvgColor(value);
       const next = rgb ? toDark([rgb.r * 255, rgb.g * 255, rgb.b * 255]) : null;
       if (!next) return m;
       const hex = formatHex(next);
@@ -1544,6 +1576,7 @@ async function main() {
     fonts = await embedFonts({
       families,
       headingWeight: args.headingWeight != null ? Number(args.headingWeight) : null,
+      styleWeights: styleFontWeights(args.style, args.headingWeight != null),
       lang: args.lang,
       fontFiles: args.fontFiles,
       warn,

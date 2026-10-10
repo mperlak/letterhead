@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta property="og:site_name" content="Twofold">
+<style>
+:root { --bg: #f8f7f3; --text: #23222a; --accent: #3135c9; --ink-soft: light-dark(#4a4a55, #c8c8d0); }
+:root[data-theme="dark"] { --bg: #131218; --text: #d8d7de; --accent: #7a7ef0; }
+html:has([data-origin-dark]) { --bg: #0e0d12; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #101014; --text: #e0e0e6; --accent: #8e92ff; } }
+@supports (color: color-mix(in lab, red, red)) { [data-theme=dark] { --accent: #9599ff; } }
+body { background: var(--bg); color: var(--text); font-family: Inter, sans-serif; }
+a, .btn, [data-theme="dark"] .btn-dark { color: var(--accent); }
+.btn { background: var(--accent); color: #fff; }
+.dark .btn { background: #8e92ff; }
+.card-dark { background: #2a2140; }
+p { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<header><a href="/"><img src="logo.svg" alt="Twofold"></a><nav><a href="/a">A</a><a href="/b">B</a><a href="/c">C</a></nav></header>
+<main><h1>Two themes, one stylesheet</h1><p>Light by default.</p><a class="btn" href="/go">Go</a><div class="card-dark">Dark card</div></main>
+</body>
+</html>

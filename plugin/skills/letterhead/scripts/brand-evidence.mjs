@@ -59,6 +59,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, openSync,
 import { resolve as resolvePath, relative as relativePath, dirname } from 'node:path';
 import { inflateSync, constants as zlibConstants } from 'node:zlib';
 import { parse as parseHtml } from './vendor/node-html-parser.mjs';
+import { splitThemeCss, defaultColorScheme } from './lib/css.mjs';
 
 const UA = 'Mozilla/5.0 (compatible; brand-evidence/1.0)';
 const TIMEOUT_MS = 12_000;
@@ -508,6 +509,11 @@ function deltaEOk(hexA, hexB) {
 // illustration in the content).
 function logoReference(logos) {
   const pool = logos.filter((l) => !l.strip && l.kind !== 'og:image').slice(0, 3);
+  // The logo in the home link is the brand's own. When it paints only greys
+  // there is no reference: a partner badge beside it in the header (Maspex's
+  // EIT Food) is somebody else's color.
+  const home = pool.find((l) => l.homeLink);
+  if (home) return Array.isArray(home.colors) && home.colors.length ? home : null;
   const placed = pool.filter((l) => l.homeLink || l.location === 'header' || l.location === 'footer');
   return (placed.length ? placed : pool).find((l) => Array.isArray(l.colors) && l.colors.length > 0) || null;
 }
@@ -535,7 +541,27 @@ const isVendorVar = (name) => {
 // logo[].whiteOnTransparent — cheap raster/vector inspection, no decoder deps
 // ---------------------------------------------------------------------------
 
+// data:image/svg+xml;base64,... -> { mime, buf }, or null when `url` is not
+// a data: URI. YC's header logo is one; read as a path it was ENOENT.
+function decodeDataUri(url) {
+  const m = /^data:([^,]*?),(.*)$/is.exec(url || '');
+  if (!m) return null;
+  const meta = m[1].split(';').map((x) => x.trim().toLowerCase());
+  const base64 = meta.includes('base64');
+  let buf;
+  try {
+    buf = base64 ? Buffer.from(m[2], 'base64') : Buffer.from(decodeURIComponent(m[2]), 'utf8');
+  } catch {
+    buf = Buffer.from(m[2], 'utf8');
+  }
+  return { mime: meta[0] || 'text/plain', buf };
+}
+
+const DATA_MIME_EXT = { 'image/svg+xml': 'svg', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/jpg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/avif': 'avif', 'image/x-icon': 'ico', 'image/vnd.microsoft.icon': 'ico' };
+
 function extOf(urlOrPath) {
+  const data = /^data:([^;,]*)/i.exec(urlOrPath || '');
+  if (data) return DATA_MIME_EXT[data[1].toLowerCase()] || '';
   const clean = (urlOrPath || '').split('?')[0].split('#')[0];
   const m = clean.match(/\.([a-z0-9]+)$/i);
   return m ? m[1].toLowerCase() : '';
@@ -701,7 +727,10 @@ function detectSvgWhiteOnTransparent(svgText) {
     const fills = [...svgText.matchAll(/\bfill\s*[:=]\s*["']?\s*([^"';)\s>]+)/gi)].map((m) => m[1].toLowerCase());
     const relevant = fills.filter((f) => f !== 'none' && f !== 'transparent');
     if (relevant.length === 0) return false;
-    const isWhiteish = (v) => v === 'white' || v === '#fff' || v === '#ffffff' || v === 'currentcolor';
+    // currentColor left in the file is the page's text color, unknown
+    // here; selfContainedSvg() writes it in when it can. Counting it as
+    // white sent Cursor's dark logo to --logo-tint.
+    const isWhiteish = (v) => v === 'white' || v === '#fff' || v === '#ffffff';
     return relevant.every(isWhiteish);
   } catch {
     return null;
@@ -825,6 +854,8 @@ function pngLogoColors(buf) {
 }
 
 async function readLogoAnalysisBytes(url, isLocal, deadline) {
+  const data = decodeDataUri(url);
+  if (data) return data.buf;
   if (isLocal) {
     if (/^https?:\/\//i.test(url)) return null; // no network fetches from local-file mode
     const info = readLocalHeaderBytes(url, LOGO_ANALYSIS_BYTES);
@@ -1129,19 +1160,61 @@ function extractColors(css, rules = parseRules(css), ctx = {}) {
 // fonts
 // ---------------------------------------------------------------------------
 
+// Resolves the first var(--x[, fallback]) in `value`, then the rest. The
+// fallback may hold parentheses of its own (`var(--t, rgb(255, 255, 255))`,
+// Framer's tokens): the expression ends at its balanced ")".
 function resolveVarChain(value, props, depth = 0) {
   if (!value || depth > 5) return value;
-  const m = value.match(/var\(\s*(--[\w-]+)\s*(?:,([^)]+))?\)/);
-  if (!m) return value;
-  const [, varName, fallback] = m;
-  if (props.has(varName)) return resolveVarChain(value.replace(m[0], props.get(varName)), props, depth + 1);
-  if (fallback) return resolveVarChain(value.replace(m[0], fallback.trim()), props, depth + 1);
+  const at = value.search(/var\(\s*--/);
+  if (at === -1) return value;
+  let level = 0;
+  let comma = -1;
+  let end = -1;
+  for (let i = at + 3; i < value.length; i++) {
+    const ch = value[i];
+    if (ch === '(') level++;
+    else if (ch === ')' && --level === 0) {
+      end = i;
+      break;
+    } else if (ch === ',' && level === 1 && comma === -1) comma = i;
+  }
+  if (end === -1) return value;
+  const varName = value.slice(at + 4, comma === -1 ? end : comma).trim();
+  const fallback = comma === -1 ? null : value.slice(comma + 1, end).trim();
+  const swap = (v) => resolveVarChain(value.slice(0, at) + v + value.slice(end + 1), props, depth + 1);
+  if (props.has(varName)) return swap(props.get(varName));
+  if (fallback) return swap(fallback);
   return value;
+}
+
+// The family a person would name, from what a site builder writes:
+//   Framer       "CUSTOMV2;Aktiv Grotesk VF Variable Regular" -> Aktiv Grotesk
+//                "GF;Inter-500" -> Inter, "FS;Satoshi-bold" -> Satoshi
+//   next/font    __Inter_d65c78 -> Inter, __Inter_Fallback_d65c78 -> Inter Fallback
+//   geist        GeistSans -> Geist, GeistMono -> Geist Mono
+// Read raw, the summary offered "CUSTOMV2" and "GeistSans" as font names,
+// and the second made a Google family that embeds fine look unavailable.
+const FONT_STYLE_WORDS = /\s+(?:VF|Variable|Var|Regular|Roman|Book|Text|Placeholder)$/i;
+function cleanFamilyName(name) {
+  let f = String(name || '').replace(/["']/g, '').trim();
+  const framer = /^(?:CUSTOMV?\d*|GF|FS);(.+)$/i.exec(f);
+  if (framer) {
+    f = framer[1].trim();
+    if (/^(?:GF|FS);/i.test(name.replace(/["']/g, '').trim())) f = f.replace(/-(?:\d{3}|thin|light|regular|medium|semibold|bold|black)(?:italic)?$/i, '');
+  }
+  const next = /^__(.+?)_([0-9a-f]{5,})$/i.exec(f);
+  if (next) f = next[1].replace(/_/g, ' ');
+  if (/^Geist(Sans|Mono)$/.test(f)) f = f === 'GeistMono' ? 'Geist Mono' : 'Geist';
+  for (let prev = null; prev !== f; ) {
+    prev = f;
+    f = f.replace(FONT_STYLE_WORDS, '').trim();
+  }
+  return f;
 }
 
 function firstFamily(value) {
   if (!value) return null;
-  const f = value.split(',')[0].replace(/["']/g, '').trim();
+  const f = cleanFamilyName(value.split(',')[0]);
   return f || null;
 }
 
@@ -1266,7 +1339,7 @@ function fontshareFamilies(html) {
 function fontFaceSources(css) {
   const map = new Map();
   for (const m of css.matchAll(/@font-face\s*\{([^}]*)\}/gi)) {
-    const fam = (declValue(m[1], 'font-family') || '').replace(/["']/g, '').trim();
+    const fam = cleanFamilyName(declValue(m[1], 'font-family') || '');
     if (!fam) continue;
     const src = (m[1].match(/\bsrc\s*:([^}]*)/i) || [])[1] || '';
     const kind = /fonts\.gstatic\.com/i.test(src)
@@ -1314,11 +1387,77 @@ function resolveThroughElementClasses(rules, html, tag, prop, valueOf) {
   return best;
 }
 
+// Tailwind utilities read off the class name itself: font-['Source_Serif_4',serif],
+// font-normal, font-[550]. The stylesheet that defines them is often not
+// among the ones fetched, and its selectors escape the name past what the
+// selector reader matches (`.font-\[\'Source_Serif_4\'\2c serif\]`), so
+// YC's serif headings read as "nothing styles the headings". A class with a
+// variant prefix (md:, hover:) is not what the page shows by default.
+const TW_FONT_WEIGHTS = { thin: 100, extralight: 200, light: 300, normal: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800, black: 900 };
+function tailwindClassValue(cls, prop) {
+  const bracket = cls.indexOf('[');
+  const colon = cls.indexOf(':');
+  if (colon !== -1 && (bracket === -1 || colon < bracket)) return null;
+  if (prop === 'font-weight') {
+    const named = /^font-([a-z]+)$/.exec(cls);
+    if (named && TW_FONT_WEIGHTS[named[1]]) return String(TW_FONT_WEIGHTS[named[1]]);
+    const num = /^font-\[(\d{3})\]$/.exec(cls);
+    return num ? num[1] : null;
+  }
+  if (prop === 'font-family') {
+    const arb = /^font-\[(.+)\]$/.exec(cls);
+    if (!arb || /^\d{3}$/.test(arb[1])) return null;
+    return arb[1].replace(/_/g, ' ');
+  }
+  return null;
+}
+
+const HIDDEN_HEADING_RE = /^(?:sr-only|visually-hidden|screen-reader-text|screen-reader-only|hidden)$/i;
+
+// The value `prop` takes on each <tag> element of the page, picked the way
+// the browser picks it: a rule on the element's own classes (or the
+// Tailwind class name itself) beats the bare `h1`/`h2` rule (`bare`, which
+// applies to every element that has nothing closer). Returns the value most
+// elements carry, { absent: true } when the page has no visible <tag>, or
+// null when nothing declares the property.
+function headingValue(rules, html, tag, prop, valueOf, bare) {
+  const lists = elementClassLists(html, tag)
+    .map((classes) => classes.map((k) => decodeEntities(k)))
+    .filter((classes) => !classes.some((k) => HIDDEN_HEADING_RE.test(k)));
+  if (!lists.length) return { absent: true };
+  const tally = new Map();
+  for (const classes of lists) {
+    let hit = null;
+    for (const r of rulesForElementClasses(rules, classes, tag)) {
+      const raw = declValue(r.body, prop);
+      const v = raw == null ? null : valueOf(raw);
+      if (v != null) hit = { value: v, source: 'class', selector: r.selector };
+    }
+    if (!hit) {
+      for (const k of classes) {
+        const raw = tailwindClassValue(k, prop);
+        const v = raw == null ? null : valueOf(raw);
+        if (v != null) hit = { value: v, source: 'class', selector: `.${k}` };
+      }
+    }
+    hit = hit || bare;
+    if (!hit) continue;
+    const key = String(hit.value);
+    const t = tally.get(key) || { ...hit, elements: 0 };
+    t.elements++;
+    tally.set(key, t);
+  }
+  let best = null;
+  for (const t of tally.values()) if (!best || t.elements > best.elements) best = t;
+  return best;
+}
+
 // fonts.weights.resolved.h1/h2: one weight per heading level, with where it
-// came from. base-rule = last bare `h1`/`h2` rule with a font-weight;
-// class = the classes the page puts on its h1/h2 elements (Tailwind
-// `.bold`, `.font-semibold`); ua-default = nothing declared, so browsers
-// render 700.
+// came from: class = the classes on the page's h1/h2 elements (a rule for
+// them, or a Tailwind class like font-semibold), which beat a bare rule the
+// way they do in the browser; base-rule = the last bare `h1`/`h2` rule;
+// ua-default = nothing declared, so browsers render 700; absent = the page
+// has no such heading (Legora has no h2), so the other level is the answer.
 function resolveHeadingWeight(rules, props, html, tag) {
   let base = null;
   for (const r of rules) {
@@ -1327,11 +1466,9 @@ function resolveHeadingWeight(rules, props, html, tag) {
     const w = raw == null ? null : normalizeFontWeight(resolveVarChain(raw, props));
     if (w != null) base = { value: w, source: 'base-rule', selector: r.selector };
   }
-  if (base) return base;
-  const viaClass = resolveThroughElementClasses(rules, html, tag, 'font-weight', (raw) =>
-    normalizeFontWeight(resolveVarChain(raw, props))
-  );
-  if (viaClass) return { value: viaClass.value, source: 'class', selector: viaClass.selector };
+  const found = headingValue(rules, html, tag, 'font-weight', (raw) => normalizeFontWeight(resolveVarChain(raw, props)), base);
+  if (found?.absent) return { value: null, source: 'absent', selector: null };
+  if (found) return { value: found.value, source: found.source, selector: found.selector, elements: found.elements };
   return { value: 700, source: 'ua-default', selector: null };
 }
 
@@ -1426,6 +1563,18 @@ function extractFonts(css, html, rules = parseRules(css), ctx = {}) {
     }
     sawInherit = true;
   }
+  // The classes on the page's own h1/h2 elements beat the bare rule, as in
+  // the browser; the bare rule still answers for every heading that has
+  // nothing closer, so the value most headings carry wins.
+  {
+    const bare = headingRule ? { value: headingRule.declared ?? headingRule.raw ?? null, source: 'bare', selector: headingRule.selector } : null;
+    const valueOf = (raw) => (usable(raw) ? raw.trim() : null);
+    const bareValue = bare?.value ? bare : null;
+    const pick = [headingValue(rules, html, 'h1', 'font-family', valueOf, bareValue), headingValue(rules, html, 'h2', 'font-family', valueOf, bareValue)]
+      .filter((v) => v && !v.absent)
+      .sort((a, b) => b.elements - a.elements)[0];
+    if (pick && pick.source === 'class') headingRule = buildRule(pick.value, { origin: 'class', selector: pick.selector });
+  }
   if (!headingRule) {
     for (const r of headingRules) {
       const parts = selectorParts(r.selector).filter(
@@ -1456,6 +1605,14 @@ function extractFonts(css, html, rules = parseRules(css), ctx = {}) {
     h1: resolveHeadingWeight(rules, props, html, 'h1'),
     h2: resolveHeadingWeight(rules, props, html, 'h2'),
   };
+  // No h1 or h2 in the markup at all (a JS shell): report what the rules
+  // say instead of two absences.
+  if (weights.resolved.h1.source === 'absent' && weights.resolved.h2.source === 'absent') {
+    weights.resolved = {
+      h1: resolveHeadingWeight(rules, props, '<h1>', 'h1'),
+      h2: resolveHeadingWeight(rules, props, '<h2>', 'h2'),
+    };
+  }
 
   return {
     faces,
@@ -2175,7 +2332,7 @@ function collectLogoCandidates(html, cssSegments, toAbs, isLocal, pageUrl) {
       logoWord: LOGO_WORD_RE.test(label),
     });
     // The markup rides along for --save-logo, but stays out of the JSON.
-    Object.defineProperty(inlineCandidate, 'markup', { value: svg, enumerable: false });
+    Object.defineProperty(inlineCandidate, 'markup', { value: svg, enumerable: false, configurable: true, writable: true });
     candidates.push(inlineCandidate);
   }
 
@@ -2245,7 +2402,10 @@ async function resolveDimensions(candidates, { isLocal, deadline }) {
     if (Date.now() > deadline) break;
     try {
       let info;
-      if (isLocal) {
+      const data = decodeDataUri(c.url);
+      if (data) {
+        info = { buf: data.buf, totalBytes: data.buf.length };
+      } else if (isLocal) {
         if (/^https?:\/\//i.test(c.url)) continue; // no network fetches from local-file mode
         info = readLocalHeaderBytes(c.url);
       } else {
@@ -2322,8 +2482,234 @@ function dedupeAndRankLogos(candidates) {
   return list;
 }
 
+// ---------------------------------------------------------------------------
+// inline SVG logos, made self-contained
+// ---------------------------------------------------------------------------
+//
+// An inline <svg> on a page can draw with things outside the element: a
+// <use href="#id"> pointing at a sprite elsewhere in the markup (Legora's
+// Framer wordmark: 111 bytes of <use> and no artwork), fills set by the
+// page's CSS classes (Maspex: `.logo_logoText{fill:var(--logo-primary,#C60507)}`),
+// and currentColor inherited from the header. Saved as a file, all of that
+// is gone and the logo comes out empty or black. selfContainedSvg() writes
+// it into the SVG, so the colors, the whiteOnTransparent flag and the saved
+// file describe the logo the page shows.
+
+const SVG_PAINT_PROPS = ['fill', 'stroke', 'stop-color', 'color', 'fill-opacity', 'stroke-opacity', 'opacity'];
+const ROOT_SELECTOR_RE = /^(?::root|html|body|\*|:host)$/i;
+
+// Custom properties set where every element inherits them (:root, html,
+// body). A logo's own colors resolve against these, not against a variable
+// some container overrides: Maspex's header sets --logo-primary to a light
+// grey for its red band, and the logo on paper is the red default.
+function rootCustomProps(rules) {
+  const props = new Map();
+  for (const r of rules) {
+    const parts = selectorParts(r.selector);
+    if (!parts.length || !parts.every((p) => ROOT_SELECTOR_RE.test(p))) continue;
+    for (const m of r.body.matchAll(/(--[\w-]+)\s*:\s*([^;}]+)/g)) props.set(m[1], m[2].trim());
+  }
+  return props;
+}
+
+function refsOf(text) {
+  const ids = [];
+  for (const m of text.matchAll(/\b(?:xlink:)?href\s*=\s*["']#([^"']+)["']/gi)) ids.push(m[1]);
+  for (const m of text.matchAll(/url\(\s*["']?#([^)"'\s]+)["']?\s*\)/gi)) ids.push(m[1]);
+  return ids;
+}
+
+// The element with id="<id>" in `html`, from its start tag to its matching
+// end tag, or null.
+function elementById(html, id) {
+  const esc = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const start = new RegExp(`<([a-zA-Z][\\w:-]*)\\b[^>]*\\sid\\s*=\\s*["']${esc}["'][^>]*>`, 'i').exec(html);
+  if (!start) return null;
+  if (/\/>$/.test(start[0])) return start[0];
+  const tag = start[1];
+  const re = new RegExp(`<(/?)${tag}\\b[^>]*?(/?)>`, 'gi');
+  re.lastIndex = start.index + start[0].length;
+  let depth = 1;
+  for (let m = re.exec(html); m; m = re.exec(html)) {
+    if (m[1]) depth--;
+    else if (!m[2]) depth++;
+    if (depth === 0) return html.slice(start.index, m.index + m[0].length);
+  }
+  return null;
+}
+
+// Classes on the elements that enclose position `at` in `html`, innermost
+// first (at most four levels, from the 3 KB before it).
+function ancestorClassLists(html, at) {
+  const before = html.slice(Math.max(0, at - 3000), at);
+  const stack = [];
+  for (const m of before.matchAll(/<(\/?)([a-zA-Z][\w-]*)\b([^>]*?)(\/?)>/g)) {
+    const [, close, tag, attrs, self] = m;
+    if (self || /^(?:img|br|hr|input|meta|link|source|use|path)$/i.test(tag)) continue;
+    if (close) {
+      const i = stack.map((e) => e.tag).lastIndexOf(tag.toLowerCase());
+      if (i !== -1) stack.splice(i);
+    } else {
+      const cls = (attrs.match(/\bclass\s*=\s*["']([^"']*)["']/i) || [])[1] || '';
+      stack.push({ tag: tag.toLowerCase(), classes: cls.split(/\s+/).filter(Boolean) });
+    }
+  }
+  return stack.reverse().slice(0, 4);
+}
+
+// The last compound of a selector, when it is only classes (with an
+// optional tag): ".a", "path.b", "svg .c .d" -> ".d". State selectors
+// (:hover) and anything with attributes or pseudo-elements return null.
+function lastCompoundClasses(part) {
+  const last = part.trim().split(/[\s>+~]+/).pop() || '';
+  const m = /^([a-z][\w-]*)?((?:\.[\w-]+)+)$/i.exec(last);
+  return m ? { tag: (m[1] || '').toLowerCase(), classes: m[2].slice(1).split('.') } : null;
+}
+
+// fill="var(...)" / fill:var(...) with each whole (nested) var()
+// expression replaced by `resolve(expr)`, when it returns a color.
+function replaceVarPaints(text, resolve) {
+  const re = /((?:fill|stroke|stop-color|color)\s*(?:=\s*["']|:\s*))var\(/gi;
+  let out = '';
+  let last = 0;
+  let changed = false;
+  for (let m = re.exec(text); m; m = re.exec(text)) {
+    const exprStart = m.index + m[1].length;
+    let depth = 0;
+    let j = exprStart;
+    for (; j < text.length; j++) {
+      if (text[j] === '(') depth++;
+      else if (text[j] === ')' && --depth === 0) {
+        j++;
+        break;
+      }
+    }
+    const v = resolve(text.slice(exprStart, j));
+    if (!v) continue;
+    out += text.slice(last, exprStart) + v;
+    last = j;
+    re.lastIndex = j;
+    changed = true;
+  }
+  return { text: out + text.slice(last), changed };
+}
+
+function selfContainedSvg(svg, html, at, { rules = [], rootProps = new Map(), props = new Map(), pageText = null } = {}) {
+  let out = svg;
+  const notes = [];
+  const rootTag = () => (out.match(/^<svg\b[^>]*>/i) || [''])[0];
+
+  // 1. <use> and url(#...) targets defined elsewhere on the page
+  const own = new Set([...svg.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map((m) => m[1]));
+  const queue = refsOf(svg);
+  const seen = new Set();
+  const defs = [];
+  while (queue.length && defs.length < 24) {
+    const id = queue.shift();
+    if (own.has(id) || seen.has(id)) continue;
+    seen.add(id);
+    const el = elementById(html, id);
+    if (!el) continue;
+    defs.push(el);
+    queue.push(...refsOf(el));
+  }
+  if (defs.length) {
+    out = out.replace(/^<svg\b[^>]*>/i, (tag) => `${tag}<defs>${defs.join('')}</defs>`);
+    notes.push('use-resolved');
+    // <svg><use href="#wordmark"/></svg> with no viewBox of its own draws
+    // at the default 300x150; take the target's.
+    if (!/\bviewBox\s*=/i.test(rootTag())) {
+      const vb = defs.map((d) => (d.match(/^<[^>]*\bviewBox\s*=\s*["']([^"']+)["']/i) || [])[1]).find(Boolean);
+      if (vb) out = out.replace(/^<svg\b/i, `<svg viewBox="${vb}"`);
+    }
+  }
+
+  // 2. fills the page's CSS sets through the SVG's classes
+  const classSet = new Set([...out.matchAll(/\bclass\s*=\s*["']([^"']*)["']/gi)].flatMap((m) => m[1].split(/\s+/).filter(Boolean)));
+  const css = [];
+  if (classSet.size) {
+    for (const r of rules) {
+      for (const part of selectorParts(r.selector)) {
+        const last = lastCompoundClasses(part);
+        if (!last || !last.classes.every((c) => classSet.has(c))) continue;
+        const decls = [];
+        for (const prop of SVG_PAINT_PROPS) {
+          const raw = declValue(r.body, prop);
+          if (!raw) continue;
+          const isColor = !/opacity/.test(prop);
+          const v = isColor ? colorFromValue(raw, rootProps) || colorFromValue(raw, props) : resolveVarChain(raw, rootProps);
+          if (v && !/var\(/.test(v)) decls.push(`${prop}:${v}`);
+          else if (isColor && /^\s*(?:none|transparent|currentcolor)\s*$/i.test(raw)) decls.push(`${prop}:${raw.trim()}`);
+        }
+        if (decls.length) css.push(`${last.tag}.${last.classes.join('.')}{${decls.join(';')}}`);
+        break;
+      }
+    }
+  }
+  if (css.length) {
+    out = out.replace(/^<svg\b[^>]*>/i, (tag) => `${tag}<style>${css.join('')}</style>`);
+    notes.push('page-css');
+  }
+
+  // 2b. var() in the SVG's own paint attributes and styles (Framer writes
+  // fill="var(--token-…, rgb(255, 255, 255))"): a file has no variables.
+  const vars = replaceVarPaints(out, (expr) => colorFromValue(expr, rootProps) || colorFromValue(expr, props));
+  if (vars.changed) {
+    out = vars.text;
+    notes.push('vars');
+  }
+
+  // 3. currentColor: the text color of the innermost enclosing element a
+  // page rule colors, else the page's text color. Written in as the color
+  // itself, because a file drawn as an image has no text color (it would
+  // paint black).
+  if (/currentcolor/i.test(out)) {
+    let current = null;
+    const svgClasses = (rootTag().match(/\bclass\s*=\s*["']([^"']*)["']/i) || [])[1]?.split(/\s+/).filter(Boolean) || [];
+    const levels = [{ tag: 'svg', classes: svgClasses }, ...ancestorClassLists(html, at)];
+    for (const level of levels) {
+      if (!level.classes.length) continue;
+      const set = new Set(level.classes);
+      for (const r of rules) {
+        if (!selectorParts(r.selector).some((p) => {
+          const last = lastCompoundClasses(p);
+          return last && last.classes.every((c) => set.has(c)) && (!last.tag || last.tag === level.tag);
+        })) continue;
+        const v = colorFromValue(declValue(r.body, 'color'), props);
+        if (v) current = v;
+      }
+      if (current) break;
+    }
+    current = current || pageText;
+    if (current) {
+      out = out.replace(/currentcolor/gi, current);
+      notes.push('current-color');
+    }
+  }
+  return { svg: out, notes };
+}
+
 async function extractLogos(html, cssSegments, ctx) {
   const candidates = collectLogoCandidates(html, cssSegments, ctx.toAbs, ctx.isLocal, ctx.pageUrl);
+  for (const c of candidates) {
+    if (c.kind !== 'svg-inline' || !c.markup) continue;
+    const at = html.indexOf(c.markup);
+    const { svg, notes } = selfContainedSvg(c.markup, html, at, ctx);
+    if (!notes.length) continue;
+    c.markup = svg;
+    c.selfContained = notes;
+    c.bytes = Buffer.byteLength(svg);
+    c.whiteOnTransparent = detectSvgWhiteOnTransparent(svg);
+    c.colors = svgLogoColors(svg);
+    if (!c.aspect) {
+      const vb = svg.match(/^<svg\b[^>]*viewBox=["']\s*[-\d.]+\s+[-\d.]+\s+([\d.]+)\s+([\d.]+)/i);
+      if (vb) {
+        c.width = c.width || Number(vb[1]);
+        c.height = c.height || Number(vb[2]);
+        c.aspect = round(c.width / c.height);
+      }
+    }
+  }
   await resolveDimensions(candidates, ctx);
   const kept = dropNonLogoShapes(candidates);
   await resolveWhiteOnTransparent(kept, ctx);
@@ -2531,6 +2917,7 @@ async function processSite(input, opts) {
 
     const toAbs = (href) => {
       if (!href) return null;
+      if (/^data:/i.test(href)) return href;
       if (base.local) {
         if (/^https?:\/\//i.test(href)) return href;
         try {
@@ -2542,7 +2929,18 @@ async function processSite(input, opts) {
       return absUrl(base.base, href);
     };
 
-    const cssText = stripCssComments(cssSegments.map((s) => s.text).join('\n'));
+    // The evidence describes the theme the page opens in. A site with a
+    // light and a dark theme writes both into one stylesheet, and read flat
+    // the dark one (written later) would win: Markloop's dark accent and
+    // Cursor's near-black page. site.themes says the other theme exists.
+    const scheme = defaultColorScheme(html);
+    // Framer prefixes font names inside the quotes ("CUSTOMV2;Aktiv Grotesk",
+    // "GF;Inter-500"), and that ";" ends the declaration for every reader
+    // here; the prefix goes before anything parses.
+    const rawCss = stripCssComments(cssSegments.map((s) => s.text).join('\n')).replace(/(["'])(?:CUSTOMV?\d*|GF|FS);/g, '$1');
+    const themed = splitThemeCss(rawCss, scheme);
+    const cssText = themed.css;
+    site.themes = { default: scheme, other: themed.other.length ? (scheme === 'dark' ? 'light' : 'dark') : null, otherVia: themed.other };
     const rules = parseRules(cssText);
     const props = customProps(cssText);
     site.tells = extractTells(html);
@@ -2565,6 +2963,10 @@ async function processSite(input, opts) {
 
     const tLogo0 = Date.now();
     site.logo = await extractLogos(html, cssSegments, {
+      rules,
+      props,
+      rootProps: rootCustomProps(rules),
+      pageText: site.page.bodyTextColor.value,
       toAbs,
       isLocal: base.local,
       deadline,
@@ -2659,7 +3061,7 @@ async function saveLogo(site, index, dest) {
   // cannot be fetched (a re-encoded logo beats no logo).
   let from = cand.url;
   if (cand.kind !== 'svg-inline') {
-    const read = (u) => (isLocalInput(u) ? readFileSync(u) : fetchLogoBytes(u, Date.now() + TIMEOUT_MS));
+    const read = (u) => decodeDataUri(u)?.buf || (isLocalInput(u) ? readFileSync(u) : fetchLogoBytes(u, Date.now() + TIMEOUT_MS));
     try {
       buf = await read(cand.url);
     } catch (e) {
@@ -2677,7 +3079,7 @@ async function saveLogo(site, index, dest) {
   // Relative to where the command ran, so the path drops straight into
   // brand-tokens.mjs --logo.
   const rel = relativePath(process.cwd(), path);
-  return { index, url: from, kind: cand.kind, path: rel && !rel.startsWith('..') ? rel : path, bytes: buf.length };
+  return { index, url: /^data:/i.test(from) ? `data: URI (${buf.length} bytes)` : from, kind: cand.kind, path: rel && !rel.startsWith('..') ? rel : path, bytes: buf.length };
 }
 
 // ---------------------------------------------------------------------------
@@ -2722,6 +3124,10 @@ function summarizeSite(site) {
   const bt = p.bodyTextColor || {};
   const btText = bt.value ? `${bt.value} (${bt.source})` : `null${bt.reason ? ` (${bt.reason}${bt.observed ? `, saw ${bt.observed}` : ''})` : ''}`;
   L.push(`page: siteIsDark ${yesNo(p.siteIsDark)}; pageBackground ${p.pageBackground?.value || 'null'}; bodyTextColor ${btText}`);
+  const th = site.themes;
+  if (th?.other) {
+    L.push(`themes: the page opens in its ${th.default} theme; a ${th.other} theme (${th.otherVia.join(', ')}) is left out of everything below`);
+  }
 
   // Colors: non-vendor, saturated, in the JSON's order, with the ones used
   // on a button, nav, link or heading first. The color nearest the logo is
@@ -2730,7 +3136,7 @@ function summarizeSite(site) {
   const ref = site.logoDistanceFrom;
   L.push(
     ref
-      ? `colors (non-vendor, saturated, most elements on this page first; el = elements painted, hover left out; logoDistance = ΔE OKLab x100 to the logo's ${ref.colors.join(' ')}, from ${ref.url ? clip(ref.url.split('/').pop(), 60) : 'the inline SVG logo'}; under 5 reads as the same color):`
+      ? `colors (non-vendor, saturated, most elements on this page first; el = elements painted, hover left out; logoDistance = ΔE OKLab x100 to the logo's ${ref.colors.join(' ')}, from ${!ref.url ? 'the inline SVG logo' : /^data:/i.test(ref.url) ? 'the logo written into the page (data: URI)' : clip(ref.url.split('/').pop(), 60)}; under 5 reads as the same color):`
       : 'colors (non-vendor, saturated, most elements on this page first; el = elements painted, hover left out; logoDistance n/a: no logo candidate paints with a saturated color):'
   );
   // On a dark site the darkest tones are the theme's surfaces (panel and

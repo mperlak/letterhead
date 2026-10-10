@@ -21,7 +21,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) .doc-head .brand-mark { margin-bottom: 2.5rem; }
 :where(.doc) .doc-head > .kicker { display: inline-block; padding: 0.3rem 0.85rem; border-radius: calc(var(--radius-xl) * 4);
   background: var(--accent); color: var(--accent-foreground); font-size: var(--text-xs); }
-:where(.doc) h1 { font-weight: 700; font-size: clamp(2.75rem, 7.5vw, 4.75rem); line-height: 0.98; letter-spacing: -0.045em;
+:where(.doc) h1 { font-weight: var(--font-heading-weight, 700); font-size: clamp(2.75rem, 7.5vw, 4.75rem); line-height: 0.98; letter-spacing: -0.045em;
   margin: 1.4rem 0 1.5rem; max-width: 16ch; text-wrap: balance; }
 :where(.doc) .lede { font-size: var(--text-xl); font-weight: 500; line-height: 1.3; color: var(--muted-foreground); margin: 0; max-width: 34rem; text-wrap: pretty; }
 :where(.doc) .doc-head .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1rem 2rem; margin: 2.75rem 0 0; }
@@ -32,7 +32,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) .contents ol { display: flex; flex-wrap: wrap; gap: 0.4rem 1.75rem; margin: 0; padding: 0; list-style: none; }
 :where(.doc) .contents a { font-size: var(--text-sm); font-weight: 500; color: var(--muted-foreground); text-decoration: none; }
 :where(.doc) section { margin-top: var(--space-section); }
-:where(.doc) h2 { font-weight: 700; font-size: var(--text-2xl); line-height: 1.08; margin: 0.35rem 0 1rem; max-width: 24ch; }
+:where(.doc) h2 { font-weight: var(--font-heading-weight, 700); font-size: var(--text-2xl); line-height: 1.08; margin: 0.35rem 0 1rem; max-width: 24ch; }
 :where(.doc) h3 { font-weight: 600; font-size: var(--text-lg); line-height: 1.2; margin: 2rem 0 0.4rem; }
 
 /* Soft cards: summary, callout, price */
