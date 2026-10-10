@@ -1,0 +1,20 @@
+/* A theme that writes its call-to-action yellow far more often than the
+   page shows it: hover states, gradients, unused utility classes. */
+body { color: #363941; font-family: Inter, sans-serif; background: #ffffff; }
+nav#nav ul li a:hover { color: #FFCE00; }
+.link-arrow:hover { color: #FFCE00; }
+.article:hover .title { color: #FFCE00; }
+.gradient-element { background: linear-gradient(0deg, rgba(255, 206, 0, 0) 56%, #ffce00 100%); }
+.gradient-element.bottom { background: linear-gradient(180deg, rgba(255, 206, 0, 0) 56%, #ffce00 100%); }
+.color-10 { color: #FFCE00; }
+.bgc-10 { background-color: #FFCE00; }
+.checkbox input { background: #FFCE00; }
+.checkbox input:checked { background-color: #FFCE00; }
+.button { background-color: #FFCE00; }
+/* type-2 sits on a section only, never on a button */
+.type-2.button { background-color: #016337; }
+.section .text a { color: #016337; }
+.color-2 { color: #016337; }
+.bgc-8 { background-color: #EBF7DA; }
+.color-4 { color: #BDE783; }
+.bgc-4 { background-color: #BDE783; }

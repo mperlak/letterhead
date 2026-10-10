@@ -26,6 +26,14 @@
 // The 2026-09-28 round adds colors[].logoDistance, --summary, --out and
 // --save-logo (extension from the bytes, inline SVG saved as a file).
 //
+// lazy-cta covers the 2026-10-10 Fiklon round: colors rank by the elements
+// of the page they paint, not by how often a stylesheet writes them (hover
+// states, transparent gradient stops and unused utility classes count
+// nothing); contexts come from rendered rules and matched tags; light
+// section backgrounds are surfaces; lazy-load placeholders (a real
+// blank.gif in src) give way to data-* sources; SVG icon colors; logo-alt
+// only from where a logo sits.
+//
 // next-image covers URLs read from attributes: entities decoded (`&amp;`),
 // image-optimizer URLs (Next.js, Vercel, Cloudflare) resolved to the
 // original file with optimizedUrl beside it, the largest srcset candidate
@@ -361,6 +369,29 @@ console.log('fixture: next-image.html (entities in URLs, image optimizers, srcse
   const png = join(tmp, 'logo.png');
   check('--save-logo saves the original file, not the optimizer URL', r.status === 0 && existsSync(png) && readFileSync(png).equals(readFileSync(join(FIXTURES, 'arkona-logo.png'))));
   check('--summary marks the original of an optimized image', /original of an optimized image/.test(r.stdout));
+}
+
+console.log('fixture: lazy-cta.html (elements on the page, not hex count; lazy-load placeholders; icon colors)');
+{
+  const site = runOn('lazy-cta.html');
+  const colors = (site?.colors || []).filter((c) => !c.vendor && c.saturated);
+  const byHex = Object.fromEntries((site?.colors || []).map((c) => [c.hex, c]));
+  const green = byHex['#016337'];
+  const yellow = byHex['#ffce00'];
+  check('the color on links and headings ranks first, by elements on the page', colors[0]?.hex === '#016337' && green.elements > yellow?.elements);
+  check('the CTA yellow is written more often but paints fewer elements', yellow?.occurrences > green?.occurrences && yellow.elements === 2);
+  check('hover-only contexts stay out of contexts', !yellow?.contexts.includes('nav') && yellow?.stateContexts?.includes('nav'));
+  check('a class pair no element carries (.type-2.button) adds no button context', !green?.contexts.includes('button'));
+  check('a utility class on h3 titles makes a heading context', green?.contexts.includes('heading'));
+  check('a light section background is a surface', byHex['#ebf7da']?.contexts.includes('surface') && byHex['#ebf7da'].elements === 2);
+  check('transparent gradient stops paint nothing', byHex['#ffce00']?.elements === 2);
+  check('an SVG icon behind a lazy-load placeholder reports its color', site?.iconColors?.[0]?.hex === '#bde783' && site.iconColors[0].uses === 3);
+  check('no logo candidate is a lazy-load placeholder', (site?.logo || []).every((l) => !/blank\.gif$/.test(l.url || '')));
+  check('the footer logo resolves through data-wpfc-original-src', (site?.logo || []).some((l) => l.location === 'footer' && /lazy-cta-logo\.svg$/.test(l.url || '')));
+  check('a content picture alt and a bare "logo" alt are not name forms', site?.page.nameForms.map((n) => n.value).join('|') === 'Ostoja');
+  const sum = spawnSync(process.execPath, [SCRIPT, join(FIXTURES, 'lazy-cta.html'), '--summary'], { encoding: 'utf8' });
+  check('--summary prints elements beside the CSS count', /#016337 {2}13 el \(3x in CSS\)/.test(sum.stdout));
+  check('--summary lists light surfaces and icon colors', /light surfaces .*#ebf7da/.test(sum.stdout) && /icon colors .*#bde783 3x lazy-cta-ring\.svg/.test(sum.stdout));
 }
 
 if (failures > 0) {

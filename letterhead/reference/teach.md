@@ -68,7 +68,8 @@ document the profile styles.
 
   `--summary` prints about thirty lines: the name forms with `legalName`,
   the language, `siteIsDark` / `pageBackground` / `bodyTextColor`, the top
-  non-vendor colors with context, count and `logoDistance`, the body and
+  non-vendor colors with context, elements on the page and `logoDistance`,
+  the light surface colors and the colors of SVG icons, the body and
   heading font with origin, source and weights, the top three logo
   candidates, and the page's headings for tone. Decide from it. Querying
   the full JSON piece by piece is how a seven-call run becomes fifteen.
@@ -101,7 +102,8 @@ document the profile styles.
 
   | Key | Use it for |
   |---|---|
-  | `colors[]` | Primary and secondary: `hex`, `occurrences`, `contexts` (`button`, `nav`, `link`, `text`, `inline-svg-body`, ...), `variables`, `saturated`, `vendor`, `onPage`, `logoDistance` (against the logo in `logoDistanceFrom`). |
+  | `colors[]` | Primary and secondary: `hex`, `elements` (elements of the page the color paints, hover and focus states left out; the ranking key), `occurrences` (how often the hex is written in CSS), `contexts` (`button`, `nav`, `link`, `heading`, `surface`, `text`, `inline-svg-body`, ...; only from rules this page renders), `stateContexts` (contexts reached only on hover or focus), `variables`, `saturated`, `vendor`, `onPage`, `logoDistance` (against the logo in `logoDistanceFrom`). |
+  | `iconColors[]` | Colors of the small same-site SVG files the page shows as images: `hex`, `uses`, `files`. Decoration, never a primary. |
   | `page.bodyTextColor.value`, `page.pageBackground.value`, `page.siteIsDark` | Text color, and whether to pass `--background`. |
   | `fonts.bodyRule.family`, `fonts.headingRule.family` (with `origin`) | Body and heading font. |
   | `fonts.faces[]` / `fonts.families[]` with `fontSource` | Where each family comes from. |
@@ -130,14 +132,27 @@ first sheet.
 Turn candidates into field values, each with a confidence. The rules below
 exist because the obvious reading of the evidence is often wrong.
 
-- **Primary color:** a saturated, non-`vendor`, `onPage` candidate that
-  appears in button or navigation context and is frequent. A variable named
+- **Primary color:** the saturated, non-`vendor`, `onPage` candidate that
+  paints the most elements of the page (`el` in the summary) across links,
+  headings, buttons and navigation. Rank by elements, never by how often a
+  stylesheet writes the hex: a stylesheet full of hover states and unused
+  utility classes writes a call-to-action yellow 34 times that the page
+  shows on four buttons, and the sheet then paints a green brand yellow. A
+  color that fills only buttons (one call-to-action color, `button` and
+  nothing else) is the primary only when the logo paints with it or nothing
+  else saturated is on the page; otherwise name it in the gate as a color
+  documents will not carry. A color the summary marks `hover-only` for a
+  context does not earn that context. A variable named
   `primary` / `brand` / `accent` wins when the script does not flag it
-  `vendor`. Plugin and widget variables (`--gf-*`, `--tw-*`, `--stk-*`,
-  `--fupi-*`, chat and consent widgets), colors used only in the WordPress
+  `vendor` and it paints elements on this page; a page builder's untouched
+  default (`vendorReason: builder-default`) is not a decision. Plugin and
+  widget variables (`--gf-*`, `--tw-*`, `--stk-*`, `--fupi-*`, chat and
+  consent widgets), colors used only in the WordPress
   admin bar, and colors from a cookie banner are not brand colors; the
   script flags all of them (`vendorReason: variable` or `selector`). Trust
-  the flag rather than the prefix. A theme's own palette slots
+  the flag rather than the prefix. A color the summary marks `vendor var, kept` paints
+  the brand's own buttons and links too: the plugin borrowed the brand's
+  color, so it stays a candidate. A theme's own palette slots
   (`--wp--preset--color--primary`, `-secondary`, `-accent`, `-contrast`,
   `-base` and their hover/light/dark variants, and Elementor's
   `--e-global-color-*`) are where a site owner puts the brand, so they are
@@ -158,12 +173,23 @@ exist because the obvious reading of the evidence is often wrong.
 - **Secondary color:** never a question. Record it as
   `fields["colors.secondary"]` and pass it to `brand-tokens.mjs` as
   `--accent` (step 5) when the brand names one: a non-vendor variable
-  called `accent` or `secondary` (theme palette slots count), or a color
-  the logo paints with that is not the primary. Otherwise leave the field
-  out and the tokens derive a light tint of the primary. The accent fills
-  tags, callouts and rules and highlights rows; it is never text on paper,
+  called `accent` or `secondary` (theme palette slots count), a color
+  the logo paints with that is not the primary, or the first color on the
+  summary's `light surfaces` line: a light brand tint the page paints as
+  section backgrounds, which is what the accent does in a document.
+  Otherwise leave the field out and the tokens derive a light tint of the
+  primary. A brand's second color is never dropped because nothing
+  happens to name it; the site painting it across six sections is the
+  naming. The accent fills tags, callouts and rules and highlights rows; it is never text on paper,
   where a pastel accent is unreadable. Nobody can answer "is this your
   second color?" usefully on a sheet, so it is shown, not asked.
+- **Colors no token carries:** a call-to-action color that lost the
+  primary, the summary's `icon colors` (bullets, rings, small marks).
+  Documents carry two brand colors, primary and accent; these do not get a
+  third. Name them in the `colors.primary` note, in the sheet's language
+  ("the yellow #ffce00 of the booking buttons stays out of documents"),
+  so the owner sees on the sheet that they were seen and left out, rather
+  than wondering whether anybody noticed.
 - **Document background and text:** a light document by default, whatever
   the site does. A site is dark because it is a site; a document is paper.
   This is a decision, not a question. Take the text color from the
@@ -313,6 +339,10 @@ like this wordmark?").
 Show the fields with their values and confidence and the questions you
 intend to ask, and wait for an explicit yes. Show only decisions a file or
 a script flag will carry (the field → flag table in `reference/profile.md`).
+Add one line with the three or four colors the page shows most, each with
+its elements and the role it gets (primary, accent, left out), the ones
+left out included: a wrong primary is obvious in that line and invisible
+in a list of decisions alone.
 When the evidence suggests something the skill cannot express, say so in
 the gate, in one line, instead of listing it as a decision: a color the
 user agreed to that no token carries vanishes from every document without a

@@ -51,13 +51,14 @@
 //   3 — output produced, but --save-logo could not save the logo
 //
 // No dependencies beyond Node's built-ins (node:fs, node:path, global
-// fetch). No network access beyond the hosts implied by the given inputs
+// fetch) and the bundled node-html-parser in vendor/. No network access beyond the hosts implied by the given inputs
 // (the page itself, its same-origin stylesheets, and, with --depth 1, up to
 // three same-origin pages linked from its nav/header).
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync, openSync, readSync, closeSync } from 'node:fs';
 import { resolve as resolvePath, relative as relativePath, dirname } from 'node:path';
 import { inflateSync, constants as zlibConstants } from 'node:zlib';
+import { parse as parseHtml } from './vendor/node-html-parser.mjs';
 
 const UA = 'Mozilla/5.0 (compatible; brand-evidence/1.0)';
 const TIMEOUT_MS = 12_000;
@@ -93,6 +94,15 @@ const WP_BRAND_PRESET_RE =
   /^--wp--preset--color--(primary|secondary|tertiary|accent|brand|body-text|text|heading|base|contrast|foreground|background)(-(hover|light|lighter|dark|darker|alt|\d+))*$/i;
 const ELEMENTOR_GLOBAL_RE = /^--e-global-color-[\w-]+$/i;
 const isBrandNamespaceVar = (name) => WP_BRAND_PRESET_RE.test(name) || ELEMENTOR_GLOBAL_RE.test(name);
+// The colors a fresh Elementor kit ships with. A global still at its
+// default is the page builder's swatch, not a brand decision: read
+// literally, "a variable named primary wins" elects Elementor's #6ec1e4.
+const ELEMENTOR_DEFAULT_KIT = {
+  '--e-global-color-primary': '#6ec1e4',
+  '--e-global-color-secondary': '#54595f',
+  '--e-global-color-text': '#7a7a7a',
+  '--e-global-color-accent': '#61ce70',
+};
 
 // Selectors that belong to somebody else's chrome: the WP admin bar (served
 // to the public on some sites), and cookie/consent banners. A color used
@@ -491,9 +501,15 @@ function deltaEOk(hexA, hexB) {
 // The logo whose colors colors[].logoDistance is measured against: the
 // first of the top three non-strip candidates (og:image is a photo, not a
 // mark) that paints with a saturated color.
+// The logo the distances are measured against. Candidates where a logo
+// sits (home link, header, footer) come first: when the real logo there is
+// greys only, a picture further down the page is not the brand's color
+// (Fiklon's grey logo would otherwise hand the reference to an
+// illustration in the content).
 function logoReference(logos) {
   const pool = logos.filter((l) => !l.strip && l.kind !== 'og:image').slice(0, 3);
-  return pool.find((l) => Array.isArray(l.colors) && l.colors.length > 0) || null;
+  const placed = pool.filter((l) => l.homeLink || l.location === 'header' || l.location === 'footer');
+  return (placed.length ? placed : pool).find((l) => Array.isArray(l.colors) && l.colors.length > 0) || null;
 }
 
 function addLogoDistances(site) {
@@ -857,6 +873,51 @@ const CONTEXT_TESTS = [
 
 const COLOR_TOKEN_RE = /(#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/gi;
 
+// A selector part that only applies in an interaction state: `a:hover`,
+// `.button:focus`, `input:checked`, placeholders. Its color is what the page
+// turns into, not what it shows; Fiklon's yellow was "nav" only through
+// `nav#nav a:hover`.
+const STATE_PSEUDO_RE = /:(?:hover|focus|focus-visible|focus-within|active|checked|visited|disabled|placeholder-shown)\b|::?(?:-[\w-]+-)?placeholder|::selection/i;
+const PSEUDO_ELEMENT_RE = /::?(?:before|after|marker|first-letter|first-line)\b/gi;
+const BLOCK_TAGS = new Set(['section', 'div', 'article', 'aside', 'main', 'header', 'footer', 'body', 'li']);
+// Contexts read off the elements a rule matched, for utility classes whose
+// names say nothing (`.color-2` on thirteen h3 titles is a heading color).
+const TAG_CONTEXTS = [
+  ['link', /^a$/],
+  ['heading', /^h[1-6]$/],
+  ['button', /^button$/],
+];
+
+// A fully transparent stop (`rgba(255, 206, 0, 0)`) is no color on screen.
+const isTransparentToken = (t) => /^(?:rgba|hsla)\(.*[,/]\s*0(?:\.0+)?%?\s*\)$/i.test(t.trim());
+
+// How many elements of the fetched page a selector part matches, with the
+// tag names it hit. Pseudo-elements count their host element (a
+// `li::before` bullet paints once per li). Universal and root selectors
+// (`*`, `:root`, `html`) carry variables and defaults, not a painted
+// surface, so they count nothing. Parts the parser cannot read count
+// nothing rather than guessing.
+function elementCounter(html) {
+  const root = parseHtml(html.replace(/<script\b[\s\S]*?<\/script>/gi, ''));
+  const cache = new Map();
+  return (part) => {
+    if (cache.has(part)) return cache.get(part);
+    let res = { n: 0, tags: new Set() };
+    const sel = part.replace(PSEUDO_ELEMENT_RE, '').trim();
+    if (sel && !/^(\*|:root|html)$/i.test(sel)) {
+      let els = null;
+      try {
+        els = root.querySelectorAll(sel);
+      } catch {
+        els = null;
+      }
+      if (els) res = { n: els.length, tags: new Set(els.map((e) => e.tagName?.toLowerCase()).filter(Boolean)) };
+    }
+    cache.set(part, res);
+    return res;
+  };
+}
+
 // Colors painted by inline <svg> markup outside the header/nav: partner and
 // customer logos, illustrations. Attribute and inline-style values only.
 function inlineSvgBodyColors(html) {
@@ -875,11 +936,14 @@ function inlineSvgBodyColors(html) {
 
 // ctx.pageIndex: class/id index of the fetched HTML, or null when the page
 // is a JS shell (then every rule counts as on-page). ctx.svgBodyColors: the
-// set from inlineSvgBodyColors().
+// set from inlineSvgBodyColors(). ctx.countElements: elementCounter() over
+// the page, or null for a JS shell (then elements is null and the ranking
+// falls back to occurrences).
 function extractColors(css, rules = parseRules(css), ctx = {}) {
   const props = customProps(css);
   const pageIndex = ctx.pageIndex || null;
   const svgBodyColors = ctx.svgBodyColors || new Set();
+  const countElements = ctx.countElements || null;
 
   const byHex = new Map();
   const entryFor = (hexVal) => {
@@ -894,6 +958,8 @@ function extractColors(css, rules = parseRules(css), ctx = {}) {
         ownPageLiteralHits: 0,
         vendorSelectorHits: 0,
         pageHits: 0,
+        elements: 0,
+        stateContexts: new Set(),
       };
       byHex.set(hexVal, entry);
     }
@@ -921,29 +987,72 @@ function extractColors(css, rules = parseRules(css), ctx = {}) {
       return tag && SVG_TAGS.has(tag);
     });
     const onPage = parts.some((p) => partMatchesPage(p, pageIndex));
+    // Interaction states (`a:hover`) and rules for markup this page does not
+    // render say where a color COULD appear; their contexts go to
+    // stateContexts or nowhere, so `contexts` only names places the page
+    // shows the color.
+    const stateRule = parts.every((p) => STATE_PSEUDO_RE.test(p));
     let contexts = vendorSelector ? [] : CONTEXT_TESTS.filter(([, re]) => re.test(rule.selector)).map(([n]) => n);
     if (svgTarget && !vendorSelector) {
       contexts = contexts.includes('header') ? ['header'] : ['inline-svg-body'];
     }
+    // Elements the rule paints on this page, interaction states left out.
+    let ruleElements = 0;
+    const ruleTags = new Set();
+    if (countElements && !vendorSelector) {
+      for (const part of parts) {
+        if (STATE_PSEUDO_RE.test(part)) continue;
+        const { n, tags } = countElements(part);
+        ruleElements += n;
+        for (const t of tags) ruleTags.add(t);
+      }
+    }
+    // With markup to count against, a rule that paints no element shows
+    // nothing: `.type-2.button` names a class pair no element carries, even
+    // though each class occurs somewhere on the page.
+    const rendered = countElements ? ruleElements > 0 : !pageIndex || onPage;
+    const shownContexts = stateRule || !rendered ? [] : contexts;
+    const addContexts = (entry, prop) => {
+      if (stateRule) for (const k of contexts) entry.stateContexts.add(k);
+      for (const k of shownContexts) entry.contexts.add(k);
+      if (!stateRule && ruleElements > 0 && !svgTarget) {
+        for (const [k, re] of TAG_CONTEXTS) {
+          // An <a class="button"> is a button, not a text link.
+          if (k === 'link' && contexts.includes('button')) continue;
+          if ([...ruleTags].some((t) => re.test(t))) entry.contexts.add(k);
+        }
+      }
+      // A background on a section or block on this page, outside a button:
+      // the color is a surface the reader sees as an area.
+      if (/^background(-color)?$/.test(prop) && ruleElements > 0 && !contexts.includes('button') && [...ruleTags].some((t) => BLOCK_TAGS.has(t))) {
+        entry.contexts.add('surface');
+      }
+    };
     for (const decl of rule.body.split(';')) {
       const colon = decl.indexOf(':');
       if (colon < 0) continue;
-      const isVarDecl = decl.slice(0, colon).trim().startsWith('--');
+      const prop = decl.slice(0, colon).trim().toLowerCase();
+      const isVarDecl = prop.startsWith('--');
       const value = decl.slice(colon + 1);
       // `background: var(--wp--preset--color--primary)` on a button: the
-      // variable's color gets the rule's context (no extra occurrence; the
-      // count stays "places the hex is written").
+      // variable's color gets the rule's context and its elements (no extra
+      // occurrence; the count stays "places the hex is written").
       if (!isVarDecl && /var\(/.test(value) && !vendorSelector) {
         const c = parseColor(resolveVarChain(value.trim(), props));
         const entry = c && byHex.get(hexOf(c));
-        if (entry) for (const k of contexts) entry.contexts.add(k);
+        if (entry) {
+          addContexts(entry, prop);
+          entry.elements += ruleElements;
+        }
       }
       for (const cm of value.matchAll(COLOR_TOKEN_RE)) {
         const c = parseColor(cm[1]);
         if (!c) continue;
         const entry = entryFor(hexOf(c));
         entry.occurrences++;
-        for (const k of contexts) entry.contexts.add(k);
+        if (isTransparentToken(cm[1])) continue;
+        addContexts(entry, prop);
+        if (!isVarDecl) entry.elements += ruleElements;
         if (!vendorSelector && contexts.some((k) => BRAND_RESCUE_CONTEXTS.has(k))) entry.brandContextHits++;
         if (vendorSelector) entry.vendorSelectorHits++;
         else if (!isVarDecl) {
@@ -970,7 +1079,8 @@ function extractColors(css, rules = parseRules(css), ctx = {}) {
     // >=3 brand surfaces (button/nav/header), which means it's the site's
     // real accent and the vendor variable is incidental (seen on a Tailwind SaaS site:
     // the real accent was only ever named via --tw-ring-color).
-    const vendorOnly = variables.length > 0 && variables.every(isVendorVar);
+    const isDefaultKit = (n) => ELEMENTOR_DEFAULT_KIT[n.toLowerCase()] === hexVal;
+    const vendorOnly = variables.length > 0 && variables.every((n) => isVendorVar(n) || isDefaultKit(n));
     const rescued = vendorOnly && entry.brandContextHits >= 3;
     // No variable names it, and every literal use this page can render sits
     // under admin-bar or cookie-banner selectors: somebody else's chrome.
@@ -992,15 +1102,25 @@ function extractColors(css, rules = parseRules(css), ctx = {}) {
       // or a component this page does not render.
       pageHits: entry.pageHits,
       onPage: pageIndex ? entry.pageHits > 0 : null,
+      // Elements of this page the color paints, interaction states left
+      // out; var() uses count toward the color the variable resolves to.
+      // The ranking key: occurrences counts how often the hex is WRITTEN,
+      // and a stylesheet full of hover states and unused utility classes
+      // writes a CTA yellow 34 times that the page shows on 4 buttons.
+      elements: countElements ? entry.elements : null,
     };
-    if (vendor) entryOut.vendorReason = selectorVendor ? 'selector' : 'variable';
+    if (entry.stateContexts.size) entryOut.stateContexts = [...entry.stateContexts];
+    if (vendor) entryOut.vendorReason = selectorVendor ? 'selector' : variables.every(isDefaultKit) ? 'builder-default' : 'variable';
     if (rescued) entryOut.vendorVariables = variables;
     out.push(entryOut);
   }
   const onPageRank = (c) => (c.onPage === false ? 1 : 0);
   out.sort(
     (a, b) =>
-      Number(b.saturated) - Number(a.saturated) || onPageRank(a) - onPageRank(b) || b.occurrences - a.occurrences
+      Number(b.saturated) - Number(a.saturated) ||
+      onPageRank(a) - onPageRank(b) ||
+      (b.elements ?? 0) - (a.elements ?? 0) ||
+      b.occurrences - a.occurrences
   );
   return out;
 }
@@ -1727,7 +1847,10 @@ function resolveCssUrl(base, href, isLocal) {
 
 // "brand" only as its own token (navbar-brand, brand.svg), not inside
 // a word like "brandon.png".
-const LOGO_WORD_RE = /logo|(^|[^a-z])brand(s|mark)?([^a-z]|$)/i;
+// "logo" anywhere (site-logo, mainlogo.svg), except where it starts a word
+// about speech therapy: Polish logopeda / logopedia / neurologopeda and
+// English logopedics, which put a therapist's portrait on the logo list.
+const LOGO_WORD_RE = /logo(?!ped|pæd|terap|therap)|(^|[^a-z])brand(s|mark)?([^a-z]|$)/i;
 // Unnamed header images qualify as logo candidates only with logo-like
 // proportions; anything under ICON_MAX_PX on its longer side is an icon
 // (hamburger, close X, social glyph), never the mark.
@@ -1888,15 +2011,19 @@ function resolveImageUrl(raw, toAbs, isLocal, pageUrl) {
   return url ? { url, optimizedUrl: used } : { url: used, optimizedUrl: null };
 }
 
-// The image file an <img> stands for. Lazy-loaders put a data: placeholder
-// in src and the file in data-src / data-lazy-src. An optimizer URL in src
-// or srcset resolves to the original; only when no original can be derived
-// does the largest srcset candidate beat src.
+// The image file an <img> stands for. Lazy-loaders put a placeholder in src
+// (a data: URI, or a real file such as WP Fastest Cache's blank.gif) and the
+// file in a data-* attribute; when one is present it wins over src. An
+// optimizer URL in src or srcset resolves to the original; only when no
+// original can be derived does the largest srcset candidate beat src.
+const LAZY_SRC_ATTRS = ['data-lazy-src', 'data-src', 'data-wpfc-original-src', 'data-original', 'data-lazy'];
+const LAZY_SRCSET_ATTRS = ['data-lazy-srcset', 'data-srcset', 'data-wpfc-original-srcset'];
 function imgSource(tag, toAbs, isLocal, pageUrl) {
   const attr = (name) => (tag.match(new RegExp(`\\s${name}=(?:"([^"]*)"|'([^']*)')`, 'i')) || []).slice(1).find((v) => v != null);
-  let src = attr('src');
-  if (!src || /^data:/i.test(src)) src = attr('data-lazy-src') || attr('data-src') || src || null;
-  const set = parseSrcset(attr('srcset') || attr('data-lazy-srcset') || attr('data-srcset') || '');
+  const lazySrc = LAZY_SRC_ATTRS.map(attr).find((v) => v && !/^data:/i.test(v));
+  const lazySet = LAZY_SRCSET_ATTRS.map(attr).find(Boolean);
+  const src = lazySrc || attr('src') || null;
+  const set = parseSrcset(lazySet || attr('srcset') || '');
   set.sort((a, b) => (b.w || 0) - (a.w || 0) || (b.x || 0) - (a.x || 0));
   const tries = [src, ...set.map((c) => c.url)].filter((v) => v && !/^data:/i.test(attrUrl(v) || ''));
   for (const t of tries) {
@@ -1906,6 +2033,57 @@ function imgSource(tag, toAbs, isLocal, pageUrl) {
   const pick = set.length && !/^data:/i.test(attrUrl(set[0].url) || '') ? set[0].url : src;
   if (!pick) return null;
   return { raw: attrUrl(src) || '', ...resolveImageUrl(pick, toAbs, isLocal, pageUrl) };
+}
+
+// iconColors[]: the colors of small same-site SVG files the page shows as
+// <img> (Fiklon's green rings, nine of them, behind a lazy-load
+// placeholder). CSS and inline SVG never see them. They are decoration
+// evidence, never primary candidates, so they stay out of colors[].
+const MAX_ICON_FILES = 10;
+const MAX_ICON_BYTES = 20_000;
+async function collectIconColors(html, { toAbs, isLocal, pageUrl, deadline, skip = new Set() }) {
+  const uses = new Map();
+  const host = pageUrl ? safeOrigin(pageUrl) : null;
+  for (const m of html.matchAll(/<img\b[^>]*>/gi)) {
+    const img = imgSource(m[0], toAbs, isLocal, pageUrl);
+    const url = img?.url;
+    if (!url || skip.has(url) || !/\.svg(?:[?#]|$)/i.test(url)) continue;
+    if (!isLocal && safeOrigin(url) !== host) continue;
+    uses.set(url, (uses.get(url) || 0) + 1);
+  }
+  const byHex = new Map();
+  for (const [url, n] of [...uses].sort((a, b) => b[1] - a[1]).slice(0, MAX_ICON_FILES)) {
+    let text = '';
+    if (isLocal) {
+      try {
+        if (statSync(url).size <= MAX_ICON_BYTES) text = readFileSync(url, 'utf8');
+      } catch {
+        continue;
+      }
+    } else {
+      const r = await fetchText(url, deadline);
+      if (!r.ok || r.bytes > MAX_ICON_BYTES) continue;
+      text = r.text;
+    }
+    const seen = new Set();
+    for (const cm of text.matchAll(/\b(?:fill|stroke|stop-color)\s*[:=]\s*["']?\s*(#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/gi)) {
+      const c = parseColor(cm[1]);
+      if (!c) continue;
+      const hexVal = hexOf(c);
+      if (seen.has(hexVal)) continue;
+      seen.add(hexVal);
+      const e = byHex.get(hexVal) || { hex: hexVal, uses: 0, files: [] };
+      e.uses += n;
+      e.files.push(url.split(/[?#]/)[0].split('/').pop());
+      byHex.set(hexVal, e);
+    }
+  }
+  return [...byHex.values()]
+    .map((e) => {
+      const { r, g, b } = parseColor(e.hex);
+      return { ...e, saturated: isSaturated([r, g, b]) };
+    })
+    .sort((a, b) => Number(b.saturated) - Number(a.saturated) || b.uses - a.uses);
 }
 
 function collectLogoCandidates(html, cssSegments, toAbs, isLocal, pageUrl) {
@@ -2188,6 +2366,7 @@ function emptySite(input, error) {
     colors: [],
     fonts: null,
     logo: [],
+    iconColors: [],
     tells: null,
     warnings: [],
     error,
@@ -2371,7 +2550,11 @@ async function processSite(input, opts) {
     // rule counts as on-page there (onPage: null in colors[]).
     const pageIndex = site.tells.jsShell ? null : htmlTokenIndex(htmlPages);
     if (!pageIndex) site.warnings.push('page looks like a JS shell; colors[].onPage not computed');
-    site.colors = extractColors(cssText, rules, { pageIndex, svgBodyColors: inlineSvgBodyColors(html) });
+    site.colors = extractColors(cssText, rules, {
+      pageIndex,
+      svgBodyColors: inlineSvgBodyColors(html),
+      countElements: pageIndex ? elementCounter(html) : null,
+    });
     site.fonts = extractFonts(cssText, html, rules, { pageIndex });
     site.page = extractPage(html, rules, props);
 
@@ -2388,11 +2571,27 @@ async function processSite(input, opts) {
       pageUrl: base.local ? null : site.finalUrl,
     });
     site.timingMs.logo = Date.now() - tLogo0;
+    site.iconColors = await collectIconColors(html, {
+      toAbs,
+      isLocal: base.local,
+      pageUrl: base.local ? null : site.finalUrl,
+      deadline,
+      skip: new Set(site.logo.map((l) => l.url).filter(Boolean)),
+    });
 
     // logo-alt is text (the alt attribute), never the decoded image — but a
     // strip/partner-bar candidate's alt ("partner logos") is not a name
-    // form, so only an alt from a non-strip logo candidate counts.
-    const logoAlt = site.logo.find((l) => l.alt && !l.strip)?.alt;
+    // form, and neither is the alt of a picture in the content (Fiklon's
+    // "Konsultacja z neurologopedą" came from an illustration whose src was
+    // a lazy-load placeholder) or a bare "logo". Only a non-strip candidate
+    // where logos sit (home link, header, footer) counts.
+    const logoAlt = site.logo.find(
+      (l) =>
+        l.alt &&
+        !l.strip &&
+        (l.homeLink || l.location === 'header' || l.location === 'footer') &&
+        !/^(logo|logotyp|logotype|image|img|home|strona główna)$/i.test(l.alt.trim())
+    )?.alt;
     if (logoAlt) {
       site.page.nameForms = dedupeNameForms([...site.page.nameForms, { value: logoAlt, source: 'logo-alt' }]);
     }
@@ -2496,10 +2695,13 @@ const yesNo = (v) => (v === true ? 'yes' : v === false ? 'no' : '?');
 function summaryColorLine(c, label) {
   const bits = [
     `${label}${c.hex}`,
-    `${c.occurrences}x`,
+    c.elements != null ? `${c.elements} el (${c.occurrences}x in CSS)` : `${c.occurrences}x`,
     c.contexts.length ? c.contexts.join('/') : 'no context',
   ];
+  const stateOnly = (c.stateContexts || []).filter((k) => !c.contexts.includes(k));
+  if (stateOnly.length) bits.push(`hover-only ${stateOnly.join('/')}`);
   if (c.variables.length) bits.push(c.variables.slice(0, 2).join(' '));
+  if (c.vendorVariables) bits.push('(vendor var, kept: used on brand surfaces)');
   if (c.onPage === false) bits.push('NOT on this page');
   bits.push(`L ${c.lightness}`);
   bits.push(`logoDistance ${c.logoDistance ?? 'n/a'}`);
@@ -2528,8 +2730,8 @@ function summarizeSite(site) {
   const ref = site.logoDistanceFrom;
   L.push(
     ref
-      ? `colors (non-vendor, saturated; logoDistance = ΔE OKLab x100 to the logo's ${ref.colors.join(' ')}, from ${ref.url ? clip(ref.url.split('/').pop(), 60) : 'the inline SVG logo'}; under 5 reads as the same color):`
-      : 'colors (non-vendor, saturated; logoDistance n/a: no logo candidate paints with a saturated color):'
+      ? `colors (non-vendor, saturated, most elements on this page first; el = elements painted, hover left out; logoDistance = ΔE OKLab x100 to the logo's ${ref.colors.join(' ')}, from ${ref.url ? clip(ref.url.split('/').pop(), 60) : 'the inline SVG logo'}; under 5 reads as the same color):`
+      : 'colors (non-vendor, saturated, most elements on this page first; el = elements painted, hover left out; logoDistance n/a: no logo candidate paints with a saturated color):'
   );
   // On a dark site the darkest tones are the theme's surfaces (panel and
   // button backgrounds), not brand accents; they get their own line so a
@@ -2545,6 +2747,16 @@ function summarizeSite(site) {
   const nearest = pool.filter((c) => c.logoDistance != null).sort((a, b) => a.logoDistance - b.logoDistance)[0];
   if (nearest && !top.includes(nearest)) L.push(summaryColorLine(nearest, 'nearest the logo: '));
   if (surfaces.length) L.push(`  dark-site surfaces, not primary candidates: ${surfaces.slice(0, 4).map((c) => c.hex).join(' ')}`);
+  // Light brand tints painted as section backgrounds: the --accent
+  // candidates (teach.md, secondary color).
+  const lightSurfaces = pool.filter((c) => c.contexts.includes('surface') && c.lightness >= 0.8 && c.onPage !== false).slice(0, 3);
+  if (lightSurfaces.length) {
+    L.push(`  light surfaces (section backgrounds, accent candidates): ${lightSurfaces.map((c) => `${c.hex} ${c.elements ?? '?'} el`).join('; ')}`);
+  }
+  const icons = (site.iconColors || []).filter((c) => c.saturated).slice(0, 3);
+  if (icons.length) {
+    L.push(`  icon colors (SVG images, decoration only): ${icons.map((c) => `${c.hex} ${c.uses}x ${clip(c.files.join(','), 40)}`).join('; ')}`);
+  }
   const vendorCount = site.colors.filter((c) => c.vendor).length;
   if (vendorCount) L.push(`  (${vendorCount} vendor colors left out)`);
 
