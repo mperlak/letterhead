@@ -77,7 +77,11 @@ for (const key of ['composerIcon', 'composerIconDark', 'logo', 'logoDark']) list
 manifest.skills = './skills/';
 writeFileSync(join(stage, '.codex-plugin/plugin.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 cpSync(join(root, 'LICENSE'), join(stage, 'LICENSE'));
-for (const [src, dst] of [['privacy.md', 'PRIVACY.md'], ['terms.md', 'TERMS.md']]) cpSync(join(root, 'docs', src), join(stage, dst));
+for (const [src, dst] of [['privacy.md', 'PRIVACY.md'], ['terms.md', 'TERMS.md']]) {
+  const content = readFileSync(join(root, 'docs', src), 'utf8');
+  // The archive uses uppercase policy filenames; keep its relative link valid.
+  writeFileSync(join(stage, dst), content.replaceAll('](privacy.md)', '](PRIVACY.md)'));
+}
 writeFileSync(join(stage, 'README.md'), `# letterhead\n\n${listing.longDescription}\n\nSupport: ${listing.supportURL}\n\nPrivacy: ${listing.privacyPolicyURL}\n\nUse and licenses: ${listing.termsOfServiceURL}\n`);
 const png = readFileSync(join(stage, 'assets/icon.png'));
 check(png.subarray(0, 8).toString('hex') === '89504e470d0a1a0a', 'Icon must be a PNG');

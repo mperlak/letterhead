@@ -4,7 +4,9 @@
 // Takes a taught brand profile directory (DESIGN.md + PRODUCT.md +
 // tokens.css + profile.meta.json, per reference/create.md) and renders it as a single self-contained review
 // document: logo, colors, typography, tone, composition and open questions,
-// closing with a preview of what a first real document will look like.
+// closing with a preview of what a first real document will look like: a
+// short document about the profile itself, laid out by the base style's own
+// style.css, so the owner sees the composition, not a description of it.
 // The generated file is meant to go straight into a review loop, so it is
 // built to the same review-ready contract as any other letterhead output
 // (stable heading ids, no external resources, labeled metadata) and this
@@ -329,6 +331,42 @@ function extractLogoDataUri(tokensCss) {
 }
 
 // ============================================================
+// preview document CSS
+// ============================================================
+
+// The preview is a real document slice, laid out by the base style's own
+// style.css (scoped `:where(.doc)`), so the owner sees the style's
+// composition and signature moves instead of a sentence naming the style.
+// The style's page-level rules (box-sizing, html, body) are the sheet's
+// business and are dropped. The page has one <h1>, the sheet's title, so the
+// preview's title is a paragraph that takes the style's h1 rules.
+function previewStyleCss(style, warn) {
+  if (!/^[a-z0-9-]+$/.test(style || '')) return null;
+  const path = join(__dirname, '..', 'styles', style, 'style.css');
+  if (!existsSync(path)) {
+    warn(`no style.css for style "${style}" — the preview falls back to a plain card`);
+    return null;
+  }
+  return readFileSync(path, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^(?:\*, \*::before, \*::after|html|body)\s*\{[^}]*\}\s*$/gm, '')
+    .replace(/([^{}]+)\{/g, (m, sel) => (sel.trim().startsWith('@') ? m : `${sel.replace(/(^|[^\w-])h1(?![\w-])/g, '$1:is(h1, .pv-title)')}{`))
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+const HEX_RE = /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i;
+// Appended to the sheet's element selectors so they skip the preview
+// document; :where() keeps their specificity unchanged.
+const NOT_DOC = ':where(:not(.doc *))';
+
+// ASCII slug for the preview's own h2 ids (Polish letters folded).
+function slugify(text) {
+  return String(text).toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+// ============================================================
 // i18n
 // ============================================================
 
@@ -377,7 +415,7 @@ const STRINGS = {
     noWeightNote: null,
     nowordsLabel: 'Trzy słowa, których nie użyjemy',
     nowordsEmpty: 'Nie mamy jeszcze listy słów do wykluczenia.',
-    compositionFallback: (style) => `Kompozycję przyjmujemy ze stylu „${style}”.`,
+    compositionFallback: 'Układ dokumentów (odstępy, ramki, listy, podział na sekcje) pokazujemy w podglądzie na końcu arkusza. Jeśli Państwa dokumenty wyglądają inaczej, prosimy o przykład albo komentarz.',
     density: {
       compact: 'Gęstość: ciasna — mało powietrza wokół elementów, dużo treści na ekranie.',
       regular: 'Gęstość: zwykła — powietrze i treść są w równowadze.',
@@ -394,6 +432,27 @@ const STRINGS = {
     },
     questionsClosing: 'Jeśli coś tutaj nie jest Państwa, prosimy o komentarz w tym miejscu.',
     previewIntro: 'Tak zacznie się pierwszy dokument złożony w Państwa barwach.',
+    previewIntroSample: 'Tak będą wyglądać Państwa dokumenty. Ten przykład opisuje pracę nad Państwa marką, więc nic w nim nie jest zmyślone.',
+    pv: {
+      kicker: 'Profil marki',
+      title: (name) => `${name}: profil marki do sprawdzenia`,
+      lede: (src) => `${src ? `Odczytaliśmy markę z: ${src}. ` : ''}Zanim powstanie pierwszy dokument, prosimy o sprawdzenie kolorów, krojów pisma i logo.`,
+      status: 'do sprawdzenia',
+      summary: ({ heading, body, colors }) => [
+        heading && body && `Nagłówki: ${heading}, tekst: ${body}.`,
+        colors && 'Kolory marki z ich wartościami są w tabeli poniżej.',
+      ].filter(Boolean).join(' '),
+      readHeading: 'Co odczytaliśmy',
+      rows: { name: 'Nazwa', logo: 'Logo', primary: 'Kolor główny', secondary: 'Kolor uzupełniający', foreground: 'Kolor tekstu', background: 'Tło dokumentu', body: 'Krój tekstu', heading: 'Krój nagłówków', tone: 'Ton' },
+      states: { confirmed: 'potwierdzone', inferred: 'odczytane', guessed: 'do sprawdzenia', missing: 'brak' },
+      colorHead: ['Rola', 'Wartość'],
+      calloutLabel: 'Do Państwa decyzji',
+      calloutQuestions: (n) => (n === 1 ? 'Jedno pytanie czeka na odpowiedź w sekcji „Pytania”.'
+        : `${n} ${n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'pytania czekają' : 'pytań czeka'} na odpowiedź w sekcji „Pytania”.`),
+      calloutNone: 'Jeśli coś w tym arkuszu nie jest Państwa, prosimy o komentarz w tym miejscu.',
+      nextHeading: 'Co dalej',
+      steps: [['Teraz', 'Państwo komentują arkusz marki.'], ['Potem', 'Poprawiamy profil według komentarzy.'], ['Na koniec', 'Powstaje pierwszy dokument w Państwa barwach.']],
+    },
     previewStatus: 'szkic do komentarzy',
     previewNextStep: 'Następny krok',
     previewTldrLabel: 'W skrócie',
@@ -449,7 +508,7 @@ const STRINGS = {
     noWeightNote: null,
     nowordsLabel: 'Three words we will not use',
     nowordsEmpty: 'No words are excluded yet.',
-    compositionFallback: (style) => `We take composition from the "${style}" style.`,
+    compositionFallback: 'The layout of your documents (spacing, boxes, lists, how sections break) is shown in the preview at the end of this sheet. If your documents look different, please send an example or a comment.',
     density: {
       compact: 'Density: compact — little air around elements, more content per screen.',
       regular: 'Density: regular — air and content are balanced.',
@@ -466,6 +525,26 @@ const STRINGS = {
     },
     questionsClosing: 'If anything here is not yours, say so in a comment on that place.',
     previewIntro: 'This is how the first document set in your colors will open.',
+    previewIntroSample: 'This is how your documents will look. The example describes the work on your brand, so nothing in it is made up.',
+    pv: {
+      kicker: 'Brand profile',
+      title: (name) => `${name}: brand profile for review`,
+      lede: (src) => `${src ? `We read your brand from ${src}. ` : ''}Before the first document, please check the colors, typefaces and logo.`,
+      status: 'for review',
+      summary: ({ heading, body, colors }) => [
+        heading && body && `Headings in ${heading}, text in ${body}.`,
+        colors && 'The brand colors and their values are in the table below.',
+      ].filter(Boolean).join(' '),
+      readHeading: 'What we read',
+      rows: { name: 'Name', logo: 'Logo', primary: 'Primary color', secondary: 'Secondary color', foreground: 'Text color', background: 'Document background', body: 'Body typeface', heading: 'Heading typeface', tone: 'Tone' },
+      states: { confirmed: 'confirmed', inferred: 'read from source', guessed: 'please check', missing: 'missing' },
+      colorHead: ['Role', 'Value'],
+      calloutLabel: 'For your decision',
+      calloutQuestions: (n) => `${n === 1 ? 'One question waits' : `${n} questions wait`} for your answer in “Questions.”`,
+      calloutNone: 'If anything on this sheet is not yours, please comment right on it.',
+      nextHeading: 'Next steps',
+      steps: [['Now', 'You comment on the brand sheet.'], ['Then', 'We correct the profile from your comments.'], ['Finally', 'The first document is set in your colors.']],
+    },
     previewStatus: 'draft for comments',
     previewNextStep: 'Next step',
     previewTldrLabel: 'In short',
@@ -617,6 +696,22 @@ function buildModel(profile, warn) {
   const logoDims = ratioToken > 0 ? { width: ratioToken, height: 1 } : logoDimensions(logoDataUri);
   const logoPlate = /--brand-logo-plate\s*:/.test(tokensCss);
   const inkIsPrimary = primaryInkIsPrimary(tokensCss);
+  const previewCss = previewStyleCss(style, warn);
+  // Confidence per field, for the preview's status ledger.
+  const confidenceOf = (key) => {
+    const f = field(meta, key);
+    if (!f || f.value == null) return 'missing';
+    return ['confirmed', 'inferred', 'guessed'].includes(f.confidence) ? f.confidence : 'inferred';
+  };
+  const fieldStates = {
+    name: confidenceOf('name'),
+    logo: logoDataUri ? confidenceOf('logo') === 'missing' ? 'inferred' : confidenceOf('logo') : 'missing',
+    primary: confidenceOf('colors.primary'),
+    secondary: secondary ? confidenceOf('colors.secondary') : null,
+    body: confidenceOf('typography.body'),
+    heading: confidenceOf('typography.heading'),
+    tone: confidenceOf('voice.register'),
+  };
   if (!logoDataUri) warn('no --brand-logo data URI found in tokens.css — falling back to a text mark');
   else if (!logoDims) warn('could not read the logo\'s own proportions — drawing it at 3:1');
 
@@ -678,9 +773,9 @@ function buildModel(profile, warn) {
 
   // Preview ---------------------------------------------------------------
   // No `preview` in the meta file is the normal case at teach time: there
-  // is no document yet, so the sheet shows a neutral sample built from the
-  // brand alone, labeled as a sample, with no invented title, date or
-  // next step. A profile that carries `preview` renders it as before.
+  // is no document yet, so the sheet shows a sample about the profile
+  // itself (renderPreviewDoc), labeled as a sample, with no invented title,
+  // date or next step. A profile that carries `preview` renders its head.
   const previewSample = !meta.preview || (!meta.preview.title && !meta.preview.nextStep);
   let previewTitle;
   let previewNextStep = null;
@@ -710,7 +805,7 @@ function buildModel(profile, warn) {
     name, slug, style, lang, sources,
     primary, foreground, secondary, backgroundTokenValue, foregroundTokenValue, backgroundFromBrand,
     bodyFace, headingFace, headingWeight,
-    logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask, inkIsPrimary,
+    logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask, inkIsPrimary, previewCss, fieldStates,
     notesName, notesLogo, notesTone, voiceSample, nowords,
     composition, questions, previewSample, previewTitle, previewNextStep, notesPreview,
   };
@@ -752,6 +847,87 @@ function renderMark({ model, sizeClass = 'mark--panel', bare = false }) {
     return `<span class="mark-img ${sizeClass}${kind}${bare ? ' mark-img--bare' : ''}" role="img" aria-label="${escapeHtml(model.name)}" style="${style}"></span>`;
   }
   return `<span class="mark-text ${sizeClass}">${escapeHtml(model.name)}</span>`;
+}
+
+// The preview document. Without a real `preview` in the meta file it is a
+// short document about this profile: what was read, how sure we are, what
+// happens next. Every line is true of the profile, so nothing is invented,
+// and it exercises the markup a document uses (head, summary, status
+// ledger, table, callout, steps). With a real `preview` it is that
+// document's head.
+function renderPreviewDoc(model, t, { sourcesLine, metaRows, date }) {
+  const pv = t.pv;
+  const hex = (f) => (f && typeof f.value === 'string' && HEX_RE.test(f.value) ? f.value.toUpperCase() : null);
+  const chip = (h) => `<span class="pv-chip" style="background:${h}" aria-hidden="true"></span>`;
+  const mark = renderMark({ model, sizeClass: 'mark--panel' }).replace('class="', 'class="brand-mark ');
+  const primary = hex(model.primary);
+  const secondary = hex(model.secondary);
+  const head = (title, kicker, lede, rows) => `<header class="doc-head">
+      ${mark}
+      ${kicker ? `<p class="kicker">${escapeHtml(kicker)}</p>
+      ` : ''}<p class="pv-title">${escapeHtml(title)}</p>
+      ${lede ? `<p class="lede">${escapeHtml(lede)}</p>
+      ` : ''}${renderMetaDl(rows)}
+    </header>`;
+  if (!model.previewSample) {
+    return `<div class="doc">
+    ${head(model.previewTitle, null, null, metaRows)}
+    <div class="summary">
+      <p class="label">${escapeHtml(t.previewTldrLabel)}</p>
+      <p>${escapeHtml(model.notesPreview)}</p>
+    </div>
+  </div>`;
+  }
+  const rows = [
+    [t.metaClient, escapeHtml(model.name)],
+    ...(sourcesLine ? [[t.metaSources, escapeHtml(sourcesLine)]] : []),
+    [t.metaDate, escapeHtml(date)],
+    [t.metaStatus, escapeHtml(pv.status)],
+  ];
+  const summary = pv.summary({ heading: model.headingFace?.value, body: model.bodyFace?.value, colors: Boolean(primary) });
+  const STATE_CLASS = { confirmed: 'ok', inferred: 'neutral', guessed: 'warn', missing: 'neutral' };
+  const ledger = Object.entries(model.fieldStates)
+    .filter(([, state]) => state)
+    .map(([key, state]) => `        <div><dt>${escapeHtml(pv.rows[key])}</dt><dd><span class="state ${STATE_CLASS[state]}">${escapeHtml(pv.states[state])}</span></dd></div>`)
+    .join('\n');
+  const colorRows = [
+    ['primary', primary],
+    ['secondary', secondary],
+    ['foreground', hex(model.foreground)],
+    ['background', model.backgroundFromBrand && HEX_RE.test(model.backgroundTokenValue || '') ? model.backgroundTokenValue.toUpperCase() : null],
+  ].filter(([, h]) => h)
+    .map(([key, h]) => `          <tr><td>${escapeHtml(pv.rows[key])}</td><td>${chip(h)}${h}</td></tr>`)
+    .join('\n');
+  const n = model.questions.length;
+  return `<div class="doc">
+    ${head(pv.title(model.name), pv.kicker, pv.lede(sourcesLine), rows)}
+    ${summary ? `<div class="summary">
+      <p class="label">${escapeHtml(t.previewTldrLabel)}</p>
+      <p>${escapeHtml(summary)}</p>
+    </div>` : ''}
+    <section>
+      <h2 id="${slugify(pv.readHeading)}">${escapeHtml(pv.readHeading)}</h2>
+      <dl class="status">
+${ledger}
+      </dl>
+      ${colorRows ? `<div class="table-wrap"><table>
+        <thead><tr><th>${escapeHtml(pv.colorHead[0])}</th><th>${escapeHtml(pv.colorHead[1])}</th></tr></thead>
+        <tbody>
+${colorRows}
+        </tbody>
+      </table></div>` : ''}
+      <div class="callout">
+        <p class="label">${escapeHtml(pv.calloutLabel)}</p>
+        <p>${escapeHtml(n ? pv.calloutQuestions(n) : pv.calloutNone)}</p>
+      </div>
+    </section>
+    <section>
+      <h2 id="${slugify(pv.nextHeading)}">${escapeHtml(pv.nextHeading)}</h2>
+      <ol class="steps">
+${pv.steps.map(([when, what]) => `        <li><span class="when">${escapeHtml(when)}</span><div>${escapeHtml(what)}</div></li>`).join('\n')}
+      </ol>
+    </section>
+  </div>`;
 }
 
 function renderMasthead(model, t) {
@@ -903,7 +1079,7 @@ ${model.nowords.map((w) => `    <li>${escapeHtml(w)}</li>`).join('\n')}
     if (model.composition.rhythm && t.rhythm[model.composition.rhythm]) lines.push(`<p>${escapeHtml(t.rhythm[model.composition.rhythm])}</p>`);
     compositionBody = lines.join('\n  ');
   } else {
-    compositionBody = `<p>${escapeHtml(t.compositionFallback(model.style))}</p>`;
+    compositionBody = `<p>${escapeHtml(t.compositionFallback)}</p>`;
   }
 
   // ---- Section 6: questions ----
@@ -1009,7 +1185,9 @@ body {
 .rule { height: var(--brand-rule-height, 6px); background: var(--brand-rule, var(--primary)); }
 
 header .titleblock { padding-top: 34px; padding-bottom: 6px; }
-h1 {
+/* Element rules skip .doc: they lay out the sheet and must not reach the
+   preview document, which the base style lays out. */
+h1${NOT_DOC} {
   font-family: var(--font-display);
   font-size: var(--text-3xl, 2rem);
   font-weight: var(--font-heading-weight, ${model.headingWeight ?? 700});
@@ -1018,15 +1196,15 @@ h1 {
   color: var(--foreground);
 }
 h1 .accent { color: var(--primary-ink, var(--foreground)); }
-.lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
+.titleblock .lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
 
-dl.meta { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
-dl.meta div { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-dl.meta dt { flex: 0 0 9.5rem; margin: 0; font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: var(--tracking-label, 0.06em); text-transform: uppercase; color: var(--muted-foreground); }
-dl.meta dd { margin: 0; font-size: var(--text-sm, 0.875rem); }
+dl.meta${NOT_DOC} { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
+dl.meta${NOT_DOC} div { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+dl.meta${NOT_DOC} dt { flex: 0 0 9.5rem; margin: 0; font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: var(--tracking-label, 0.06em); text-transform: uppercase; color: var(--muted-foreground); }
+dl.meta${NOT_DOC} dd { margin: 0; font-size: var(--text-sm, 0.875rem); }
 
-section { margin: 0 0 var(--space-section, 2.5rem); }
-h2 {
+section${NOT_DOC} { margin: 0 0 var(--space-section, 2.5rem); }
+h2${NOT_DOC} {
   font-family: var(--font-display);
   font-size: var(--text-xl, 1.375rem);
   font-weight: var(--font-heading-weight, 700);
@@ -1035,9 +1213,9 @@ h2 {
   padding-top: 14px;
   border-top: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary));
 }
-h3 { font-size: var(--text-base, 1rem); font-weight: var(--font-heading-weight, 700); line-height: 1.35; margin: 0 0 5px; }
-p { margin: 0 0 13px; }
-p:last-child { margin-bottom: 0; }
+h3${NOT_DOC} { font-size: var(--text-base, 1rem); font-weight: var(--font-heading-weight, 700); line-height: 1.35; margin: 0 0 5px; }
+p${NOT_DOC} { margin: 0 0 13px; }
+p${NOT_DOC}:last-child { margin-bottom: 0; }
 
 .logopair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 15px; }
 .logopair--single { grid-template-columns: 1fr; }
@@ -1083,17 +1261,29 @@ ol.questions p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foregro
 .preview .tldr { border-top: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary)); padding-top: 13px; margin-bottom: 0; }
 .preview .tldr .label { font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); display: block; margin-bottom: 5px; }
 
-footer { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
-footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
+footer${NOT_DOC} { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
+footer${NOT_DOC} p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
 
-@media (max-width: 640px) {
+${model.previewCss ? `.preview-frame { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
+/* The style keeps its own padding: some draw in it (consulting's spine). */
+.preview-frame > .doc { margin: 0 auto; }
+.preview-frame .brand-mark { display: block; }
+.sample-tag { margin: 0 0 10px; }
+.sample-tag .tag { margin-left: 0; }
+.pv-chip { display: inline-block; width: 1.05em; height: 1.05em; border-radius: 3px; vertical-align: -0.18em; margin-right: 0.5em;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 25%, transparent); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* ---- the base style (${model.style}) for the preview document ---- */
+${model.previewCss}
+
+` : ''}@media (max-width: 640px) {
   .logopair { grid-template-columns: 1fr; gap: 12px; }
-  dl.meta div { flex-direction: column; gap: 1px; }
-  dl.meta dt { flex: none; }
+  dl.meta${NOT_DOC} div { flex-direction: column; gap: 1px; }
+  dl.meta${NOT_DOC} dt { flex: none; }
 }
 @media (max-width: 480px) {
   .swatches { grid-template-columns: 1fr; }
-  h1 { font-size: 1.5rem; }
+  h1${NOT_DOC} { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -1154,8 +1344,11 @@ ${facts.join('\n')}
 
 <section>
   <h2 id="preview">${escapeHtml(t.sections.preview)}</h2>
-  <p>${escapeHtml(t.previewIntro)}</p>
-  <div class="preview">
+  <p>${escapeHtml(model.previewCss && model.previewSample ? t.previewIntroSample : t.previewIntro)}</p>
+  ${model.previewCss ? `${model.previewSample ? `<p class="sample-tag"><span class="tag">${escapeHtml(t.sampleTag)}</span></p>
+  ` : ''}<div class="preview-frame">
+  ${renderPreviewDoc(model, t, { sourcesLine, metaRows: previewMetaRows, date: dateToday })}
+  </div>` : `<div class="preview">
     <div class="band ${model.logoOn === 'dark' ? 'band--dark' : 'band--light'}">${renderMark({ model, sizeClass: 'mark--panel' })}</div>
     <div class="inner">
       ${model.previewSample ? `<p class="sample-tag"><span class="tag">${escapeHtml(t.sampleTag)}</span></p>
@@ -1166,7 +1359,7 @@ ${facts.join('\n')}
         <p>${escapeHtml(model.notesPreview)}</p>
       </div>
     </div>
-  </div>
+  </div>`}
 </section>
 
 </main>

@@ -283,7 +283,9 @@ body {
 .rule { height: var(--brand-rule-height, 6px); background: var(--brand-rule, var(--primary)); }
 
 header .titleblock { padding-top: 34px; padding-bottom: 6px; }
-h1 {
+/* Element rules skip .doc: they lay out the sheet and must not reach the
+   preview document, which the base style lays out. */
+h1:where(:not(.doc *)) {
   font-family: var(--font-display);
   font-size: var(--text-3xl, 2rem);
   font-weight: var(--font-heading-weight, 700);
@@ -292,15 +294,15 @@ h1 {
   color: var(--foreground);
 }
 h1 .accent { color: var(--primary-ink, var(--foreground)); }
-.lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
+.titleblock .lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
 
-dl.meta { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
-dl.meta div { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-dl.meta dt { flex: 0 0 9.5rem; margin: 0; font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: var(--tracking-label, 0.06em); text-transform: uppercase; color: var(--muted-foreground); }
-dl.meta dd { margin: 0; font-size: var(--text-sm, 0.875rem); }
+dl.meta:where(:not(.doc *)) { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
+dl.meta:where(:not(.doc *)) div { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+dl.meta:where(:not(.doc *)) dt { flex: 0 0 9.5rem; margin: 0; font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: var(--tracking-label, 0.06em); text-transform: uppercase; color: var(--muted-foreground); }
+dl.meta:where(:not(.doc *)) dd { margin: 0; font-size: var(--text-sm, 0.875rem); }
 
-section { margin: 0 0 var(--space-section, 2.5rem); }
-h2 {
+section:where(:not(.doc *)) { margin: 0 0 var(--space-section, 2.5rem); }
+h2:where(:not(.doc *)) {
   font-family: var(--font-display);
   font-size: var(--text-xl, 1.375rem);
   font-weight: var(--font-heading-weight, 700);
@@ -309,9 +311,9 @@ h2 {
   padding-top: 14px;
   border-top: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary));
 }
-h3 { font-size: var(--text-base, 1rem); font-weight: var(--font-heading-weight, 700); line-height: 1.35; margin: 0 0 5px; }
-p { margin: 0 0 13px; }
-p:last-child { margin-bottom: 0; }
+h3:where(:not(.doc *)) { font-size: var(--text-base, 1rem); font-weight: var(--font-heading-weight, 700); line-height: 1.35; margin: 0 0 5px; }
+p:where(:not(.doc *)) { margin: 0 0 13px; }
+p:where(:not(.doc *)):last-child { margin-bottom: 0; }
 
 .logopair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 15px; }
 .logopair--single { grid-template-columns: 1fr; }
@@ -359,17 +361,168 @@ ol.questions p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foregro
 .preview .tldr { border-top: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary)); padding-top: 13px; margin-bottom: 0; }
 .preview .tldr .label { font-size: var(--text-xs, 0.75rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); display: block; margin-bottom: 5px; }
 
-footer { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
-footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
+footer:where(:not(.doc *)) { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
+footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
+
+.preview-frame { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
+/* The style keeps its own padding: some draw in it (consulting's spine). */
+.preview-frame > .doc { margin: 0 auto; }
+.preview-frame .brand-mark { display: block; }
+.sample-tag { margin: 0 0 10px; }
+.sample-tag .tag { margin-left: 0; }
+.pv-chip { display: inline-block; width: 1.05em; height: 1.05em; border-radius: 3px; vertical-align: -0.18em; margin-right: 0.5em;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 25%, transparent); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* ---- the base style (engineering) for the preview document ---- */
+:where(.doc) { display: block; max-width: calc(var(--measure) + 12rem); margin: 0 auto; padding: 1.5rem 2.25rem 3.5rem 3.25rem; }
+:where(.doc) a { color: var(--primary); text-underline-offset: 0.18em; }
+:where(.doc) :is(p, ul, ol) { margin: 0.55rem 0; }
+:where(.doc) :is(.kicker, .label, dt, th, .state, .when, .from, .num, code, pre) { font-family: var(--font-mono); }
+:where(.doc) :is(.kicker, .label, dt, th) { margin: 0; font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-label);
+  text-transform: uppercase; color: var(--muted-foreground); }
+
+:where(.doc) .doc-head { display: grid; grid-template: auto auto auto auto 1fr / minmax(10rem, 13rem) 1fr; column-gap: 1.75rem;
+  padding-bottom: 1.1rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--foreground); }
+:where(.doc) .doc-head > * { grid-column: 2; }
+:where(.doc) .doc-head .brand-mark { margin-bottom: 0.75rem; }
+:where(.doc) .doc-head > .kicker { color: var(--primary); padding-top: 0.15rem; }
+:where(.doc) .doc-head > .kicker::before { content: "[ "; color: var(--muted-foreground); }
+:where(.doc) .doc-head > .kicker::after { content: " ]"; color: var(--muted-foreground); }
+:where(.doc) :is(h1, .pv-title) { font: var(--font-heading-weight, 650) var(--text-3xl)/1.12 var(--font-display); letter-spacing: -0.012em;
+  margin: 0.35rem 0 0.5rem; max-width: 26ch; }
+:where(.doc) .lede { font-size: var(--text-lg); line-height: 1.45; color: var(--muted-foreground); margin: 0; max-width: 40rem; }
+:where(.doc) .doc-head > .meta { grid-area: 1 / 1 / -1; display: flex; flex-direction: column; gap: 0.5rem; margin: 0;
+  padding-right: 1.25rem; border-right: 1px solid var(--border); }
+:where(.doc) .meta dt { font-weight: 500; }
+:where(.doc) .meta dd { margin: 0.1rem 0 0; font-family: var(--font-mono); font-size: var(--text-sm); line-height: 1.35; }
+
+:where(.doc) .status { display: flex; flex-wrap: wrap; gap: 1px; margin: 0 0 1.1rem;
+  background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+:where(.doc) .status > div { flex: 1 1 9.5rem; padding: 0.5rem 0.8rem; background: var(--card); }
+:where(.doc) .status dd { margin: 0.2rem 0 0; }
+:where(.doc) .state { display: inline-flex; align-items: center; gap: 0.45em; font-size: var(--text-xs); font-weight: 600;
+  text-transform: uppercase; white-space: nowrap; color: var(--status-neutral); }
+:where(.doc) .state::before { content: ""; width: 0.6em; height: 0.6em; border-radius: 50%; background: currentColor; flex: none; }
+:where(.doc) .state.ok { color: var(--status-ok); }
+:where(.doc) .state.warn { color: var(--status-warn); }
+:where(.doc) .state.blocked { color: var(--status-blocked); }
+:where(.doc) .state.neutral::before { background: none; box-shadow: inset 0 0 0 1.5px currentColor; }
+:where(.doc) .status .state { font-size: var(--text-sm); }
+:where(.doc) .states { list-style: none; padding: 0; border-top: 1px solid var(--border); }
+:where(.doc) .states > li { display: flex; align-items: baseline; gap: 0.75rem; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
+:where(.doc) .states > li > .state { flex: none; min-width: 7.5rem; }
+:where(.doc) .states > li > div { flex: 1; min-width: 0; }
+
+:where(.doc) .contents { margin-bottom: 1.25rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+:where(.doc) .contents ol { columns: 3 12rem; margin: 0; padding: 0; list-style: none; counter-reset: i; }
+:where(.doc) .contents li { counter-increment: i; padding: 0.12rem 0; font-size: var(--text-sm); }
+:where(.doc) .contents li::before { content: counter(i, decimal-leading-zero) "  "; white-space: pre; font: var(--text-xs) var(--font-mono); color: var(--muted-foreground); }
+:where(.doc) .contents a { color: inherit; text-decoration: none; }
+:where(.doc) section { margin-top: 1.4rem; }
+:where(.doc) section + section { border-top: 1px solid var(--border); padding-top: 0.9rem; }
+:where(.doc) h2 { position: relative; font: var(--font-heading-weight, 600) var(--text-xl)/1.25 var(--font-display); margin: 0.15rem 0 0.5rem; }
+:where(.doc) h2::before { content: "#"; position: absolute; right: 100%; margin-right: 0.55rem; font: 400 1em var(--font-mono); color: var(--primary); }
+:where(.doc) h3 { font-size: var(--text-base); margin: 1.1rem 0 0.25rem; }
+:where(.doc) h3::before { content: "## "; font: 400 var(--text-sm) var(--font-mono); color: var(--muted-foreground); }
+
+:where(.doc) :is(.summary, .callout, .price, .ask) { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;
+  background: var(--card); color: var(--card-foreground); padding: 0 0.9rem 0.15rem; margin: 1rem 0; }
+:where(.doc) :is(.summary, .callout, .price) > .label, :where(.doc) .ask h2 { margin: 0 -0.9rem 0.4rem; padding: 0.35rem 0.9rem;
+  background: var(--muted); border-bottom: 1px solid var(--border); color: var(--foreground); }
+:where(.doc) .summary { border-left: 3px solid var(--primary); font-weight: 500; }
+:where(.doc) .callout.warn { border-left: 3px solid var(--status-warn); }
+:where(.doc) .callout.warn > .label { color: var(--status-warn); }
+:where(.doc) .callout.warn > .label::before { content: "! "; }
+:where(.doc) section.ask { border-color: var(--foreground); margin-top: 1.6rem; padding-top: 0; }
+:where(.doc) .ask h2 { font-size: var(--text-lg); border-color: var(--foreground); }
+:where(.doc) .ask h2::before { content: "\2192"; position: static; }
+
+:where(.doc) .figure strong { display: inline-block; font: 600 var(--text-xl)/1.2 var(--font-mono); font-variant-numeric: tabular-nums;
+  padding: 0.1rem 0.5rem; margin-right: 0.4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); }
+:where(.doc) .verdict { font-weight: 600; padding-left: 0.8rem; border-left: 2px solid var(--foreground); margin: 0.9rem 0; }
+:where(.doc) .letter { border-left: 1px solid var(--border); padding-left: 1rem; }
+:where(.doc) .from { font-size: var(--text-xs); color: var(--muted-foreground); }
+:where(.doc) .from strong { color: var(--foreground); }
+
+:where(.doc) .table-wrap { overflow-x: auto; margin: 0.9rem 0; border: 1px solid var(--border); border-radius: var(--radius-md); }
+:where(.doc) table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); line-height: 1.4; }
+:where(.doc) :is(th, td) { text-align: left; vertical-align: top; padding: 0.36rem 0.65rem; border-bottom: 1px solid var(--border); }
+:where(.doc) :is(th, td) + :is(th, td) { border-left: 1px solid var(--border); }
+:where(.doc) th { background: var(--muted); border-bottom-color: var(--foreground); white-space: nowrap; }
+:where(.doc) tbody tr:nth-child(even) td { background: var(--card); }
+:where(.doc) tbody tr:last-child td { border-bottom: 0; }
+:where(.doc) td:first-child { font-weight: 600; }
+:where(.doc) .num { text-align: right; font-variant-numeric: tabular-nums; }
+:where(.doc) td.num { font-weight: 400; }
+
+:where(.doc) :is(.steps, .recs) { list-style: none; padding: 0; counter-reset: n; border-top: 1px solid var(--border); }
+:where(.doc) :is(.steps, .recs) li { counter-increment: n; position: relative; padding: 0.4rem 0 0.4rem 7.25rem; border-bottom: 1px solid var(--border); }
+:where(.doc) .recs li { padding-left: 2.75rem; }
+:where(.doc) .steps li:not(:has(.when))::before { content: counter(n, decimal-leading-zero); }
+:where(.doc) .recs li::before { content: "R" counter(n); }
+:where(.doc) :is(.steps li, .recs li)::before, :where(.doc) .when { position: absolute; left: 0; top: 0.62rem; width: 6.75rem;
+  font: 600 var(--text-xs)/1.3 var(--font-mono); text-transform: uppercase; color: var(--primary); }
+:where(.doc) .recs .from { display: block; }
+:where(.doc) .steps [aria-current="step"] { background: color-mix(in oklch, var(--primary) 9%, transparent); font-weight: 600; }
+:where(.doc) .steps [aria-current="step"]::before, :where(.doc) .steps [aria-current="step"] .when { color: var(--foreground); }
+
+:where(.doc) .price dl > div { display: flex; justify-content: space-between; gap: 1rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--border); }
+:where(.doc) .price dt { font: inherit; text-transform: none; color: inherit; letter-spacing: 0; }
+:where(.doc) .price dd { margin: 0; font-family: var(--font-mono); }
+:where(.doc) .price .total { font-weight: 700; border: 0; border-top: 1px solid var(--foreground); }
+:where(.doc) .doc-close { margin-top: 2.25rem; padding-top: 0.7rem; border-top: 1px solid var(--foreground); font-size: var(--text-sm); }
+:where(.doc) .doc-close .meta { display: flex; flex-wrap: wrap; gap: 0.3rem 1.5rem; }
+:where(.doc) .doc-close .meta :is(dt, dd) { display: inline; margin: 0 0.4rem 0 0; }
+:where(.doc) code { font-size: 0.86em; background: var(--muted); border-radius: var(--radius-sm); padding: 0 0.25em; }
+:where(.doc) pre { font-size: var(--text-sm); background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md);
+  padding: 0.7rem 0.9rem; overflow-x: auto; }
+:where(.doc) pre code { background: none; padding: 0; font-size: inherit; }
+
+@media (max-width: 640px) {
+  :where(.doc) { padding: 1rem 1rem 2.5rem; }
+  :where(.doc) .doc-head { display: block; }
+  :where(.doc) :is(h1, .pv-title) { font-size: 1.75rem; }
+  :where(.doc) .lede { font-size: var(--text-base); }
+  :where(.doc) .doc-head > .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; margin-top: 0.9rem; padding: 0.6rem 0 0;
+    border-right: 0; border-top: 1px solid var(--border); }
+  :where(.doc) .status > div { flex-basis: 8rem; }
+  :where(.doc) h2::before { position: static; margin-right: 0.4rem; }
+  :where(.doc) .states > li { flex-wrap: wrap; gap: 0.1rem 0.6rem; }
+  :where(.doc) .states > li > .state { min-width: 0; }
+  :where(.doc) :is(.steps, .recs) li { padding-left: 0; }
+  :where(.doc) :is(.steps li, .recs li)::before, :where(.doc) .when { position: static; display: block; }
+}
+@media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; } }
+@media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) .table-wrap { overflow: visible; } }
+
+:where(.doc) .checks { list-style: none; padding: 0; border-top: 1px solid var(--border); }
+:where(.doc) .checks > li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.15rem 0.8rem;
+  align-items: start; padding: 0.35rem 0; border-bottom: 1px solid var(--border); break-inside: avoid; }
+:where(.doc) .checks > li > .tick { grid-column: 1; position: relative; display: block; box-sizing: border-box; margin-top: 0.18em;
+  width: 0.9em; height: 0.9em; border: 1px solid var(--foreground); border-radius: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+:where(.doc) .checks > li.done > .tick::after { content: ""; position: absolute; left: 32%; top: 8%; width: 30%; height: 58%;
+  border: solid var(--status-ok); border-width: 0 0.15em 0.15em 0; transform: rotate(45deg); }
+:where(.doc) .checks > li > div { grid-column: 2; min-width: 0; }
+:where(.doc) .checks > li > .who { grid-column: 3; text-align: right; white-space: nowrap; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted-foreground); }
+:where(.doc) .write-in { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; margin: 1rem 0; font-family: var(--font-mono); font-size: var(--text-sm); break-inside: avoid; }
+:where(.doc) .write-in > p { flex: 1 1 14rem; display: flex; align-items: baseline; gap: 0.5rem; margin: 0; }
+:where(.doc) .line { display: inline-block; flex: 1 1 6rem; min-width: 6rem; height: 1.3em; vertical-align: bottom; border-bottom: 1px dashed var(--foreground); }
+@media (max-width: 640px) {
+  :where(.doc) .checks > li { grid-template-columns: auto minmax(0, 1fr); }
+  :where(.doc) .checks > li > .who { grid-column: 2; text-align: left; white-space: normal; }
+}
+@media print {
+  :where(.doc) .checks > li:not(.done) > .tick { background: none; }
+}
 
 @media (max-width: 640px) {
   .logopair { grid-template-columns: 1fr; gap: 12px; }
-  dl.meta div { flex-direction: column; gap: 1px; }
-  dl.meta dt { flex: none; }
+  dl.meta:where(:not(.doc *)) div { flex-direction: column; gap: 1px; }
+  dl.meta:where(:not(.doc *)) dt { flex: none; }
 }
 @media (max-width: 480px) {
   .swatches { grid-template-columns: 1fr; }
-  h1 { font-size: 1.5rem; }
+  h1:where(:not(.doc *)) { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -386,7 +539,7 @@ footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); 
     <dl class="meta">
     <div><dt>Brand</dt><dd>Kestrel Labs</dd></div>
     <div><dt>Sources</dt><dd>kestrel-site.html (saved copy of the Kestrel Labs homepage)</dd></div>
-    <div><dt>Date</dt><dd>October 5, 2026</dd></div>
+    <div><dt>Date</dt><dd>October 10, 2026</dd></div>
     <div><dt>Status</dt><dd>open for comments</dd></div>
     <div><dt>Who answers</dt><dd>whoever owns the brand, by commenting on the relevant place</dd></div>
   </dl>
@@ -472,7 +625,7 @@ footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); 
 
 <section>
   <h2 id="composition">Composition</h2>
-  <p>We take composition from the &quot;engineering&quot; style.</p>
+  <p>The layout of your documents (spacing, boxes, lists, how sections break) is shown in the preview at the end of this sheet. If your documents look different, please send an example or a comment.</p>
 </section>
 
 <section>
@@ -482,21 +635,59 @@ footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); 
 
 <section>
   <h2 id="preview">Preview</h2>
-  <p>This is how the first document set in your colors will open.</p>
-  <div class="preview">
-    <div class="band band--light"><span class="mark-img mark--panel" role="img" aria-label="Kestrel Labs" style="width:160px;height:30.1px"></span></div>
-    <div class="inner">
-      <p class="sample-tag"><span class="tag">sample</span></p>
-      <p class="doc-title">Kestrel Labs: sample document</p>
+  <p>This is how your documents will look. The example describes the work on your brand, so nothing in it is made up.</p>
+  <p class="sample-tag"><span class="tag">sample</span></p>
+  <div class="preview-frame">
+  <div class="doc">
+    <header class="doc-head">
+      <span class="brand-mark mark-img mark--panel" role="img" aria-label="Kestrel Labs" style="width:160px;height:30.1px"></span>
+      <p class="kicker">Brand profile</p>
+      <p class="pv-title">Kestrel Labs: brand profile for review</p>
+      <p class="lede">We read your brand from kestrel-site.html (saved copy of the Kestrel Labs homepage). Before the first document, please check the colors, typefaces and logo.</p>
       <dl class="meta">
     <div><dt>Brand</dt><dd>Kestrel Labs</dd></div>
-    <div><dt>Date</dt><dd>October 5, 2026</dd></div>
+    <div><dt>Sources</dt><dd>kestrel-site.html (saved copy of the Kestrel Labs homepage)</dd></div>
+    <div><dt>Date</dt><dd>October 10, 2026</dd></div>
+    <div><dt>Status</dt><dd>for review</dd></div>
   </dl>
-      <div class="tldr">
-        <span class="label">In short</span>
-        <p>A real document opens the same way: the logo, a title, labeled details and a short summary.</p>
-      </div>
+    </header>
+    <div class="summary">
+      <p class="label">In short</p>
+      <p>Headings in Manrope, text in IBM Plex Sans. The brand colors and their values are in the table below.</p>
     </div>
+    <section>
+      <h2 id="what-we-read">What we read</h2>
+      <dl class="status">
+        <div><dt>Name</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Logo</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Primary color</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Secondary color</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Body typeface</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Heading typeface</dt><dd><span class="state neutral">read from source</span></dd></div>
+        <div><dt>Tone</dt><dd><span class="state neutral">read from source</span></dd></div>
+      </dl>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Role</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Primary color</td><td><span class="pv-chip" style="background:#1F4FD1" aria-hidden="true"></span>#1F4FD1</td></tr>
+          <tr><td>Secondary color</td><td><span class="pv-chip" style="background:#F4B73C" aria-hidden="true"></span>#F4B73C</td></tr>
+          <tr><td>Text color</td><td><span class="pv-chip" style="background:#101828" aria-hidden="true"></span>#101828</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout">
+        <p class="label">For your decision</p>
+        <p>If anything on this sheet is not yours, please comment right on it.</p>
+      </div>
+    </section>
+    <section>
+      <h2 id="next-steps">Next steps</h2>
+      <ol class="steps">
+        <li><span class="when">Now</span><div>You comment on the brand sheet.</div></li>
+        <li><span class="when">Then</span><div>We correct the profile from your comments.</div></li>
+        <li><span class="when">Finally</span><div>The first document is set in your colors.</div></li>
+      </ol>
+    </section>
+  </div>
   </div>
 </section>
 
@@ -504,7 +695,7 @@ footer p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); 
 
 <footer>
   <div class="wrap">
-    <p>Kestrel Labs, brand sheet, October 5, 2026. Status: open for comments.</p>
+    <p>Kestrel Labs, brand sheet, October 10, 2026. Status: open for comments.</p>
   </div>
 </footer>
 

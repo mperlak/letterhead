@@ -81,21 +81,29 @@ Seven sections, always the same, always in this order:
    a nod and no correction.
 5. **Composition** (`composition`). When the profile's composition block is
    filled, density, imagery and rhythm as three plain sentences. When it is
-   empty, which is the normal case, one sentence: composition comes from the
-   named style, and the style's name. Never a question.
+   empty, which is the normal case, one sentence pointing at the preview,
+   where the layout is shown rather than named. A style's name means
+   nothing to the brand's owner; "composition from the atelier style" is a
+   sentence nobody can comment on. Never a question.
 6. **Questions** (`questions`). The `questions[]` from the meta file, in
    order, each rendered as its own `h3` whose id is the question's `id`
    (`q-name-form`), with its `why` line underneath. At most five, usually
    two. The section ends with one sentence inviting a comment on anything
    else that is not theirs, which is where every non-question correction
    lands.
-7. **Preview** (`preview`). The first half page of a real document in this
-   brand: title from `preview.title`, labeled metadata, the next step from
-   `preview.nextStep`, the first section heading, introduced by
-   `notes.preview`. Real content, never filler. With no `preview` in the
-   profile (the default at teach time, before any document exists) the
-   script renders a neutral sample labeled as a sample: brand name, date,
-   nothing invented.
+7. **Preview** (`preview`). A document in this brand, laid out by the base
+   style's own `style.css` on the shared markup, so the owner sees the
+   style's composition and signature moves, not a card that resembles none
+   of them. With a real `preview`: that document's head (title from
+   `preview.title`, labeled metadata with `preview.nextStep`) and its
+   summary from `notes.preview`. With no `preview` (the default at teach
+   time, before any document exists) the script renders a short document
+   about the profile itself, labeled as a sample: what was read and how
+   sure each field is (a status ledger from the confidences), the brand
+   colors with their swatches, the questions waiting, and the next steps
+   of the review. Every line is true of the profile, so nothing is
+   invented; a made-up project here is the first thing the owner asks
+   about. A style without a `style.css` falls back to a plain card.
    This is the section that turns an abstract palette into something the
    reader recognizes as their own document.
 

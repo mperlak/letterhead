@@ -18,7 +18,11 @@
 // run, and check-document passes. A profile without `preview` gets a
 // neutral sample labeled as one, and prose in the wrong language is a
 // warning. The sentence under Colors says the primary is darkened for text
-// only when --primary-ink differs from --primary.
+// only when --primary-ink differs from --primary. The preview is a document
+// laid out by the base style's style.css (a real preview's head, or a
+// sample about the profile: status ledger from the confidences, swatches,
+// questions, next steps), the sheet's element rules skip it, and a style
+// without style.css falls back to the plain card.
 //
 // Usage: node dev-scripts/brand-sheet-smoke.mjs
 // Exit codes: 0 all assertions passed, 1 a run or assertion failed.
@@ -108,6 +112,15 @@ for (const lang of ['pl', 'en']) {
 
   const expectedTitle = lang === 'pl' ? '<title>Arkusz marki: Nimbus Freight</title>' : '<title>Brand sheet: Nimbus Freight</title>';
   check('title is localized', html.includes(expectedTitle));
+  check('one <h1> on the page (the preview title is a paragraph)', (html.match(/<h1\b/g) || []).length === 1);
+
+  const previewHtml = html.slice(html.indexOf('id="preview"'));
+  const realTitle = lang === 'pl' ? 'Specyfikacja: portal zgłoszeń transportowych' : 'Specification: transport booking portal';
+  check('the preview is a document laid out by the base style (corporate)', previewHtml.includes('<div class="preview-frame">') && previewHtml.includes('<div class="doc">') && /\/\* ---- the base style \(corporate\)/.test(html) && html.includes(':where(.doc)'));
+  check('a real preview opens with its own title and next step', previewHtml.includes(`<p class="pv-title">${realTitle}</p>`) && previewHtml.includes(lang === 'pl' ? 'recenzja specyfikacji przez Nimbus Freight' : 'review of the specification by Nimbus Freight'));
+  check('the style\'s h1 rules reach the preview title', /:is\(h1, \.pv-title\)/.test(html));
+  check('the sheet\'s element rules skip the preview document', /h2:where\(:not\(\.doc \*\)\) \{/.test(html) && /dl\.meta:where\(:not\(\.doc \*\)\) \{/.test(html));
+  check('the style\'s page-level rules stay out (no second body rule)', (html.match(/^body \{/gm) || []).length === 1);
 
   check('primary swatch shows the exact captured hex', html.includes('#3B6FE0'));
 
@@ -115,7 +128,7 @@ for (const lang of ['pl', 'en']) {
   const payload = /--brand-logo:\s*url\("([^"]+)"\)/.exec(fixtureTokens)[1];
   check('logo payload appears once (in the tokens only)', html.split(payload).length === 2);
   check('no <img> copies of the logo', !/<img\b/i.test(html));
-  const marks = html.match(/<span class="mark-img[^>]*>/g) || [];
+  const marks = html.match(/<span class="(?:brand-mark )?mark-img[^>]*>/g) || [];
   check('every mark keeps the artwork proportions (120 / 40)', marks.length === 4 && marks.every((m) => Math.abs(markRatio(m) - 3) < 0.02));
   check('marks draw var(--brand-logo)', /\.mark-img\s*\{[^}]*background-image: var\(--brand-logo\)/.test(html));
   if (/--brand-logo-on:\s*dark/.test(fixtureTokens)) {
@@ -150,11 +163,34 @@ for (const lang of ['pl', 'en']) {
   try { html = readFileSync(outPath, 'utf8'); } catch {}
   const preview = html.slice(html.indexOf('id="preview"'));
   const title = lang === 'pl' ? 'Nimbus Freight: przykładowy dokument' : 'Nimbus Freight: sample document';
-  check(`${lang}: the sample title comes from the brand name`, preview.includes(`<p class="doc-title">${title}</p>`));
+  const pvTitle = lang === 'pl' ? 'Nimbus Freight: profil marki do sprawdzenia' : 'Nimbus Freight: brand profile for review';
+  check(`${lang}: the sample is a document about the profile itself`, preview.includes(`<p class="pv-title">${pvTitle}</p>`));
   check(`${lang}: the sample is labeled`, preview.includes(`<span class="tag">${lang === 'pl' ? 'przykład' : 'sample'}</span>`));
-  check(`${lang}: only brand and date in the sample metadata`, (preview.match(/<dt>/g) || []).length === 2 && !preview.includes(lang === 'pl' ? 'Następny krok' : 'Next step'));
+  check(`${lang}: no invented next step in the sample metadata`, !preview.includes(`<dt>${lang === 'pl' ? 'Następny krok' : 'Next step'}</dt>`));
+  check(`${lang}: the sample uses the document markup`, ['class="summary"', 'class="status"', 'class="table-wrap"', 'class="callout"', 'class="steps"'].every((c) => preview.includes(c)));
+  const ledger = (lang === 'pl' ? ['potwierdzone', 'do sprawdzenia', 'odczytane'] : ['confirmed', 'please check', 'read from source']);
+  check(`${lang}: the status ledger follows each field's confidence`, /<span class="state ok">/.test(preview) && ledger.every((w) => preview.includes(`>${w}</span>`)));
+  check(`${lang}: each color value in the table has its swatch`, preview.includes('style="background:#3B6FE0"') && preview.includes('#3B6FE0</td>'));
+  const n = meta.questions.length;
+  check(`${lang}: the questions are counted in the callout`, n === 3 && preview.includes(lang === 'pl' ? '3 pytania czekają' : '3 questions wait'));
+  check(`${lang}: the composition section speaks plainly`, !/Kompozycję przyjmujemy|We take composition from/.test(html));
   check(`${lang}: the typography sample uses the same title`, html.includes(`<p class="t-display">${title}</p>`));
   check(`${lang}: no preview fallback warnings`, !/preview/.test(res.stderr || ''));
+}
+
+console.log('a style without style.css: the plain preview card, with a warning');
+{
+  const dir = join(tmp, 'no-style');
+  cpSync(join(FIXTURES, 'en'), dir, { recursive: true });
+  const metaPath = join(dir, 'profile.meta.json');
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+  meta.style = 'no-such-style';
+  writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+  const res = runBrandSheet(dir, join(tmp, 'no-style.html'));
+  let html = '';
+  try { html = readFileSync(join(tmp, 'no-style.html'), 'utf8'); } catch {}
+  check('exits 0 and warns', res.status === 0 && /no style\.css for style "no-such-style"/.test(res.stderr || ''));
+  check('falls back to the plain card', html.includes('<div class="preview">') && !html.includes('<div class="preview-frame">'));
 }
 
 console.log('prose in the wrong language: a warning, not an error');

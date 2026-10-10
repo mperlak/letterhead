@@ -355,7 +355,7 @@ Three files, and they are short:
 - `profile.meta.json` — the decisions, the sources, `lang`, `style`,
   `questions[]` and `notes{}`. Schema in `reference/profile.md`. This is
   the file the scripts read. Leave `preview` out: the sheet then shows a
-  neutral sample document labeled as a sample. Write `preview` only when
+  sample document about the profile itself, labeled as a sample. Write `preview` only when
   the user handed over a real document or topic, and then with its real
   title and next step. At teach time there is no document yet, and a made-up
   project title on the sheet is the first thing the owner asks about.
