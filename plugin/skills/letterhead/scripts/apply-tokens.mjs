@@ -60,7 +60,9 @@ import { join, resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse, formatHex, converter } from './vendor/culori.mjs';
 import { parseCss, walkRules, isDarkSchemeMedia, selectorList } from './lib/css.mjs';
-import { formatOklch, clampChromaToGamut, quantize, deriveStatus, STATUS_KEYS } from './lib/color.mjs';
+import {
+  formatOklch, clampChromaToGamut, quantize, deriveStatus, STATUS_KEYS, accentSurface, contrastOklch, pickInkForFill,
+} from './lib/color.mjs';
 
 const SKILL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STYLES = join(SKILL, 'styles');
@@ -254,6 +256,22 @@ function brandOverStyle(brand, style, ref, fontSlots) {
     }
     if (!own.size) continue;
     const pick = (k) => color(own.get(k));
+    // The accent as a large fill, for a profile taught before
+    // --accent-surface existed: without it the styles fill summaries with
+    // the raw accent, and a mustard or amber accent shouts.
+    const accent = pick('accent');
+    if (accent && !own.has('accent-surface')) {
+      if (b === 'light') {
+        const surface = accentSurface(accent);
+        const fg = pick('foreground') || color(style[b].get('foreground'));
+        const ink = fg && contrastOklch(fg, surface) >= 4.5 ? fg : pickInkForFill(surface);
+        out[b].set('accent-surface', formatOklch(surface));
+        out[b].set('accent-surface-foreground', formatOklch(ink));
+      } else {
+        out[b].set('accent-surface', own.get('accent'));
+        if (own.has('accent-foreground')) out[b].set('accent-surface-foreground', own.get('accent-foreground'));
+      }
+    }
     const paper = pick('background') || color(style[b].get('background'));
     const missing = [...style[b]].filter(([k, v]) => isColorValue(v) && !own.has(k));
     if (!missing.length || !paper) continue;

@@ -34,6 +34,9 @@
 //      uses that color as given and the dark themes use its hue at a dark,
 //      low-chroma fill. --accent-foreground is the block's foreground
 //      when it clears 4.5:1 on that accent, else white or near-black.
+//      --accent-surface (with its foreground) is the accent as a large
+//      fill: a light tint of the hue when the accent is strong (lightness
+//      under 0.9), the accent itself when it is pale or the theme is dark.
 //   3. Derive --primary-ink per block. Light: the primary hue at the
 //      lightest lightness that still clears 4.5:1 on the background,
 //      reducing chroma if that walk leaves the sRGB gamut. Dark: the primary
@@ -100,7 +103,7 @@ import { fileURLToPath } from 'node:url';
 import { parse, formatHex, converter, wcagContrast } from './vendor/culori.mjs';
 import {
   round3, round1, formatOklch, clampChromaToGamut, contrastOklch, WHITE, pickInkForFill, quantize,
-  computeInk, computeDarkPrimary, computeDarkInk, deriveStatus, STATUS_KEYS,
+  computeInk, computeDarkPrimary, computeDarkInk, deriveStatus, STATUS_KEYS, accentSurface,
 } from './lib/color.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -1491,6 +1494,12 @@ async function main() {
   };
   const accentForegroundLight = accentInk(accentLight, foregroundLightRaw);
   const accentForegroundDark = accentInk(accentDark, foregroundDarkRaw);
+  // The accent as a large fill: a light tint of a strong accent's hue, the
+  // accent itself when it is already pale (and always in the dark theme).
+  const accentSurfaceLight = accentSurface(accentLight);
+  const accentSurfaceForegroundLight = accentSurfaceLight === accentLight
+    ? accentForegroundLight
+    : accentInk(accentSurfaceLight, foregroundLightRaw);
   if (accentArg && accentForegroundLight.repicked) {
     warn(`the block's text color does not reach 4.5:1 on --accent ${args.accent}; --accent-foreground is ${accentForegroundLight.raw} instead`);
   }
@@ -1644,6 +1653,8 @@ async function main() {
     ['ring', formatOklch(primaryLight)],
     ['accent', formatOklch(accentLight)],
     ['accent-foreground', accentForegroundLight.raw],
+    ['accent-surface', formatOklch(accentSurfaceLight)],
+    ['accent-surface-foreground', accentSurfaceForegroundLight.raw],
     ['primary-ink', formatOklch(primaryInkLight)],
     ['card-foreground', foregroundLightRaw],
     ['popover-foreground', foregroundLightRaw],
@@ -1676,6 +1687,8 @@ async function main() {
     ['ring', formatOklch(primaryDark)],
     ['accent', formatOklch(accentDark)],
     ['accent-foreground', accentForegroundDark.raw],
+    ['accent-surface', formatOklch(accentDark)],
+    ['accent-surface-foreground', accentForegroundDark.raw],
     ['primary-ink', formatOklch(primaryInkDark)],
     ['card-foreground', foregroundDarkRaw],
     ['popover-foreground', foregroundDarkRaw],
@@ -1805,6 +1818,7 @@ async function main() {
           source: accentArg ? 'arg' : 'derived',
           light: formatOklch(accentLight),
           dark: formatOklch(accentDark),
+          surfaceLight: formatOklch(accentSurfaceLight),
           foreground: {
             light: accentForegroundLight.raw,
             dark: accentForegroundDark.raw,

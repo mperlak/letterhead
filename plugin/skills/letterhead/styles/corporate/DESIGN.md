@@ -176,9 +176,9 @@ web contexts. Dark mode separates with lightness steps.
 Use at least one; they carry the familiar-intranet authority beyond the
 palette.
 
-- **The executive summary box.** A bordered, muted-fill callout directly under
-  the title carrying the two-to-three-sentence takeaway for the reader who
-  reads nothing else.
+- **The executive summary box.** A bordered box on the pale accent tint (in
+  a brand, its second color) directly under the title, carrying the
+  two-to-three-sentence takeaway for the reader who reads nothing else.
 - **The recommendation ledger.** Recommendations as a numbered list with
   R1 / R2 badges in the primary blue, each tied to the finding it follows from.
 - **Blue-ruled sections.** Section openers carry a thin blue rule — the

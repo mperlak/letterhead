@@ -51,8 +51,10 @@ const PAIRS = [
   ['muted-foreground', 'background', 4.5, 'error'],
   ['primary-foreground', 'primary', 4.5, 'error'],
   ['primary-ink', 'background', 4.5, 'error'],
-  // Tags, callouts and highlighted rows set text on the accent fill.
+  // Markers (step numbers, ticks, badges) set text on the accent fill.
   ['accent-foreground', 'accent', 4.5, 'error'],
+  // Summaries and notes set text on the accent as a large fill.
+  ['accent-surface-foreground', 'accent-surface', 4.5, 'error'],
   ['card-foreground', 'card', 7, 'warning'],
   // State words (passed, blocked) are set in these colors.
   ['status-ok', 'background', 4.5, 'error'],

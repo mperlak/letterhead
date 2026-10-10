@@ -140,8 +140,9 @@ Key characteristics:
 
 Primary group: emerald for emphasis, links, and the one number that
 matters per screen. Neutral group: whites and green-tinted grays. State:
-destructive red only for real risk. Charts: emerald ladder plus one blue
-for comparison series.
+destructive red only for real risk. Accent: a pale tint of the primary (in
+a brand, its second color) that fills the summary card, never text.
+Charts: emerald ladder plus one blue for comparison series.
 
 At most one emerald-emphasized value per screen;
 two competing highlights cancel each other.

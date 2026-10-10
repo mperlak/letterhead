@@ -340,7 +340,7 @@ shows on the sheet and never in a document.
 |---|---|---|
 | `colors.primary` | `--primary` | `--primary`, `--primary-ink`, `--ring`, `--chart-1` |
 | `colors.foreground` | `--foreground` | `--foreground`, card and popover text |
-| `colors.secondary` | `--accent` | `--accent` (as given in `:root`, a dark fill of its hue in the dark blocks), `--accent-foreground` |
+| `colors.secondary` | `--accent` | `--accent` (as given in `:root`, a dark fill of its hue in the dark blocks), `--accent-foreground`, `--accent-surface` and its foreground (the accent as a large fill: a light tint of a strong accent's hue) |
 | `DESIGN.md` `colors.background` | `--background` | `--background` |
 | `typography.body` | `--font-body` | `--font-sans` |
 | `typography.heading` | `--font-heading` | `--font-display` |

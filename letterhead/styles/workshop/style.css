@@ -34,8 +34,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   border-radius: 50%; background: var(--accent); color: var(--accent-foreground); font-weight: 700; font-size: var(--text-xs); }
 
 /* Sticky notes: summary and callouts */
-:where(.doc) :is(.summary, .callout) { background: var(--accent); color: var(--foreground); border-radius: var(--radius-lg);
-  border: 2px dashed color-mix(in oklab, var(--accent-foreground) 45%, var(--accent)); padding: 1.15rem 1.4rem; margin: 1.5rem 0; }
+:where(.doc) :is(.summary, .callout) { background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); border-radius: var(--radius-lg);
+  border: 2px dashed color-mix(in oklab, var(--accent-foreground) 45%, var(--accent-surface, var(--accent))); padding: 1.15rem 1.4rem; margin: 1.5rem 0; }
 :where(.doc) :is(.summary, .callout, .letter, .ask) > :last-child { margin-bottom: 0; }
 :where(.doc) .summary > p:not(.label), :where(.doc) .summary li { font-size: var(--text-lg); font-weight: 500; line-height: 1.45; }
 :where(.doc) .callout.warn { background: color-mix(in oklab, var(--destructive) 9%, var(--card));

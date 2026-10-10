@@ -31,6 +31,8 @@
 // dark low-chroma fill in both dark blocks, and --accent-foreground at
 // 4.5:1 on it in every block, on every style (a dark accent re-picks its
 // ink); without --accent the derived tint and its foreground are unchanged.
+// --accent-surface: a strong accent gets a light tint of its hue for large
+// fills, a pale one is its own surface, the dark blocks use the accent.
 //
 // Brand takeover: card/popover foregrounds follow --foreground, --chart-1
 // is the primary, heading weights 500/800 pass and 450 fails, a sans heading
@@ -341,6 +343,15 @@ console.log('--accent: the brand\'s own accent in light, a dark fill of its hue 
     && tok(b.dark, 'accent') === tok(b.os, 'accent'));
   const ratios = ['light', 'dark', 'os'].map((k) => wcagContrast(parse(tok(b[k], 'accent-foreground')), parse(tok(b[k], 'accent'))));
   check(`--accent-foreground on --accent >= 4.5 in every block (${ratios.map((r) => r.toFixed(2)).join(', ')})`, ratios.every((r) => r >= 4.5));
+  const surface = parse(tok(b.light, 'accent-surface'));
+  check('a strong accent (L < 0.9) gets a light surface of its hue', light.l < 0.9 && Math.abs(surface.l - 0.94) < 0.001 && Math.abs(surface.h - given.h) < 0.5
+    && surface.c <= 0.07 && json?.derived?.accent?.surfaceLight === tok(b.light, 'accent-surface'));
+  check('dark blocks: the surface is the accent', tok(b.dark, 'accent-surface') === tok(b.dark, 'accent') && tok(b.os, 'accent-surface') === tok(b.os, 'accent'));
+  const sRatios = ['light', 'dark', 'os'].map((k) => wcagContrast(parse(tok(b[k], 'accent-surface-foreground')), parse(tok(b[k], 'accent-surface'))));
+  check(`--accent-surface-foreground on --accent-surface >= 4.5 in every block (${sRatios.map((r) => r.toFixed(2)).join(', ')})`, sRatios.every((r) => r >= 4.5));
+  const pale = run(['--style', CONSULTING, '--primary', '#016337', '--accent', '#ebf7da', '--font-body', 'Roboto']);
+  const pb = blocks(pale.css);
+  check('a pale accent is its own surface', tok(pb.light, 'accent-surface') === tok(pb.light, 'accent') && tok(pb.light, 'accent-surface-foreground') === tok(pb.light, 'accent-foreground'));
   check('sidebar-accent mirrors --accent', tok(b.light, 'sidebar-accent') === tok(b.light, 'accent') && tok(b.dark, 'sidebar-accent') === tok(b.dark, 'accent'));
   const a = json?.derived?.accent;
   check('json: derived.accent carries source, values and contrasts', a?.source === 'arg' && a.light === tok(b.light, 'accent')
@@ -359,7 +370,9 @@ console.log('--accent: the brand\'s own accent in light, a dark fill of its hue 
       if (r.json?.check?.findings?.length) why.push('check-tokens findings');
       for (const k of ['light', 'dark', 'os']) {
         if (wcagContrast(parse(tok(bb[k], 'accent-foreground')), parse(tok(bb[k], 'accent'))) < 4.5) why.push(`${k} contrast`);
+        if (wcagContrast(parse(tok(bb[k], 'accent-surface-foreground')), parse(tok(bb[k], 'accent-surface'))) < 4.5) why.push(`${k} surface contrast`);
       }
+      if (parse(tok(bb.light, 'accent-surface')).l < 0.9) why.push('light surface not light');
       if (why.length) bad.push(`${style} ${accent}: ${why.join(', ')}`);
     }
   }

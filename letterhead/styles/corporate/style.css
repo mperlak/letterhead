@@ -37,9 +37,9 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   font-variant-numeric: tabular-nums; color: var(--primary-ink, var(--primary)); }
 :where(.doc) .contents a { color: inherit; text-decoration: none; }
 
-/* Executive summary: bordered box, the label as a blue title bar */
-:where(.doc) .summary { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card);
-  color: var(--card-foreground); margin: 0 0 2rem; overflow: hidden; }
+/* Executive summary: bordered box on the accent tint (the brand's second color), the label as a blue title bar */
+:where(.doc) .summary { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--accent-surface, var(--accent));
+  color: var(--accent-surface-foreground, var(--accent-foreground)); margin: 0 0 2rem; overflow: hidden; }
 :where(.doc) .summary > .label { background: var(--primary); color: var(--primary-foreground); padding: 0.45rem 1rem; }
 :where(.doc) .summary > :not(.label) { margin: 0.75rem 1rem; }
 :where(.doc) .summary > p:not(.label) { font-size: var(--text-lg); line-height: 1.45; }
@@ -56,8 +56,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) .figure { margin: 1rem 0; padding: 0.4rem 0 0.4rem 1rem; border-left: 3px solid var(--primary); color: var(--muted-foreground); }
 :where(.doc) .figure strong { margin-right: 0.6rem; font-family: var(--font-display); font-weight: var(--font-heading-weight, 650);
   font-size: var(--text-3xl); line-height: 1; color: var(--foreground); font-variant-numeric: tabular-nums; }
-:where(.doc) .verdict { font-weight: 600; margin: 1rem 0; padding: 0.55rem 0.9rem; background: var(--accent);
-  color: var(--accent-foreground); border-radius: var(--radius-sm); }
+:where(.doc) .verdict { font-weight: 600; margin: 1rem 0; padding: 0.55rem 0.9rem; background: var(--accent-surface, var(--accent));
+  color: var(--accent-surface-foreground, var(--accent-foreground)); border-radius: var(--radius-sm); }
 :where(.doc) :is(.callout, .price) { margin: 1rem 0; padding: 0.7rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--card); color: var(--card-foreground); }
 :where(.doc) .callout { border-left: 4px solid var(--primary); }

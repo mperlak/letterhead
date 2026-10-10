@@ -137,6 +137,23 @@ probe(gen, 'generated profile (consulting base, red brand) in every style');
 // The Arkona example profile, taught before the state colors existed.
 probe(join(ROOT, 'examples', 'brands', 'arkona'), 'arkona example profile (no state colors) in every style');
 
+// A profile taught before --accent-surface: the document gets one, a light
+// tint of a strong accent in light, the accent itself in both dark themes.
+console.log('fieldwork example profile (no --accent-surface): derived at build time');
+{
+  const prof = themes(readFileSync(join(ROOT, 'examples', 'brands', 'fieldwork', 'tokens.css'), 'utf8'));
+  check('the profile has no --accent-surface (precondition)', !prof.light.has('accent-surface'));
+  const doc = join(TMP, 'fieldwork-surface.html');
+  writeFileSync(doc, docShell());
+  const res = spawnSync(process.execPath, [join(SCRIPTS, 'apply-tokens.mjs'), join(ROOT, 'examples', 'brands', 'fieldwork'), doc, '--style', 'atelier'], { encoding: 'utf8' });
+  const got = themes(/<style data-letterhead-tokens[^>]*>([\s\S]*?)<\/style>/.exec(readFileSync(doc, 'utf8'))?.[1] || '');
+  const l = /oklch\(([\d.]+)/.exec(got.light.get('accent-surface') || '')?.[1];
+  check('apply-tokens exits 0', res.status === 0, `${res.stdout}${res.stderr}`);
+  check('light: a light surface (L >= 0.9) with its foreground', Number(l) >= 0.9 && got.light.has('accent-surface-foreground'), got.light.get('accent-surface'));
+  check('dark themes: the surface is the accent', norm(got.dark.get('accent-surface')) === norm(got.dark.get('accent'))
+    && norm(got.darkOs.get('accent-surface')) === norm(got.darkOs.get('accent')));
+}
+
 if (failures) {
   console.log(`\n${failures} assertion(s) failed.`);
   process.exit(1);

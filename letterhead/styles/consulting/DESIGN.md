@@ -141,8 +141,9 @@ Key characteristics:
 
 Primary group: oxblood for section numbers, links, and verdict emphasis.
 Neutral group: a warm-neutral ramp so close to gray it reads as paper.
-State: destructive red distinct from the oxblood. Charts: oxblood ladder
-plus one slate blue.
+State: destructive red distinct from the oxblood. The pale accent tint
+(in a brand, its second color) fills the executive summary panel and
+nothing else. Charts: oxblood ladder plus one slate blue.
 
 The accent appears at most once per viewport;
 its scarcity is its authority.

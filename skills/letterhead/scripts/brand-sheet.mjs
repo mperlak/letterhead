@@ -28,6 +28,8 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { parse, converter } from './vendor/culori.mjs';
+import { formatOklch, accentSurface, contrastOklch, pickInkForFill } from './lib/color.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -356,6 +358,34 @@ function previewStyleCss(style, warn) {
 }
 
 const HEX_RE = /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i;
+
+// A profile taught before --accent-surface existed: the same derivation
+// apply-tokens.mjs makes for documents, so the preview fills its summary
+// as a document in this brand would (a light tint of a strong accent, the
+// accent itself in the dark theme), not with the raw tag color.
+function accentSurfaceBackfill(tokensCss) {
+  if (/--accent-surface\s*:/.test(tokensCss)) return '';
+  const toOklch = converter('oklch');
+  const read = (name) => {
+    const v = extractCssVar(tokensCss, name);
+    const c = v ? parse(v) : null;
+    return c ? toOklch(c) : null;
+  };
+  const accent = read('--accent');
+  if (!accent) return '';
+  const surface = accentSurface(accent);
+  const fg = read('--foreground');
+  const ink = fg && contrastOklch(fg, surface) >= 4.5 ? fg : pickInkForFill(surface);
+  const dark = '--accent-surface: var(--accent); --accent-surface-foreground: var(--accent-foreground);';
+  return `
+/* --accent-surface, derived for a profile taught before it existed */
+:root { --accent-surface: ${formatOklch(surface)}; --accent-surface-foreground: ${formatOklch(ink)}; }
+[data-theme="dark"] { ${dark} }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) { ${dark} }
+}
+`;
+}
 // Appended to the sheet's element selectors so they skip the preview
 // document; :where() keeps their specificity unchanged.
 const NOT_DOC = ':where(:not(.doc *))';
@@ -1396,7 +1426,7 @@ function main() {
   try {
     const profile = loadProfile(profileDir);
     const model = buildModel(profile, warn);
-    model.tokensCssRaw = profile.tokensCss;
+    model.tokensCssRaw = profile.tokensCss + accentSurfaceBackfill(profile.tokensCss);
     const t = STRINGS[model.lang];
     html = renderDocument(model, t);
   } catch (e) {

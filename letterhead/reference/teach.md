@@ -180,8 +180,11 @@ exist because the obvious reading of the evidence is often wrong.
   Otherwise leave the field out and the tokens derive a light tint of the
   primary. A brand's second color is never dropped because nothing
   happens to name it; the site painting it across six sections is the
-  naming. The accent fills tags, callouts and rules and highlights rows; it is never text on paper,
-  where a pastel accent is unreadable. Nobody can answer "is this your
+  naming. The accent is the document's one soft brand fill: the summary,
+  the personal note, the closing ask, step and tick markers. It is never
+  text, bullets or hairlines on paper, where a pastel is invisible (1.1:1
+  for a typical one), and never a state or a callout, where an amber
+  accent reads as a warning. Nobody can answer "is this your
   second color?" usefully on a sheet, so it is shown, not asked.
 - **Colors no token carries:** a call-to-action color that lost the
   primary, the summary's `icon colors` (bullets, rings, small marks).
@@ -407,8 +410,12 @@ as given; the dark blocks take its hue as a dark, low-chroma fill, because
 a pastel on a dark page glares. `--accent-foreground` is the block's text
 color when it reaches 4.5:1 on the accent, and white or near-black
 otherwise; the script reports both values and contrasts under
-`derived.accent` in `--json`. A secondary color in the profile that never
-reaches `--accent` shows on the sheet and in no document.
+`derived.accent` in `--json`. A strong accent (lightness under 0.9, a
+mustard or an amber) also gets `--accent-surface`, a light tint of its hue
+that the styles use for large fills, so a summary box does not shout in the
+brand's tag color; a pale accent is its own surface. A secondary color in
+the profile that never reaches `--accent` shows on the sheet and in no
+document.
 
 **Background.** Pass `--background` only when the brand's own site sits on
 a light page (OKLCH lightness 0.95 or more in the evidence, white in

@@ -32,15 +32,17 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) .contents li { break-inside: avoid; padding-left: 0.25rem; line-height: 1.75; }
 :where(.doc) .contents a { color: var(--foreground); text-decoration: none; }
 
-/* The note; the summary and callout as hairline frames */
+/* The note and the summary on the accent tint (the brand's second color); the callout as a hairline frame */
 :where(.doc) :is(.letter, .summary, .price, .callout, .ask) { border-radius: var(--radius-xl); padding: 1.35rem 1.6rem; margin: 1.75rem 0; }
 :where(.doc) :is(.letter, .summary, .callout, .ask) > :last-child { margin-bottom: 0; }
-:where(.doc) .letter { background: var(--accent); color: var(--foreground); }
+:where(.doc) .letter { background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); }
 :where(.doc) .letter > p:first-child::first-line, :where(.doc) .letter > .label + p::first-line {
   font-family: var(--font-display); font-size: 1.18em; color: var(--accent-foreground); }
 :where(.doc) .from { margin-top: 1rem; font-size: var(--text-sm); color: var(--muted-foreground); }
 :where(.doc) .from strong { font-size: var(--text-base); font-weight: 600; color: var(--foreground); }
-:where(.doc) :is(.summary, .callout) { border: 1px solid var(--border); }
+:where(.doc) .callout { border: 1px solid var(--border); }
+:where(.doc) .summary { background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); border: 1px solid var(--accent-surface, var(--accent)); }
+:where(.doc) .summary > .label { color: var(--accent-surface-foreground, var(--accent-foreground)); }
 :where(.doc) .summary > p:not(.label), :where(.doc) .summary li { font-size: var(--text-lg); line-height: 1.55; }
 :where(.doc) .callout.warn { border-color: color-mix(in oklab, var(--destructive) 45%, var(--border));
   background: color-mix(in oklab, var(--destructive) 5%, var(--card)); }
@@ -85,14 +87,14 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) :is(.steps, .recs) > li { counter-increment: n; }
 :where(.doc) .steps li { position: relative; padding: 0 0 1.35rem 3.1rem; min-height: 2.2rem; }
 :where(.doc) .steps li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; border-radius: 50%;
-  display: grid; place-items: center; font-size: var(--text-sm); font-weight: 700; color: var(--primary-ink, var(--primary));
-  background: var(--background); border: 1px solid var(--primary); }
+  display: grid; place-items: center; font-size: var(--text-sm); font-weight: 700; color: var(--accent-foreground);
+  background: var(--accent); border: 1px solid var(--primary); }
 :where(.doc) .steps li::after { content: ""; position: absolute; left: calc(1rem - 0.5px); top: 2.25rem; bottom: 0.2rem;
   border-left: 1px solid color-mix(in oklab, var(--primary) 45%, var(--border)); }
 :where(.doc) .steps li:last-child { padding-bottom: 0; }
 :where(.doc) .steps li:last-child::after { display: none; }
 :where(.doc) .steps li:last-child::before, :where(.doc) .steps [aria-current="step"]::before { background: var(--primary); color: var(--primary-foreground); }
-:where(.doc) .steps:has([aria-current="step"]) li:last-child:not([aria-current])::before { background: var(--background); color: var(--primary-ink, var(--primary)); }
+:where(.doc) .steps:has([aria-current="step"]) li:last-child:not([aria-current])::before { background: var(--accent); color: var(--accent-foreground); }
 :where(.doc) .steps [aria-current="step"] > div { font-weight: 600; }
 :where(.doc) .when { display: block; font-size: var(--text-sm); font-weight: 600; color: var(--primary-ink, var(--primary)); line-height: 1.4; padding-top: 0.3rem; }
 :where(.doc) .recs li { position: relative; padding: 0.8rem 0 0.8rem 2.5rem; border-top: 1px solid var(--border); }
@@ -135,6 +137,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 }
 @media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; scroll-behavior: auto; } }
 @media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) .price { box-shadow: none; }
+  :where(.doc) .summary { border-color: var(--border); }
   :where(.doc) :is(.price, .letter, .steps li) { break-inside: avoid; } }
 
 /* Checks: soft rounded boxes in the clay ink, a filled tint when done. ul.checks items are a tick box, the condition and an

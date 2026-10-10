@@ -66,6 +66,16 @@ export function quantize({ l, c, h }) {
   return { l: round3(l), c: Math.floor(Math.max(0, c) * 1000 + 1e-9) / 1000, h: round1(Number.isFinite(h) ? h : 0) };
 }
 
+// The accent as a large fill (summary, personal note, closing ask). A pale
+// accent fills as it is; a strong one (a mustard, an amber, lightness under
+// 0.9) gets a light tint of its own hue, so a summary box does not shout in
+// the brand's tag color. Light theme only: the dark theme's accent is
+// already a dark, low-chroma fill.
+export function accentSurface(accent) {
+  if (accent.l >= 0.9) return accent;
+  return quantize(clampChromaToGamut(0.94, Math.min(accent.c, 0.07), accent.h));
+}
+
 // Text-safe primary ink for one block: same hue as primary, chroma inherited
 // from primary (gamut-clamped), lightness walked toward the floor that
 // clears 4.5:1 against that block's own background (darker on a light block,

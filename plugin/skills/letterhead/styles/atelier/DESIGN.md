@@ -145,8 +145,9 @@ Key characteristics:
 
 Primary group: cognac for links, step numbers, and the total in the price
 summary. Neutral group: cream paper, a lighter card surface, and warm
-browns for text. Accent: a pale tint of the primary for the personal note
-and highlighted terms. State: destructive red only for a real warning (a
+browns for text. Accent: a pale tint of the primary (in a brand, its
+second color) that fills the summary, the personal note and the step
+numbers' discs; never text, bullets or lines. State: destructive red only for a real warning (a
 deadline that voids the offer, a care instruction that prevents damage).
 Charts: cognac, sage, sand, dusty blue, taupe.
 
@@ -180,7 +181,8 @@ cognac lifted so it still reads as warm.
 - **Buttons:** 9px radius, cognac fill, one per document at most (the reply
   or booking link).
 - **Cards:** lighter than the paper, 14px radius, hairline border; the
-  price summary and the personal note, nothing else.
+  price summary, nothing else. The summary and the personal note sit on the
+  accent tint instead.
 - **Inputs:** card surface, hairline border, cognac focus ring.
 - **Navigation / TOC:** usually none; these documents are short. When one
   exists, plain labels in muted brown.

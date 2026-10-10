@@ -38,6 +38,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 /* Soft cards: summary, callout, price */
 :where(.doc) :is(.summary, .callout, .price) { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border);
   border-radius: var(--radius-xl); padding: 1.6rem 1.9rem; margin: 2rem 0; }
+:where(.doc) .summary { background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); border-color: var(--accent-surface, var(--accent)); }
+:where(.doc) .summary > .label { color: var(--accent-surface-foreground, var(--accent-foreground)); }
 :where(.doc) .summary > :not(.label) { font: 500 var(--text-lg)/1.45 var(--font-display); }
 :where(.doc) .summary > .label, :where(.doc) .callout > .label, :where(.doc) .price > .label { margin-bottom: 0.6rem; }
 :where(.doc) .callout { box-shadow: var(--shadow-sm); }
@@ -108,7 +110,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 
 /* The ask: the closing panel, echoing the opener */
 :where(.doc) section.ask { margin-top: calc(var(--space-section) * 1.25); padding: clamp(1.75rem, 5vw, 3rem); border-radius: var(--radius-xl);
-  background: var(--accent); color: var(--accent-foreground); box-shadow: var(--shadow-md); }
+  background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); box-shadow: var(--shadow-md); }
 :where(.doc) .ask h2 { font-size: clamp(2.1rem, 5vw, 3rem); line-height: 1; letter-spacing: -0.04em; color: var(--foreground); margin-top: 0; }
 :where(.doc) .ask > p { font-size: var(--text-lg); line-height: 1.5; }
 :where(.doc) .ask > :last-child { margin-bottom: 0; }
@@ -134,7 +136,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   :where(.doc) .status > div { flex-basis: 8rem; }
 }
 @media (prefers-reduced-motion: reduce) { :where(.doc) * { transition: none; animation: none; } }
-@media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) section.ask { box-shadow: none; } }
+@media print { :where(.doc) { max-width: none; padding: 0; } :where(.doc) section.ask { box-shadow: none; }
+  :where(.doc) .summary { border-color: var(--border); } }
 
 /* Checks: rounded boxes that fill with the brand color when done. ul.checks items are a tick box, the condition and an
    optional owner/when slot; .write-in holds fill-in fields drawn as .line.
