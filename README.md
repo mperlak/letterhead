@@ -16,8 +16,8 @@ reads well on a phone and prints cleanly. Publish it as a link your client
 can comment on; your agent reads the comments and updates the document at
 the same link.
 
-<p align="center"><a href="examples/video/letterhead-demo.mp4"><img src="examples/video/letterhead-teaser.webp" alt="Three cards in a loop. Show it your client's website: letterhead builds their brand book. Every document after that is on their letterhead: a status update, a go-live plan and a checklist. letterhead, a skill for Claude, Codex, Cursor and other agents." width="720"></a><br>
-<a href="examples/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, take the client's comments and update the document.<br>
+<p align="center"><a href="https://mperlak.github.io/letterhead/video/letterhead-demo.mp4"><img src="examples/video/letterhead-teaser.webp" alt="Three cards in a loop. Show it your client's website: letterhead builds their brand book. Every document after that is on their letterhead: a status update, a go-live plan and a checklist. letterhead, a skill for Claude, Codex, Cursor and other agents." width="720"></a><br>
+<a href="https://mperlak.github.io/letterhead/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 13 templates, take the client's comments and update the document.<br>
 <sub>Recreated from a real run: the brand sheet and the status update are the unedited files in <a href="examples/">examples/</a>, the notes are shown in full; the terminal is scripted and sped up.</sub></p>
 
 **[Browse the live gallery →](https://mperlak.github.io/letterhead/)** Every example document, grouped by brand, and the 9 styles.

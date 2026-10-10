@@ -9,6 +9,11 @@
 //   styles/<style>.html         the status update sample in every style
 //                               (build-matrix.mjs)
 //   screenshots/*.webp          the light/dark thumbnails the page shows
+//   video/letterhead-demo.mp4   the README demo film. GitHub does not play a
+//                               video stored in the repo (its file view says the
+//                               file is too big and raw.githubusercontent serves
+//                               it as a download), so the README links here,
+//                               where Pages serves it as video/mp4
 //   .nojekyll
 //
 // The page is a picture grid: one group per brand (its brand sheet, then its
@@ -79,7 +84,10 @@ if (matrix.status !== 0) {
 }
 
 rmSync(SITE, { recursive: true, force: true });
-for (const d of ['documents', 'brands', 'styles', 'screenshots']) mkdirSync(join(SITE, d), { recursive: true });
+for (const d of ['documents', 'brands', 'styles', 'screenshots', 'video']) mkdirSync(join(SITE, d), { recursive: true });
+const FILM = join(EXAMPLES, 'video', 'letterhead-demo.mp4');
+if (!existsSync(FILM)) fail('missing examples/video/letterhead-demo.mp4 (node dev-scripts/promo/render.mjs); the README links to it on the gallery');
+copyFileSync(FILM, join(SITE, 'video', 'letterhead-demo.mp4'));
 
 for (const s of styles) {
   const src = join(ROOT, 'temp', 'matrix', `${STYLE_SAMPLE}--${s.slug}.html`);

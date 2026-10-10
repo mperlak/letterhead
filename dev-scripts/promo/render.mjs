@@ -100,7 +100,13 @@ try {
       files.push(f);
     }
     await mkdir(dirname(OUT), { recursive: true });
-    const r = spawnSync('img2webp', ['-loop', '0', '-m', '6', '-d', String(Math.round(1000 / FPS)), '-lossy', '-q', opt('q', '72'), ...files, '-o', OUT]);
+    // Every frame a keyframe (-kmax 1). Lossy difference frames treat a
+    // pixel that changes only a little between frames (a slow crossfade) as
+    // unchanged, so the cards of the previous scene stayed on screen through
+    // the next one, held for four seconds as beige blocks; -exact and
+    // -mixed did not help. Identical frames are still merged, so this costs
+    // about a quarter in size (0.9 MB), against 2 MB lossless.
+    const r = spawnSync('img2webp', ['-loop', '0', '-m', '6', '-kmin', '0', '-kmax', '1', '-d', String(Math.round(1000 / FPS)), '-lossy', '-q', opt('q', '72'), ...files, '-o', OUT]);
     if (r.status !== 0) throw new Error(`img2webp failed: ${r.stderr}`);
     console.log(OUT);
   } else {
