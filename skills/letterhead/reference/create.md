@@ -190,8 +190,8 @@ the shape gate, the brand lock and the phone and theme review still apply.
    Fix every error; the script exits non-zero while any remain. Warnings
    and info are judgment calls; say which you left and why.
 10. Report: file path, template used, brand used, the signature move you used,
-   and check results in one line each. Offer `publish` if the document is
-   meant for review.
+   and check results in one line each. If the document needs feedback,
+   offer `publish` in one line so readers can comment.
 
 ## Revising an existing document (`polish`, or edits after feedback)
 

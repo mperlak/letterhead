@@ -2,12 +2,13 @@
 # Mirror the canonical `letterhead/` mount, byte-identical, to:
 #   skills/letterhead/          so `npx skills add mperlak/letterhead` finds the
 #                               skill at the conventional path (Codex too)
-#   plugin/skills/letterhead/   the Claude plugin folder: the Claude Code
-#                               marketplace and Anthropic's plugin directory
-#                               install plugin/ only, without examples/ or
-#                               the gallery
+#   plugin/skills/letterhead/   the plugin folder: the Claude Code
+#                               marketplace, Anthropic's plugin directory and
+#                               the Cursor Marketplace install plugin/ only,
+#                               without examples/ or the gallery
 # and copy LICENSE to plugin/LICENSE. plugin/README.md and
-# plugin/.claude-plugin/plugin.json are edited by hand.
+# plugin/.claude-plugin/plugin.json and plugin/.cursor-plugin/plugin.json are
+# edited by hand.
 #
 # Usage:
 #   bin/sync-mounts.sh           # regenerate the mirrors

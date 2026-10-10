@@ -1,7 +1,8 @@
 {
   "name": "letterhead",
-  "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
+  "displayName": "letterhead",
   "version": "0.2.1",
+  "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
   "author": {
     "name": "Marcin Perlak",
     "url": "https://github.com/mperlak"
@@ -9,9 +10,6 @@
   "homepage": "https://github.com/mperlak/letterhead",
   "repository": "https://github.com/mperlak/letterhead",
   "license": "MIT",
-  "icon": "./icon.png",
-  "documentationUrl": "https://github.com/mperlak/letterhead#readme",
-  "supportUrl": "https://github.com/mperlak/letterhead/issues",
   "keywords": [
     "documents",
     "html",
@@ -25,5 +23,6 @@
     "review",
     "meeting-notes",
     "presentation"
-  ]
+  ],
+  "logo": "icon.png"
 }

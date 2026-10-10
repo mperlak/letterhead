@@ -1,7 +1,7 @@
 {
   "name": "letterhead",
-  "description": "Branded HTML documents for a real reader: proposals, status updates, plans, specs, reports, meeting notes and project presentations. Learns a brand once (yours or a client's) and puts every document on it, ready for comments and the next version.",
-  "version": "0.2.0",
+  "description": "Create branded HTML documents from notes, files or a conversation. Reuse brand profiles, apply packaged templates and styles, and check the result before delivery.",
+  "version": "0.2.1",
   "author": {
     "name": "Marcin Perlak",
     "url": "https://github.com/mperlak"
@@ -26,19 +26,28 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "letterhead",
-    "shortDescription": "Branded documents from your agent",
-    "longDescription": "letterhead turns notes, a repo or a conversation into a self-contained HTML document for someone outside your team: a proposal, a status update, an implementation plan, a spec, a report, meeting notes or a presentation of a project from a folder of pictures. Point it at a website once and it reads the brand's colors, fonts and logo, shows you a one-page brand sheet to confirm, and puts every later document on that brand. One profile per client.\n\nBefore writing any HTML it shows you the template, the sections and the first two phone screens, and waits for your yes. Every document carries light and dark themes, reads well on a phone, and has stable section ids so comments survive the next version.",
+    "shortDescription": "Branded HTML documents",
+    "longDescription": "Create a proposal, status update, plan, spec, report or meeting notes from your notes, files or conversation. Letterhead packages 13 document templates, 9 styles, licensed fonts and Node.js checkers.\n\nLearn a reusable brand profile from an authorized website, brand PDF or local files, then apply its colors, fonts and logo to later documents. Confirm the document's structure before generation unless you already supplied an approved brief. Get one HTML file with embedded assets, light and dark themes, a layout for phones and printing, and stable section IDs for revisions.\n\nRequires file access and Node.js 18+ code execution. Website evidence and Google Fonts need network access; local inputs and bundled styles support offline creation. If tools or assets are unavailable, Letterhead reports the limitation rather than claiming a completed check. Font substitutions are disclosed.\n\nNo plugin account or API key is required for document creation. Publishing is optional, runs only when requested, and requires a separate existing Markloop account and connected tools. Markloop is operated by the same author; this package includes no MCP server. Documents are delivered as files without publishing by default.",
     "developerName": "Marcin Perlak",
     "category": "Productivity",
     "capabilities": [
-      "Read",
-      "Write"
+      "Create HTML documents",
+      "Learn brand profiles",
+      "Revise HTML documents",
+      "Check document structure and contrast"
     ],
-    "websiteURL": "https://github.com/mperlak/letterhead",
+    "websiteURL": "https://mperlak.github.io/letterhead/",
     "defaultPrompt": [
-      "Learn the brand of my client's website.",
-      "Make a status update from these notes.",
-      "Turn this plan into a document I can send to the client."
-    ]
+      "Create a client status update from my notes as a branded HTML file.",
+      "Learn a reusable brand profile from the brand PDF I attach.",
+      "Polish my HTML document while keeping its words and section IDs."
+    ],
+    "supportURL": "https://github.com/mperlak/letterhead/issues",
+    "privacyPolicyURL": "https://github.com/mperlak/letterhead/blob/main/docs/privacy.md",
+    "termsOfServiceURL": "https://github.com/mperlak/letterhead/blob/main/docs/terms.md",
+    "composerIcon": "./letterhead/assets/icon.png",
+    "composerIconDark": "./letterhead/assets/icon.png",
+    "logo": "./letterhead/assets/icon.png",
+    "logoDark": "./letterhead/assets/icon.png"
   }
 }

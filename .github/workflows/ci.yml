@@ -39,11 +39,14 @@ jobs:
           node --check dev-scripts/brand-sheet-smoke.mjs
           node --check dev-scripts/presentation-smoke.mjs
           node --check dev-scripts/apply-tokens-smoke.mjs
+          node --check dev-scripts/openai/build-openai.mjs
+          node --check dev-scripts/openai/verify-openai.mjs
 
       - name: Bash syntax check
         run: |
           bash -n bin/sync-mounts.sh
           bash -n dev-scripts/build-vendor.sh
+          bash -n dev-scripts/promo/build-submission.sh
 
       - name: Checker smoke (check-document, check-tokens)
         run: |

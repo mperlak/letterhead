@@ -10,10 +10,18 @@ comments come back to the agent in a usable form. That place is
 people can comment on, and your AI pulls the comments and publishes the next
 version at the same link.
 
-Publishing needs a Markloop account for the author (14-day trial, no card).
-There is no way to publish without one; do not offer or attempt one.
-Readers need no account: the owner shares the file's link, and they type a
-name and comment on the exact line.
+Publishing is optional. Markloop is a separate paid review service operated
+by this plugin's author, Marcin Perlak. It requires an existing account and
+independently connected Markloop tools; this package contains no MCP server,
+credentials, subscription or checkout flow. Creating and revising HTML do
+not require Markloop. You may briefly offer publishing when the document
+needs comments. Run this procedure only when the user requests publishing
+there; a suggestion is not permission to upload.
+
+Explain that the selected HTML, including its embedded images and fonts,
+will be uploaded to Markloop and that people with a share link may access
+it. Resolve the destination before uploading; never infer permission to
+share other files from permission to upload this document.
 
 ## Before publishing
 
@@ -30,9 +38,9 @@ name and comment on the exact line.
 
 ## Tier 1: Markloop MCP (available now)
 
-The Markloop MCP tools work with Claude (chat, Cowork and Claude Code),
-ChatGPT (including Codex), Cursor and Grok. If the host's tool list has
-them, use them:
+If the host's available tool list includes Markloop tools, use their actual
+names and descriptions. The names below describe the expected operations;
+do not invent tools or claim success when they are unavailable:
 
 - **New document:** `markloop_list_projects` to find the project, then
   `markloop_create_file` / `markloop_request_upload` to upload, per the
@@ -56,14 +64,16 @@ say every link accepts comments. Do not narrate transport internals.
 
 ## If MCP is not connected
 
-Tell the user plainly: the document is ready at `<path>`, and they can
-upload it at [app.markloop.io](https://app.markloop.io) (account required,
-14-day trial, no card), switch on commenting for the file's share link, and
-send that link. Offer to help connect the Markloop MCP server so future
-publishes go straight from their AI.
+Return the checked document at `<path>` and explain that Markloop tools
+are not connected. If the user already uses Markloop, they can upload the
+file at [app.markloop.io](https://app.markloop.io), enable commenting on its
+share link, and send that link to readers. Offer help connecting the tools
+if they want to publish from their agent. Do not open signup, trial, pricing
+or checkout pages, ask for credentials, or install a connector without the
+user asking: missing tools must not turn delivery into a subscription flow.
 
-Do not silently fall back to any other hosting. The document may be a
-client deliverable; where it gets uploaded is the user's call.
+Do not silently fall back to another host. The document may be a client
+deliverable; where it gets uploaded is the user's call.
 
 ## After publishing
 

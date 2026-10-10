@@ -60,12 +60,16 @@ letterhead/                 ← canonical mount, the only directory anyone edits
 ├── styles/                 ← styles (DESIGN.md + tokens.css + style.css per style)
 ├── fonts/                  ← OFL fonts the styles name (woff2 + OFL.txt, fonts.json)
 ├── fixtures/               ← Lumen/Atlas demo source documents
+├── agents/openai.yaml      ← Codex skill metadata (display name, icons, default prompt)
+├── assets/icon.png         ← the skill icon openai.yaml and .codex-plugin point at; a copy
+│                             of plugin/icon.png (dev-scripts/promo/icon.html): change both
 └── scripts/                ← checkers, brand scripts, vendor/ bundles
 
 skills/letterhead/          ← byte-identical mirror for `npx skills add` and Codex
-plugin/                     ← the Claude plugin folder (Claude Code marketplace, Anthropic's
-                              plugin directory): installs without examples/ or the gallery
+plugin/                     ← the plugin folder (Claude Code marketplace, Anthropic's plugin
+                              directory, Cursor Marketplace): installs without examples/ or the gallery
 ├── .claude-plugin/plugin.json ← plugin manifest (edited by hand)
+├── .cursor-plugin/plugin.json ← Cursor Marketplace manifest (edited by hand)
 ├── README.md               ← the listing text in the directory (edited by hand)
 ├── icon.png                ← the directory listing icon (dev-scripts/promo/icon.html)
 ├── LICENSE                 ← copy of LICENSE (sync-mounts.sh)
@@ -80,9 +84,16 @@ dev-scripts/                ← matrix builder, smoke tests, build-vendor.sh (no
                             ← promo/: the README demo film and teaser (stage.html, teaser.html, render.mjs → examples/video/)
                             ←   the GitHub social preview (social-preview.html → examples/screenshots/social-preview.png)
                             ←   and the plugin icon (icon.html → plugin/icon.png)
+                            ←   submission-kit.md: directory listing copy and where to submit;
+                            ←   build-submission.sh → temp/submission/ (PNG screenshots, plugin zip)
+                            ← openai/: OpenAI plugin directory package (skills only):
+                            ←   build-openai.mjs → temp/openai-submission/ (zip + validation.json),
+                            ←   verify-openai.mjs (the zip in a scratch workspace, offline), openai-submission.md
+docs/                       ← privacy.md and terms.md, the listing URLs in .codex-plugin (not shipped)
 bin/sync-mounts.sh          ← regenerate the mirrors (--check in CI)
 bin/check-html.mjs          ← tag-closure check for fixtures/examples
 .claude-plugin/             ← Claude Code marketplace manifest (points at plugin/)
+.cursor-plugin/             ← Cursor marketplace manifest (points at plugin/)
 .codex-plugin/              ← Codex plugin manifest
 .agents/plugins/            ← Codex marketplace catalog
 .github/workflows/ci.yml
@@ -91,10 +102,16 @@ bin/check-html.mjs          ← tag-closure check for fixtures/examples
 ## Releasing
 
 Plugin hosts update only when the version changes. Bump `version` in
-`letterhead/SKILL.md`, `plugin/.claude-plugin/plugin.json` and
-`.codex-plugin/plugin.json` together, in the same commit, then run
-`bin/sync-mounts.sh`. Check the Claude Code manifests with
+`letterhead/SKILL.md`, `plugin/.claude-plugin/plugin.json`,
+`plugin/.cursor-plugin/plugin.json` and `.codex-plugin/plugin.json`
+together, in the same commit, then run `bin/sync-mounts.sh`. Check the Claude Code manifests with
 `claude plugin validate .` (marketplace) and `claude plugin validate plugin`.
+For OpenAI's plugin directory, build and verify the skills-only zip with
+`node dev-scripts/openai/build-openai.mjs` and
+`node dev-scripts/openai/verify-openai.mjs`, then upload it as described in
+`dev-scripts/openai/openai-submission.md`. Release material (submission
+notes, privacy and terms pages, packaging scripts) stays outside
+`letterhead/`: everything there is mirrored into every install.
 Everything under `plugin/` ships to users: keep each file there under 5 MiB
 and leave examples, videos and other binaries outside it (Anthropic's plugin
 directory checks the folder on every commit).

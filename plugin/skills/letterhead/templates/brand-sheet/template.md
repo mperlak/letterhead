@@ -17,9 +17,10 @@ in a second, and ships dark-mode CSS nobody checked.
 ## Use when
 
 A profile has just been taught and its owner has not commented on it yet.
-The sheet is the first thing you publish, before the first document is
-written in that name. People comment on what is not theirs, and the next
-version of the sheet lands at the same link. Its job is to be corrected.
+The sheet is reviewed before the first document is written in that name,
+so an unconfirmed brand does not carry a client deliverable. Return the
+file for review, with an optional offer to publish it in Markloop for
+comments. Its job is to be corrected.
 It should be readable in two minutes, so somebody can point at the amber
 swatch and say
 "that is the right one" or "no, that is the old site".
