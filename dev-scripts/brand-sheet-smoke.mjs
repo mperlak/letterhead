@@ -177,6 +177,55 @@ for (const lang of ['pl', 'en']) {
   check(`${lang}: the composition fields are not listed as settings`, !/Gęstość:|Zdjęcia:|Rytm:|Density:|Imagery:|Rhythm:/.test(html) && Boolean(meta.fields['composition.density']));
   check(`${lang}: the typography sample uses the same title`, html.includes(`<p class="t-display">${title}</p>`));
   check(`${lang}: no preview fallback warnings`, !/preview/.test(res.stderr || ''));
+
+  // The first screen: the open items under the title, the metadata in the footer.
+  const header = html.slice(html.indexOf('<header>'), html.indexOf('</header>'));
+  const footer = html.slice(html.indexOf('<footer>'));
+  check(`${lang}: the open items under the title link to every question`, meta.questions.every((q) => header.includes(`<a href="#${q.id}">`)) && html.includes(`<h3 id="${meta.questions[0].id}">`));
+  check(`${lang}: by the title only status and date, on one line; the rest in the footer`, (header.match(/<dt>/g) || []).length === 2 && /<dl class="meta meta--inline">/.test(header) && /<dl class="meta">/.test(footer) && footer.includes(`<dt>${lang === 'pl' ? 'Źródła' : 'Sources'}</dt>`));
+  check(`${lang}: the tone section shows the sample from PRODUCT.md once`, (html.match(/class="voice-label"/g) || []).length === 1);
+  const none = join(tmp, `none-${lang}`);
+  cpSync(dir, none, { recursive: true });
+  const noneMeta = JSON.parse(readFileSync(join(none, 'profile.meta.json'), 'utf8'));
+  noneMeta.questions = [];
+  writeFileSync(join(none, 'profile.meta.json'), JSON.stringify(noneMeta, null, 2));
+  const noneOut = join(tmp, `none-${lang}.html`);
+  runBrandSheet(none, noneOut);
+  const noneHtml = readFileSync(noneOut, 'utf8');
+  check(`${lang}: with no questions the sheet says so under the title`, noneHtml.includes(lang === 'pl' ? 'Nie mamy pytań.' : 'We have no questions.') && !/sekcji „Pytania”\.|in “Questions\.”/.test(noneHtml.slice(0, noneHtml.indexOf('</header>'))));
+}
+
+console.log('Polish speaks to the owner directly');
+{
+  const dir = join(tmp, 'direct-pl');
+  cpSync(join(FIXTURES, 'pl'), dir, { recursive: true });
+  const metaPath = join(dir, 'profile.meta.json');
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+  meta.questions[0].text = 'Której formy nazwy używają Państwo w dokumentach?';
+  writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+  const outPath = join(tmp, 'direct-pl.html');
+  const res = runBrandSheet(dir, outPath);
+  const html = readFileSync(outPath, 'utf8');
+  const fixed = html.replaceAll('Której formy nazwy używają Państwo w dokumentach?', '');
+  check('the sheet\'s own Polish labels never say "Państwo"', !/Państw/.test(fixed) && html.includes('Tak odczytaliśmy Twoją markę.'));
+  check('a "Państwo" in the agent\'s questions or notes is warned about', /questions\[0\]\.text addresses the owner as "Państwo"/.test(res.stderr || ''));
+}
+
+console.log('hex codes in notes, the title color, the light logo panel in dark mode');
+{
+  const dir = join(tmp, 'chips');
+  cpSync(join(FIXTURES, 'en'), dir, { recursive: true });
+  const metaPath = join(dir, 'profile.meta.json');
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'));
+  meta.fields['colors.primary'].note = 'Links and buttons; the yellow #ffce00 of the booking buttons stays out of documents.';
+  writeFileSync(metaPath, JSON.stringify(meta, null, 2));
+  const outPath = join(tmp, 'chips.html');
+  runBrandSheet(dir, outPath);
+  const html = readFileSync(outPath, 'utf8');
+  check('a hex code in a note carries a chip of its color', html.includes('<span class="hexchip" style="background:#ffce00"></span>#ffce00'));
+  check('an HTML entity is not read as a color', !/class="hexchip" style="background:#0?39/.test(html));
+  check('the light logo panel carries the light theme\'s paper and ink', /\.logopanel--light \{ --background: [^;]+; --foreground: [^;]+;/.test(html));
+  check('the title\'s brand color is the primary when it reads as large text (#3B6FE0 on paper)', /h1 \.accent \{ color: var\(--primary\); \}/.test(html));
 }
 
 console.log('a style without style.css: the plain preview card, with a warning');

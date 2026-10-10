@@ -404,14 +404,19 @@ const STRINGS = {
   pl: {
     titlePrefix: 'Arkusz marki',
     ogDescription: (name) => `Marka ${name}: arkusz do komentarzy przed pierwszym dokumentem.`,
-    lede: 'Tak odczytaliśmy Państwa markę. Jeśli coś odczytaliśmy źle, prosimy o komentarz w tym miejscu. Otwarte kwestie są w sekcji „Pytania”.',
+    lede: 'Tak odczytaliśmy Twoją markę. Jeśli coś się nie zgadza, zostaw komentarz w tym miejscu.',
+    openQuestions: (n) => (n === 1 ? 'Jedno pytanie czeka na Twoją odpowiedź:'
+      : `${n} ${n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'pytania czekają' : 'pytań czeka'} na Twoją odpowiedź:`),
+    openNone: 'Nie mamy pytań. Sprawdź wszystko poniżej.',
+    typeSampleBody: 'Tak wygląda tekst Twoich dokumentów: ten krój, ta wielkość i te odstępy.',
+    toneSampleLabel: 'Tak napiszemy w Twoim imieniu:',
     metaClient: 'Marka',
     metaSources: 'Źródła',
     metaDate: 'Data',
     metaStatus: 'Status',
     metaStatusValue: 'do komentarzy',
     metaAnswers: 'Odpowiada',
-    metaAnswersValue: 'ktokolwiek jest właścicielem marki, komentarzem w odpowiednim miejscu',
+    metaAnswersValue: 'właściciel marki, komentarzem w odpowiednim miejscu',
     sections: {
       'logo-and-name': 'Logo i nazwa',
       colors: 'Kolory',
@@ -445,14 +450,14 @@ const STRINGS = {
     noWeightNote: null,
     nowordsLabel: 'Trzy słowa, których nie użyjemy',
     nowordsEmpty: 'Nie mamy jeszcze listy słów do wykluczenia.',
-    compositionFallback: 'Układ dokumentów (odstępy, ramki, listy, podział na sekcje) pokazujemy w podglądzie na końcu arkusza. Jeśli Państwa dokumenty wyglądają inaczej, prosimy o przykład albo komentarz.',
-    questionsClosing: 'Jeśli coś tutaj nie jest Państwa, prosimy o komentarz w tym miejscu.',
-    previewIntro: 'Tak zacznie się pierwszy dokument złożony w Państwa barwach.',
-    previewIntroSample: 'Tak będą wyglądać Państwa dokumenty. Ten przykład opisuje pracę nad Państwa marką, więc nic w nim nie jest zmyślone.',
+    compositionFallback: 'Układ dokumentów (odstępy, ramki, listy, podział na sekcje) pokazujemy w podglądzie na końcu arkusza. Jeśli Twoje dokumenty wyglądają inaczej, prześlij przykład albo zostaw komentarz.',
+    questionsClosing: 'Jeśli coś tutaj nie jest Twoje, zostaw komentarz w tym miejscu.',
+    previewIntro: 'Tak zacznie się pierwszy dokument w Twoich barwach.',
+    previewIntroSample: 'Tak będą wyglądać Twoje dokumenty. Ten przykład opisuje pracę nad Twoją marką, więc nic w nim nie jest zmyślone.',
     pv: {
       kicker: 'Profil marki',
       title: (name) => `${name}: profil marki do sprawdzenia`,
-      lede: (src) => `${src ? `Odczytaliśmy markę z: ${src}. ` : ''}Zanim powstanie pierwszy dokument, prosimy o sprawdzenie kolorów, krojów pisma i logo.`,
+      lede: (src) => `${src ? `Odczytaliśmy markę z: ${src}. ` : ''}Zanim powstanie pierwszy dokument, sprawdź kolory, kroje pisma i logo.`,
       status: 'do sprawdzenia',
       summary: ({ heading, body, colors }) => [
         heading && body && `Nagłówki: ${heading}, tekst: ${body}.`,
@@ -462,12 +467,12 @@ const STRINGS = {
       rows: { name: 'Nazwa', logo: 'Logo', primary: 'Kolor główny', secondary: 'Kolor uzupełniający', foreground: 'Kolor tekstu', background: 'Tło dokumentu', body: 'Krój tekstu', heading: 'Krój nagłówków', tone: 'Ton' },
       states: { confirmed: 'potwierdzone', inferred: 'odczytane', guessed: 'do sprawdzenia', missing: 'brak' },
       colorHead: ['Rola', 'Wartość'],
-      calloutLabel: 'Do Państwa decyzji',
+      calloutLabel: 'Do Twojej decyzji',
       calloutQuestions: (n) => (n === 1 ? 'Jedno pytanie czeka na odpowiedź w sekcji „Pytania”.'
         : `${n} ${n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'pytania czekają' : 'pytań czeka'} na odpowiedź w sekcji „Pytania”.`),
-      calloutNone: 'Jeśli coś w tym arkuszu nie jest Państwa, prosimy o komentarz w tym miejscu.',
+      calloutNone: 'Jeśli coś w tym arkuszu nie jest Twoje, zostaw komentarz w tym miejscu.',
       nextHeading: 'Co dalej',
-      steps: [['Teraz', 'Państwo komentują arkusz marki.'], ['Potem', 'Poprawiamy profil według komentarzy.'], ['Na koniec', 'Powstaje pierwszy dokument w Państwa barwach.']],
+      steps: [['Teraz', 'Komentujesz arkusz marki.'], ['Potem', 'Poprawiamy profil według Twoich komentarzy.'], ['Na koniec', 'Powstaje pierwszy dokument w Twoich barwach.']],
     },
     previewStatus: 'szkic do komentarzy',
     previewNextStep: 'Następny krok',
@@ -478,12 +483,15 @@ const STRINGS = {
     sampleTitle: (name) => `${name}: przykładowy dokument`,
     sampleTag: 'przykład',
     sampleTldr: 'Prawdziwy dokument otworzy się tak samo: logo, tytuł, opisane metadane i krótkie streszczenie.',
-    footerStatus: (name, date) => `${name}, arkusz marki, ${date}. Status: do komentarzy.`,
   },
   en: {
     titlePrefix: 'Brand sheet',
     ogDescription: (name) => `Brand ${name}: open for comments before the first document.`,
-    lede: 'This is how we read your brand. If we read anything wrong, please comment right on that place. The open items are in “Questions.”',
+    lede: 'This is how we read your brand. If we read anything wrong, please comment right on that place.',
+    openQuestions: (n) => (n === 1 ? 'One question waits for your answer:' : `${n} questions wait for your answer:`),
+    openNone: 'We have no questions. Everything below is shown for you to check.',
+    typeSampleBody: 'This is how the text of your documents looks: this typeface, this size and this spacing.',
+    toneSampleLabel: 'This is how we would write in your name:',
     metaClient: 'Brand',
     metaSources: 'Sources',
     metaDate: 'Date',
@@ -556,7 +564,6 @@ const STRINGS = {
     sampleTitle: (name) => `${name}: sample document`,
     sampleTag: 'sample',
     sampleTldr: 'A real document opens the same way: the logo, a title, labeled details and a short summary.',
-    footerStatus: (name, date) => `${name}, brand sheet, ${date}. Status: open for comments.`,
   },
 };
 
@@ -603,6 +610,12 @@ function proseLanguageWarnings(meta, lang, warn) {
   if (off.length) {
     const langName = lang === 'pl' ? 'Polish' : 'English';
     warn(`lang is "${lang}" but ${off.map(([k]) => k).join(', ')} ${off.length === 1 ? 'reads' : 'read'} as ${lang === 'pl' ? 'English' : 'Polish'} — write the sheet's prose in ${langName}`);
+  }
+  // The sheet speaks to the owner directly ("Twoja marka"); one sentence in
+  // the formal "Państwa" next to its labels reads as written by somebody else.
+  if (lang === 'pl') {
+    const formal = texts.filter(([, text]) => /\bPaństw|\b(?:mają|chcą|mogą|używają|wolą) Państwo\b/.test(text));
+    if (formal.length) warn(`${formal.map(([k]) => k).join(', ')} ${formal.length === 1 ? 'addresses' : 'address'} the owner as "Państwo" — the sheet speaks directly ("Twoja marka", "sprawdź")`);
   }
 }
 
@@ -742,6 +755,9 @@ function buildModel(profile, warn) {
     if (notesTone) warn('notes.tone missing — used the sample paragraph from PRODUCT.md instead');
   }
   const voiceSample = fieldValue(meta, 'voice.sample');
+  // "This is how we would write in your name": the sample paragraph from
+  // PRODUCT.md, which is what the owner corrects. notes.tone describes it.
+  const toneSample = sampleParagraph || voiceSample || null;
 
   // Anti-reference words --------------------------------------------------
   // Source order: meta.notes.avoid (explicit, structured) first, then a
@@ -796,7 +812,7 @@ function buildModel(profile, warn) {
     primary, foreground, secondary, backgroundTokenValue, foregroundTokenValue, backgroundFromBrand,
     bodyFace, headingFace, headingWeight,
     logoNote, logoDataUri, logoOn, logoDims, logoPlate, logoMask, inkIsPrimary, previewCss, fieldStates,
-    notesName, notesLogo, notesTone, voiceSample, nowords,
+    notesName, notesLogo, notesTone, voiceSample, toneSample, nowords,
     questions, previewSample, previewTitle, previewNextStep, notesPreview,
   };
 }
@@ -929,6 +945,61 @@ function renderMasthead(model, t) {
 <div class="rule"></div>`;
 }
 
+// A color chip before every hex code in a note, so "the yellow #ffce00 of
+// the booking buttons stays out of documents" shows the yellow. A color
+// left out was a code in prose, and nobody can tell a wrong primary from a
+// hex. Runs on escaped HTML; `&#39;` is an entity, not a color.
+function chipHexes(html) {
+  return String(html || '').replace(/(?<![&\w])#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g, (m) => `<span class="hexchip" style="background:${m}"></span>${m}`);
+}
+
+// The title's brand-colored name: the primary itself when it reads as large
+// text on the paper (3:1), the darker ink only when it does not. The first
+// colored word on the sheet was the derived ink, a shade the brand never
+// uses (CP Trade's ochre for its yellow).
+// The first value of `name` in the tokens (the light :root block comes
+// first), matched as a whole name: --foreground is not --primary-foreground.
+function firstTokenValue(tokensCss, name) {
+  const m = new RegExp(`(?<![\\w-])${name}\\s*:\\s*([^;]+);`).exec(tokensCss);
+  return m ? m[1].trim() : null;
+}
+
+function titleColor(tokensCss) {
+  const toOklch = converter('oklch');
+  const read = (name) => {
+    const v = firstTokenValue(tokensCss, name);
+    try {
+      const c = v ? toOklch(parse(v)) : null;
+      return c && Number.isFinite(c.l) ? { l: c.l, c: c.c || 0, h: Number.isFinite(c.h) ? c.h : 0 } : null;
+    } catch {
+      return null;
+    }
+  };
+  const primary = read('--primary');
+  const paper = read('--background');
+  return primary && paper && contrastOklch(primary, paper) >= 3 ? 'var(--primary)' : 'var(--primary-ink, var(--foreground))';
+}
+
+// The sheet's copy of the tokens, with the light logo kept under its own
+// name (--brand-logo-light) when it is a file of its own: the dark blocks
+// point --brand-logo at the dark copy, and the "on a light background"
+// panel needs the light one in dark mode without a second copy of the file.
+function sheetTokens(tokensCss) {
+  return tokensCss.replace(/--brand-logo:\s*(url\("[^"]*"\))\s*;/, '--brand-logo-light: $1;\n  --brand-logo: var(--brand-logo-light);');
+}
+
+// The light theme's values on the "on a light background" logo panel, so it
+// stays light in dark mode. In a dark sheet both panels read dark and the
+// caption under the first one was false.
+function lightPanelCss(tokensCss) {
+  const names = ['--background', '--foreground', '--card', '--border', '--muted-foreground', '--brand-logo-color', '--brand-logo-plate', '--brand-logo'];
+  const decls = names
+    .map((n) => [n, firstTokenValue(tokensCss, n)])
+    .filter(([, v]) => v && !/^url\(/i.test(v))
+    .map(([n, v]) => `${n}: ${v};`);
+  return decls.length ? `.logopanel--light { ${decls.join(' ')} color: var(--foreground); }` : '';
+}
+
 function renderMetaDl(rows) {
   return `<dl class="meta">
 ${rows.map(([k, v]) => `    <div><dt>${escapeHtml(k)}</dt><dd>${v}</dd></div>`).join('\n')}
@@ -941,7 +1012,7 @@ function renderSwatch({ label, value, note, guessed, confirmPillLabel }) {
       <div class="chip chip--fixed" style="background:${escapeHtml(normalized)}"></div>
       <div class="name">${escapeHtml(label)}${guessed ? ` <span class="tag">${escapeHtml(confirmPillLabel)}</span>` : ''}</div>
       <div class="value">${escapeHtml(normalized)}</div>
-      <p class="note">${note}</p>
+      <p class="note">${chipHexes(note)}</p>
     </div>`;
 }
 
@@ -992,7 +1063,7 @@ function renderDocument(model, t) {
     <p class="panelnote">${escapeHtml(t.noLogoSentence)}</p>
   </div>`;
   }
-  const nameLine = `<p>${t.nameInDocs(model.name)}${model.notesLogo ? ` ${escapeHtml(sanitizeProvenance(model.notesLogo, lang))}` : ''}</p>`;
+  const nameLine = `<p>${t.nameInDocs(model.name)}${model.notesLogo ? ` ${chipHexes(escapeHtml(sanitizeProvenance(model.notesLogo, lang)))}` : ''}</p>`;
 
   // ---- Section 2: colors ----
   const swatches = [];
@@ -1048,9 +1119,6 @@ function renderDocument(model, t) {
   if (bodyNote) facts.push(`<li><strong>${escapeHtml(t.fontLoadingBody)}:</strong> ${escapeHtml(bodyNote)}</li>`);
   if (headingNote && headingNote !== bodyNote) facts.push(`<li><strong>${escapeHtml(t.fontLoadingHeading)}:</strong> ${escapeHtml(headingNote)}</li>`);
   const notesToneSanitized = sanitizeProvenance(model.notesTone, lang);
-  const sampleParagraphText = notesToneSanitized
-    ? notesToneSanitized.split(/(?<=[.!?])\s+/)[0]
-    : model.voiceSample || '';
 
   // ---- Section 4: tone ----
   const nowordsBlock = model.nowords.length > 0
@@ -1084,6 +1152,23 @@ ${model.questions.map((q) => `    <li>
   } else {
     questionsBody = `<p>${escapeHtml(t.questionsClosing)}</p>`;
   }
+
+  // ---- Open items, under the title ----
+  // The point of the sheet, first: the questions with links to each one, or
+  // a plain "nothing to ask". Of the metadata only status and date stay by
+  // the title, on one line; brand, sources and who answers moved to the
+  // footer. Five rows here filled a phone's first screen and no decision
+  // about the brand was visible.
+  const openItems = model.questions.length > 0
+    ? `<div class="openitems">
+      <p class="openitems-lead">${escapeHtml(t.openQuestions(model.questions.length))}</p>
+      <ol>
+${model.questions.map((q) => `        <li><a href="#${escapeHtml(q.id)}">${escapeHtml(sanitizeProvenance(q.text, lang))}</a></li>`).join('\n')}
+      </ol>
+    </div>`
+    : `<div class="openitems openitems--none">
+      <p class="openitems-lead">${escapeHtml(t.openNone)}</p>
+    </div>`;
 
   // ---- Section 7: preview ----
   // The sample carries only what the profile knows: the brand and the day
@@ -1179,7 +1264,15 @@ h1${NOT_DOC} {
   margin: 0 0 14px;
   color: var(--foreground);
 }
-h1 .accent { color: var(--primary-ink, var(--foreground)); }
+h1 .accent { color: ${model.titleColor}; }
+.openitems { margin: 0 0 34px; padding: 14px 18px; background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); border-left: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary)); }
+.openitems-lead { font-weight: 700; margin: 0; }
+.openitems ol { margin: 8px 0 0; padding-left: 1.4em; }
+.openitems li { margin: 4px 0; }
+.openitems a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.hexchip { display: inline-block; width: 0.85em; height: 0.85em; margin-right: 0.3em; vertical-align: -0.08em; border-radius: 2px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 25%, transparent); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.voice-label { font-weight: 700; margin-bottom: 8px; }
 .titleblock .lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
 
 dl.meta${NOT_DOC} { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
@@ -1247,6 +1340,11 @@ ol.questions p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foregro
 
 footer${NOT_DOC} { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
 footer${NOT_DOC} p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
+footer${NOT_DOC} dl.meta { margin: 0; }
+dl.meta--inline${NOT_DOC} { display: flex; flex-wrap: wrap; gap: 4px 22px; border-top: 0; margin: 0 0 18px; }
+dl.meta--inline${NOT_DOC} div { border-bottom: 0; padding: 0; gap: 8px; flex-direction: row; }
+dl.meta--inline${NOT_DOC} dt { flex: none; }
+${model.lightPanelCss}
 
 ${model.previewCss ? `.preview-frame { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
 /* The style keeps its own padding: some draw in it (consulting's spine). */
@@ -1277,7 +1375,11 @@ ${renderMasthead(model, t)}
   <div class="wrap titleblock">
     <h1>${t.titlePrefix}: <span class="accent">${escapeHtml(model.name)}</span></h1>
     <p class="lede">${escapeHtml(t.lede)}</p>
-    ${renderMetaDl(topMetaRows)}
+    <dl class="meta meta--inline">
+      <div><dt>${escapeHtml(t.metaStatus)}</dt><dd>${escapeHtml(t.metaStatusValue)}</dd></div>
+      <div><dt>${escapeHtml(t.metaDate)}</dt><dd>${escapeHtml(dateTop)}</dd></div>
+    </dl>
+    ${openItems}
   </div>
 </header>
 
@@ -1301,7 +1403,7 @@ ${swatches.join('\n')}
   <h2 id="typography">${escapeHtml(t.sections.typography)}</h2>
   <div class="typesample">
     <p class="t-display">${escapeHtml(model.previewTitle)}</p>
-    <p class="t-body">${escapeHtml(sampleParagraphText)}</p>
+    <p class="t-body">${escapeHtml(t.typeSampleBody)}</p>
   </div>
   <ul class="facts">
 ${facts.join('\n')}
@@ -1310,10 +1412,15 @@ ${facts.join('\n')}
 
 <section>
   <h2 id="tone">${escapeHtml(t.sections.tone)}</h2>
+  ${model.toneSample ? `<p class="voice-label">${escapeHtml(t.toneSampleLabel)}</p>
   <div class="voice">
+    <p>${escapeHtml(model.toneSample)}</p>
+  </div>
+  ${notesToneSanitized && notesToneSanitized !== model.toneSample ? `<p>${escapeHtml(notesToneSanitized)}</p>
+  ` : ''}` : `<div class="voice">
     <p>${escapeHtml(notesToneSanitized || '')}</p>
   </div>
-  ${nowordsBlock}
+  `}${nowordsBlock}
 </section>
 
 <section>
@@ -1350,7 +1457,7 @@ ${facts.join('\n')}
 
 <footer>
   <div class="wrap">
-    <p>${t.footerStatus(escapeHtml(model.name), escapeHtml(dateTop))}</p>
+    ${renderMetaDl(topMetaRows)}
   </div>
 </footer>
 
@@ -1380,7 +1487,9 @@ function main() {
   try {
     const profile = loadProfile(profileDir);
     const model = buildModel(profile, warn);
-    model.tokensCssRaw = profile.tokensCss + accentSurfaceBackfill(profile.tokensCss);
+    model.tokensCssRaw = sheetTokens(profile.tokensCss) + accentSurfaceBackfill(profile.tokensCss);
+    model.titleColor = titleColor(profile.tokensCss);
+    model.lightPanelCss = lightPanelCss(model.tokensCssRaw);
     const t = STRINGS[model.lang];
     html = renderDocument(model, t);
   } catch (e) {

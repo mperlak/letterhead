@@ -283,7 +283,7 @@ for anything the agent chose. Internal to this skill.
     "voice.sample":            { "value": "Dostarczamy komponenty na czas i mówimy wprost, kiedy termin jest zagrożony.", "confidence": "inferred", "sources": ["url1"] }
   },
   "questions": [
-    { "id": "q-name-form", "field": "name", "text": "Której formy nazwy używają Państwo w dokumentach?", "why": "Trafia do nagłówka każdego dokumentu." }
+    { "id": "q-name-form", "field": "name", "text": "Której formy nazwy używasz w dokumentach?", "why": "Trafia do nagłówka każdego dokumentu." }
   ],
   "notes": {
     "name": "Nazwa z alt logo i stopki.",
@@ -305,7 +305,7 @@ for anything the agent chose. Internal to this skill.
 | `sources[]` | `{ id, type, ref, fetchedAt }`. `type` is one of `url`, `pdf`, `document`, `screenshot`, `interview`, `owner`. `ref` is the URL, the file path, or who was asked and when. `fetchedAt` is optional for `interview` and `owner`. |
 | `fields{}` | The decisions. Fixed key list below. |
 | `questions[]` | `{ id, field, text, why }`, agent-authored, at most five, ids of the form `q-<slug>`. `text` is the question in the sheet's language, `why` is one line on what the answer changes. The sheet renders each one as its own `h3` with `id` = `id`. |
-| `notes{}` | `{ name, logo, tone, preview?, avoid? }`: the three sentences the agent writes for the sheet, in the sheet's language, plus `preview` only next to a real `preview{}`, and an optional `avoid` array (the words the sheet lists as "we will not use"). Plain language only: no field names, metadata keys, or CSS tokens in these sentences. In Polish, address the brand owner formally everywhere (`Państwo`, `Państwa`, `mają Państwo`), in `notes` and `questions` alike: the sheet's fixed labels already use that form, and one informal sentence next to them reads as a slip. Everything else on the sheet is generated from the profile. |
+| `notes{}` | `{ name, logo, tone, preview?, avoid? }`: the three sentences the agent writes for the sheet, in the sheet's language, plus `preview` only next to a real `preview{}`, and an optional `avoid` array (the words the sheet lists as "we will not use"). Plain language only: no field names, metadata keys, or CSS tokens in these sentences. In Polish, address the brand owner directly, in the singular, everywhere (`Twoja marka`, `używasz`, `sprawdź`), in `notes` and `questions` alike: the sheet's fixed labels use that form, and one formal `Państwa` next to them reads as written by somebody else; `brand-sheet.mjs` warns when it finds one. Everything else on the sheet is generated from the profile. |
 | `preview{}` | Optional, and absent by default. Without it the sheet shows a sample document about the profile itself, laid out by the base style: what was read and how sure each field is, the colors with swatches, the open questions and the next steps, with a visible "sample" label. Write `{ title, nextStep }` only when the user gave a real document or topic: its real title and real next step. A made-up project on the sheet gets read as a real one, and the owner's first comment is "what project is this?". |
 
 **Fields.** `fields{}` carries decision-bearing values only, not every token.

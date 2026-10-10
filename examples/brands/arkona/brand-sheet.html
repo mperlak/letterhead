@@ -277,7 +277,15 @@ h1:where(:not(.doc *)) {
   margin: 0 0 14px;
   color: var(--foreground);
 }
-h1 .accent { color: var(--primary-ink, var(--foreground)); }
+h1 .accent { color: var(--primary); }
+.openitems { margin: 0 0 34px; padding: 14px 18px; background: var(--accent-surface, var(--accent)); color: var(--accent-surface-foreground, var(--accent-foreground)); border-left: var(--brand-rule-height, 6px) solid var(--brand-rule, var(--primary)); }
+.openitems-lead { font-weight: 700; margin: 0; }
+.openitems ol { margin: 8px 0 0; padding-left: 1.4em; }
+.openitems li { margin: 4px 0; }
+.openitems a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.hexchip { display: inline-block; width: 0.85em; height: 0.85em; margin-right: 0.3em; vertical-align: -0.08em; border-radius: 2px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--foreground) 25%, transparent); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.voice-label { font-weight: 700; margin-bottom: 8px; }
 .titleblock .lede { font-size: var(--text-lg, 1.125rem); line-height: 1.5; margin: 0 0 26px; max-width: 38rem; }
 
 dl.meta:where(:not(.doc *)) { margin: 0 0 38px; padding: 0; border-top: 1px solid var(--border); }
@@ -347,6 +355,11 @@ ol.questions p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foregro
 
 footer:where(:not(.doc *)) { border-top: 1px solid var(--border); margin-top: 46px; padding: 17px 0 44px; }
 footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(--muted-foreground); margin: 0; }
+footer:where(:not(.doc *)) dl.meta { margin: 0; }
+dl.meta--inline:where(:not(.doc *)) { display: flex; flex-wrap: wrap; gap: 4px 22px; border-top: 0; margin: 0 0 18px; }
+dl.meta--inline:where(:not(.doc *)) div { border-bottom: 0; padding: 0; gap: 8px; flex-direction: row; }
+dl.meta--inline:where(:not(.doc *)) dt { flex: none; }
+.logopanel--light { --background: oklch(0.980 0.007 80.7); --foreground: oklch(0.257 0.010 164.1); --card: oklch(0.9930 0.0012 80); --border: oklch(0.898 0.004 174.1); --muted-foreground: oklch(0.455 0.004 174.1); --brand-logo-color: oklch(0.430 0.069 174.1); --brand-logo: var(--brand-logo-mask); color: var(--foreground); }
 
 .preview-frame { border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
 /* The style keeps its own padding: some draw in it (consulting's spine). */
@@ -530,14 +543,14 @@ footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(-
 <div class="rule"></div>
   <div class="wrap titleblock">
     <h1>Brand sheet: <span class="accent">Arkona</span></h1>
-    <p class="lede">This is how we read your brand. If we read anything wrong, please comment right on that place. The open items are in “Questions.”</p>
-    <dl class="meta">
-    <div><dt>Brand</dt><dd>Arkona</dd></div>
-    <div><dt>Sources</dt><dd>arkona-site.html (saved copy of the Arkona homepage)</dd></div>
-    <div><dt>Date</dt><dd>October 10, 2026</dd></div>
-    <div><dt>Status</dt><dd>open for comments</dd></div>
-    <div><dt>Who answers</dt><dd>whoever owns the brand, by commenting on the relevant place</dd></div>
-  </dl>
+    <p class="lede">This is how we read your brand. If we read anything wrong, please comment right on that place.</p>
+    <dl class="meta meta--inline">
+      <div><dt>Status</dt><dd>open for comments</dd></div>
+      <div><dt>Date</dt><dd>October 10, 2026</dd></div>
+    </dl>
+    <div class="openitems openitems--none">
+      <p class="openitems-lead">We have no questions. Everything below is shown for you to check.</p>
+    </div>
   </div>
 </header>
 
@@ -594,7 +607,7 @@ footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(-
   <h2 id="typography">Typography</h2>
   <div class="typesample">
     <p class="t-display">Arkona: sample document</p>
-    <p class="t-body">Your site speaks plainly about wood, steel and numbers, so documents do the same: short sentences, concrete facts, no sales talk.</p>
+    <p class="t-body">This is how the text of your documents looks: this typeface, this size and this spacing.</p>
   </div>
   <ul class="facts">
 <li><strong>Body face:</strong> Work Sans</li>
@@ -607,9 +620,11 @@ footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(-
 
 <section>
   <h2 id="tone">Tone</h2>
+  <p class="voice-label">This is how we would write in your name:</p>
   <div class="voice">
-    <p>Your site speaks plainly about wood, steel and numbers, so documents do the same: short sentences, concrete facts, no sales talk.</p>
+    <p>Larch from the Baltic coast grows slowly, so the wood is dense and resinous. We leave it untreated or oil it once; in two seasons it turns silver-grey and keeps going.</p>
   </div>
+  <p>Your site speaks plainly about wood, steel and numbers, so documents do the same: short sentences, concrete facts, no sales talk.</p>
   <p class="nowords-label">Three words we will not use:</p>
   <ul class="nowords">
     <li>solutions</li>
@@ -690,7 +705,13 @@ footer:where(:not(.doc *)) p { font-size: var(--text-sm, 0.875rem); color: var(-
 
 <footer>
   <div class="wrap">
-    <p>Arkona, brand sheet, October 10, 2026. Status: open for comments.</p>
+    <dl class="meta">
+    <div><dt>Brand</dt><dd>Arkona</dd></div>
+    <div><dt>Sources</dt><dd>arkona-site.html (saved copy of the Arkona homepage)</dd></div>
+    <div><dt>Date</dt><dd>October 10, 2026</dd></div>
+    <div><dt>Status</dt><dd>open for comments</dd></div>
+    <div><dt>Who answers</dt><dd>whoever owns the brand, by commenting on the relevant place</dd></div>
+  </dl>
   </div>
 </footer>
 

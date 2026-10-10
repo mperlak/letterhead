@@ -42,9 +42,14 @@ One page, in the language named by `lang`, rendered on the brand's own
 tokens, so the sheet is itself the first sample of the work.
 
 **Header:** `<title>` is "Brand sheet: <name>", localized at render
-("Arkusz marki: Arkona Supply" when `lang` is `pl`). Labeled metadata in the
-reading flow: brand, the sources the profile was built from, date, status
-"open for comments".
+("Arkusz marki: Arkona Supply" when `lang` is `pl`), the brand's name in the
+primary when it reads as large text on the paper (3:1), in the darker ink
+only when it does not. One lede sentence, status and date on one line, then
+the **open items**: the questions as links to their headings ("Two
+questions wait for your answer"), or one sentence saying there are none.
+The rest of the metadata (brand, sources, who answers) is in the footer.
+Five rows of metadata under the title filled a phone's first screen, and
+the owner met boilerplate before any decision about their brand.
 
 Seven sections, always the same, always in this order:
 
@@ -55,7 +60,9 @@ Seven sections, always the same, always in this order:
    beside it: for artwork on paper, a dark-mode panel showing what a reader
    in dark mode gets (the mark in the dark theme's color, the recolored dark copy, or the logo on
    its light plate); for artwork on a band, bare paper, so the reason for the band is visible
-   rather than described. Once the owner has confirmed the logo, the header
+   rather than described. The light panel stays light in a dark reading
+   mode, with the light theme's paper and logo; otherwise both panels read
+   dark and its caption is false. Once the owner has confirmed the logo, the header
    panel stands alone. With no usable logo, the text mark from the name
    stands in and says so. Carries `notes.name` and `notes.logo`.
 2. **Colors** (`colors`). Primary, text, background, and the supporting tint
@@ -64,9 +71,12 @@ Seven sections, always the same, always in this order:
    of provenance ("51 occurrences, buttons and navigation"). `guessed` fields
    carry a visible "please check" label next to the swatch, not in a legend at
    the bottom. A label is not a question: it says how sure we are and invites
-   a comment.
+   a comment. Every hex code in a note carries a small chip of its color, so
+   a color left out of documents ("the yellow #ffce00 of the booking
+   buttons") is seen, not read as a code.
 3. **Typography** (`typography`). Body and heading faces in a sample
-   paragraph of the brand's own language, at the size documents actually use,
+   sentence in the sheet's language (the tone section carries the brand's
+   own paragraph, and showing it twice reads as a slip), at the size documents actually use,
    at the captured heading weight, set in the embedded fonts, so the sample
    is the real type and not the reader's fallback. Name the faces. A face
    that could not be embedded and was replaced by an open substitute is a
@@ -111,7 +121,7 @@ Seven sections, always the same, always in this order:
 
 Sections 1 to 3 are the identity; they read fast and carry the weight of the
 page. Section 6 is the point of the document, so it is visually distinct and
-easy to arrive at from the top; a reader who scrolls past the swatches must
+linked from the open items under the title; a reader who scrolls past the swatches must
 land on the questions, not wander. The preview is last and looks like a
 document, not like a sample card, which means it inherits the document's own
 type scale rather than shrinking into a thumbnail.
@@ -120,7 +130,8 @@ Swatches are labeled objects, not decoration. No color grid without values.
 
 ## Mobile contract
 
-First phone screen: title, metadata, logo and name, with a 16 px side
+First phone screen: title, status and date, the open items, the start of
+logo and name, with a 16 px side
 margin on everything, header included. Swatches wrap to one or
 two per row and keep their label, value and provenance sentence together; a
 swatch that wraps away from its caption is an unanswerable question. The
