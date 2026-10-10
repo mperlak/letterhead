@@ -1,7 +1,7 @@
 {
   "name": "letterhead",
   "description": "Create branded HTML documents from notes, files or a conversation. Reuse brand profiles, apply packaged templates and styles, and check the result before delivery.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": {
     "name": "Marcin Perlak",
     "url": "https://github.com/mperlak"

@@ -1,6 +1,6 @@
 ---
 name: letterhead
-version: 0.2.1
+version: 0.3.0
 license: MIT
 user-invocable: true
 argument-hint: "[teach | polish | publish] [<topic-or-path>]"
