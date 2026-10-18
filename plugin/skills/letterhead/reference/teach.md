@@ -410,8 +410,10 @@ Two scripts. The agent never hand-edits either output.
 node <skill>/scripts/brand-tokens.mjs \
   --style <skill>/styles/<style>/tokens.css \
   --primary <hex> --foreground <hex> [--background <hex>] [--accent <hex>] \
+  [--background-dark <hex>] \
   --font-body "<family>, <category>" --font-heading "<family>, <category>" \
   --heading-weight <typography.headingWeight> \
+  [--font-accent "<family>, <category>" [--accent-style italic] [--accent-weight <n>]] \
   [--embed-fonts] --lang <lang> [--font-file "<Family>=<file.woff2>"] \
   [--logo <profile>/logo.<ext> [--logo-on dark|light] [--logo-tint <hex|oklch>]] \
   --out <profile>/tokens.css
@@ -443,6 +445,22 @@ says the same thing: `colors.background` carries the value you passed, or
 the key is absent. A profile that says `#ffffff` over tokens that carry the
 style's paper gives two answers to one question, and the next tool picks
 the wrong one.
+
+**Dark page.** Pass `--background-dark` only when the brand ships its own
+dark mode (a dark theme in the app's CSS, a dark site) and record it as
+`colors.backgroundDark`. Without it the script builds the dark page in the
+hue of the brand's text color, or of the primary, and keeps the style's
+lightness steps; never leave a violet brand on the style's green-black.
+
+**Accent face.** Pass `--font-accent` only when the brand's own pages set
+single words or a quote in a second face (a serif italic in a sans brand,
+say), and record it as `typography.accent` with its style and weight. It
+is for a few words per screen, never headings or paragraphs. With
+`--embed-fonts` the script embeds that one face cut down to the letters of
+`--lang`: from Google Fonts with its `text=` subset, from a `--font-file`
+through `pyftsubset` when it is installed (otherwise whole, with a
+warning). A brand without one gets none: the report sets its accent in the
+body face's italic.
 
 **Fonts.** For network-authorized brand learning, pass
 `--embed-fonts --lang <lang>`. The script fetches

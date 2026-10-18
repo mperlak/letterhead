@@ -56,7 +56,8 @@ letterhead/                 ← canonical mount, the only directory anyone edits
 ├── NOTICES.md              ← bundled libraries and their licenses
 ├── reference/              ← create / teach / publish procedures; markup.md, the
 │                             shared markup every style.css lays out
-├── templates/              ← template contracts (template.md per template)
+├── templates/              ← template contracts (template.md per template); report/ and
+│                             presentation/ also carry their own CSS and script
 ├── styles/                 ← styles (DESIGN.md + tokens.css + style.css per style)
 ├── fonts/                  ← OFL fonts the styles name (woff2 + OFL.txt, fonts.json)
 ├── fixtures/               ← Lumen/Atlas demo source documents

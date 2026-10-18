@@ -53,6 +53,11 @@
   --status-warn: oklch(0.560 0.115 78.0);
   --status-blocked: oklch(0.490 0.175 27.0);
   --status-neutral: oklch(0.445 0.022 250.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.968 0.004 240.0);
+  --tint-ink: oklch(0.330 0.075 255.0);
+  --surface-inverse: oklch(0.220 0.018 252.0);
+  --surface-inverse-foreground: oklch(0.984 0.003 240.0);
 
   /* -- Shape: boardroom is crisp; nothing rounder than 4px -------- */
   --radius-sm: 2px;
@@ -138,6 +143,11 @@
   --status-warn: oklch(0.780 0.115 82.0);
   --status-blocked: oklch(0.660 0.160 25.0);
   --status-neutral: oklch(0.780 0.013 245.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.240 0.004 251.0);
+  --tint-ink: oklch(0.620 0.175 250.0);
+  --surface-inverse: oklch(0.165 0.004 251.0);
+  --surface-inverse-foreground: oklch(0.930 0.006 240.0);
 
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
   --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);
@@ -188,6 +198,11 @@
     --status-warn: oklch(0.780 0.115 82.0);
     --status-blocked: oklch(0.660 0.160 25.0);
     --status-neutral: oklch(0.780 0.013 245.0);
+    /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+    --tint: oklch(0.240 0.004 251.0);
+    --tint-ink: oklch(0.620 0.175 250.0);
+    --surface-inverse: oklch(0.165 0.004 251.0);
+    --surface-inverse-foreground: oklch(0.930 0.006 240.0);
 
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
     --shadow-md: 0 2px 10px oklch(0 0 0 / 0.36);

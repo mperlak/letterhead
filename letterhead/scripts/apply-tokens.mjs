@@ -58,10 +58,12 @@
 import { readFileSync, writeFileSync, statSync, existsSync, readdirSync } from 'node:fs';
 import { join, resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import { parse, formatHex, converter } from './vendor/culori.mjs';
 import { parseCss, walkRules, isDarkSchemeMedia, selectorList } from './lib/css.mjs';
 import {
   formatOklch, clampChromaToGamut, quantize, deriveStatus, STATUS_KEYS, accentSurface, contrastOklch, pickInkForFill,
+  deriveSurfaces, SURFACE_KEYS, neutralChroma,
 } from './lib/color.mjs';
 
 const SKILL = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -276,6 +278,14 @@ function brandOverStyle(brand, style, ref, fontSlots) {
     const missing = [...style[b]].filter(([k, v]) => isColorValue(v) && !own.has(k));
     if (!missing.length || !paper) continue;
     const seeds = Object.fromEntries(STATUS_KEYS.map((k) => [k, color(style[b].get(k))]).filter(([, c]) => c));
+    // The report surfaces, for a profile taught before they existed: from
+    // the brand's own paper, text and primary, as brand-tokens.mjs makes them.
+    const surfaces = missing.some(([k]) => SURFACE_KEYS.includes(k)) && primary
+      ? deriveSurfaces({
+        background: paper, foreground: pick('foreground') || color(style[b].get('foreground')),
+        primary, dark: b !== 'light', hue: neutralChroma(primary) ? primary.h : null, chroma: neutralChroma(primary),
+      })
+      : {};
     const status = deriveStatus({
       background: paper, dark: b !== 'light', seeds,
       destructive: pick('destructive'), mutedForeground: pick('muted-foreground'),
@@ -283,6 +293,10 @@ function brandOverStyle(brand, style, ref, fontSlots) {
     for (const [k, v] of missing) {
       if (status[k]) {
         out[b].set(k, formatOklch(status[k]));
+        continue;
+      }
+      if (surfaces[k]) {
+        out[b].set(k, formatOklch(surfaces[k]));
         continue;
       }
       // Any other color the brand lacks: the style's lightness at the
@@ -414,8 +428,30 @@ if (mode === 'brand' && !styleSlug) {
   ].join('\n');
 }
 
+// Light paper in print, whatever the theme: the dark blocks re-set every
+// color to its light value under @media print, so a reader whose system is
+// dark does not print white text on black pages. A logo copy for the dark
+// page is pointed back at the light artwork when that is a reference or a
+// small file; a large one is not written twice.
+{
+  const lines = [];
+  for (const [k, v] of finalLight) {
+    if (k === 'brand-logo') {
+      if (/^var\(/.test(v.trim()) || v.length <= 30 * 1024) lines.push([k, v]);
+    } else if (isColorValue(v) || /^brand-logo-(color|plate|on)$/.test(k) || (/^var\(--/.test(v.trim()) && !k.startsWith('font'))) {
+      lines.push([k, v]);
+    }
+  }
+  if (lines.length) {
+    tokenCss += `\n\n/* ---- print: light paper whatever the theme ---- */\n@media print {\n  :root, :root[data-theme], [data-theme="dark"], :root:not([data-theme="light"]):not([data-theme="dark"]) {\n    color-scheme: light;\n${lines.map(([k, v]) => `    --${k}: ${v};`).join('\n')}\n  }\n}`;
+  }
+}
+
+// A template with a layout of its own (apply-template.mjs) replaces the
+// style's style.css; the style still gives the tokens.
+const hasTemplate = /<style\b[^>]*\bdata-letterhead-template\b/i.test(html);
 let styleBlockCss = null;
-if (!tokensOnly && styleSlug) {
+if (!tokensOnly && styleSlug && !hasTemplate) {
   const p = join(styleDir(styleSlug), 'style.css');
   if (existsSync(p)) styleBlockCss = read(p).replace(/\s+$/, '');
   else warnings.push(`styles/${styleSlug} has no style.css; tokens only`);
@@ -478,8 +514,18 @@ try {
 } catch (e) {
   fail(`cannot write ${docPath}: ${e.code || e.message}`);
 }
+// A template layout draws the logo from the tokens; put it in again so it
+// follows the new tokens.
+let templateNote = null;
+const tplSlug = /<style\b[^>]*\bdata-letterhead-template="([a-z0-9-]+)"/i.exec(out)?.[1];
+if (tplSlug) {
+  const r = spawnSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), 'apply-template.mjs'), tplSlug, docPath], { encoding: 'utf8' });
+  if (r.status !== 0) fail(`apply-template.mjs failed: ${(r.stderr || r.stdout).trim()}`);
+  templateNote = `template: ${tplSlug} (its layout and script put in again)`;
+}
 for (const w of warnings) console.error(`warning: ${w}`);
 console.log(`${hadTokens ? 'replaced' : 'inserted'} in ${basename(docPath)} (${Math.round(Buffer.byteLength(tokenCss, 'utf8') / 1024)} KB tokens)`);
 console.log(summary);
-console.log(`style.css: ${styleBlock ? styleSlug : tokensOnly ? 'left out (--tokens-only)' : 'none'}`);
+console.log(`style.css: ${styleBlock ? styleSlug : tokensOnly ? 'left out (--tokens-only)' : hasTemplate ? "left out (the template's layout is in the document)" : 'none'}`);
 console.log(`favicon: ${favicon}`);
+if (templateNote) console.log(templateNote);

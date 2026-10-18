@@ -65,6 +65,11 @@ const PAIRS = [
   ['status-warn', 'background', 4.5, 'error'],
   ['status-blocked', 'background', 4.5, 'error'],
   ['status-neutral', 'background', 4.5, 'error'],
+  // The report template: labels on a container's ground, and the closing
+  // decision panel, which must stay dark in the dark themes.
+  ['tint-ink', 'tint', 4.5, 'error'],
+  ['foreground', 'tint', 4.5, 'error'],
+  ['surface-inverse-foreground', 'surface-inverse', 4.5, 'error'],
 ];
 
 const COLOR_LITERAL_RE = /^(?:#[0-9a-f]{3,8}|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(.*\))$/i;

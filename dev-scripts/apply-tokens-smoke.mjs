@@ -154,6 +154,27 @@ console.log('fieldwork example profile (no --accent-surface): derived at build t
     && norm(got.darkOs.get('accent-surface')) === norm(got.darkOs.get('accent')));
 }
 
+console.log('template layout (apply-template.mjs report): replaces style.css, survives re-runs, prints light');
+{
+  const doc = join(TMP, 'report.html');
+  writeFileSync(doc, docShell());
+  const node = (script, ...a) => spawnSync(process.execPath, [join(SCRIPTS, script), ...a], { encoding: 'utf8' });
+  const count = (re) => (readFileSync(doc, 'utf8').match(re) || []).length;
+  const t1 = node('apply-tokens.mjs', join(STYLES, 'startup', 'tokens.css'), doc);
+  const r1 = node('apply-template.mjs', 'report', doc);
+  check('apply-template exits 0', t1.status === 0 && r1.status === 0, `${r1.stdout}${r1.stderr}`);
+  check('the style.css block is gone, the template block is in', count(/data-letterhead-style\b/g) === 0 && count(/<style data-letterhead-template="report">/g) === 1);
+  check('the script goes last in <body>', count(/<script data-letterhead-template="report">/g) === 1 && /<script data-letterhead-template="report">[\s\S]*<\/script>\s*<\/body>/.test(readFileSync(doc, 'utf8')));
+  node('apply-template.mjs', 'report', doc);
+  const t2 = node('apply-tokens.mjs', join(STYLES, 'gazette', 'tokens.css'), doc);
+  check('re-runs keep one of each block and no style.css', t2.status === 0 && count(/data-letterhead-template="report"/g) === 2 && count(/data-letterhead-style\b/g) === 0, t2.stdout);
+  check('the tokens carry a light print block', /@media print \{\s*:root, :root\[data-theme\], \[data-theme="dark"\]/.test(readFileSync(doc, 'utf8')));
+  check('a template without a layout is refused', node('apply-template.mjs', 'spec', doc).status === 1);
+  const bare = join(TMP, 'bare.html');
+  writeFileSync(bare, docShell());
+  check('a document without tokens is refused', node('apply-template.mjs', 'report', bare).status === 1);
+}
+
 if (failures) {
   console.log(`\n${failures} assertion(s) failed.`);
   process.exit(1);

@@ -26,7 +26,9 @@ boss, a team. Each document is composed from a template contract in
 conventions so feedback tools can anchor comments that survive new versions.
 One template, `presentation` (a project shown picture by picture, room by
 room), is assembled by scripts instead of written by hand; its
-`template.md` carries the procedure.
+`template.md` carries the procedure. Another, `report`, brings its own
+layout and a small script (`scripts/apply-template.mjs`) in place of the
+style's layout; the brand and the style still give it colors and fonts.
 
 What makes a letterhead document different from a generic pretty page:
 

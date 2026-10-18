@@ -53,12 +53,17 @@ colors:
   foreground: "#414042"      # absent when the style's text color is used
   secondary: "#e8b4b8"       # absent unless --accent was passed
   background: "#ffffff"      # absent unless --background was passed
+  backgroundDark: "#16131c"  # absent unless --background-dark was passed
 typography:
   body:
     fontFamily: "Roboto, sans-serif"
   heading:
     fontFamily: "Roboto, sans-serif"
     fontWeight: 700
+  accent:                    # absent unless --font-accent was passed
+    fontFamily: "Newsreader, serif"
+    fontStyle: italic
+    fontWeight: 500
 logo:
   on: light                  # the --brand-logo-on the tokens carry
 composition:                 # only when composition was measured
@@ -314,6 +319,8 @@ Exactly these keys, and no others:
 `name`, `colors.primary`, `colors.foreground`, `typography.body`,
 `typography.heading`, `typography.headingWeight`, `logo`, `voice.register`,
 `voice.sample`, plus `colors.secondary` when the brand names its own accent,
+`colors.backgroundDark` when the brand has its own dark page,
+`typography.accent` when the brand sets a few words in a second face,
 and `composition.density`, `composition.imagery` and `composition.rhythm`
 when composition was actually measured.
 
@@ -329,8 +336,10 @@ break that link.
 | `fields.<key>.sources` | Ids from `sources[]`. Empty array when nothing supports the field. |
 | `fields.<key>.note` | One short sentence of evidence. This is what the sheet turns into "where this comes from". |
 
-Everything else a document needs — surfaces, borders, tints, spacing, and
-the accent when `colors.secondary` is absent — is derived by
+Everything else a document needs — surfaces and borders in the brand's
+hue in both themes, the chart colors, the report's container ground
+(`--tint`, `--tint-ink`) and its closing panel (`--surface-inverse`),
+spacing, and the accent when `colors.secondary` is absent — is derived by
 `brand-tokens.mjs` from the style and these values. Listing derived tokens
 here makes the file long, makes the sheet look like a design system, and
 invites questions about values nobody chose.
@@ -349,6 +358,8 @@ shows on the sheet and never in a document.
 | `typography.body` | `--font-body` | `--font-sans` |
 | `typography.heading` | `--font-heading` | `--font-display` |
 | `typography.headingWeight` | `--heading-weight` | `--font-heading-weight` |
+| `colors.backgroundDark` | `--background-dark` | the dark `--background`; every dark surface and text token takes its hue. Without it the dark page takes the hue of `colors.foreground` (else of the primary), never the style's |
+| `typography.accent` | `--font-accent` (plus `--accent-style`, `--accent-weight`) | `--font-accent`, `--font-accent-style`, `--font-accent-weight`; with `--embed-fonts` one face, cut down to the letters of the profile's language |
 | `logo` | `--logo` (plus `--logo-on`, `--logo-tint`) | `--brand-logo*` |
 
 `name` and `voice.*` are read by the sheet and by `create`, not by the
@@ -372,8 +383,9 @@ Confidence labels a value on the sheet. It does not decide what gets asked:
 **Rules.**
 
 1. An entry per decision, not per token. The nine keys above (plus
-   `colors.secondary` when the brand names an accent, and composition when
-   it was measured) are the whole list. A value with no
+   `colors.secondary`, `colors.backgroundDark` and `typography.accent` when
+   the brand has them, and composition when it was measured) are the whole
+   list. A value with no
    entry is a value nobody can question later; an entry for a derived token
    is noise that makes the real decisions harder to find.
 2. Fields left deliberately open get an entry with `value: null`, so the

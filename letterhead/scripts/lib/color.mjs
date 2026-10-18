@@ -178,3 +178,72 @@ export function deriveStatus({ background, dark, seeds = {}, destructive = null,
   }
   return out;
 }
+
+// Neutral chroma for a brand: a whisper of the primary's saturation, so a
+// grey reads as the brand's grey and never as a color of its own. An
+// achromatic primary (black, white, grey) gives pure greys.
+export function neutralChroma(primary) {
+  if (!primary || !(primary.c >= 0.02) || !Number.isFinite(primary.h)) return 0;
+  return Math.min(0.012, primary.c * 0.06);
+}
+
+// The surfaces the report template draws on, for one theme block:
+//   --tint                         the light ground of a container (figure,
+//                                  the "what we do about it" panel): a step
+//                                  off the paper, in the brand's hue
+//   --tint-ink                     the primary as a label on that ground,
+//                                  4.5:1 on --tint (the --primary-ink of the
+//                                  page is measured on the paper and drops
+//                                  under 4.5:1 on a lifted dark ground)
+//   --surface-inverse(-foreground) the closing decision panel: the text
+//                                  color as a plate in the light theme; in
+//                                  the dark themes a panel darker than the
+//                                  page, never a white slab on a dark page
+// background, foreground, primary: oklch objects of the block; hue, chroma:
+// the block's neutral hue and chroma. Returns quantized oklch objects keyed
+// by token name (without the leading dashes).
+export const SURFACE_KEYS = ['tint', 'tint-ink', 'surface-inverse', 'surface-inverse-foreground'];
+
+export function deriveSurfaces({ background, foreground, primary, dark, hue, chroma }) {
+  const h = Number.isFinite(hue) ? hue : Number.isFinite(background.h) ? background.h : 0;
+  const c = Math.max(0, chroma || 0);
+  const tintL = dark ? Math.min(0.5, background.l + 0.025) : Math.max(0.5, background.l - 0.016);
+  const tint = quantize(clampChromaToGamut(tintL, c, h));
+  let ink = quantize(dark ? computeDarkInk(primary, tint) : computeInk(primary, tint, 'darker'));
+  for (let i = 0; i < 20 && contrastOklch(ink, tint) < 4.5; i++) {
+    ink = quantize(clampChromaToGamut(Math.min(0.99, Math.max(0.01, ink.l + (dark ? 0.01 : -0.01))), ink.c, ink.h));
+  }
+  const inverse = dark
+    ? quantize(clampChromaToGamut(Math.max(0.08, background.l - 0.05), c, h))
+    : quantize(foreground);
+  const wanted = dark ? foreground : background;
+  const inverseInk = contrastOklch(wanted, inverse) >= 4.5 ? quantize(wanted) : quantize(pickInkForFill(inverse));
+  return { tint, 'tint-ink': ink, 'surface-inverse': inverse, 'surface-inverse-foreground': inverseInk };
+}
+
+// Chart colors from the brand instead of the style's own hues: --chart-1 is
+// the primary, 2 and 3 the primary's hue lighter and deeper, 4 and 5 two
+// neutral greys. A categorical palette of five unrelated hues reads as
+// another brand; a document that needs more than three series is a table.
+// primary: the block's primary (already lifted for a dark page); hue,
+// chroma: the block's neutral hue and chroma.
+export function deriveChart({ primary, dark, hue, chroma }) {
+  const ph = Number.isFinite(primary.h) ? primary.h : 0;
+  const pc = primary.c || 0;
+  const at = (l, cc, hh) => quantize(clampChromaToGamut(l, cc, hh));
+  const nh = Number.isFinite(hue) ? hue : ph;
+  if (dark) {
+    return {
+      'chart-2': at(0.82, pc * 0.45, ph),
+      'chart-3': at(0.42, pc * 0.7, ph),
+      'chart-4': at(0.7, chroma, nh),
+      'chart-5': at(0.5, chroma, nh),
+    };
+  }
+  return {
+    'chart-2': at(Math.min(0.78, primary.l + 0.2), pc * 0.55, ph),
+    'chart-3': at(Math.max(0.28, primary.l - 0.16), pc * 0.75, ph),
+    'chart-4': at(0.52, chroma, nh),
+    'chart-5': at(0.74, chroma, nh),
+  };
+}

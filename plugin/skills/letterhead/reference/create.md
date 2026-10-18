@@ -63,6 +63,10 @@ structural.
 
 ## Build (after the user's yes)
 
+The `report` template carries its own layout: after `apply-tokens.mjs` in
+step 2, run `apply-template.mjs report <file>` and write the markup its
+`template.md` names instead of the style's signature moves (step 6).
+
 The `presentation` template is the exception to steps 2 to 7 below: its
 scripts lay out the pictures, put in the tokens and the stable ids, and run
 the check. Follow the procedure in `templates/presentation/template.md`;

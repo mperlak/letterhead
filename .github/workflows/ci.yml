@@ -19,6 +19,8 @@ jobs:
         run: |
           node --check letterhead/scripts/check-document.mjs
           node --check letterhead/scripts/check-tokens.mjs
+          node --check letterhead/scripts/apply-template.mjs
+          node --check letterhead/templates/report/report.js
           node --check letterhead/scripts/lib/css.mjs
           node --check letterhead/scripts/lib/report.mjs
           node --check letterhead/scripts/brand-evidence.mjs

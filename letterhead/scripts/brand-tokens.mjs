@@ -15,8 +15,10 @@
 //     --style <base-tokens.css> \
 //     --primary <hex|oklch> \
 //     [--foreground <hex|oklch>] [--background <hex|oklch>] [--accent <hex|oklch>] \
+//     [--background-dark <hex|oklch>] \
 //     --font-body "<family>[, <category>]" [--font-heading "<family>[, <category>]"] \
 //     [--heading-weight 100..900] \
+//     [--font-accent "<family>[, <category>]" [--accent-style italic|normal] [--accent-weight 100..900]] \
 //     [--embed-fonts] [--lang <code>] [--font-file "<Family>[:<weight>]=<file.woff2>"]... \
 //     [--logo <file.png|svg|jpg>] [--logo-on dark|light] \
 //     [--logo-tint <hex|oklch>] \
@@ -44,9 +46,27 @@
 //      background, at the most chroma sRGB holds there.
 //   4. The dark --primary is the brand color unchanged when it has 3:1 on
 //      the dark background; otherwise its lightness rises just enough to
-//      reach 3:1, same hue, chroma kept as far as the gamut allows. --muted,
+//      reach 3:1, same hue, chroma kept as far as the gamut allows.
+//   4a. Neutrals are the brand's, not the style's. Light theme: --card,
+//      --popover, --secondary(-foreground), --input, --sidebar, --muted,
 //      --border and --muted-foreground keep the style's lightness and take
-//      the primary's hue at a very low chroma.
+//      the primary's hue at a very low chroma. Dark themes: the whole page
+//      (--background, --foreground and every neutral surface and text) takes
+//      the hue of --background-dark when given (which also sets the dark
+//      paper; the other surfaces keep their distance from it), else the hue
+//      of --foreground when it has one, else the primary's. A style's
+//      green-black dark page under a violet brand was the failure.
+//   4b. --chart-2..5 come from the brand (lib/color.mjs deriveChart): the
+//      primary's hue lighter and deeper, then two neutral greys.
+//   4c. --tint, --tint-ink, --surface-inverse and its foreground, the
+//      surfaces the report template draws (lib/color.mjs deriveSurfaces),
+//      in every block, each text pair at 4.5:1.
+//   4d. --font-accent names an accent face (a serif italic for a few
+//      words, say) as --font-accent, --font-accent-style and
+//      --font-accent-weight. With --embed-fonts it is embedded as one face
+//      cut down to the letters of --lang (Google Fonts' text= subset, or
+//      pyftsubset for a --font-file when it is installed): a few words in
+//      an accent face must not cost 100 KB in every document.
 //   5. An optional logo is embedded once, as a data: URI, size-capped, with
 //      --brand-logo-ratio (width / height, read from the file) next to it.
 //      --logo-tint recolors single-color artwork (PNG with transparency, or
@@ -96,7 +116,8 @@
 // vendored scripts/vendor/culori.mjs (parse, formatHex, converter,
 // wcagContrast).
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { inflateSync, deflateSync, brotliDecompressSync } from 'node:zlib';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, basename, resolve as resolvePath } from 'node:path';
@@ -105,6 +126,7 @@ import { parse, formatHex, converter, wcagContrast } from './vendor/culori.mjs';
 import {
   round3, round1, formatOklch, clampChromaToGamut, contrastOklch, WHITE, pickInkForFill, quantize,
   computeInk, computeDarkPrimary, computeDarkInk, deriveStatus, STATUS_KEYS, accentSurface,
+  neutralChroma, deriveSurfaces, deriveChart,
 } from './lib/color.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -131,8 +153,10 @@ function usage() {
     [
       'usage: node brand-tokens.mjs --style <tokens.css> --primary <hex|oklch>',
       '         [--foreground <hex|oklch>] [--background <hex|oklch>] [--accent <hex|oklch>]',
+      '         [--background-dark <hex|oklch>]',
       '         --font-body "<family>[, <category>]" [--font-heading "<family>[, <category>]"]',
       '         [--heading-weight 100..900]',
+      '         [--font-accent "<family>[, <category>]" [--accent-style italic|normal] [--accent-weight 100..900]]',
       '         [--embed-fonts] [--lang <code>] [--font-file "<Family>[:<weight>]=<file.woff2>"]...',
       '         [--logo <file.png|svg|jpg>] [--logo-on dark|light]',
       '         [--logo-tint <hex|oklch>]',
@@ -158,6 +182,10 @@ function parseArgs(argv) {
     else if (a === '--primary') args.primary = need('--primary');
     else if (a === '--foreground') args.foreground = need('--foreground');
     else if (a === '--background') args.background = need('--background');
+    else if (a === '--background-dark') args.backgroundDark = need('--background-dark');
+    else if (a === '--font-accent') args.fontAccent = need('--font-accent');
+    else if (a === '--accent-style') args.accentStyle = need('--accent-style');
+    else if (a === '--accent-weight') args.accentWeight = need('--accent-weight');
     else if (a === '--accent') args.accent = need('--accent');
     else if (a === '--font-body') args.fontBody = need('--font-body');
     else if (a === '--font-heading') args.fontHeading = need('--font-heading');
@@ -185,12 +213,21 @@ function parseArgs(argv) {
     usage();
     process.exit(1);
   }
-  if (args.headingWeight != null) {
-    const w = Number(args.headingWeight);
-    if (!/^\d+$/.test(args.headingWeight) || w < 100 || w > 900 || w % 100 !== 0) {
-      console.error('--heading-weight must be a multiple of 100 from 100 to 900 (e.g. 400, 500, 700, 800)');
+  for (const [flag, v] of [['--heading-weight', args.headingWeight], ['--accent-weight', args.accentWeight]]) {
+    if (v == null) continue;
+    const w = Number(v);
+    if (!/^\d+$/.test(v) || w < 100 || w > 900 || w % 100 !== 0) {
+      console.error(`${flag} must be a multiple of 100 from 100 to 900 (e.g. 400, 500, 700, 800)`);
       process.exit(1);
     }
+  }
+  if (args.accentStyle != null && args.accentStyle !== 'italic' && args.accentStyle !== 'normal') {
+    console.error('--accent-style must be "italic" or "normal"');
+    process.exit(1);
+  }
+  if ((args.accentStyle != null || args.accentWeight != null) && !args.fontAccent) {
+    console.error('--accent-style/--accent-weight need --font-accent');
+    process.exit(1);
   }
   args.fontFiles = args.fontFiles.map((spec) => {
     const m = /^(.+?)(?::(\d{3})(?:-(\d{3}))?)?=(.+)$/.exec(spec);
@@ -224,27 +261,73 @@ function parseColorArg(str, label) {
   return toOklch(c);
 }
 
-// Neutral surfaces and text (--muted, --border, --muted-foreground) keep
-// the style's lightness and take the brand's hue at a very low chroma, so a
-// red brand does not sit on the style's bluish greys. A value that would
-// drop its text pair below 4.5:1, or that is not a plain color, stays as the
-// style wrote it.
-const NEUTRAL_TOKENS = ['muted', 'border', 'muted-foreground'];
+// Light theme: the neutral surfaces and their text keep the style's
+// lightness and take the brand's hue at a very low chroma, so a red brand
+// does not sit on the style's bluish greys (or a violet one on the startup
+// style's greenish cards). A value that would drop its text pair below 4.5:1,
+// or that is not a plain color, stays as the style wrote it.
+const LIGHT_NEUTRALS = ['card', 'popover', 'secondary', 'secondary-foreground', 'input', 'sidebar', 'muted', 'border', 'muted-foreground', 'destructive-foreground'];
+// The surface each neutral text token is read on, and the contrast it needs.
+const NEUTRAL_TEXT = { foreground: ['background', 7], 'muted-foreground': ['background', 4.5], 'secondary-foreground': ['secondary', 4.5] };
 
 function tintNeutrals(body, primary, background) {
   const out = [];
-  if (!(primary.c >= 0.02) || !Number.isFinite(primary.h)) return out;
-  const chroma = Math.min(0.012, primary.c * 0.06);
-  for (const name of NEUTRAL_TOKENS) {
-    const raw = getToken(body, name);
-    if (!raw || /var\(/.test(raw)) continue;
-    const parsed = parse(raw);
-    if (!parsed) continue;
-    const base = toOklch(parsed);
-    if (parsed.alpha != null && parsed.alpha < 1) continue;
+  const chroma = neutralChroma(primary);
+  if (!chroma) return out;
+  const made = new Map([['background', background]]);
+  for (const name of LIGHT_NEUTRALS) {
+    const base = plainColor(getToken(body, name));
+    if (!base) continue;
     const next = quantize(clampChromaToGamut(base.l, chroma, primary.h));
-    if (name === 'muted-foreground' && background && contrastOklch(next, background) < 4.5) continue;
+    const pair = NEUTRAL_TEXT[name];
+    const surface = pair && (made.get(pair[0]) || plainColor(getToken(body, pair[0])));
+    if (pair && surface && contrastOklch(next, surface) < pair[1]) continue;
+    made.set(name, next);
     out.push([name, formatOklch(next)]);
+  }
+  return out;
+}
+
+// Dark themes: the whole page in the brand's dark, not the style's. Every
+// neutral surface and text token keeps the style's lightness (surfaces move
+// with --background-dark when one is given, so a card stays one step above
+// the page) at the dark neutral hue and chroma. Text tokens are walked
+// lighter until they reach their pair's contrast again.
+const DARK_NEUTRALS = ['background', 'foreground', 'card', 'popover', 'secondary', 'secondary-foreground', 'muted', 'muted-foreground', 'border', 'input', 'sidebar', 'destructive-foreground'];
+
+function plainColor(raw) {
+  if (!raw || /var\(/.test(raw)) return null;
+  const parsed = parse(raw);
+  if (!parsed || (parsed.alpha != null && parsed.alpha < 1)) return null;
+  return toOklch(parsed);
+}
+
+function darkNeutrals(body, { hue, chroma, background }) {
+  const out = new Map();
+  const styleBg = plainColor(getToken(body, 'background'));
+  if (!styleBg) return out;
+  const shift = background ? background.l - styleBg.l : 0;
+  const h = Number.isFinite(hue) ? hue : 0;
+  const c = Number.isFinite(hue) ? chroma : 0;
+  for (const name of DARK_NEUTRALS) {
+    if (name === 'background' && background) {
+      out.set(name, quantize(background));
+      continue;
+    }
+    const base = plainColor(getToken(body, name));
+    if (!base) continue;
+    const isText = name.endsWith('foreground');
+    const l = Math.min(0.99, Math.max(0.02, base.l + (isText ? 0 : shift)));
+    out.set(name, quantize(clampChromaToGamut(l, isText ? Math.min(c, 0.008) : c, h)));
+  }
+  for (const [name, [on, min]] of Object.entries(NEUTRAL_TEXT)) {
+    let v = out.get(name);
+    const surface = out.get(on);
+    if (!v || !surface) continue;
+    for (let i = 0; i < 80 && contrastOklch(v, surface) < min && v.l < 0.99; i++) {
+      v = quantize(clampChromaToGamut(Math.min(0.99, v.l + 0.01), v.c, v.h));
+    }
+    out.set(name, v);
   }
   return out;
 }
@@ -755,6 +838,116 @@ async function embedFonts({ families, headingWeight, styleWeights = [], lang, fo
   faces.sort((a, b) => order(a).localeCompare(order(b)));
   const css = faces.length ? `${FONTS_BEGIN}\n${faces.map(fontFaceCss).join('\n')}\n${FONTS_END}\n` : '';
   return { css, faces, report: report.sort((a, b) => families.findIndex((f) => f.family === a.family) - families.findIndex((f) => f.family === b.family)), base64Bytes: total };
+}
+
+// ---- the accent face, cut down to the letters a document can use -------------
+
+// The characters an accent face is embedded with: the printable ASCII range,
+// typographic quotes and dashes, plus the letters of the document language.
+// An accent sets a few words; the whole Latin Extended block for those words
+// was 100 KB in every document.
+const ACCENT_BASE = `${Array.from({ length: 0x7f - 0x20 }, (_, i) => String.fromCharCode(0x20 + i)).join('')} ‘’‚“”„«»–—…·•€§°×`;
+const ACCENT_LETTERS = {
+  en: '',
+  pl: 'ĄĆĘŁŃÓŚŹŻąćęłńóśźż',
+  de: 'ÄÖÜäöüß',
+  fr: 'ÀÂÆÇÈÉÊËÎÏÔŒÙÛÜŸàâæçèéêëîïôœùûüÿ',
+  es: 'ÁÉÍÑÓÚÜáéíñóúü¡¿',
+  it: 'ÀÈÉÌÍÒÓÙÚàèéìíòóùú',
+  cs: 'ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽáčďéěíňóřšťúůýž',
+};
+
+function accentCharset(lang) {
+  const code = (lang || '').toLowerCase().split(/[-_]/)[0];
+  if (code in ACCENT_LETTERS) return ACCENT_BASE + ACCENT_LETTERS[code];
+  // Any other language: Latin-1 and Latin Extended-A letters.
+  const extra = [];
+  for (let cp = 0xc0; cp <= 0x17f; cp++) if (cp !== 0xd7 && cp !== 0xf7) extra.push(String.fromCodePoint(cp));
+  return ACCENT_BASE + extra.join('');
+}
+
+// Google Fonts answers a text= request with one @font-face per weight and no
+// subset comments.
+function parsePlainGoogleCss(css) {
+  const faces = [];
+  for (const m of css.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
+    const body = m[1];
+    const prop = (name) => (new RegExp(`${name}\\s*:\\s*([^;]+);`).exec(body) || [])[1]?.trim() || null;
+    const url = (/src\s*:\s*url\(\s*["']?([^"')]+)["']?\s*\)/.exec(body) || [])[1];
+    if (url) faces.push({ style: prop('font-style') || 'normal', weight: Number(prop('font-weight')) || 400, unicodeRange: prop('unicode-range'), url });
+  }
+  return faces;
+}
+
+function pyftsubsetAvailable() {
+  const r = spawnSync('pyftsubset', ['--help'], { encoding: 'utf8' });
+  return r.status === 0;
+}
+
+// One accent face, from a --font-file (cut down by pyftsubset when it is
+// installed, whole otherwise, with a warning) or from Google Fonts with its
+// text= subset. Never throws; a face that cannot be embedded is reported and
+// documents fall back along the --font-accent stack.
+async function embedAccent({ family, style, weight, lang, fontFiles, warn }) {
+  const text = accentCharset(lang);
+  const entry = { family, roles: ['accent'], source: null, embedded: false, reason: null, bytes: 0, weights: [weight], subsets: [`text (${[...text].length} characters)`] };
+  const faces = [];
+  if (GENERIC_FAMILIES.has(family.toLowerCase())) {
+    entry.reason = 'generic family, nothing to embed';
+    return { faces, entry };
+  }
+  const file = fontFiles.find((f) => f.family.toLowerCase() === family.toLowerCase());
+  if (file) {
+    entry.source = 'file';
+    let buf;
+    try {
+      buf = readFileSync(resolvePath(process.cwd(), file.path));
+    } catch (e) {
+      entry.reason = `cannot read ${file.path}: ${e.code || e.message}`;
+      return { faces, entry };
+    }
+    if (pyftsubsetAvailable()) {
+      const dir = mkdtempSync(join(tmpdir(), 'letterhead-accent-'));
+      const out = join(dir, 'accent.woff2');
+      const r = spawnSync('pyftsubset', [resolvePath(process.cwd(), file.path), `--text=${text}`, '--flavor=woff2', '--layout-features=*', `--output-file=${out}`], { encoding: 'utf8' });
+      if (r.status === 0 && existsSync(out)) buf = readFileSync(out);
+      else warn(`pyftsubset could not cut down ${basename(file.path)} (${(r.stderr || '').trim().split('\n').pop() || `exit ${r.status}`}); embedding the whole file`);
+      rmSync(dir, { recursive: true, force: true });
+    } else {
+      warn(`pyftsubset is not installed, so the accent face ${basename(file.path)} goes in whole (${Math.round(buf.length / 1024)} KB); install fonttools with brotli to cut it down`);
+    }
+    const fmt = fontFormat(buf);
+    if (!fmt) {
+      entry.reason = `${basename(file.path)} is not a woff2, woff, ttf or otf file`;
+      return { faces, entry };
+    }
+    faces.push({ family, subset: 'accent', style, weight: String(weight), unicodeRange: null, ...fmt, base64: buf.toString('base64'), bytes: buf.length, weightsCovered: null });
+  } else {
+    entry.source = 'google-fonts';
+    const fam = encodeURIComponent(family).replace(/%20/g, '+');
+    const axis = style === 'italic' ? `ital,wght@1,${weight}` : `wght@${weight}`;
+    const url = `${FONTS_API}?family=${fam}:${axis}&display=swap&text=${encodeURIComponent(text)}`;
+    try {
+      const res = await fetchWithTimeout(url, 10000);
+      if (!res.ok) {
+        entry.reason = res.status === 400 || res.status === 404 ? `not on Google Fonts in ${style} ${weight} (HTTP ${res.status})` : `Google Fonts answered HTTP ${res.status}`;
+        return { faces, entry };
+      }
+      const got = parsePlainGoogleCss(await res.text());
+      if (!got.length) {
+        entry.reason = 'no face in the Google Fonts answer';
+        return { faces, entry };
+      }
+      const buf = await download(got[0].url);
+      faces.push({ family, subset: 'accent', style, weight: String(weight), unicodeRange: got[0].unicodeRange, mime: 'font/woff2', format: 'woff2', base64: buf.toString('base64'), bytes: buf.length, weightsCovered: null });
+    } catch (e) {
+      entry.reason = `network: ${e.cause?.code || e.name || e.message}`;
+      return { faces, entry };
+    }
+  }
+  entry.embedded = true;
+  entry.bytes = faces.reduce((n, f) => n + f.bytes, 0);
+  return { faces, entry };
 }
 
 function stripFontsSection(css) {
@@ -1516,8 +1709,21 @@ async function main() {
   const foregroundLight = args.foreground ? parseColorArg(args.foreground, '--foreground') : null;
   const backgroundLight = args.background ? parseColorArg(args.background, '--background') : null;
 
+  const backgroundDarkArg = args.backgroundDark ? parseColorArg(args.backgroundDark, '--background-dark') : null;
+
+  // The dark page in the brand's own dark: the hue of --background-dark,
+  // else of the brand's text color, else of the primary; a grey dark paper
+  // or a grey brand gives grey surfaces. The style's dark greens and blues
+  // stay out of a violet brand's documents.
+  let darkHue = null;
+  if (backgroundDarkArg) darkHue = backgroundDarkArg.c >= 0.005 && Number.isFinite(backgroundDarkArg.h) ? backgroundDarkArg.h : null;
+  else if (foregroundLight && foregroundLight.c >= 0.01 && Number.isFinite(foregroundLight.h)) darkHue = foregroundLight.h;
+  else if (!achromatic) darkHue = primaryLight.h;
+  const darkChroma = darkHue == null ? 0 : neutralChroma(primaryLight);
+  const darkNeutralMap = darkNeutrals(darkBodyOrig, { hue: darkHue, chroma: darkChroma, background: backgroundDarkArg });
+
   const foregroundLightRaw = foregroundLight ? formatOklch(foregroundLight) : getToken(lightBodyOrig, 'foreground');
-  const foregroundDarkRaw = getToken(darkBodyOrig, 'foreground'); // dark foreground stays the base's own
+  const foregroundDarkRaw = darkNeutralMap.has('foreground') ? formatOklch(darkNeutralMap.get('foreground')) : getToken(darkBodyOrig, 'foreground');
 
   // --accent-foreground is the block's own foreground whenever it reads on
   // the accent at 4.5:1; a brand accent dark enough to fail gets its ink
@@ -1543,7 +1749,7 @@ async function main() {
   }
 
   const backgroundLightForContrast = backgroundLight || toOklch(parse(getToken(lightBodyOrig, 'background') || 'oklch(1 0 0)'));
-  const backgroundDarkForContrast = toOklch(parse(getToken(darkBodyOrig, 'background') || 'oklch(0.2 0 0)'));
+  const backgroundDarkForContrast = darkNeutralMap.get('background') || toOklch(parse(getToken(darkBodyOrig, 'background') || 'oklch(0.2 0 0)'));
 
   // Dark theme: the brand color as it is when it reads on the dark page,
   // lifted just enough when it does not; the ink is the same hue at full
@@ -1578,6 +1784,23 @@ async function main() {
     ? fontSans
     : composeFontStack(baseFontDisplay, headingSpec, baseStacks);
 
+  // The accent face: a few words set apart (a serif italic in a sans brand).
+  // Its stack falls back within its own category, the style's serif by
+  // default, so an accent never turns into the body face in bold.
+  let accentSpec = null;
+  let fontAccent = null;
+  const accentStyle = args.accentStyle || 'italic';
+  const accentWeight = args.accentWeight != null ? Number(args.accentWeight) : 400;
+  if (args.fontAccent) {
+    accentSpec = parseFamilyArg(args.fontAccent);
+    if (!accentSpec.family) {
+      console.error('--font-accent needs a family name first');
+      process.exit(1);
+    }
+    if (!accentSpec.category) accentSpec.category = 'serif';
+    fontAccent = composeFontStack(getToken(lightBodyOrig, 'font-serif') || 'Georgia, serif', accentSpec, baseStacks);
+  }
+
   let fonts = null;
   if (args.embedFonts) {
     const families = [{ family: bodySpec.family, roles: ['body'] }];
@@ -1592,6 +1815,14 @@ async function main() {
       fontFiles: args.fontFiles,
       warn,
     });
+    if (accentSpec) {
+      const accent = await embedAccent({ family: accentSpec.family, style: accentStyle, weight: accentWeight, lang: args.lang, fontFiles: args.fontFiles, warn });
+      if (!accent.entry.embedded) warn(`accent font "${accentSpec.family}" not embedded: ${accent.entry.reason}; documents fall back to ${fontAccent.split(',').slice(1).join(',').trim()}`);
+      fonts.report.push(accent.entry);
+      fonts.faces.push(...accent.faces);
+      fonts.base64Bytes += accent.faces.reduce((n, f) => n + f.base64.length, 0);
+      if (fonts.faces.length) fonts.css = `${FONTS_BEGIN}\n${fonts.faces.map(fontFaceCss).join('\n')}\n${FONTS_END}\n`;
+    }
   } else if (args.fontFiles.length) {
     warn('--font-file given without --embed-fonts; ignoring');
   }
@@ -1710,6 +1941,9 @@ async function main() {
   if (foregroundLight) lightOverrides.push(['foreground', formatOklch(foregroundLight)]);
   if (backgroundLight) lightOverrides.push(['background', formatOklch(backgroundLight)]);
   if (args.headingWeight != null) lightOverrides.push(['font-heading-weight', String(Number(args.headingWeight))]);
+  if (fontAccent) {
+    lightOverrides.push(['font-accent', fontAccent], ['font-accent-style', accentStyle], ['font-accent-weight', String(accentWeight)]);
+  }
   if (logo) {
     const dataUrl = `url("data:${logo.mime};base64,${logo.base64}")`;
     if (logoDark.mode === 'mask') {
@@ -1736,7 +1970,7 @@ async function main() {
     ['primary-ink', formatOklch(primaryInkDark)],
     ['card-foreground', foregroundDarkRaw],
     ['popover-foreground', foregroundDarkRaw],
-    ...tintNeutrals(darkBodyOrig, primaryLight, backgroundDarkForContrast),
+    ...[...darkNeutralMap].map(([k, v]) => [k, formatOklch(v)]),
   ];
   if (getToken(darkBodyOrig, 'chart-1') != null) darkOverrides.push(['chart-1', formatOklch(primaryDark)]);
   if (logo) {
@@ -1774,6 +2008,26 @@ async function main() {
     const st = deriveStatus({ background, dark, seeds, destructive: val('destructive'), mutedForeground: val('muted-foreground') });
     return STATUS_KEYS.map((k) => [k, formatOklch(st[k])]);
   };
+  // Chart colors and the report surfaces, from the brand in every block.
+  const lightHue = achromatic ? null : primaryLight.h;
+  const lightChroma = neutralChroma(primaryLight);
+  if (getToken(lightBodyOrig, 'chart-2') != null) {
+    for (const [k, v] of Object.entries(deriveChart({ primary: primaryLight, dark: false, hue: lightHue, chroma: lightChroma }))) lightOverrides.push([k, formatOklch(v)]);
+  }
+  if (getToken(darkBodyOrig, 'chart-2') != null) {
+    for (const [k, v] of Object.entries(deriveChart({ primary: primaryDark, dark: true, hue: darkHue, chroma: darkChroma }))) darkOverrides.push([k, formatOklch(v)]);
+  }
+  const surfacesLight = deriveSurfaces({
+    background: backgroundLightForContrast, foreground: toOklch(parse(foregroundLightRaw || 'oklch(0.2 0 0)')),
+    primary: primaryLight, dark: false, hue: lightHue, chroma: lightChroma,
+  });
+  const surfacesDark = deriveSurfaces({
+    background: backgroundDarkForContrast, foreground: toOklch(parse(foregroundDarkRaw || 'oklch(0.93 0 0)')),
+    primary: invertsInDark ? primaryDark : primaryLight, dark: true, hue: darkHue, chroma: darkChroma,
+  });
+  for (const [k, v] of Object.entries(surfacesLight)) lightOverrides.push([k, formatOklch(v)]);
+  for (const [k, v] of Object.entries(surfacesDark)) darkOverrides.push([k, formatOklch(v)]);
+
   lightOverrides.push(...statusFor(lightBodyOrig, lightOverrides, backgroundLightForContrast, false));
   darkOverrides.push(...statusFor(darkBodyOrig, darkOverrides, backgroundDarkForContrast, true));
 

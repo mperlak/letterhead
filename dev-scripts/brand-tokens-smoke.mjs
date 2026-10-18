@@ -39,6 +39,11 @@
 // never falls back to the style's serif, and the style's "not a brand"
 // header comment is gone.
 //
+// Brand neutrals: a violet brand on the startup style gets violet cards in
+// light, a dark page in the hue of its text color (or --background-dark),
+// charts from its hue, and the report surfaces at 4.5:1 in every block;
+// --font-accent writes its tokens and survives an unreachable font API.
+//
 // Fonts: --font-file with the local woff2 fixtures (always runs), an
 // unreachable font API (always runs: warning, exit 0), and Google Fonts
 // itself (skipped when fonts.googleapis.com cannot be reached).
@@ -576,6 +581,36 @@ console.log('fonts: font API unreachable (offline)');
   check('no fonts section written', !/letterhead:fonts/.test(css));
   const f = json?.fonts?.[0];
   check('json: embedded false with a network reason', f?.embedded === false && /^network/.test(f.reason || ''));
+}
+
+console.log('brand neutrals, dark page, charts and report surfaces');
+{
+  const STARTUP = join(ROOT, 'letterhead', 'styles', 'startup', 'tokens.css');
+  const violet = ['--style', STARTUP, '--primary', '#6d3bd1', '--foreground', '#211c27', '--font-body', 'Inter'];
+  const { res, css } = run(violet);
+  check('violet on startup exits 0 (check-tokens clean)', res.status === 0);
+  const b = blocks(css);
+  const hueOf = (v) => parse(v).h;
+  const near = (h, want) => Math.abs(((h - want + 540) % 360) - 180) < 3;
+  check('light --card and --secondary take the primary hue, not the style green', near(hueOf(tok(b.light, 'card')), 292) && near(hueOf(tok(b.light, 'secondary')), 292));
+  check('dark page takes the hue of --foreground', near(hueOf(tok(b.dark, 'background')), 305) && near(hueOf(tok(b.dark, 'card')), 305) && near(hueOf(tok(b.os, 'background')), 305));
+  check('--chart-2..5 come from the brand hue or grey', ['chart-2', 'chart-3', 'chart-4', 'chart-5'].every((k) => { const c = parse(tok(b.light, k)); return c.c < 0.02 || near(c.h, 292); }));
+  for (const [name, body] of Object.entries(b)) {
+    const ratio = (t, s2) => wcagContrast(tok(body, t), tok(body, s2));
+    check(`${name}: --tint-ink 4.5:1 on --tint`, ratio('tint-ink', 'tint') >= 4.5);
+    check(`${name}: --surface-inverse-foreground 4.5:1 on --surface-inverse`, ratio('surface-inverse-foreground', 'surface-inverse') >= 4.5);
+  }
+  check('dark --surface-inverse stays darker than the page', parse(tok(b.dark, 'surface-inverse')).l < parse(tok(b.dark, 'background')).l);
+  const given = run([...violet, '--background-dark', '#17121f']);
+  const g = blocks(given.css);
+  check('--background-dark sets the dark paper', Math.abs(parse(tok(g.dark, 'background')).l - parse('#17121f').l) < 0.002);
+  check('--background-dark: the card keeps its step above the page', parse(tok(g.dark, 'card')).l > parse(tok(g.dark, 'background')).l);
+  const offline = { LETTERHEAD_FONTS_API: 'http://127.0.0.1:9/css2' };
+  const acc = run([...violet, '--font-accent', 'Newsreader, serif', '--accent-weight', '500', '--embed-fonts', '--lang', 'pl'], offline);
+  const a = blocks(acc.css);
+  check('--font-accent writes the accent tokens', /^Newsreader, .*serif$/.test(tok(a.light, 'font-accent') || '') && tok(a.light, 'font-accent-style') === 'italic' && tok(a.light, 'font-accent-weight') === '500');
+  check('accent font unreachable: warning, exit 0', acc.res.status === 0 && /accent font "Newsreader" not embedded/.test(acc.res.stderr));
+  check('--accent-style without --font-accent is refused', run([...violet, '--accent-style', 'italic']).res.status === 1);
 }
 
 const online = await fetch('https://fonts.googleapis.com/css2?family=Roboto', { signal: AbortSignal.timeout(4000) }).then((r) => r.ok, () => false);

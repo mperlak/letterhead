@@ -53,6 +53,11 @@
   --status-warn: oklch(0.5600 0.1150 78);
   --status-blocked: oklch(0.5000 0.1800 26);
   --status-neutral: oklch(0.4400 0.0180 228);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.969 0.004 220.0);
+  --tint-ink: oklch(0.460 0.078 212.0);
+  --surface-inverse: oklch(0.210 0.014 232.0);
+  --surface-inverse-foreground: oklch(0.985 0.003 220.0);
 
   /* -- Shape --------------------------------------------------------- */
   --radius-sm: 3px;
@@ -139,6 +144,11 @@
   --status-warn: oklch(0.7800 0.1150 82);
   --status-blocked: oklch(0.6700 0.1550 25);
   --status-neutral: oklch(0.7700 0.0110 224);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.220 0.004 232.0);
+  --tint-ink: oklch(0.600 0.102 205.0);
+  --surface-inverse: oklch(0.145 0.004 232.0);
+  --surface-inverse-foreground: oklch(0.905 0.007 222.0);
 
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
   --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);
@@ -189,6 +199,11 @@
     --status-warn: oklch(0.7800 0.1150 82);
     --status-blocked: oklch(0.6700 0.1550 25);
     --status-neutral: oklch(0.7700 0.0110 224);
+    /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+    --tint: oklch(0.220 0.004 232.0);
+    --tint-ink: oklch(0.600 0.102 205.0);
+    --surface-inverse: oklch(0.145 0.004 232.0);
+    --surface-inverse-foreground: oklch(0.905 0.007 222.0);
 
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
     --shadow-md: 0 2px 8px oklch(0 0 0 / 0.40);

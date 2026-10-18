@@ -48,6 +48,11 @@
   --status-warn: oklch(0.560 0.115 78.0);
   --status-blocked: oklch(0.530 0.185 28.0);
   --status-neutral: oklch(0.470 0.014 163.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.984 0.004 155.0);
+  --tint-ink: oklch(0.520 0.128 155.0);
+  --surface-inverse: oklch(0.190 0.006 165.0);
+  --surface-inverse-foreground: oklch(1.000 0.000 0.0);
   --shadow-sm: 0 1px 2px oklch(0.19 0.006 165 / 0.06);
   --shadow-md: 0 6px 20px -6px oklch(0.19 0.006 165 / 0.12);
   --radius-sm: 8px;
@@ -118,6 +123,11 @@
   --status-warn: oklch(0.780 0.115 82.0);
   --status-blocked: oklch(0.690 0.155 27.0);
   --status-neutral: oklch(0.770 0.011 160.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.210 0.007 168.0);
+  --tint-ink: oklch(0.585 0.153 152.0);
+  --surface-inverse: oklch(0.135 0.007 168.0);
+  --surface-inverse-foreground: oklch(0.940 0.005 160.0);
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
   --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
 }
@@ -163,6 +173,11 @@
     --status-warn: oklch(0.780 0.115 82.0);
     --status-blocked: oklch(0.690 0.155 27.0);
     --status-neutral: oklch(0.770 0.011 160.0);
+    /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+    --tint: oklch(0.210 0.007 168.0);
+    --tint-ink: oklch(0.585 0.153 152.0);
+    --surface-inverse: oklch(0.135 0.007 168.0);
+    --surface-inverse-foreground: oklch(0.940 0.005 160.0);
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.34);
     --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 0.45);
   }
