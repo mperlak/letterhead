@@ -7,7 +7,13 @@
 // choice). Warnings and info are prompts for judgment, not failures.
 //
 // Usage:
-//   node check-document.mjs <file.html>... [--json]
+//   node check-document.mjs <file.html>... [--json] [--render]
+//
+// --render also opens each document in a headless Chromium (lib/render.mjs):
+// words the script writes or a click changes, elements a click moves, the
+// outline after the script, sideways scroll at 1280 and 390 px, print with a
+// dark system theme, console errors. Without a browser or on Node older than
+// 22 it says so as info and the static checks still run.
 //
 // Output: one line per finding, `<file>:<line> <severity> <rule> <message>`,
 // then one summary line per file. --json prints one JSON object per finding
@@ -24,11 +30,12 @@ import { readFileSync } from 'node:fs';
 import { parse } from './vendor/node-html-parser.mjs';
 import {
   parseCss, walkRules, selectorList, isDarkSchemeMedia, LIGHT_GUARD_RE, isExplicitDark,
-  resolveVars, readColor, backgroundColor, alphaOf, contrastRatio, lineIndex,
+  resolveVars, readColor, backgroundColor, alphaOf, contrastRatio, lineIndex, splitTopLevel,
 } from './lib/css.mjs';
 import { parseArgs, emit } from './lib/report.mjs';
+import { renderChecks } from './lib/render.mjs';
 
-const USAGE = 'usage: node check-document.mjs <file.html>... [--json]';
+const USAGE = 'usage: node check-document.mjs <file.html>... [--json] [--render]';
 
 // Text inside these elements is not prose the reader sees as the document's
 // own words (code samples, scripts, styles), so the text rules skip it.
@@ -399,6 +406,268 @@ function checkPair(start, selectors, fgValue, bgValue, add) {
 }
 
 // ---------------------------------------------------------------------------
+// Rules on the structure: what keeps comment anchors, links and the outline
+// whole (reference/markup.md, templates/report/template.md)
+// ---------------------------------------------------------------------------
+
+// Labels that name the document's date in its metadata, in the languages the
+// skill writes.
+const DATE_LABEL_RE = /(?:^|\s)(?:date|dated|updated|written|released|issued|published|when|as of|period|data|datum|fecha|dato|dátum|stand|dnia|zaktualizowano|aktualizacja|wydano|napisano|okres|kiedy|termin)(?:$|\s|:)/i;
+// A value that reads as a date: "18 October 2026", "Oct 18, 2026", "Sat 3 Oct",
+// 2026-10-18, 18.10.2026.
+const DATE_VALUE_RE = /\b\d{1,2}\s+\p{L}{3,}\.?(?:\s+(?:19|20)\d{2})?\b|\b\p{L}{3,}\.?\s+\d{1,2},?\s+(?:19|20)\d{2}\b|\b(?:19|20)\d{2}-\d{2}-\d{2}\b|\b\d{1,2}[./]\d{1,2}[./](?:19|20)?\d{2}\b/u;
+const FLAT_LIMIT = 12;
+
+function structureRules(root, add) {
+  const at = (el) => (el && el.range ? el.range[0] : null);
+  const ids = new Set(root.querySelectorAll('[id]').map((el) => el.getAttribute('id')));
+  for (const el of root.querySelectorAll('a[name]')) ids.add(el.getAttribute('name'));
+
+  // The date is a labeled field, not a word in the kicker.
+  const meta = root.querySelector('dl.meta') || (root.querySelector('header') || root).querySelector('dl');
+  if (meta) {
+    const labels = meta.querySelectorAll('dt').map((dt) => dt.text.trim());
+    const values = meta.querySelectorAll('dd').map((dd) => dd.text.trim());
+    if (labels.length && !labels.some((t) => DATE_LABEL_RE.test(t)) && !values.some((v) => DATE_VALUE_RE.test(v))) {
+      add('warning', 'doc/meta-no-date', at(meta), `The metadata has no date field (${labels.slice(0, 5).join(', ')}). A reader places the document by its date; give it its own labeled field, not a word in the kicker.`);
+    }
+  }
+
+  // Links inside the document land somewhere.
+  const reported = new Set();
+  for (const a of root.querySelectorAll('a[href^="#"]')) {
+    const raw = a.getAttribute('href').slice(1);
+    if (!raw || raw === 'top') continue;
+    let id = raw;
+    try { id = decodeURIComponent(raw); } catch {}
+    if (ids.has(id) || reported.has(id)) continue;
+    reported.add(id);
+    add('error', 'doc/dead-anchor', at(a), `Link to "#${id}", and nothing in the document has that id. Point it at the heading's id, or the reader lands nowhere.`);
+  }
+
+  // Contents lists: two lists of the same sections drift apart; one list
+  // that skips a section hides it.
+  const lists = [];
+  for (const el of root.querySelectorAll('nav, details')) {
+    const links = el.querySelectorAll('a[href^="#"]').map((a) => a.getAttribute('href'));
+    if (links.length < 3) continue;
+    if (lists.some((l) => l.el === el || l.el.querySelectorAll('*').includes(el) || el.querySelectorAll('*').includes(l.el))) continue;
+    lists.push({ el, hrefs: new Set(links) });
+  }
+  if (lists.length > 1) {
+    const [first, ...rest] = lists;
+    for (const other of rest) {
+      const missing = [...first.hrefs].filter((h) => !other.hrefs.has(h));
+      const extra = [...other.hrefs].filter((h) => !first.hrefs.has(h));
+      if (missing.length || extra.length) {
+        add('warning', 'doc/contents-mismatch', at(other.el), `Two contents lists name different sections (${[...missing, ...extra].slice(0, 4).join(', ')}). Keep one list: the next version updates one and forgets the other.`);
+      }
+    }
+  }
+  const contents = lists.find((l) => /\b(?:contents|toc)\b/.test(l.el.getAttribute('class') || '')) || (lists.length === 1 && lists[0].el.rawTagName.toLowerCase() === 'nav' ? lists[0] : null);
+  if (contents) {
+    // The contents' own heading is not a section it needs to list.
+    const own = (h) => contents.el.querySelectorAll('h2').includes(h);
+    const missing = root.querySelectorAll('h2[id]').filter((h) => !own(h)).map((h) => `#${h.getAttribute('id')}`).filter((h) => !contents.hrefs.has(h));
+    if (missing.length) {
+      add('warning', 'doc/contents-incomplete', at(contents.el), `The contents skip ${missing.length} section(s): ${missing.slice(0, 4).join(', ')}.`);
+    }
+  }
+
+  // A flat page: one nth-of-type counter for every paragraph.
+  for (const el of root.querySelectorAll('main, body, article, .doc')) {
+    const ps = el.childNodes.filter((c) => c.nodeType === 1 && (c.rawTagName || '').toLowerCase() === 'p').length;
+    if (ps > FLAT_LIMIT) {
+      add('warning', 'doc/flat-main', at(el), `<${el.rawTagName.toLowerCase()}> holds ${ps} paragraphs directly. Wrap each part in its section: a comment anchored by position counts paragraphs across the whole page, so one new paragraph near the top moves every anchor below it.`);
+      break;
+    }
+  }
+
+  // An SVG announced as one picture hides its buttons.
+  for (const svg of root.querySelectorAll('svg[role="img"]')) {
+    const control = svg.querySelector('[tabindex], [role="button"], a[href], button, [onclick]');
+    if (control) {
+      add('error', 'doc/svg-img-controls', at(control), 'Clickable or focusable parts inside an <svg role="img">: a screen reader treats the picture as one image and never reaches them. Use role="group" with a name, and buttons with their own labels.');
+    }
+  }
+
+  // Lists hold list items.
+  for (const list of root.querySelectorAll('ol, ul')) {
+    const odd = list.childNodes.find((c) => c.nodeType === 1 && !['li', 'script', 'template'].includes((c.rawTagName || '').toLowerCase()));
+    if (odd) {
+      add('error', 'doc/list-children', at(odd), `<${list.rawTagName.toLowerCase()}> has a <${odd.rawTagName.toLowerCase()}> among its items. Only <li> belongs there; a screen reader announces the list with a stranger in it. Put the element inside an <li>.`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Rules on the tokens: pairs drawn on a lifted surface, in every theme, and
+// embedded fonts that cost more than they show
+// ---------------------------------------------------------------------------
+
+// Pairs the report template draws: always checked when the tokens exist.
+const SURFACE_PAIRS = [['tint-ink', 'tint'], ['foreground', 'tint'], ['surface-inverse-foreground', 'surface-inverse']];
+
+function themeTokens(all) {
+  const maps = { light: new Map(), dark: new Map(), system: new Map() };
+  for (const { rule, parents } of all) {
+    if (parents.some((p) => p.name === 'media' && /\bprint\b/i.test(p.prelude))) continue;
+    const sels = selectorList(rule.selector);
+    let which = null;
+    if (parents.some(isDarkSchemeMedia)) {
+      if (sels.some((x) => x.startsWith(':root'))) which = 'system';
+    } else if (sels.includes(':root')) which = 'light';
+    else if (sels.some((x) => isExplicitDark(x) && !/\s/.test(x.trim()))) which = 'dark';
+    if (!which) continue;
+    for (const d of rule.decls) if (d.prop.startsWith('--')) maps[which].set(d.prop, d.value);
+  }
+  return maps;
+}
+
+const tokenOf = (value) => /^var\(\s*(--[\w-]+)\s*(?:,[^)]*)?\)$/.exec((value || '').trim())?.[1] || null;
+
+// A selector as compounds, left to right, with :where() scopes dropped and
+// each compound as its simple selectors (tag, .class, [attr], #id).
+function compounds(selector) {
+  const bare = selector.replace(/:where\((?:[^()]|\([^()]*\))*\)/g, ' ');
+  return splitTopLevel(bare.replace(/\s*[>+~]\s*/g, ' '), ' ').map((p) => p.part.trim()).filter(Boolean);
+}
+const simple = (compound) => compound.match(/^[a-z][\w-]*|\.[\w-]+|\[[^\]]+\]|#[\w-]+/gi) || [];
+const PSEUDO_STATE_RE = /:(?:hover|focus|focus-visible|focus-within|active|visited)|::/;
+
+function tokenRules(sheets, add) {
+  const all = sheets.flatMap((nodes) => [...walkRules(nodes)]);
+  const maps = themeTokens(all);
+  if (!maps.light.size) return;
+  const lookupIn = (theme) => (name) => (maps[theme].has(name) ? maps[theme].get(name) : maps.light.get(name));
+  const color = (theme, token, bg) => {
+    const v = resolveVars(`var(${token})`, lookupIn(theme));
+    return bg ? backgroundColor(v) : readColor(v);
+  };
+  const done = new Set();
+  const check = (text, surface, severity, start, why) => {
+    for (const theme of ['light', 'dark', 'system']) {
+      if (theme !== 'light' && !maps[theme].size) continue;
+      const key = `${text}|${surface}|${theme}`;
+      if (done.has(key)) continue;
+      done.add(key);
+      const fg = color(theme, text, false);
+      const bg = color(theme, surface, true);
+      if (!fg || !bg || alphaOf(bg) < 1 || alphaOf(fg) === 0) continue;
+      let ratio;
+      try { ratio = contrastRatio(fg, bg); } catch { continue; }
+      if (Number.isFinite(ratio) && ratio < 4.5) {
+        add(severity, 'doc/theme-contrast', start, `${text} on ${surface} in the ${theme === 'system' ? 'system dark' : theme} theme is ${ratio.toFixed(2)}:1, below 4.5:1${why}.`);
+      }
+    }
+  };
+  for (const [t, sfc] of SURFACE_PAIRS) {
+    if (maps.light.has(`--${t}`) && maps.light.has(`--${sfc}`)) check(`--${t}`, `--${sfc}`, 'error', 'tokens', '');
+  }
+  // Text colored by token on a surface filled by token, in every theme. The
+  // surface is the nearest fill the selector names: the element's own
+  // compound first, then its ancestors, right to left. `.todo { background:
+  // var(--tint) }` with `.todo .label { color: var(--primary-ink) }` is the
+  // pair; hover and focus fills are not the resting surface.
+  const fills = [];
+  const inks = [];
+  for (const { rule, parents } of all) {
+    if (parents.some(isColorSchemeOrPrint)) continue;
+    const bgDecl = rule.decls.filter((d) => d.prop === 'background' || d.prop === 'background-color').pop();
+    const colorDecl = rule.decls.filter((d) => d.prop === 'color').pop();
+    const bgToken = bgDecl && tokenOf(bgDecl.value);
+    const colorToken = colorDecl && tokenOf(colorDecl.value);
+    for (const sel of selectorList(rule.selector)) {
+      const parts = compounds(sel);
+      if (!parts.length) continue;
+      const last = parts[parts.length - 1];
+      if (bgToken && bgToken !== '--background' && !PSEUDO_STATE_RE.test(last)) {
+        const ownColor = !!colorDecl;
+        const alternatives = /^:is\((.*)\)$/.exec(last)?.[1];
+        for (const alt of alternatives ? splitTopLevel(alternatives, ',').map((x) => x.part.trim()) : [last]) {
+          const keys = simple(alt);
+          if (keys.length) fills.push({ token: bgToken, keys, ownColor });
+        }
+      }
+      if (colorToken && !bgToken && !PSEUDO_STATE_RE.test(last)) inks.push({ token: colorToken, parts, selector: sel, start: colorDecl.start });
+    }
+  }
+  const alternativesOf = (compound) => {
+    const m = /:is\((.*)\)/.exec(compound);
+    if (!m) return [compound];
+    const rest = compound.replace(m[0], '');
+    return splitTopLevel(m[1], ',').map((x) => `${rest}${x.part.trim()}`);
+  };
+  for (const inkAll of inks) {
+    // An ink compound written as :is(a, b) is several selectors.
+    const lastAlts = alternativesOf(inkAll.parts[inkAll.parts.length - 1]);
+    for (const lastAlt of lastAlts) {
+    const ink = { ...inkAll, parts: [...inkAll.parts.slice(0, -1), lastAlt] };
+    for (let i = ink.parts.length - 1; i >= 0; i--) {
+      const own = i === ink.parts.length - 1;
+      const sets = alternativesOf(ink.parts[i]).map((c) => new Set(simple(c).map((k) => k.toLowerCase())));
+      // On the element itself, a fill rule that sets its own text color
+      // wins over this one there; only ancestors' fills count then.
+      const hits = fills.filter((f) => !(own && f.ownColor) && sets.some((have) => f.keys.every((k) => have.has(k.toLowerCase()))));
+      if (!hits.length) continue;
+      const best = hits.reduce((a, b) => (b.keys.length >= a.keys.length ? b : a));
+      check(ink.token, best.token, 'warning', ink.start, ` ("${ink.selector.slice(0, 50)}" on a ${best.token} fill)`);
+      break;
+    }
+    }
+  }
+
+  // Embedded fonts: a face no font token names (an accent for a few words)
+  // costs every reader its full size.
+  const named = new Set(['--font-sans', '--font-display', '--font-serif', '--font-mono', '--font-label', '--font-accent']
+    .map((k) => resolveVars(maps.light.get(k) || '', lookupIn('light')) || '')
+    .map((v) => v.split(',')[0].trim().replace(/^["']|["']$/g, '').toLowerCase()).filter(Boolean));
+  const accentFamily = (resolveVars(maps.light.get('--font-accent') || '', lookupIn('light')) || '').split(',')[0].trim().replace(/^["']|["']$/g, '').toLowerCase();
+  const sizes = new Map();
+  for (const nodes of sheets) {
+    for (const node of nodes) {
+      if (node.type !== 'at' || node.name !== 'font-face') continue;
+      const fam = (node.decls.find((d) => d.prop === 'font-family')?.value || '').trim().replace(/^["']|["']$/g, '').toLowerCase();
+      const src = node.decls.find((d) => d.prop === 'src')?.value || '';
+      const b64 = /base64,([A-Za-z0-9+/=]+)/.exec(src)?.[1];
+      if (!fam || !b64) continue;
+      const cur = sizes.get(fam) || { bytes: 0, start: node.start };
+      cur.bytes += b64.length;
+      sizes.set(fam, cur);
+    }
+  }
+  for (const [fam, { bytes, start }] of sizes) {
+    const minor = !named.has(fam) || fam === accentFamily;
+    if (minor && bytes > 60 * 1024) {
+      add('warning', 'doc/large-font', start, `"${fam}" is embedded at ${Math.round(bytes / 1024)} KB for a face no body or heading uses. Cut it down to the letters it sets (brand-tokens.mjs --font-accent does), or drop it.`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+
+// The words of <body> as the HTML has them: scripts and styles left out, and
+// short live regions ("Step 2 of 10"), which the render check leaves out too.
+function staticText(root) {
+  const body = root.querySelector('body');
+  if (!body) return null;
+  const parts = [];
+  const walk = (node) => {
+    for (const child of node.childNodes) {
+      if (child.nodeType === 3) parts.push(child.text);
+      else if (child.nodeType === 1) {
+        const tag = (child.rawTagName || '').toLowerCase();
+        if (['script', 'style', 'template', 'noscript'].includes(tag)) continue;
+        // The parser keeps a <pre>'s inner markup as text.
+        if (tag === 'pre') { parts.push(child.text.replace(/<[^>]*>/g, '')); continue; }
+        if ((child.hasAttribute('aria-live') || ['status', 'timer'].includes(child.getAttribute('role'))) && child.text.trim().length <= 80) continue;
+        walk(child);
+      }
+    }
+  };
+  walk(body);
+  return parts.join('');
+}
 
 function checkFile(file) {
   let html;
@@ -416,9 +685,21 @@ function checkFile(file) {
   const root = parse(html);
   textRules(root.querySelector('body') || root, add);
   markupRules(root, add);
-  cssRules(styleSheets(root), add);
-  return { file, findings };
+  structureRules(root, add);
+  const sheets = styleSheets(root);
+  cssRules(sheets, add);
+  tokenRules(sheets, add);
+  return { file, findings, staticText: staticText(root) };
 }
 
-const { files, json } = parseArgs(process.argv.slice(2), USAGE);
-process.exit(emit(files.map(checkFile), json));
+const argv = process.argv.slice(2);
+const render = argv.includes('--render');
+const { files, json } = parseArgs(argv.filter((a) => a !== '--render'), USAGE);
+const results = files.map(checkFile);
+if (render) {
+  for (const r of results) {
+    if (r.fatal) continue;
+    r.findings.push(...await renderChecks(r.file, r.staticText));
+  }
+}
+process.exit(emit(results, json));

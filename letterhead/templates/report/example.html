@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missed-bin reports in Westerhaven, August 2026</title>
+<meta property="og:title" content="Missed-bin reports in Westerhaven, August 2026">
+<meta property="og:description" content="Most missed bins are real misses, and the truck already knows which ones.">
+<!-- The report template's worked example: every element of
+     templates/report/template.md, on a fictional business (Kestrel Labs, the
+     route-planning company of the skill's examples). Copy the markup, not the
+     content. This file has no tokens and no layout; build a document with
+     apply-tokens.mjs, then apply-template.mjs report. The only CSS of its
+     own is the content of the phone version of one diagram. -->
+<style>
+.explorer-narrow .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.explorer-narrow .arrow { color: var(--muted-foreground); font-size: var(--text-sm); margin: 0; }
+</style>
+</head>
+<body>
+<main class="doc report">
+  <header class="doc-head">
+    <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
+    <p class="kicker">Report · Gemeente Westerhaven</p>
+    <h1>Most missed bins are real misses, and the truck <em class="accent">already knows</em> which ones.</h1>
+    <p class="lede"><strong>Missed-bin reports in Westerhaven, August 2026:</strong> what 300 reports show about which misses are real, how the truck's own data tells them apart, and what that means for same-day returns in the pilot.</p>
+    <dl class="meta">
+      <div><dt>Date</dt><dd>12 October 2026</dd></div>
+      <div><dt>Status</dt><dd>draft for comments</dd></div>
+      <div><dt>Owner</dt><dd>Noor Hamdi, Kestrel Labs</dd></div>
+      <div><dt>Audience</dt><dd>Marloes Janssen, Kees Brouwer</dd></div>
+      <div><dt>Scope</dt><dd>300 missed-bin reports, 3 to 28 August 2026</dd></div>
+    </dl>
+  </header>
+
+  <nav class="contents" aria-label="Contents">
+    <details><summary>Go to section</summary>
+    <ol>
+      <li><a href="#summary-of-findings">Summary</a></li>
+      <li><a href="#what-we-looked-at-and-how">Method</a></li>
+      <li class="grp">Findings</li>
+      <li><a href="#six-in-ten-reports-are-real-misses">1. Six in ten are real</a></li>
+      <li><a href="#gps-and-lift-events-tell-them-apart">2. The truck tells them apart</a></li>
+      <li><a href="#a-return-stop-takes-six-steps">3. Six steps to a return</a></li>
+      <li><a href="#the-report-hour-decides-the-return">4. The hour decides</a></li>
+      <li class="grp">Next</li>
+      <li><a href="#recommendations">Recommendations</a></li>
+      <li><a href="#decisions-for-westerhaven-and-reinnet">Decisions</a></li>
+      <li><a href="#appendix">Appendix</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ol>
+    </details>
+  </nav>
+
+  <section>
+    <h2 id="summary-of-findings">Summary of findings</h2>
+    <div class="summary wide">
+      <ol class="findings">
+        <li><a href="#six-in-ten-reports-are-real-misses"><span class="t">Six in ten reports are real misses.</span><span class="d">183 of the 300 reports were bins the truck passed and did not empty; the rest were not out, out on the wrong day or blocked.</span></a></li>
+        <li><a href="#gps-and-lift-events-tell-them-apart"><span class="t">The truck's data tells them apart.</span><span class="d">GPS and lift events classified 271 reports the way the dispatcher did; 29 had no usable trace.</span></a></li>
+        <li><a href="#a-return-stop-takes-six-steps"><span class="t">A return stop takes six steps, five of them automatic.</span><span class="d">Only reports without a trace need a person.</span></a></li>
+        <li><a href="#the-report-hour-decides-the-return"><span class="t">The hour of the report decides the return.</span><span class="d">Reports in before 13:00 were collected the same day twice as often as later ones.</span></a></li>
+      </ol>
+      <aside class="todo" aria-label="What we do about it">
+        <p class="label">What we do about it</p>
+        <p class="verdict">The pilot classifies every report from the truck's data and sends only real misses back the same day.</p>
+        <ol>
+          <li>Classification from GPS and lift events from day one.</li>
+          <li>Return stops only for real misses reported before the cut-off.</li>
+          <li>Reports without a trace go to the dispatcher.</li>
+        </ol>
+        <p class="small"><a href="#decisions-for-westerhaven-and-reinnet">Decisions for Westerhaven and ReinNet →</a></p>
+      </aside>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="what-we-looked-at-and-how">What we looked at and how</h2>
+    <aside class="side"><p>Kees Brouwer's dispatchers labelled each report by hand in August; we compared their labels with what the truck data says, without telling the classifier the label.</p></aside>
+    <p>We took the 300 missed-bin reports ReinNet's dispatchers handled between 3 and 28 August 2026, with the GPS trace and the lift events of the truck that served each street that day. For every report we asked one question: did the truck pass the bin in its planned window and lift nothing?</p>
+  </section>
+
+  <section>
+    <p class="kicker">Finding 1</p>
+    <h2 id="six-in-ten-reports-are-real-misses">Six in ten reports are real misses</h2>
+    <p class="lede">The truck passed the bin and did not empty it in 183 of 300 cases. The other 117 reports would not have been helped by a return trip.</p>
+    <div class="table-wrap wide">
+      <table>
+        <thead><tr><th>What happened</th><th class="num">Reports</th><th class="num">Share</th><th>Return trip helps?</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Truck passed, nothing lifted</td><td class="num">183</td><td class="num">61%</td><td>Yes</td></tr>
+          <tr><td class="k">Bin not out in time</td><td class="num">71</td><td class="num">24%</td><td>No, it was not there</td></tr>
+          <tr><td class="k">Bin out on the wrong day</td><td class="num">28</td><td class="num">9%</td><td>No</td></tr>
+          <tr><td class="k">Blocked by a parked car</td><td class="num">18</td><td class="num">6%</td><td>Sometimes, if the car has moved</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <aside class="side"><p><span class="pull">34%</span>of real misses were collected the same day in August; the pilot's target is 80% of those reported before the cut-off.</p></aside>
+    <p>Today a dispatcher reads every report and phones a driver. Every second call is about a bin that was never out, and nothing records whether the driver went back.</p>
+  </section>
+
+  <section>
+    <p class="kicker">Finding 2</p>
+    <h2 id="gps-and-lift-events-tell-them-apart">GPS and lift events tell them apart</h2>
+    <p class="lede">Two signals the trucks already send are enough to sort a report: where the truck was, and whether its arm lifted a bin.</p>
+
+    <h3 id="what-the-classifier-reads">What the classifier reads</h3>
+    <figure class="wide explorer">
+      <div class="explorer-wide">
+        <svg viewBox="0 0 900 250" role="group" aria-label="Diagram: a report is matched to a stop, the GPS trace and lift events classify it, and the result goes to the route or to the dispatcher">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahead"/></marker>
+            <marker id="arrow-key" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ahead-key"/></marker>
+          </defs>
+          <g data-part="report" tabindex="0" role="button" aria-pressed="false" aria-controls="part-report" aria-label="Report"><rect x="14" y="95" width="130" height="60" rx="10" class="box"/><text x="79" y="130" text-anchor="middle" class="t-b">Report</text></g>
+          <g data-part="match" tabindex="0" role="button" aria-pressed="false" aria-controls="part-match" aria-label="Address match"><rect x="190" y="95" width="150" height="60" rx="10" class="box"/><text x="265" y="130" text-anchor="middle">Address match</text></g>
+          <g data-part="gps" tabindex="0" role="button" aria-pressed="false" aria-controls="part-gps" aria-label="GPS trace"><rect x="386" y="30" width="150" height="56" rx="10" class="box2"/><text x="461" y="63" text-anchor="middle">GPS trace</text></g>
+          <g data-part="lift" tabindex="0" role="button" aria-pressed="false" aria-controls="part-lift" aria-label="Lift events"><rect x="386" y="164" width="150" height="56" rx="10" class="box2"/><text x="461" y="197" text-anchor="middle">Lift events</text></g>
+          <g data-part="classify" tabindex="0" role="button" aria-pressed="true" aria-controls="part-classify" aria-label="Classifier"><rect x="582" y="95" width="140" height="60" rx="10" class="box-key"/><text x="652" y="130" text-anchor="middle" class="t-b text-key">Classifier</text></g>
+          <g data-part="outcome" tabindex="0" role="button" aria-pressed="false" aria-controls="part-outcome" aria-label="Route or dispatcher"><rect x="768" y="95" width="118" height="60" rx="10" class="box"/><text x="827" y="122" text-anchor="middle">Route or</text><text x="827" y="140" text-anchor="middle">dispatcher</text></g>
+          <path d="M144 125 L188 125" class="ln" marker-end="url(#arrow)"/>
+          <path d="M340 125 C362 125 362 58 384 58" class="ln" marker-end="url(#arrow)"/>
+          <path d="M340 125 C362 125 362 192 384 192" class="ln" marker-end="url(#arrow)"/>
+          <path d="M536 58 C560 58 560 125 580 125" class="ln-key" marker-end="url(#arrow-key)"/>
+          <path d="M536 192 C560 192 560 125 580 125" class="ln-key" marker-end="url(#arrow-key)"/>
+          <path d="M722 125 L766 125" class="ln-key" marker-end="url(#arrow-key)"/>
+        </svg>
+      </div>
+      <div class="explorer-narrow">
+        <div class="row"><button type="button" class="chip" data-part="report" aria-pressed="false">Report</button><span class="arrow">→</span><button type="button" class="chip" data-part="match" aria-pressed="false">Address match</button></div>
+        <p class="arrow">↓ the truck that served the street that day</p>
+        <div class="row"><button type="button" class="chip" data-part="gps" aria-pressed="false">GPS trace</button><button type="button" class="chip" data-part="lift" aria-pressed="false">Lift events</button></div>
+        <p class="arrow">↓</p>
+        <div class="row"><button type="button" class="chip" data-part="classify" aria-pressed="false">Classifier</button><span class="arrow">→</span><button type="button" class="chip" data-part="outcome" aria-pressed="false">Route or dispatcher</button></div>
+      </div>
+      <div class="panel part-detail" data-for-part="report" id="part-report"><p class="panel-title">Report</p><div class="two"><div><p class="label">What it is</p><p>A resident's missed-bin report from the municipal app, the website or the call centre.</p></div><div><p class="label">What we get</p><p>An address id, the container type and the report time. No name, phone or email.</p></div></div></div>
+      <div class="panel part-detail" data-for-part="match" id="part-match"><p class="panel-title">Address match</p><div class="two"><div><p class="label">What it is</p><p>The address is matched to a stop on today's or yesterday's route for that container type.</p></div><div><p class="label">In August</p><p>All 300 reports matched a stop on that day's route.</p></div></div></div>
+      <div class="panel part-detail" data-for-part="gps" id="part-gps"><p class="panel-title">GPS trace</p><div class="two"><div><p class="label">What it is</p><p>Where the truck was, every few seconds, from ReinNet's fleet system.</p></div><div><p class="label">The rule</p><p>The truck counts as having passed when it came within 25 m of the bin in the planned window.</p></div></div></div>
+      <div class="panel part-detail" data-for-part="lift" id="part-lift"><p class="panel-title">Lift events</p><div class="two"><div><p class="label">What it is</p><p>A signal from the truck body each time the arm lifts a bin, and the driver's "not out" tag on the tablet.</p></div><div><p class="label">The rule</p><p>No lift at a passed stop is a real miss; a "not out" tag or an empty arm is not.</p></div></div></div>
+      <div class="panel part-detail" data-for-part="classify" id="part-classify"><p class="panel-title">Classifier</p><div class="two"><div><p class="label">What it is</p><p>Three answers: real miss, not presented, or unknown when there is no trace for the street.</p></div><div><p class="label">In August</p><p>It agreed with the dispatchers on 271 of the 271 reports it could classify; 29 had no usable trace.</p></div></div></div>
+      <div class="panel part-detail" data-for-part="outcome" id="part-outcome"><p class="panel-title">Route or dispatcher</p><div class="two"><div><p class="label">What it is</p><p>A real miss becomes a return stop; an unknown one goes to the dispatcher's queue.</p></div><div><p class="label">Not presented</p><p>Closed with the reason, and the photo when the truck has a camera (9 of 14 do).</p></div></div></div>
+      <figcaption>Pick a part to see what it does and what August showed. Every description is also in the printed version.</figcaption>
+    </figure>
+    <aside class="side"><p>The 29 reports without a trace were all on four streets in the old harbour, where the trucks lose GPS between the warehouses.</p></aside>
+    <p>The classifier never guesses. When the trace is missing it says so, and a person decides.</p>
+  </section>
+
+  <section>
+    <p class="kicker">Finding 3</p>
+    <h2 id="a-return-stop-takes-six-steps">A return stop takes six steps, five of them automatic</h2>
+    <p class="lede">From the report to the closed ticket, a person is needed only when the truck data cannot say what happened.</p>
+    <figure class="wide">
+      <p class="tags" aria-hidden="true"><span class="tag">Kestrel</span><span class="tag key">truck</span><span class="tag alt">person</span></p>
+      <div class="stepper-ctl" hidden>
+        <button type="button" class="btn" data-stepper="prev">← Back</button>
+        <button type="button" class="btn primary" data-stepper="play">Play</button>
+        <button type="button" class="btn" data-stepper="next">Next →</button>
+      </div>
+      <ol class="stepper">
+        <li><button type="button" class="step" aria-expanded="true" aria-controls="step-report-arrives"><span class="n">01</span><span>Report arrives</span><span class="tag">Kestrel</span></button><div class="panel step-body" id="step-report-arrives"><p class="panel-title">1. Report arrives</p><p>The municipality's reports system sends the report to Kestrel, signed, once per report id.</p></div></li>
+        <li><button type="button" class="step" aria-expanded="false" aria-controls="step-match-and-classify"><span class="n">02</span><span>Match and classify</span><span class="tag">Kestrel</span></button><div class="panel step-body" id="step-match-and-classify"><p class="panel-title">2. Match and classify</p><p>The address is matched to a stop and the truck data sorts the report into real miss, not presented or unknown.</p></div></li>
+        <li><button type="button" class="step" aria-expanded="false" aria-controls="step-unknown-to-the-dispatcher"><span class="n">03</span><span>Unknown to the dispatcher</span><span class="tag alt">person</span></button><div class="panel step-body" id="step-unknown-to-the-dispatcher"><p class="panel-title">3. Unknown to the dispatcher</p><p>Only reports without a trace wait for a person, in the dispatcher's queue in the planner.</p></div></li>
+        <li><button type="button" class="step" aria-expanded="false" aria-controls="step-return-stop-inserted"><span class="n">04</span><span>Return stop inserted</span><span class="tag">Kestrel</span></button><div class="panel step-body" id="step-return-stop-inserted"><p class="panel-title">4. Return stop inserted</p><p>A real miss reported before the cut-off goes into the live route with the cheapest detour that keeps driver hours, truck capacity and the tipping site's hours.</p></div></li>
+        <li><button type="button" class="step" aria-expanded="false" aria-controls="step-driver-collects"><span class="n">05</span><span>Driver collects</span><span class="tag key">truck</span></button><div class="panel step-body" id="step-driver-collects"><p class="panel-title">5. Driver collects</p><p>The stop appears on the tablet with a return marker; the lift event at the stop marks it done.</p></div></li>
+        <li><button type="button" class="step" aria-expanded="false" aria-controls="step-report-closed"><span class="n">06</span><span>Report closed</span><span class="tag">Kestrel</span></button><div class="panel step-body" id="step-report-closed"><p class="panel-title">6. Report closed</p><p>Kestrel tells the reports system the bin was collected and when; every report gets an answer, also the ones nobody acted on.</p></div></li>
+      </ol>
+    </figure>
+    <p>Step 3 is the only one that waits for a person, and in August it would have applied to 29 reports in four weeks.</p>
+  </section>
+
+  <section>
+    <p class="kicker">Finding 4</p>
+    <h2 id="the-report-hour-decides-the-return">The hour of the report decides the return</h2>
+    <aside class="side"><p><span class="pull">39% / 17%</span>of real misses collected the same day when reported before 13:00 (55 of 142) and after it (7 of 41).</p></aside>
+    <p class="lede">Trucks finish their routes in the early afternoon. A report that arrives after that has no truck nearby to take it.</p>
+    <figure class="wide">
+      <p class="label">Real misses collected the same day, by the hour of the report</p>
+      <div class="chart">
+        <svg viewBox="0 0 420 260" role="group" aria-label="Chart: share of real misses collected the same day by report hour; the same numbers are in the table below">
+          <g class="grid" aria-hidden="true"><line x1="44" x2="404" y1="30" y2="30"/><line x1="44" x2="404" y1="93" y2="93"/><line x1="44" x2="404" y1="156" y2="156"/><line x1="44" x2="404" y1="219" y2="219"/></g>
+          <g class="axis" aria-hidden="true">
+            <text x="36" y="34" text-anchor="end">60%</text><text x="36" y="97" text-anchor="end">40%</text><text x="36" y="160" text-anchor="end">20%</text><text x="36" y="223" text-anchor="end">0%</text>
+            <text x="100" y="240" text-anchor="middle">before 10:00</text><text x="224" y="240" text-anchor="middle">10:00 to 13:00</text><text x="348" y="240" text-anchor="middle">after 13:00</text>
+          </g>
+          <g aria-hidden="true">
+            <circle class="dot" cx="100" cy="61.5" r="6"/><circle class="dot" cx="224" cy="130.8" r="6"/><circle class="dot" cx="348" cy="165.5" r="6"/>
+            <text class="lbl" x="112" y="58">50%</text><text class="lbl" x="236" y="127">28%</text><text class="lbl" x="360" y="162">17%</text>
+          </g>
+          <circle class="hit" cx="100" cy="61.5" r="15" tabindex="0" role="img" aria-label="Before 10:00: 50% of 68 real misses"/>
+          <circle class="hit" cx="224" cy="130.8" r="15" tabindex="0" role="img" aria-label="10:00 to 13:00: 28% of 74 real misses"/>
+          <circle class="hit" cx="348" cy="165.5" r="15" tabindex="0" role="img" aria-label="After 13:00: 17% of 41 real misses"/>
+        </svg>
+        <div class="tip" aria-hidden="true" hidden></div>
+      </div>
+      <figcaption>August 2026, 183 real misses, 62 of them (34%) collected the same day. The dispatchers phoned a driver for each; the share is how many drivers went back that day.</figcaption>
+    </figure>
+    <div class="table-wrap wide">
+      <table>
+        <thead><tr><th>Report hour</th><th class="num">Real misses</th><th class="num">Collected same day</th><th class="num">Share</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Before 10:00</td><td class="num">68</td><td class="num">34</td><td class="num">50%</td></tr>
+          <tr><td class="k">10:00 to 13:00</td><td class="num">74</td><td class="num">21</td><td class="num">28%</td></tr>
+          <tr><td class="k">After 13:00</td><td class="num">41</td><td class="num">7</td><td class="num">17%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 id="who-decides-what-after-the-cut-off">Who decides what after the cut-off</h3>
+    <div class="layers wide" role="group" aria-label="Who decides a late report">
+      <div class="lay key">
+        <p class="label">Kestrel planner</p>
+        <p class="lay-t">Knows the routes and the clock</p>
+        <ul><li>which trucks are still out and how full they are</li><li>whether a detour keeps the driver within the 9-hour shift</li></ul>
+        <p class="decides">Decides: today, or first stops tomorrow.</p>
+      </div>
+      <p class="lay-arrow">↓ tomorrow's plan, with the stop in the first two hours</p>
+      <div class="lay">
+        <p class="label">ReinNet dispatcher</p>
+        <p class="lay-t">Knows the drivers and the streets</p>
+        <ul><li>a closed road, a driver who is already late</li></ul>
+        <p class="decides">Can undo a return stop until the driver sets off.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="recommendations">Recommendations</h2>
+    <aside class="side"><p>Both rules use data ReinNet's fleet system already sends to the planner; nothing new is fitted to the trucks.</p></aside>
+    <ol class="recs">
+      <li id="rec-classify-every-report"><div><span class="t">Classify every report from the truck data.</span> Real miss, not presented or unknown, before anyone is phoned.</div><span class="from">From findings 1 and 2</span></li>
+      <li id="rec-return-only-real-misses"><div><span class="t">Send trucks back only for real misses</span> reported before the cut-off; later ones go first on tomorrow's route.</div><span class="from">From findings 1 and 4</span></li>
+      <li id="rec-dispatcher-for-unknown"><div><span class="t">Keep a person for unknown reports.</span> The dispatcher's queue takes the reports with no trace.</div><span class="from">From findings 2 and 3</span></li>
+      <li id="rec-measure-the-cut-off"><div><span class="t">Measure the cut-off in the first month</span> of the pilot before fixing it for the winter.</div><span class="from">From finding 4</span></li>
+    </ol>
+  </section>
+
+  <section class="ask">
+    <p class="kicker">For decision</p>
+    <h2 id="decisions-for-westerhaven-and-reinnet">Decisions for Westerhaven and ReinNet</h2>
+    <p>The pilot starts on Monday 11 January 2027. Three questions need an answer before we configure it.</p>
+    <ol>
+      <li>Who pays for the extra kilometres of return trips, estimated at 18 to 25 km per truck-day?</li>
+      <li>Do unknown reports go to the dispatcher, or does the resident get "we'll come tomorrow" automatically?</li>
+      <li>Is the cut-off 13:00, or 12:00 in winter when it is dark at 17:00?</li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="kicker">For reference</p>
+    <h2 id="appendix">Appendix</h2>
+    <h3 id="terms">Terms</h3>
+    <details class="more"><summary>Real miss</summary><p>The truck passed within 25 m of the bin in its planned window and lifted nothing there.</p></details>
+    <details class="more"><summary>Not presented</summary><p>The bin was not out, out on the wrong day, or the driver tagged it "not out" on the tablet.</p></details>
+    <details class="more"><summary>Lift event</summary><p>The signal the truck body sends each time its arm lifts and empties a bin.</p></details>
+    <details class="more"><summary>Cut-off</summary><p>The latest report time for a same-day return, set per municipality.</p></details>
+  </section>
+
+  <section>
+    <h2 id="sources">Sources</h2>
+    <ul class="small">
+      <li>ReinNet dispatch log of missed-bin reports, 3 to 28 August 2026, labelled by hand by the dispatchers.</li>
+      <li>GPS traces and lift events of Westerhaven's 14 trucks for the same days, from ReinNet's fleet system.</li>
+      <li>Spec for missed-collection reports, version 0.3, 5 October 2026.</li>
+    </ul>
+  </section>
+
+  <footer class="doc-close"><p>Kestrel Labs · 12 October 2026 · draft for comments</p></footer>
+</main>
+</body>
+</html>

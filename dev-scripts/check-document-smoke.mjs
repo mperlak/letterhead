@@ -42,7 +42,7 @@ h1 { color: var(--brand); background: var(--background); }
 <body>
 <header>
 <h1>Order sync plan</h1>
-<dl class="meta"><dt>Status</dt><dd>Draft for comments</dd><dt>Owner</dt><dd>Ana Ruiz</dd></dl>
+<dl class="meta"><dt>Status</dt><dd>Draft for comments</dd><dt>Owner</dt><dd>Ana Ruiz</dd><dt>Date</dt><dd>18 October 2026</dd></dl>
 </header>
 <h2 id="summary">Summary</h2>
 <p class="note">Orders move every five minutes. <a href="#scope">Scope</a> is below.</p>
@@ -148,6 +148,46 @@ console.log('warnings and info do not fail');
   const emoji = swap('<h2 id="summary">Summary</h2>', '<h2 id="summary">🚀 Summary</h2>');
   const e = run([write('emoji.html', emoji)]);
   check('emoji heading → info doc/emoji-heading, exit 0', e.status === 0 && e.out.includes(' info doc/emoji-heading '), e.out);
+}
+
+console.log('structure: date field, links, contents, flat page, SVG controls, lists');
+{
+  const has = (html, rule) => run([write(`${rule.replace('/', '-')}.html`, html)]).out.includes(rule);
+  check('no date field → warning doc/meta-no-date', has(swap('<dt>Date</dt><dd>18 October 2026</dd>', ''), ' warning doc/meta-no-date '));
+  check('a date in a value counts ("Last updated: 2026-10-18")', !has(swap('<dt>Date</dt><dd>18 October 2026</dd>', '<dt>Version</dt><dd>2026-10-18</dd>'), 'doc/meta-no-date'));
+  check('link to a missing id → error doc/dead-anchor', has(swap('href="#scope"', 'href="#nowhere"'), ' error doc/dead-anchor '));
+  const nav = (items) => `<nav class="contents"><ol>${items.map((i) => `<li><a href="#${i}">${i}</a></li>`).join('')}</ol></nav>`;
+  check('one contents list skipping an h2 → doc/contents-incomplete', has(swap('</header>', `</header>${nav(['summary', 'summary', 'in-scope'])}`), 'doc/contents-incomplete'));
+  check('two contents lists that differ → doc/contents-mismatch', has(swap('</header>', `</header>${nav(['summary', 'scope', 'in-scope'])}<details><summary>Go</summary><ol><li><a href="#summary">a</a></li><li><a href="#in-scope">b</a></li><li><a href="#summary">c</a></li></ol></details>`), 'doc/contents-mismatch'));
+  check('more than 12 paragraphs straight in <body> → doc/flat-main', has(swap('<p>Paid orders and refunds.</p>', '<p>x</p>'.repeat(13)), 'doc/flat-main'));
+  check('a focusable part in <svg role="img"> → error doc/svg-img-controls', has(swap('</body>', '<svg role="img" aria-label="d"><g tabindex="0" role="button"><rect/></g></svg></body>'), ' error doc/svg-img-controls '));
+  check('a <div> among list items → error doc/list-children', has(swap('</body>', '<ol><li>a</li><div>b</div></ol></body>'), ' error doc/list-children '));
+  check('the same SVG as role="group" passes', !has(swap('</body>', '<svg role="group" aria-label="d"><g tabindex="0" role="button" aria-label="x"><rect/></g></svg></body>'), 'doc/svg-img-controls'));
+}
+
+console.log('tokens: surface pairs in every theme, label on a fill, large accent face');
+{
+  const has = (html, rule) => run([write(`t-${Math.random().toString(36).slice(2)}.html`, html)]).out;
+  const low = swap('--brand: oklch(0.62 0.12 250); }', '--brand: oklch(0.62 0.12 250); --tint: oklch(0.97 0 0); --tint-ink: oklch(0.6 0 0); }');
+  check('--tint-ink under 4.5:1 on --tint → error doc/theme-contrast', / error doc\/theme-contrast .*--tint-ink on --tint/.test(has(low)));
+  const dark = swap('[data-theme="dark"] { --background: oklch(0.2 0 0);', '.box { background: var(--tint); } .box .lab { color: var(--ink); } :root { --tint: oklch(0.97 0 0); --ink: oklch(0.3 0 0); } [data-theme="dark"] { --tint: oklch(0.25 0 0); --ink: oklch(0.35 0 0); --background: oklch(0.2 0 0);');
+  check('a label color unreadable on its container in the dark theme → warning', / warning doc\/theme-contrast .*--ink on --tint in the dark theme/.test(has(dark)));
+  const font = swap('<style>', `<style>@font-face { font-family: "Showy"; src: url(data:font/woff2;base64,${'A'.repeat(70 * 1024)}) format("woff2"); }`);
+  check('a 70 KB face no font token names → warning doc/large-font', / warning doc\/large-font /.test(has(font)));
+}
+
+console.log('--render: a click that writes words, print in a dark system theme');
+{
+  const clicky = swap('</body>', '<button type="button" id="b">More</button><p id="out"></p><script>document.getElementById("b").addEventListener("click", function () { document.getElementById("out").textContent = "Added by the script after a click."; });</script></body>');
+  const r = run([write('render.html', clicky), '--render']);
+  if (/render\/unavailable/.test(r.out)) {
+    console.log('  skipped: no browser for --render here');
+  } else {
+    check('--render: a click that adds words → warning render/text-on-click', / warning render\/text-on-click /.test(r.out), r.out);
+    check('--render: the CLEAN page prints dark under a dark system theme → warning render/print-dark', / warning render\/print-dark /.test(r.out), r.out);
+    const quiet = run([write('render-clean.html', swap('</style>', '@media print { :root, :root:not([data-theme="light"]):not([data-theme="dark"]) { --background: oklch(0.99 0 0); --foreground: oklch(0.22 0 0); } }</style>')), '--render']);
+    check('--render: a static page with a light print block has no render findings', !/render\//.test(quiet.out), quiet.out);
+  }
 }
 
 console.log('--json and exit codes');

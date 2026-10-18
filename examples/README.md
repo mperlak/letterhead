@@ -56,6 +56,7 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `change-walkthrough--fieldwork.html` | change-walkthrough | consulting (the profile's base; the prompt names none) | Fieldwork to Arkona's customer service, warehouse and e-commerce leads: how order sync now handles out-of-stock lines after go-live, what changes for their staff, six steps to try on staging, four decisions to confirm. Added 2026-10-06, see below. |
 | `proposal--halde.html` | proposal | atelier | Studio Halde to a private couple: an apartment, scope per room, three packages in EUR, timeline |
 | `report--halde.html` | report | gazette | Studio Halde to new homeowners: what the pre-design survey of their 1932 house found |
+| `report--kestrel.html` | report (own layout) | engineering tokens | Kestrel to Gemeente Westerhaven and ReinNet: what 300 missed-bin reports show. Not an agent run: the report template's worked example (`letterhead/templates/report/example.html`) put through `apply-tokens.mjs` and `apply-template.mjs report`, see `notes/report--kestrel.md`. Added 2026-10-18. |
 | `spec--kestrel.html` | spec | engineering | Kestrel to a municipality and its contractor: missed-bin reports turned into same-day return stops |
 | `release-notes--kestrel.html` | release-notes | corporate | Kestrel to customers' fleet managers and developers: release 4.3, two breaking API changes |
 | `postmortem--kestrel.html` | postmortem | public-sector | Kestrel to municipal customers: the night the routes were not published by 05:00 |

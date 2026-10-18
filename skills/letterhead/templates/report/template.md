@@ -35,7 +35,11 @@ node <skill>/scripts/apply-template.mjs report <file>
 
 Both are safe to repeat; `apply-tokens.mjs` puts the template in again
 after it changes the tokens. Write the body in the markup below, inside
-`<main class="doc report">`.
+`<main class="doc report">`. `example.html` next to this file is a worked
+report with every element in it (a fictional business, no tokens): read it
+before writing, take its markup, never its content or numbers. Check the
+result with `check-document.mjs --render` when a browser is at hand: it
+catches a click that changes the words, which the HTML alone cannot show.
 
 ## Structure
 
