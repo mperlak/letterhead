@@ -134,12 +134,14 @@ export function computeDarkInk(primary, background) {
 // State colors: --status-ok, --status-warn, --status-blocked and
 // --status-neutral, for one theme block. A state is always written as a word
 // ("passed", "blocked"); the color only repeats it, so each one only has to
-// read as text: 4.5:1 on the block's background. Each starts from a seed,
-// the style's own value when it has one, and keeps the seed whenever it
-// already clears 4.5:1; otherwise its lightness walks away from the paper,
-// hue and chroma kept, as for the primary ink. Blocked starts from the
-// block's --destructive and neutral from its --muted-foreground, so a brand
-// keeps one red and one grey.
+// read as text: 4.5:1 on the block's background and on every surface the
+// styles set state words on (the --card of a status ledger cell or a zebra
+// row; measured on the paper alone, an amber read 4.35:1 there). Each starts
+// from a seed, the style's own value when it has one, and keeps the seed
+// whenever it already clears 4.5:1 on all of them; otherwise its lightness
+// walks away from the paper, hue and chroma kept, as for the primary ink.
+// Blocked starts from the block's --destructive and neutral from its
+// --muted-foreground, so a brand keeps one red and one grey.
 export const STATUS_KEYS = ['status-ok', 'status-warn', 'status-blocked', 'status-neutral'];
 const STATUS_DEFAULTS = {
   light: {
@@ -158,9 +160,10 @@ const STATUS_DEFAULTS = {
 
 // background: the block's paper; dark: true for the two dark blocks;
 // seeds: { 'status-ok': oklch, ... } where known (the style's own values);
-// destructive, mutedForeground: the block's tokens, when known.
+// destructive, mutedForeground: the block's tokens, when known; surfaces:
+// the other fills state words sit on ([card]), when known.
 // Returns { 'status-ok': oklch, ... }, quantized as formatOklch() writes it.
-export function deriveStatus({ background, dark, seeds = {}, destructive = null, mutedForeground = null }) {
+export function deriveStatus({ background, dark, seeds = {}, destructive = null, mutedForeground = null, surfaces = [] }) {
   const defaults = STATUS_DEFAULTS[dark ? 'dark' : 'light'];
   const pick = {
     'status-ok': seeds['status-ok'],
@@ -168,12 +171,15 @@ export function deriveStatus({ background, dark, seeds = {}, destructive = null,
     'status-blocked': destructive || seeds['status-blocked'],
     'status-neutral': mutedForeground || seeds['status-neutral'],
   };
+  const grounds = [background, ...surfaces.filter(Boolean)];
+  const worst = (v) => grounds.reduce((a, g) => (contrastOklch(v, g) < contrastOklch(v, a) ? g : a));
+  const clears = (v) => grounds.every((g) => contrastOklch(v, g) >= 4.5);
   const out = {};
   for (const k of STATUS_KEYS) {
     const seed = pick[k] || defaults[k];
     const s = { l: seed.l, c: seed.c || 0, h: Number.isFinite(seed.h) ? seed.h : defaults[k].h };
-    let v = quantize(computeInk(s, background, dark ? 'lighter' : 'darker'));
-    if (contrastOklch(v, background) < 4.5) v = quantize(computeInk({ ...v, l: v.l + (dark ? 0.01 : -0.01) }, background, dark ? 'lighter' : 'darker'));
+    let v = quantize(computeInk(s, worst(s), dark ? 'lighter' : 'darker'));
+    for (let i = 0; i < 10 && !clears(v); i++) v = quantize(computeInk({ ...v, l: v.l + (dark ? 0.01 : -0.01) }, worst(v), dark ? 'lighter' : 'darker'));
     out[k] = v;
   }
   return out;

@@ -65,6 +65,13 @@ const PAIRS = [
   ['status-warn', 'background', 4.5, 'error'],
   ['status-blocked', 'background', 4.5, 'error'],
   ['status-neutral', 'background', 4.5, 'error'],
+  // ...and on --card, where styles set them in status ledger cells and zebra
+  // rows. A warning: a profile taught when only the paper counted still
+  // builds, and apply-tokens.mjs walks its state colors to clear the card.
+  ['status-ok', 'card', 4.5, 'warning'],
+  ['status-warn', 'card', 4.5, 'warning'],
+  ['status-blocked', 'card', 4.5, 'warning'],
+  ['status-neutral', 'card', 4.5, 'warning'],
   // The report template: labels on a container's ground, and the closing
   // decision panel, which must stay dark in the dark themes.
   ['tint-ink', 'tint', 4.5, 'error'],

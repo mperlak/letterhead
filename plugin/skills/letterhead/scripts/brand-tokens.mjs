@@ -1995,8 +1995,8 @@ async function main() {
   }
 
   // State colors: the base style's, kept wherever they still read on this
-  // brand's paper, otherwise walked to 4.5:1; blocked follows the block's
-  // destructive and neutral its muted text (lib/color.mjs deriveStatus).
+  // brand's paper and cards, otherwise walked to 4.5:1; blocked follows the
+  // block's destructive and neutral its muted text (lib/color.mjs deriveStatus).
   const statusFor = (body, overrides, background, dark) => {
     if (getToken(body, 'status-ok') == null) return [];
     const val = (name) => {
@@ -2005,7 +2005,7 @@ async function main() {
       return c ? toOklch(c) : null;
     };
     const seeds = Object.fromEntries(STATUS_KEYS.map((k) => [k, val(k)]).filter(([, c]) => c));
-    const st = deriveStatus({ background, dark, seeds, destructive: val('destructive'), mutedForeground: val('muted-foreground') });
+    const st = deriveStatus({ background, dark, seeds, destructive: val('destructive'), mutedForeground: val('muted-foreground'), surfaces: [val('card')] });
     return STATUS_KEYS.map((k) => [k, formatOklch(st[k])]);
   };
   // Chart colors and the report surfaces, from the brand in every block.

@@ -189,6 +189,20 @@ screen (the open questions under the title, status and date on one line,
 the rest of the metadata in the footer). The screenshots, the hero images,
 the teaser and the demo film were rebuilt from these files.
 
+### Fourth pass: state colors on cards, 19 October 2026
+
+No text changed. State colors now clear 4.5:1 on `--card` as well as on the
+paper: engineering, public-sector and startup set state words on cards, and
+their light amber read 4.35 to 4.50:1 there. The token blocks of
+`audit--kestrel`, `spec--kestrel`, `postmortem--kestrel`,
+`project-recap--fieldwork` and `report--kestrel` were replaced with
+`apply-tokens.mjs` and the same `--style` as before (the report also with
+`apply-template.mjs report`). The Kestrel profile itself was left as taught:
+its amber still reads 4.35:1 on its card, so `check-tokens.mjs` warns on it,
+and `apply-tokens.mjs` walks that amber in every document. The warn
+callout's title bar in engineering now sits on the paper, so Kestrel's brand
+sheet was rendered again. The screenshots were not rebuilt.
+
 ### Presentation: BunnyFeelsHome
 
 Added on 2026-10-06, separately from the set above and from a real brand, not

@@ -8,9 +8,9 @@
 // before the state colors existed). For each theme block (light, explicit
 // dark, system dark) the value the browser ends up with must be the
 // profile's for every color token the profile defines, the state colors
-// must exist and read at 4.5:1 on the brand's paper, the brand's fonts must
-// win their slots, and structure (radii, measure) must be the chosen
-// style's.
+// must exist and read at 4.5:1 on the brand's paper and cards, the brand's
+// fonts must win their slots, and structure (radii, measure) must be the
+// chosen style's. Kestrel's amber, under 4.5:1 on its cards, must be walked.
 //
 // Usage: node dev-scripts/apply-tokens-smoke.mjs
 // Exit codes: 0 all assertions passed, 1 an assertion failed.
@@ -102,13 +102,15 @@ function probe(profileDir, label) {
     const weak = [];
     for (const theme of ['light', 'dark', 'darkOs']) {
       const paper = readColor(got[theme].get('background'));
+      const card = readColor(got[theme].get('card') || '');
       for (const k of STATUS) {
         const c = readColor(got[theme].get(k) || '');
         if (!c || !paper) weak.push(`${theme} --${k} missing`);
         else if (contrastRatio(c, paper) < 4.5) weak.push(`${theme} --${k} ${contrastRatio(c, paper).toFixed(2)}:1`);
+        else if (card && contrastRatio(c, card) < 4.5) weak.push(`${theme} --${k} on --card ${contrastRatio(c, card).toFixed(2)}:1`);
       }
     }
-    check(`${style}: state colors present, 4.5:1 on the brand's paper in every theme`, weak.length === 0, weak.join('\n'));
+    check(`${style}: state colors present, 4.5:1 on the brand's paper and cards in every theme`, weak.length === 0, weak.join('\n'));
 
     check(`${style}: the brand's body and heading fonts win`,
       firstFamily(got.light.get('font-sans')) === firstFamily(prof.light.get('font-sans'))
@@ -136,6 +138,25 @@ probe(gen, 'generated profile (consulting base, red brand) in every style');
 
 // The Arkona example profile, taught before the state colors existed.
 probe(join(ROOT, 'examples', 'brands', 'arkona'), 'arkona example profile (no state colors) in every style');
+
+// A profile whose own state colors were walked on the paper only: Kestrel's
+// light amber reads 4.35:1 on its --card. The document gets an amber that
+// clears the card; the state colors that already clear it stay as taught.
+console.log('kestrel example profile (amber under 4.5:1 on --card): walked at build time');
+{
+  const kestrel = join(ROOT, 'examples', 'brands', 'kestrel');
+  const prof = themes(readFileSync(join(kestrel, 'tokens.css'), 'utf8'));
+  const ratio = (m, k, s) => contrastRatio(readColor(m.get(k)), readColor(m.get(s)));
+  check('the profile\'s light --status-warn is under 4.5:1 on --card (precondition)', ratio(prof.light, 'status-warn', 'card') < 4.5);
+  const doc = join(TMP, 'kestrel-status.html');
+  writeFileSync(doc, docShell());
+  const res = spawnSync(process.execPath, [join(SCRIPTS, 'apply-tokens.mjs'), kestrel, doc, '--style', 'engineering'], { encoding: 'utf8' });
+  const got = themes(/<style data-letterhead-tokens[^>]*>([\s\S]*?)<\/style>/.exec(readFileSync(doc, 'utf8'))?.[1] || '');
+  check('apply-tokens exits 0', res.status === 0, `${res.stdout}${res.stderr}`);
+  check('light --status-warn clears 4.5:1 on --card and on the paper', ratio(got.light, 'status-warn', 'card') >= 4.5 && ratio(got.light, 'status-warn', 'background') >= 4.5, got.light.get('status-warn'));
+  const moved = STATUS.filter((k) => k !== 'status-warn' && norm(got.light.get(k)) !== norm(prof.light.get(k)));
+  check('the other light state colors stay as taught', moved.length === 0, moved.join(', '));
+}
 
 // A profile taught before --accent-surface: the document gets one, a light
 // tint of a strong accent in light, the accent itself in both dark themes.

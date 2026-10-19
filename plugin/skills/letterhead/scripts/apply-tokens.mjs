@@ -36,10 +36,13 @@
 //      defines wins, paper and dark paper included, and a color the style
 //      has and the profile lacks (the --status-* state colors, for a profile
 //      taught before they existed) is derived from the brand's own paper and
-//      inks, never inherited from the style. Font slots the brand chose win;
-//      the style fills the slots the brand left alone. A brand that names its
-//      own body font also takes the style's --font-label slot, so a document
-//      never carries a third family the brand did not name. Tokens only the
+//      inks, never inherited from the style. A state color of the profile's
+//      own that drops under 4.5:1 on the block's --card is walked until it
+//      clears it (a profile taught when only the paper counted). Font slots
+//      the brand chose win; the style fills the slots the brand left alone.
+//      A brand that names its own body font also takes the style's
+//      --font-label slot, so a document never carries a third family the
+//      brand did not name. Tokens only the
 //      profile has (heading weight, logo) go in as they are. Everything else
 //      (radii, measure, spacing, type scale, leading, shadows, motion) is
 //      the style's.
@@ -275,6 +278,18 @@ function brandOverStyle(brand, style, ref, fontSlots) {
       }
     }
     const paper = pick('background') || color(style[b].get('background'));
+    const card = pick('card') || color(style[b].get('card'));
+    // The state colors of a profile taught when they only had to read on the
+    // paper: one under 4.5:1 on the block's --card walks until it clears it,
+    // or a state word in a status ledger cell or a zebra row reads fainter
+    // than the same word on the page.
+    const ownStatus = Object.fromEntries(STATUS_KEYS.map((k) => [k, pick(k)]).filter(([, c]) => c));
+    if (paper && card && Object.keys(ownStatus).length) {
+      const walked = deriveStatus({ background: paper, dark: b !== 'light', seeds: ownStatus, surfaces: [card] });
+      for (const [k, v] of Object.entries(ownStatus)) {
+        if (contrastOklch(v, paper) < 4.5 || contrastOklch(v, card) < 4.5) out[b].set(k, formatOklch(walked[k]));
+      }
+    }
     const missing = [...style[b]].filter(([k, v]) => isColorValue(v) && !own.has(k));
     if (!missing.length || !paper) continue;
     const seeds = Object.fromEntries(STATUS_KEYS.map((k) => [k, color(style[b].get(k))]).filter(([, c]) => c));
@@ -288,7 +303,7 @@ function brandOverStyle(brand, style, ref, fontSlots) {
       : {};
     const status = deriveStatus({
       background: paper, dark: b !== 'light', seeds,
-      destructive: pick('destructive'), mutedForeground: pick('muted-foreground'),
+      destructive: pick('destructive'), mutedForeground: pick('muted-foreground'), surfaces: [card],
     });
     for (const [k, v] of missing) {
       if (status[k]) {
