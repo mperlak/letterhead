@@ -61,14 +61,15 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) h3 { font-size: var(--text-base); margin: 1.1rem 0 0.25rem; }
 :where(.doc) h3::before { content: "## "; font: 400 var(--text-sm) var(--font-mono); color: var(--muted-foreground); }
 
-/* Panels with a title bar */
+/* Panels with a title bar. The warn bar sits on the paper: a state color clears 4.5:1 on --background only
+   (on the --muted bar the warn amber drops to about 4.1:1). */
 :where(.doc) :is(.summary, .callout, .price, .ask) { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden;
   background: var(--card); color: var(--card-foreground); padding: 0 0.9rem 0.15rem; margin: 1rem 0; }
 :where(.doc) :is(.summary, .callout, .price) > .label, :where(.doc) .ask h2 { margin: 0 -0.9rem 0.4rem; padding: 0.35rem 0.9rem;
   background: var(--muted); border-bottom: 1px solid var(--border); color: var(--foreground); }
 :where(.doc) .summary { border-left: 3px solid var(--primary); font-weight: 500; }
 :where(.doc) .callout.warn { border-left: 3px solid var(--status-warn); }
-:where(.doc) .callout.warn > .label { color: var(--status-warn); }
+:where(.doc) .callout.warn > .label { color: var(--status-warn); background: var(--background); }
 :where(.doc) .callout.warn > .label::before { content: "! "; }
 :where(.doc) section.ask { border-color: var(--foreground); margin-top: 1.6rem; padding-top: 0; }
 :where(.doc) .ask h2 { font-size: var(--text-lg); border-color: var(--foreground); }
