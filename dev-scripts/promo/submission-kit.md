@@ -25,6 +25,7 @@ bash dev-scripts/promo/build-submission.sh
 | Phone view | `temp/submission/screenshots/meeting-notes--fieldwork-mobile.png` | screenshot 5: "reads on a phone" |
 | Styles contact sheet | `temp/submission/screenshots/styles-contact-sheet.png` | screenshot 6: the 9 styles |
 | Presentation | `temp/submission/screenshots/presentation--bunnyfeelshome-light.png` | optional |
+| Content kit | `temp/submission/screenshots/content-kit--kestrel-light.png` | optional: texts to paste, with counters and copy buttons |
 | Plugin archive (OpenAI) | `temp/submission/letterhead-plugin.zip` | `plugin/` without the Cursor manifest |
 | Demo video, 56 s, 4.6 MB | `examples/video/letterhead-demo.mp4` | video fields |
 
@@ -86,10 +87,10 @@ status-update, specs, design-tokens, review, meeting-notes, presentation
 > Before writing any HTML it shows you the template, the sections and the
 > first phone screen, and waits for your yes. Every document has light and
 > dark themes, reads well on a phone, prints cleanly and keeps stable section
-> ids, so comments survive the next version. 13 templates: proposal, status
+> ids, so comments survive the next version. 14 templates: proposal, status
 > update, implementation plan, spec, report, audit, meeting notes, project
-> recap, release notes, checklist, postmortem, change walkthrough and
-> presentation.
+> recap, release notes, checklist, content kit, postmortem, change walkthrough
+> and presentation.
 >
 > Works in Claude (app, Cowork and Claude Code), Codex, Cursor, OpenCode and
 > any other host that reads Agent Skills. MIT licensed.

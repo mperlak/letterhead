@@ -41,7 +41,7 @@ installation alone does not publish a public directory listing.
 ## Reviewer context to copy when requested
 
 **Purpose.** Letterhead creates portable branded HTML documents for clients
-and teams. It includes 13 template contracts, 9 complete styles, licensed
+and teams. It includes 14 template contracts, 9 complete styles, licensed
 fonts, brand extraction and application scripts, and structure, contrast and
 theme checkers. It preserves section IDs through revisions. These packaged
 resources and reproducible checks provide the workflow beyond a prose-only

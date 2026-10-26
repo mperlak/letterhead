@@ -21,6 +21,7 @@ SHOTS=(
   meeting-notes--fieldwork-mobile
   styles-contact-sheet
   presentation--bunnyfeelshome-light
+  content-kit--kestrel-light
 )
 
 rm -rf "$OUT"
