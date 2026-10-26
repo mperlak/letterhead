@@ -16,7 +16,9 @@ document argues for one course of action and ends with a clear ask.
 The decision is already made; that is an implementation plan or a spec.
 The document reports on finished work; that is a report or project recap.
 The reader asked for a neutral comparison of options with no
-recommendation; a proposal always recommends.
+recommendation; a proposal always recommends. The document hands over
+ready-to-paste texts (posts, an article, emails) with dates and character
+limits; that is a content kit, even when it also asks for a decision.
 
 ## Structure
 

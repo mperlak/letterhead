@@ -8,6 +8,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
 :where(.doc) { display: block; max-width: calc(var(--measure) + 8rem); margin: 0 auto; padding: 1.75rem 1.5rem 4rem; }
 :where(.doc) a { color: inherit; text-decoration-color: var(--primary); text-underline-offset: 0.18em; }
+:where(.doc) { overflow-wrap: break-word; }
+:where(.doc) :is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.7rem 0; }
 :where(.doc) section > p:is(:not([class]), .dropcap) { hyphens: auto; }
 :where(.doc) .kicker, :where(.doc) .label, :where(.doc) dt, :where(.doc) th, :where(.doc) .state, :where(.doc) .when, :where(.doc) .from {

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route API launch kit</title>
+<meta property="og:title" content="Route API launch kit">
+<meta property="og:description" content="Every text for the route API launch, ready to paste: the article, a thread on X, a LinkedIn post and the customer email, 3 to 9 November.">
+<!-- The content-kit template's worked example: every element of
+     templates/content-kit/template.md, on a fictional business (Kestrel Labs,
+     the route-planning company of the skill's examples). Copy the markup, not
+     the content. This file has no tokens and no layout; build a document with
+     apply-tokens.mjs, then apply-template.mjs content-kit, then
+     count-copy.mjs, which wrote every counter below. -->
+</head>
+<body>
+<main class="doc kit">
+  <header class="doc-head">
+    <span class="brand-mark" role="img" aria-label="Kestrel Labs"></span>
+    <p class="kicker">Content kit</p>
+    <h1>Route API launch kit</h1>
+    <p class="lede">Every text for the public launch of the Kestrel route API, ready to paste: the blog article, a thread on X, a LinkedIn post and the customer email, from Tuesday 3 to Monday 9 November. Two decisions are open; each says what happens if nobody answers.</p>
+    <dl class="meta">
+      <div><dt>Status</dt><dd>ready, 2 decisions open</dd></div>
+      <div><dt>Owner</dt><dd>Noor Hamdi</dd></div>
+      <div><dt>Channels</dt><dd>blog, X, LinkedIn, customer email</dd></div>
+      <div><dt>Runs</dt><dd>3 to 9 November 2026</dd></div>
+      <div><dt>Updated</dt><dd>30 October 2026</dd></div>
+    </dl>
+  </header>
+
+  <nav class="contents" aria-label="Contents">
+    <ol>
+      <li><a href="#before-you-publish">Before you publish</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#the-launch-article">1. Article</a></li>
+      <li><a href="#thread-on-x">2. Thread on X</a></li>
+      <li><a href="#linkedin-post">3. LinkedIn post</a></li>
+      <li><a href="#customer-email">4. Customer email</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ol>
+  </nav>
+
+  <section class="gate">
+    <h2 id="before-you-publish">Before you publish</h2>
+    <p>Two decisions are open. Without an answer by the date beside each, its default goes out.</p>
+    <ul class="checks">
+      <li id="decision-name-reinnet"><span class="tick" aria-hidden="true"></span><div>May the thread name ReinNet as the first customer on the API?<span class="dflt">If no answer: post 2 goes out in its main version, without the name.</span></div><span class="who">Kees Brouwer, by Mon 2 Nov</span></li>
+      <li id="decision-email-recipients"><span class="tick" aria-hidden="true"></span><div>Does the email go to all 41 customer accounts, or only to the 12 teams from the beta?<span class="dflt">If no answer: only the 12 beta teams.</span></div><span class="who">Joris Veen, by Fri 6 Nov</span></li>
+    </ul>
+    <h3 id="remember-when-publishing">Remember when publishing</h3>
+    <ul class="states">
+      <li><span class="state warn">order</span><div>The article goes first. The thread, the LinkedIn post and the email link to it; open the link once before posting.</div></li>
+      <li><span class="state warn">timing</span><div>Post the thread after 15:00 CET: half of the beta teams are in the United States.</div></li>
+      <li><span class="state blocked">do not claim</span><div>That the API plans faster or better routes than the app. It plans the same routes; the beta measured that, nothing more.</div></li>
+    </ul>
+    <details class="closed">
+      <summary>Settled (2)</summary>
+      <ul class="states">
+        <li><span class="state ok">settled</span><div>Launch on Tuesday 3 November, agreed with the API team on 28 October.</div></li>
+        <li><span class="state ok">settled</span><div>No price in any text: the texts link to the pricing page, which can change without a new kit.</div></li>
+      </ul>
+    </details>
+  </section>
+
+  <section>
+    <h2 id="schedule">Schedule</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Piece</th><th>Format</th><th>Goal</th></tr></thead>
+        <tbody>
+          <tr><td>Tue 3 Nov</td><td><a href="#the-launch-article">1. Article</a></td><td>Blog article, cover image</td><td>The whole story, for the other pieces to link to</td></tr>
+          <tr><td>Wed 4 Nov</td><td><a href="#thread-on-x">2. Thread on X</a></td><td>3 posts, one image, a prepared reply</td><td>Developers who build dispatch and fleet tools</td></tr>
+          <tr><td>Thu 5 Nov</td><td><a href="#linkedin-post">3. LinkedIn post</a></td><td>Post, link in the first comment</td><td>Operations managers at municipalities and contractors</td></tr>
+          <tr><td>Mon 9 Nov</td><td><a href="#customer-email">4. Customer email</a></td><td>Email</td><td>Customers turn the API on</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="piece">
+    <p class="when"><span class="n">1</span><time datetime="2026-11-03">Tue 3 Nov</time><span class="fmt">Blog article, 09:00</span></p>
+    <h2 id="the-launch-article">The launch article</h2>
+    <p class="note">On the Kestrel blog. Everything else links to it, so it goes out first.</p>
+    <div class="copy" id="article-title" data-limit="70">
+      <div class="copy-bar">
+        <p class="copy-label">Title</p>
+        <span class="count">43 / 70</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>A route API for the planner you already use</pre>
+    </div>
+    <div class="copy" id="article-subtitle" data-limit="160">
+      <div class="copy-bar">
+        <p class="copy-label">Subtitle</p>
+        <span class="count">136 / 160</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Send stops and trucks, get a route for every truck back in seconds, planned with the rules your planners already set in the Kestrel app.</pre>
+    </div>
+    <div class="copy rich" id="article-body">
+      <div class="copy-bar">
+        <p class="copy-label">Body</p>
+        <span class="count">1077 characters</span>
+        <button type="button" class="copy-btn" data-as="rich" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy formatted</button>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy as text</button>
+      </div>
+      <pre>Since 2021, municipalities and their contractors have planned waste collection routes in the Kestrel app. From today, the same planner is also an API.
+
+What the API does
+
+You send the stops, the trucks and the time windows. The API sends back a route for every truck, in the order the driver drives it, with the planned arrival time at every stop. A day of one municipality takes seconds.
+
+- The rules your planners set in the app apply to the API as they are.
+- Routes come back as JSON, one list of stops per truck.
+- A return stop for a missed bin can go onto a route that is already driving.
+
+Who it is for
+
+Software teams that build dispatch or fleet tools and want routes without writing a planner of their own. In the beta, 12 teams planned 1.4 million stops with it between June and October.
+
+How to start
+
+1. Ask for a key on the API page.
+2. Send a test day from the examples in the documentation.
+3. Compare the routes with the ones your planners made in the app.
+
+The documentation, the examples and the pricing are on the API page: https://kestrel-labs.example/api</pre>
+    </div>
+    <div class="asset">
+      <p class="label">Cover image · 1600 × 900</p>
+      <p>A street map of Westerhaven with three truck routes in the brand colors and one return stop marked. No text in the image: the blog sets the title over it.</p>
+    </div>
+    <details class="verify">
+      <summary>Verification (3)</summary>
+      <ul>
+        <li>12 teams, 1.4 million stops, June to October <span class="state ok">checked</span> <span class="src">Beta usage export, 27 October</span></li>
+        <li>Planners' rules apply to the API unchanged <span class="state ok">checked</span> <span class="src">API team, 28 October</span></li>
+        <li>A day of one municipality in seconds <span class="state ok">checked</span> <span class="src">Load test, 21 October: 14 trucks, 3,100 stops, 9 seconds</span></li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="piece">
+    <p class="when"><span class="n">2</span><time datetime="2026-11-04">Wed 4 Nov</time><span class="fmt">X thread, 3 posts, after 15:00 CET</span></p>
+    <h2 id="thread-on-x">Thread on X</h2>
+    <p class="note">From the Kestrel account. Post 3 links to the article; post 2 has a variant that waits for the first decision.</p>
+    <div class="copy" id="thread-post-1" data-limit="280" data-count="x">
+      <div class="copy-bar">
+        <p class="copy-label">Post 1 of 3</p>
+        <span class="count">205 / 280</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Our route planner is now an API.
+
+Send stops, trucks and time windows. Get a route for every truck back, in driving order, with arrival times.
+
+One municipality's day, 14 trucks and 3,100 stops: 9 seconds.</pre>
+    </div>
+    <div class="copy" id="thread-post-2" data-limit="280" data-count="x">
+      <div class="copy-bar">
+        <p class="copy-label">Post 2 of 3</p>
+        <span class="count">188 / 280</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>The part we like most: a missed bin can go back onto a route that is already driving.
+
+The API puts the return stop where it costs the least time, and the driver's tablet shows it at once.</pre>
+    </div>
+    <div class="copy confirm" id="thread-post-2-named" data-limit="280" data-count="x">
+      <div class="copy-bar">
+        <p class="copy-label">Post 2 of 3, naming ReinNet</p>
+        <span class="state warn">confirm first</span>
+        <span class="count">202 / 280</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <p class="copy-note">Use it in place of the main post 2 only if Kees Brouwer agrees that ReinNet is named (first decision).</p>
+      <pre>ReinNet in Westerhaven tried it first: a missed bin goes back onto a route that is already driving.
+
+The API puts the return stop where it costs the least time, and the driver's tablet shows it at once.</pre>
+    </div>
+    <div class="copy" id="thread-post-3" data-limit="280" data-count="x">
+      <div class="copy-bar">
+        <p class="copy-label">Post 3 of 3</p>
+        <span class="count">119 / 280</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>How it works and how to get a key: https://kestrel-labs.example/blog/route-api-for-the-planner-you-already-use
+
+12 teams used it in the beta. What would you build with it?</pre>
+    </div>
+    <div class="copy" id="thread-reply-pricing" data-limit="280" data-count="x">
+      <div class="copy-bar">
+        <p class="copy-label">Reply, when someone asks about the price</p>
+        <span class="count">104 / 280</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>There is a free tier for testing. Prices for production use are on the API page: https://kestrel-labs.example/api/pricing</pre>
+    </div>
+    <div class="asset">
+      <p class="label">Image for post 1 · 1600 × 900</p>
+      <p>One route on a street map, before and after a return stop is added: the stop in the ink color, the new leg dashed. Alt text: "A truck route with a return stop added while it drives."</p>
+    </div>
+    <details class="verify">
+      <summary>Verification (4)</summary>
+      <ul>
+        <li>14 trucks, 3,100 stops, 9 seconds <span class="state ok">checked</span> <span class="src">Load test, 21 October</span></li>
+        <li>Return stops on a route that is already driving <span class="state ok">checked</span> <span class="src">Beta release notes 0.8</span></li>
+        <li>ReinNet tried it first <span class="state warn">waiting</span> <span class="src">true per the beta export; no written consent to name them yet</span></li>
+        <li>A free tier for testing <span class="state ok">checked</span> <span class="src">Pricing page draft, 29 October</span></li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="piece">
+    <p class="when"><span class="n">3</span><time datetime="2026-11-05">Thu 5 Nov</time><span class="fmt">LinkedIn post and first comment</span></p>
+    <h2 id="linkedin-post">LinkedIn post</h2>
+    <p class="note">From Noor's profile, for operations managers. The link goes in the first comment, not in the post.</p>
+    <div class="copy" id="linkedin-post-text" data-limit="3000">
+      <div class="copy-bar">
+        <p class="copy-label">Post</p>
+        <span class="count">514 / 3000</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Every collection team knows the missed-bin call. A resident phones, a dispatcher phones a driver, and nobody records whether the truck went back.
+
+Since this week our route planner is also an API. One thing it does: when a bin was missed, the return stop goes onto a route that is already driving, where it costs the least time.
+
+In the beta, 12 teams planned 1.4 million stops with it.
+
+If your team builds its own dispatch software, the API takes the planning off your hands. The article is in the first comment.</pre>
+    </div>
+    <div class="copy" id="linkedin-first-comment" data-limit="1250">
+      <div class="copy-bar">
+        <p class="copy-label">First comment</p>
+        <span class="count">110 / 1250</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>How it works and how to get a key: https://kestrel-labs.example/blog/route-api-for-the-planner-you-already-use</pre>
+    </div>
+    <div class="asset">
+      <p class="label">Image · 1200 × 627</p>
+      <p>The article's cover image, cropped to LinkedIn's link size. Keep the three routes in the middle third, where the crop leaves them whole.</p>
+    </div>
+    <details class="verify">
+      <summary>Verification (1)</summary>
+      <ul>
+        <li>12 teams, 1.4 million stops <span class="state ok">checked</span> <span class="src">Beta usage export, 27 October</span></li>
+      </ul>
+    </details>
+  </section>
+
+  <section class="piece">
+    <p class="when"><span class="n">4</span><time datetime="2026-11-09">Mon 9 Nov</time><span class="fmt">Email, 10:00</span></p>
+    <h2 id="customer-email">Customer email</h2>
+    <p class="note">From Noor, through the customer mailing tool, to the accounts in the second decision.</p>
+    <div class="copy" id="email-subject" data-limit="60">
+      <div class="copy-bar">
+        <p class="copy-label">Subject</p>
+        <span class="count">39 / 60</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Your Kestrel routes, now through an API</pre>
+    </div>
+    <div class="copy" id="email-preview-text" data-limit="90">
+      <div class="copy-bar">
+        <p class="copy-label">Preview text</p>
+        <span class="count">49 / 90</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Same planner, same rules, routes back in seconds.</pre>
+    </div>
+    <div class="copy" id="email-body">
+      <div class="copy-bar">
+        <p class="copy-label">Body</p>
+        <span class="count">448 characters</span>
+        <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: copy with Ctrl+C or ⌘C" hidden>Copy</button>
+      </div>
+      <pre>Hello,
+
+The route planner you use in the Kestrel app is now also an API. Your planners' rules apply to it as they are, so routes from the API match the ones in the app.
+
+Your account already has access: the key is in the app under Settings, API.
+
+Our article explains how it works: https://kestrel-labs.example/blog/route-api-for-the-planner-you-already-use
+
+If you would like a call with our API team, reply to this email.
+
+Noor Hamdi
+Kestrel Labs</pre>
+    </div>
+    <details class="verify">
+      <summary>Verification (1)</summary>
+      <ul>
+        <li>Every account already has a key <span class="state ok">checked</span> <span class="src">API team, 28 October: keys made for all 41 accounts</span></li>
+      </ul>
+    </details>
+  </section>
+
+  <section>
+    <h2 id="sources">Sources</h2>
+    <ul class="small">
+      <li>Beta usage export: 12 teams, June to October 2026, pulled on 27 October.</li>
+      <li>Load test of the route API, 21 October 2026: 14 trucks, 3,100 stops, 9 seconds.</li>
+      <li>Beta release notes 0.8: return stops on a route that is already driving.</li>
+      <li>Pricing page draft, 29 October 2026.</li>
+      <li>API team, 28 October 2026: the launch date, the planners' rules, keys for all 41 accounts.</li>
+    </ul>
+  </section>
+
+  <footer class="doc-close"><p>Kestrel Labs · updated 30 October 2026</p></footer>
+  <p class="copy-status" role="status"><span class="ok">Copied.</span><span class="fail">Copy blocked: the text is selected.</span></p>
+</main>
+</body>
+</html>

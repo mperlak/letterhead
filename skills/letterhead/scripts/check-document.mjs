@@ -11,9 +11,10 @@
 //
 // --render also opens each document in a headless Chromium (lib/render.mjs):
 // words the script writes or a click changes, elements a click moves, the
-// outline after the script, sideways scroll at 1280 and 390 px, print with a
-// dark system theme, console errors. Without a browser or on Node older than
-// 22 it says so as info and the static checks still run.
+// outline after the script, sideways scroll at 1280 and 390 px (an error),
+// print with a dark system theme, console errors. Without a browser or on
+// Node older than 22 it says so as info (render/unavailable) and the static
+// checks still run; that is not a pass for the phone width.
 //
 // Output: one line per finding, `<file>:<line> <severity> <rule> <message>`,
 // then one summary line per file. --json prints one JSON object per finding
@@ -418,6 +419,13 @@ const DATE_LABEL_RE = /(?:^|\s)(?:date|dated|updated|written|released|issued|pub
 const DATE_VALUE_RE = /\b\d{1,2}\s+\p{L}{3,}\.?(?:\s+(?:19|20)\d{2})?\b|\b\p{L}{3,}\.?\s+\d{1,2},?\s+(?:19|20)\d{2}\b|\b(?:19|20)\d{2}-\d{2}-\d{2}\b|\b\d{1,2}[./]\d{1,2}[./](?:19|20)?\d{2}\b/u;
 const FLAT_LIMIT = 12;
 
+// A state is a word or a short phrase ("passed", "waiting on client"). The
+// styles keep a .state on one line, so a long one cannot wrap and, on a
+// phone, pushes the page sideways. 24 characters is the longest honest
+// phrase ("waiting for legal review" is 24) and still fits a 390 px screen
+// beside its marker; a source, date or file name is longer than that.
+const STATE_LIMIT = 24;
+
 function structureRules(root, add) {
   const at = (el) => (el && el.range ? el.range[0] : null);
   const ids = new Set(root.querySelectorAll('[id]').map((el) => el.getAttribute('id')));
@@ -480,6 +488,20 @@ function structureRules(root, add) {
     if (ps > FLAT_LIMIT) {
       add('warning', 'doc/flat-main', at(el), `<${el.rawTagName.toLowerCase()}> holds ${ps} paragraphs directly. Wrap each part in its section: a comment anchored by position counts paragraphs across the whole page, so one new paragraph near the top moves every anchor below it.`);
       break;
+    }
+  }
+
+  // A .state is one short word; the styles do not wrap it.
+  for (const el of root.querySelectorAll('.state')) {
+    // In the status ledger (.status) the styles render the state as wrapping prose.
+    let inLedger = false;
+    for (let p = el.parentNode; p && p.getAttribute; p = p.parentNode) {
+      if ((p.getAttribute('class') || '').split(/\s+/).includes('status')) { inLedger = true; break; }
+    }
+    if (inLedger) continue;
+    const text = el.text.replace(/\s+/g, ' ').trim();
+    if (text.length > STATE_LIMIT) {
+      add('warning', 'doc/state-long', at(el), `State chip of ${text.length} characters ("${text.slice(0, 40)}..."). A .state does not wrap, so on a phone it pushes the page sideways. A state is one word; put its source or detail beside it as plain text.`);
     }
   }
 

@@ -10,6 +10,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   display: block; max-width: calc(var(--measure) + var(--hang) + 3rem); margin: 0 auto;
   padding: 3rem 1.5rem 4.5rem calc(1.5rem + var(--hang)); counter-reset: sec; }
 :where(.doc) a { color: var(--ink); text-underline-offset: 0.18em; }
+:where(.doc) { overflow-wrap: break-word; }
+:where(.doc) :is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.75rem 0; }
 :where(.doc) .kicker, :where(.doc) .label, :where(.doc) dt, :where(.doc) th, :where(.doc) .when, :where(.doc) .state {
   font-family: var(--font-label, var(--font-sans)); }

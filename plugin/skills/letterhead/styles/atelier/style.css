@@ -8,6 +8,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
 :where(.doc) { display: block; max-width: calc(var(--measure) + 4rem); margin: 0 auto; padding: 3.25rem 2rem 5rem; }
 :where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+:where(.doc) { overflow-wrap: break-word; }
+:where(.doc) :is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 :where(.doc) :is(p, ul, ol) { margin: 0.8rem 0; }
 :where(.doc) :is(.kicker, .label, dt, th, .when, .state) { font-family: var(--font-label, var(--font-sans)); }
 :where(.doc) :is(.kicker, .label) { margin: 0; font-size: var(--text-sm); font-weight: 600; color: var(--primary-ink, var(--primary)); }
@@ -22,7 +24,7 @@ body { margin: 0; background: var(--background); color: var(--foreground);
 :where(.doc) .lede { font-size: var(--text-lg); line-height: 1.55; color: var(--muted-foreground); margin: 0 0 1.75rem; }
 :where(.doc) .meta { max-width: 30rem; margin: 0; font-size: var(--text-sm); }
 :where(.doc) :is(.meta, .status) > div, :where(.doc) .price dl > div { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.3rem 0; }
-:where(.doc) :is(.meta, .price, .status) dt { flex: 1 0 auto; display: flex; align-items: baseline; gap: 0.5rem;
+:where(.doc) :is(.meta, .price, .status) dt { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 0.5rem;
   color: var(--muted-foreground); font-weight: 400; }
 :where(.doc) :is(.meta, .price, .status) dt::after { content: ""; flex: 1; min-width: 1rem; opacity: 0.55;
   border-bottom: 1px dotted var(--muted-foreground); transform: translateY(-0.3em); }

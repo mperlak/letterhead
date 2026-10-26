@@ -22,6 +22,8 @@ body {
 h1, h2 { font-family: var(--font-display, var(--font-sans)); font-weight: var(--font-heading-weight, 700); letter-spacing: -0.015em; margin: 0; }
 p { margin: 0; }
 a { color: inherit; }
+body { overflow-wrap: break-word; }
+:is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 
 .cover, main { max-width: var(--page); margin: 0 auto; padding-inline: var(--gutter); }
 

@@ -121,10 +121,12 @@ node <skill>/scripts/build-presentation.mjs <work> --title "<title>" \
    which suits a studio writing to private clients). Without a profile,
    `--style` alone sets the look. The background always comes from the
    brand or the style.
-6. **Build and check.** The build runs `check-document.mjs` and prints the
-   size. Take both themes and the phone width before delivering. A file
-   over 4 MB is published through the upload URL (reference/publish.md);
-   about 9 MB for 40 renders is normal.
+6. **Build and check.** The build runs `check-document.mjs` (static checks
+   only) and prints the size. Run it once more with `--render`: only a
+   render shows a page that scrolls sideways on a phone. Take both themes
+   and the phone width before delivering. A file over 4 MB is published
+   through the upload URL (reference/publish.md); about 9 MB for 40 renders
+   is normal.
 
 `--kind general` changes the words for work that is not an interior:
 "sections" and "photos" instead of "rooms" and "renders".

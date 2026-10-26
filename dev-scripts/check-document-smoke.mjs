@@ -145,6 +145,15 @@ console.log('warnings and info do not fail');
   const n = run([write('numbered.html', numbered)]);
   check('"01" section number → info doc/section-numbers, exit 0', n.status === 0 && n.out.includes(' info doc/section-numbers '), n.out);
 
+  const LONG = 'verified · tmp/mcp-agent-usability-audit.md, 16.10.2026';
+  const withBody = (html) => swap('<p>Paid orders and refunds.</p>', `<p>Paid orders and refunds.</p>${html}`);
+  const lc = run([write('state-long.html', withBody(`<p><span class="state ok">${LONG}</span></p>`))]);
+  check('a 50+ character .state → warning doc/state-long, exit 0', lc.status === 0 && lc.out.includes(' warning doc/state-long '), lc.out);
+  const sc = run([write('state-short.html', withBody('<p><span class="state ok">passed</span> <span class="state warn">waiting for legal review</span></p>'))]);
+  check('short .state chips (up to 24 characters) → no doc/state-long', sc.status === 0 && !sc.out.includes('doc/state-long'), sc.out);
+  const led = run([write('state-ledger.html', withBody(`<dl class="status"><div><dt>Audit</dt><dd><span class="state ok">${LONG}</span></dd></div></dl>`))]);
+  check('a long .state inside .status (styles wrap it as prose) is not flagged', !led.out.includes('doc/state-long'), led.out);
+
   const emoji = swap('<h2 id="summary">Summary</h2>', '<h2 id="summary">🚀 Summary</h2>');
   const e = run([write('emoji.html', emoji)]);
   check('emoji heading → info doc/emoji-heading, exit 0', e.status === 0 && e.out.includes(' info doc/emoji-heading '), e.out);
@@ -186,6 +195,8 @@ console.log('--render: a click that writes words, print in a dark system theme')
     check('--render: a click that adds words → warning render/text-on-click', / warning render\/text-on-click /.test(r.out), r.out);
     check('--render: the CLEAN page prints dark under a dark system theme → warning render/print-dark', / warning render\/print-dark /.test(r.out), r.out);
     const quiet = run([write('render-clean.html', swap('</style>', '@media print { :root, :root:not([data-theme="light"]):not([data-theme="dark"]) { --background: oklch(0.99 0 0); --foreground: oklch(0.22 0 0); } }</style>')), '--render']);
+    const wide = run([write('render-wide.html', swap('</body>', `<p><span style="white-space: nowrap">${'unbreakable '.repeat(40)}</span></p></body>`)), '--render']);
+    check('--render: a no-wrap line wider than the phone → error render/horizontal-scroll, exit 2', wide.status === 2 && / error render\/horizontal-scroll /.test(wide.out), wide.out);
     check('--render: a static page with a light print block has no render findings', !/render\//.test(quiet.out), quiet.out);
   }
 }

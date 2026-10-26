@@ -4,13 +4,13 @@
 // and later) and a browser already on the machine ($CHROME, Playwright's
 // cached browsers, Chrome, Chromium or Edge).
 //
-// What it reports, each as a warning:
+// What it reports, each as a warning unless marked:
 //   render/text-from-script   the script writes words the HTML does not have
 //   render/text-on-click      a click adds or removes words (comment anchors
 //                             count quote occurrences across the whole text)
 //   render/dom-moves          a click moves or adds elements
 //   render/heading-outline    the outline after the script skips a level
-//   render/horizontal-scroll  the page scrolls sideways at 1280 or 390 px
+//   render/horizontal-scroll  ERROR: the page scrolls sideways at 1280 or 390 px
 //   render/print-dark         print with a dark system theme comes out dark
 //   render/print-hidden       states toggled by [hidden] stay hidden in print
 //   render/console-error      the page throws or logs an error
@@ -211,7 +211,7 @@ export async function renderChecks(file, staticText) {
     for (const [w, h] of [[1280, 900], [390, 844]]) {
       const tab = await open(w, h);
       const [sw, cw] = await tab.evaluate('[document.documentElement.scrollWidth, document.documentElement.clientWidth]');
-      if (sw > cw + 1) add('warning', 'render/horizontal-scroll', `At ${w} px the page is ${sw} px wide and scrolls sideways.`);
+      if (sw > cw + 1) add('error', 'render/horizontal-scroll', `At ${w} px the page is ${sw} px wide and scrolls sideways. On a phone the reader pans left and right to read a line. Find the element that is wider than the screen (a no-wrap chip or a long URL or identifier) and let it wrap, or put a wide table in .table-wrap.`);
       await tab.closeTab();
     }
 
