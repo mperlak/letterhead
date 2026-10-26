@@ -223,7 +223,9 @@ a picture changes the document's words and moves elements, and the page
 prints dark). `content-kit--kestrel` was added (see the table above). The document
 screenshots were rebuilt; of the old ones only `release-notes--kestrel`
 changed (the contact address now breaks inside its cell instead of running
-past it). The hero images, the teaser and the film were not rebuilt.
+past it). The hero images were rebuilt and came out unchanged. The demo
+film was rendered again because it now says 14 templates. The teaser was
+left as it is, since none of its inputs changed.
 
 ### Presentation: BunnyFeelsHome
 
