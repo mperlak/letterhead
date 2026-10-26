@@ -77,7 +77,18 @@ const URL_RE = new RegExp(
   String.raw`(?<![@\w.-])(?:https?:\/\/[^\s<>"]+|www\.[^\s<>"]+|(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:${TLDS})\b(?:\/[^\s<>"]*)?)`,
   'giu',
 );
-const TRAILING_PUNCT_RE = /[.,;:!?'")\]}’”]+$/u;
+const TRAILING_PUNCT_RE = /[.,;:!?'")\]}’”]$/u;
+
+// Punctuation after a link is not part of it, except a closing parenthesis
+// the link opened itself: "…/Function_(mathematics)" keeps its ")".
+function trimUrl(url) {
+  let u = url;
+  while (TRAILING_PUNCT_RE.test(u)) {
+    if (u.endsWith(')') && (u.match(/\(/g) || []).length >= (u.match(/\)/g) || []).length) break;
+    u = u.slice(0, -1);
+  }
+  return u;
+}
 // An emoji as X counts it: drawn as a picture by default, or asked to be one
 // with the variation selector U+FE0F; a flag is a pair of regional indicators.
 const EMOJI_RE = /\p{Emoji_Presentation}|️|\p{Regional_Indicator}/u;
@@ -103,7 +114,7 @@ function xLength(text) {
   let n = 0;
   let last = 0;
   for (const m of s.matchAll(URL_RE)) {
-    const url = m[0].replace(TRAILING_PUNCT_RE, '');
+    const url = trimUrl(m[0]);
     n += xWeight(s.slice(last, m.index)) + X_URL_LENGTH;
     last = m.index + url.length;
   }
@@ -154,7 +165,9 @@ for (const block of blocks) {
   if (/<[a-z/!]/i.test(pre.innerHTML)) {
     lines.push(`note   ${where.padEnd(pad)}  markup inside <pre> is not part of the text; write the text only`);
   }
-  const text = pre.text.replace(/<[^>]*>/g, '').replace(/\r\n?/g, '\n').replace(/^\n/, '').replace(/\s+$/, '');
+  // Drop tags from the markup first, then decode: decoding first would turn
+  // an escaped "&lt;name&gt;" into "<name>" and drop it as a tag.
+  const text = parse(`<p>${pre.innerHTML.replace(/<[^>]*>/g, '')}</p>`).text.replace(/\r\n?/g, '\n').replace(/^\n/, '').replace(/\s+$/, '');
   const n = mode === 'x' ? xLength(text) : codePoints(text);
   const over = limit != null && n > limit;
 
