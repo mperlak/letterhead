@@ -57,6 +57,7 @@ the notes and the exact prompt for each are in `notes/<same-name>.md`.
 | `proposal--halde.html` | proposal | atelier | Studio Halde to a private couple: an apartment, scope per room, three packages in EUR, timeline |
 | `report--halde.html` | report | gazette | Studio Halde to new homeowners: what the pre-design survey of their 1932 house found |
 | `report--kestrel.html` | report (own layout) | engineering tokens | Kestrel to Gemeente Westerhaven and ReinNet: what 300 missed-bin reports show. Not an agent run: the report template's worked example (`letterhead/templates/report/example.html`) put through `apply-tokens.mjs` and `apply-template.mjs report`, see `notes/report--kestrel.md`. Added 2026-10-18. |
+| `content-kit--kestrel.html` | content-kit (own layout) | engineering tokens | Kestrel's Route API launch kit, for the person who publishes it: an article, a thread on X, a LinkedIn post and a customer email, each with its date, limit and copy button. Not an agent run: the content-kit template's worked example (`letterhead/templates/content-kit/example.html`) put through `apply-tokens.mjs`, `apply-template.mjs content-kit` and `count-copy.mjs`, see `notes/content-kit--kestrel.md`. Added 2026-10-26. |
 | `spec--kestrel.html` | spec | engineering | Kestrel to a municipality and its contractor: missed-bin reports turned into same-day return stops |
 | `release-notes--kestrel.html` | release-notes | corporate | Kestrel to customers' fleet managers and developers: release 4.3, two breaking API changes |
 | `postmortem--kestrel.html` | postmortem | public-sector | Kestrel to municipal customers: the night the routes were not published by 05:00 |
@@ -202,6 +203,27 @@ its amber still reads 4.35:1 on its card, so `check-tokens.mjs` warns on it,
 and `apply-tokens.mjs` walks that amber in every document. The warn
 callout's title bar in engineering now sits on the paper, so Kestrel's brand
 sheet was rendered again. The screenshots were not rebuilt.
+
+### Fifth pass: phone width and print, 26 October 2026
+
+No text changed. `check-document.mjs --render` became a required check: a
+page that scrolls sideways at phone width is an error. `proposal--halde`
+failed it (at 390 px the page was 418 px wide: a long atelier `.price` label
+pushed its amount off the screen), and eight documents printed dark under a
+dark system theme. Every style now breaks long words, links and code instead
+of widening the page, and `apply-tokens.mjs` writes the light colors for
+print. The style and token blocks of the fourteen styled documents and of
+`hero/after.html` were replaced with `apply-tokens.mjs` and the same
+`--style` as before (`report--kestrel` also with `apply-template.mjs
+report`); the `<body>` of every file is byte for byte what it was. All of
+them pass `check-document.mjs --render` with 0 errors, 0 warnings and 0
+info notes. The presentation was left as `build-presentation.mjs` wrote it:
+it has no style block, and the render check gives it three warnings (opening
+a picture changes the document's words and moves elements, and the page
+prints dark). `content-kit--kestrel` was added (see the table above). The document
+screenshots were rebuilt; of the old ones only `release-notes--kestrel`
+changed (the contact address now breaks inside its cell instead of running
+past it). The hero images, the teaser and the film were not rebuilt.
 
 ### Presentation: BunnyFeelsHome
 

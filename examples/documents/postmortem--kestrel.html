@@ -431,6 +431,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   display: block; max-width: calc(var(--measure) + 8rem); margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 :where(.doc) section > :is(p, ul, ol):not([class]) { max-width: var(--measure); }
 :where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+:where(.doc) { overflow-wrap: break-word; }
+:where(.doc) :is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 :where(.doc) a:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; text-decoration-thickness: 3px; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.75rem 0; }
 :where(.doc) li + li { margin-top: 0.35rem; }

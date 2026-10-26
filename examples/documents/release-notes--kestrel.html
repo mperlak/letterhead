@@ -71,6 +71,11 @@
   --status-warn: oklch(0.560 0.115 78.0);
   --status-blocked: oklch(0.510 0.175 27.0);
   --status-neutral: oklch(0.460 0.018 251.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.972 0.004 252.0);
+  --tint-ink: oklch(0.450 0.130 252.0);
+  --surface-inverse: oklch(0.230 0.012 255.0);
+  --surface-inverse-foreground: oklch(0.988 0.002 248.0);
   --shadow-sm: 0 1px 2px oklch(0.23 0.012 255 / 0.07);
   --shadow-md: 0 2px 8px oklch(0.23 0.012 255 / 0.10);
   --radius-sm: 4px;
@@ -140,6 +145,11 @@
   --status-warn: oklch(0.780 0.115 82.0);
   --status-blocked: oklch(0.670 0.155 26.0);
   --status-neutral: oklch(0.785 0.012 248.0);
+  /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+  --tint: oklch(0.230 0.007 253.0);
+  --tint-ink: oklch(0.615 0.174 250.0);
+  --surface-inverse: oklch(0.155 0.007 253.0);
+  --surface-inverse-foreground: oklch(0.925 0.007 248.0);
   --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
   --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
 }
@@ -185,6 +195,11 @@
     --status-warn: oklch(0.780 0.115 82.0);
     --status-blocked: oklch(0.670 0.155 26.0);
     --status-neutral: oklch(0.785 0.012 248.0);
+    /* -- Report surfaces: container ground, its label ink, the inverse panel -- */
+    --tint: oklch(0.230 0.007 253.0);
+    --tint-ink: oklch(0.615 0.174 250.0);
+    --surface-inverse: oklch(0.155 0.007 253.0);
+    --surface-inverse-foreground: oklch(0.925 0.007 248.0);
     --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.32);
     --shadow-md: 0 2px 10px oklch(0 0 0 / 0.38);
   }
@@ -233,7 +248,7 @@
   --chart-4: oklch(0.4500 0.0700 260);
   --chart-5: oklch(0.6400 0.0350 225);
   --status-ok: oklch(0.530 0.120 152.0);
-  --status-warn: oklch(0.560 0.115 78.0);
+  --status-warn: oklch(0.550 0.114 78.0);
   --status-blocked: oklch(0.500 0.180 26.0);
   --status-neutral: oklch(0.440 0.012 264.3);
   --font-sans: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
@@ -245,6 +260,10 @@
   --brand-logo-ratio: 5.3125;
   --accent-surface: oklch(0.940 0.056 80.7);
   --accent-surface-foreground: oklch(0.210 0.034 263.4);
+  --tint: oklch(0.984 0.007 264.3);
+  --tint-ink: oklch(0.484 0.207 264.3);
+  --surface-inverse: oklch(0.210 0.034 263.4);
+  --surface-inverse-foreground: oklch(1.000 0.000 0.0);
 }
 
 [data-theme="dark"] {
@@ -290,6 +309,10 @@
   --brand-logo-on: dark;
   --accent-surface: oklch(0.300 0.050 80.7);
   --accent-surface-foreground: oklch(0.9050 0.0070 222);
+  --tint: oklch(0.220 0.012 264.3);
+  --tint-ink: oklch(0.620 0.204 264.3);
+  --surface-inverse: oklch(0.145 0.012 264.3);
+  --surface-inverse-foreground: oklch(0.905 0.007 222.0);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -336,6 +359,61 @@
     --brand-logo-on: dark;
     --accent-surface: oklch(0.300 0.050 80.7);
     --accent-surface-foreground: oklch(0.9050 0.0070 222);
+    --tint: oklch(0.220 0.012 264.3);
+    --tint-ink: oklch(0.620 0.204 264.3);
+    --surface-inverse: oklch(0.145 0.012 264.3);
+    --surface-inverse-foreground: oklch(0.905 0.007 222.0);
+  }
+}
+
+/* ---- print: light paper whatever the theme ---- */
+@media print {
+  :root, :root[data-theme], [data-theme="dark"], :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: light;
+    --background: oklch(1.000 0.000 0.0);
+    --foreground: oklch(0.210 0.034 263.4);
+    --card: oklch(0.9700 0.0045 220);
+    --card-foreground: oklch(0.210 0.034 263.4);
+    --popover: oklch(0.9930 0.0020 220);
+    --popover-foreground: oklch(0.210 0.034 263.4);
+    --primary: oklch(0.484 0.207 264.3);
+    --primary-foreground: oklch(1.000 0.000 0.0);
+    --secondary: oklch(0.9450 0.0060 221);
+    --secondary-foreground: oklch(0.2700 0.0200 230);
+    --muted: oklch(0.952 0.012 264.3);
+    --muted-foreground: oklch(0.440 0.012 264.3);
+    --accent: oklch(0.816 0.149 80.7);
+    --accent-foreground: oklch(0.210 0.034 263.4);
+    --destructive: oklch(0.5000 0.1800 26);
+    --destructive-foreground: oklch(0.9900 0.0030 220);
+    --border: oklch(0.895 0.012 264.3);
+    --input: oklch(0.8950 0.0080 222);
+    --ring: oklch(0.484 0.207 264.3);
+    --sidebar: oklch(0.9650 0.0045 220);
+    --sidebar-foreground: oklch(0.210 0.034 263.4);
+    --sidebar-primary: oklch(0.484 0.207 264.3);
+    --sidebar-primary-foreground: oklch(1.000 0.000 0.0);
+    --sidebar-accent: oklch(0.816 0.149 80.7);
+    --sidebar-accent-foreground: oklch(0.210 0.034 263.4);
+    --sidebar-border: oklch(0.895 0.012 264.3);
+    --sidebar-ring: oklch(0.484 0.207 264.3);
+    --chart-1: oklch(0.484 0.207 264.3);
+    --chart-2: oklch(0.5800 0.1000 165);
+    --chart-3: oklch(0.6000 0.1100 80);
+    --chart-4: oklch(0.4500 0.0700 260);
+    --chart-5: oklch(0.6400 0.0350 225);
+    --status-ok: oklch(0.530 0.120 152.0);
+    --status-warn: oklch(0.550 0.114 78.0);
+    --status-blocked: oklch(0.500 0.180 26.0);
+    --status-neutral: oklch(0.440 0.012 264.3);
+    --tint: oklch(0.984 0.007 264.3);
+    --tint-ink: oklch(0.484 0.207 264.3);
+    --surface-inverse: oklch(0.210 0.034 263.4);
+    --surface-inverse-foreground: oklch(1.000 0.000 0.0);
+    --primary-ink: oklch(0.484 0.207 264.3);
+    --brand-logo-on: light;
+    --accent-surface: oklch(0.940 0.056 80.7);
+    --accent-surface-foreground: oklch(0.210 0.034 263.4);
   }
 }
 </style>
@@ -350,6 +428,8 @@ body { margin: 0; background: var(--background); color: var(--foreground);
   font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); }
 :where(.doc) { display: block; max-width: calc(var(--measure) + 10rem); margin: 0 auto; padding: 2rem 2rem 4rem; }
 :where(.doc) a { color: var(--primary-ink, var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+:where(.doc) { overflow-wrap: break-word; }
+:where(.doc) :is(p, li, dd) :is(a, code) { overflow-wrap: anywhere; }
 :where(.doc) p, :where(.doc) ul, :where(.doc) ol { margin: 0.6rem 0; }
 :where(.doc) :is(.kicker, .label, dt, th, .state, .when, .from) { font-family: var(--font-label, var(--font-sans)); }
 :where(.doc) :is(.kicker, .label, .meta dt, .status dt, th), :where(.doc) .contents::before { margin: 0; font-size: var(--text-xs); font-weight: 600;

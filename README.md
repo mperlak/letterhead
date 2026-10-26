@@ -252,6 +252,17 @@ template ships with
   <img src="examples/screenshots/report--kestrel-light.webp" alt="Report on missed-bin reports, Kestrel Labs · the report template's worked example" width="33%">
 </picture></a>
 
+The `content-kit` template's worked example: Kestrel's Route API launch
+kit, an article, a thread on X, a LinkedIn post and a customer email, each
+with its date, its counted limit and a copy button, the two open decisions
+first
+([`example.html`](letterhead/templates/content-kit/example.html)).
+
+<a href="https://mperlak.github.io/letterhead/documents/content-kit--kestrel.html"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/content-kit--kestrel-dark.webp">
+  <img src="examples/screenshots/content-kit--kestrel-light.webp" alt="Route API launch kit, Kestrel Labs · the content-kit template's worked example" width="33%">
+</picture></a>
+
 Every brand above was taught from its website in about a minute. The notes,
 the prompts and the HTML of every document are in
 [`examples/`](examples/).
