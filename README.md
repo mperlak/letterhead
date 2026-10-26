@@ -103,7 +103,7 @@ every time, whichever agent wrote them. That is what letterhead does.
 
 ## What it makes
 
-Thirteen templates, one per thing a client actually receives:
+Fourteen templates, one per thing a client actually receives:
 
 | Template | Use it for |
 |---|---|
@@ -117,6 +117,7 @@ Thirteen templates, one per thing a client actually receives:
 | `project-recap` | what was delivered, at the end |
 | `release-notes` | what changed in this version |
 | `checklist` | steps someone else will tick off |
+| `content-kit` | texts to paste and publish: posts, an article, emails, each with its date, character limit and copy button |
 | `postmortem` | what went wrong and what changes now |
 | `change-walkthrough` | a change explained to a non-author |
 | `presentation` | a project shown picture by picture: rooms, variants, the products used |
@@ -127,7 +128,9 @@ Nine styles, chosen by who reads the document: `boardroom`, `engineering`,
 A style is a complete look: layout, type and color. A taught brand replaces
 its colors, fonts and logo and keeps its layout. The `report` template brings
 a layout of its own (a contents rail, a margin for notes, a closing decision
-panel) and takes the colors and fonts from the brand or the style.
+panel) and takes the colors and fonts from the brand or the style. So does
+`content-kit` (copy blocks with counters and copy buttons, one schedule, the
+decisions that gate publishing).
 
 One document for each of the twelve templates, for four fictional companies, each made by the
 skill from short notes and left unedited:

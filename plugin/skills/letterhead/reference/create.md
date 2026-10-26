@@ -63,9 +63,12 @@ structural.
 
 ## Build (after the user's yes)
 
-The `report` template carries its own layout: after `apply-tokens.mjs` in
-step 2, run `apply-template.mjs report <file>` and write the markup its
-`template.md` names instead of the style's signature moves (step 6).
+The `report` and `content-kit` templates carry their own layout: after
+`apply-tokens.mjs` in step 2, run `apply-template.mjs <slug> <file>` and
+write the markup its `template.md` names instead of the style's signature
+moves (step 6). A content kit also runs `count-copy.mjs <file>` before the
+check, so every counter matches its text; a hand-written count is wrong
+often enough to publish a post that X cuts off.
 
 The `presentation` template is the exception to steps 2 to 7 below: its
 scripts lay out the pictures, put in the tokens and the stable ids, and run
@@ -187,12 +190,18 @@ the shape gate, the brand lock and the phone and theme review still apply.
    two phone screens are a composed reading state: title, thesis, labeled
    metadata, first section. No metadata chip soup, no hero that eats the
    viewport.
-9. Run the check:
+9. Run the check, with `--render`:
    ```sh
-   node <skill>/scripts/check-document.mjs <file>
+   node <skill>/scripts/check-document.mjs <file> --render
    ```
-   Fix every error; the script exits non-zero while any remain. Warnings
-   and info are judgment calls; say which you left and why.
+   Fix every error; the script exits non-zero while any remain. A page that
+   scrolls sideways (`render/horizontal-scroll`) is an error: a phone reader
+   would pan left and right to read a line. Warnings and info are judgment
+   calls; say which you left and why. If the result says
+   `render/unavailable` (no Chromium-family browser, or Node older than 22),
+   the phone width was not checked: say so in the report line, check the
+   width another way (a browser at 390 px), and do not write that the check
+   passed.
 10. Report: file path, template used, brand used, the signature move you used,
    and check results in one line each. If the document needs feedback,
    offer `publish` in one line so readers can comment.
@@ -201,6 +210,7 @@ the shape gate, the brand lock and the phone and theme review still apply.
 
 Work as a diff against the file, never a fresh generation. Read the current
 file first. Preserve every existing heading id (law 2 and build step 7).
+Run the check with `--render` again before handing it back (build step 9).
 If feedback asks for a new section, slug its id from the new heading text.
 If the requested change would touch more than roughly a third of the file,
 say so and ask whether a fresh document is actually wanted.

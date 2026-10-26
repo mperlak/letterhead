@@ -27,10 +27,12 @@ share other files from permission to upload this document.
 
 1. Run the check; fix every error first:
    ```sh
-   node <skill>/scripts/check-document.mjs <file>
+   node <skill>/scripts/check-document.mjs <file> --render
    ```
-   Publishing a document with broken heading ids defeats the point: the
-   comments people leave will not survive the next version.
+   If it reports `render/unavailable`, the phone width was not checked; say
+   so rather than calling the document checked. Publishing a document with
+   broken heading ids defeats the point: the comments people leave will not
+   survive the next version.
 2. Confirm the target with the user if it is ambiguous: which project, and
    whether this is a brand-new document or a new version of an existing one.
    New-version-vs-new-document matters; versions keep the comment history

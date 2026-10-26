@@ -38,8 +38,9 @@ after it changes the tokens. Write the body in the markup below, inside
 `<main class="doc report">`. `example.html` next to this file is a worked
 report with every element in it (a fictional business, no tokens): read it
 before writing, take its markup, never its content or numbers. Check the
-result with `check-document.mjs --render` when a browser is at hand: it
-catches a click that changes the words, which the HTML alone cannot show.
+result with `check-document.mjs --render` (build step 9 in
+reference/create.md): it catches a click that changes the words and a page
+that scrolls sideways, which the HTML alone cannot show.
 
 ## Structure
 

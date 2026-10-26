@@ -1,0 +1,79 @@
+<!-- title: Storefront Launch Kit — Content kit (matrix sample) -->
+<!-- description: Matrix sample exercising the content-kit structure in the shared markup. -->
+<header class="doc-head">
+  <p class="kicker">Content kit</p>
+  <h1>Storefront launch kit</h1>
+  <p class="lede">The texts for the new storefront going live: a post on X and the customer email, 9 and 10 June.</p>
+  <dl class="meta">
+    <div><dt>Status</dt><dd>Ready, 1 decision open</dd></div>
+    <div><dt>Owner</dt><dd>Marketing, Lumen Commerce</dd></div>
+    <div><dt>Channels</dt><dd>X, customer email</dd></div>
+    <div><dt>Runs</dt><dd>9 to 10 June 2026</dd></div>
+  </dl>
+</header>
+
+<section class="gate">
+  <h2 id="before-you-publish">Before you publish</h2>
+  <ul class="checks">
+    <li id="decision-discount-code"><span class="tick" aria-hidden="true"></span><div>Does the email carry the launch discount code?<span class="dflt">If no answer: the email goes out without it.</span></div><span class="who">Sales, by Mon 8 Jun</span></li>
+  </ul>
+  <h3 id="remember-when-publishing">Remember when publishing</h3>
+  <ul class="states">
+    <li><span class="state warn">order</span><div>The post links to the storefront; publish it after the switch-over.</div></li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="schedule">Schedule</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Piece</th><th>Format</th><th>Goal</th></tr></thead>
+      <tbody>
+        <tr><td>Tue 9 Jun</td><td><a href="#post-on-x">1. Post on X</a></td><td>One post</td><td>Tell followers the store is live</td></tr>
+        <tr><td>Wed 10 Jun</td><td><a href="#customer-email">2. Customer email</a></td><td>Email</td><td>Existing customers try the new checkout</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="piece">
+  <p class="when"><span class="n">1</span><time datetime="2026-06-09">Tue 9 Jun</time><span class="fmt">X post</span></p>
+  <h2 id="post-on-x">Post on X</h2>
+  <p class="note">From the Lumen account, after the switch-over.</p>
+  <div class="copy" id="x-post" data-limit="280" data-count="x">
+    <div class="copy-bar">
+      <p class="copy-label">Post</p>
+      <span class="count">95 / 280</span>
+      <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: press Ctrl+C" hidden>Copy</button>
+    </div>
+    <pre>The new Lumen storefront is live: faster checkout, saved carts, and order tracking on one page.</pre>
+  </div>
+</section>
+
+<section class="piece">
+  <p class="when"><span class="n">2</span><time datetime="2026-06-10">Wed 10 Jun</time><span class="fmt">Email</span></p>
+  <h2 id="customer-email">Customer email</h2>
+  <div class="copy confirm" id="email-subject" data-limit="60">
+    <div class="copy-bar">
+      <p class="copy-label">Subject, with the code</p>
+      <span class="state warn">confirm first</span>
+      <span class="count">36 / 60</span>
+      <button type="button" class="copy-btn" data-done="Copied" data-fail="Selected: press Ctrl+C" hidden>Copy</button>
+    </div>
+    <p class="copy-note">Only if sales confirms the discount code.</p>
+    <pre>Our new store, and 10% off this week</pre>
+  </div>
+  <details class="verify">
+    <summary>Verification (1)</summary>
+    <ul>
+      <li>Saved carts and order tracking ship on 9 June <span class="state ok">checked</span> Release plan, 2 June</li>
+    </ul>
+  </details>
+</section>
+
+<section>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Storefront release plan, 2 June 2026.</li>
+  </ul>
+</section>

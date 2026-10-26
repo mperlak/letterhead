@@ -26,9 +26,10 @@ boss, a team. Each document is composed from a template contract in
 conventions so feedback tools can anchor comments that survive new versions.
 One template, `presentation` (a project shown picture by picture, room by
 room), is assembled by scripts instead of written by hand; its
-`template.md` carries the procedure. Another, `report`, brings its own
-layout and a small script (`scripts/apply-template.mjs`) in place of the
-style's layout; the brand and the style still give it colors and fonts.
+`template.md` carries the procedure. Two others, `report` and
+`content-kit`, bring their own layout and a small script
+(`scripts/apply-template.mjs`) in place of the style's layout; the brand and
+the style still give them colors and fonts.
 
 What makes a letterhead document different from a generic pretty page:
 
@@ -168,7 +169,9 @@ document's structure; these rules keep those anchors alive across versions.
 `scripts/check-document.mjs` verifies 1–3 mechanically, together with the
 bans a script can see (template leftovers, draft markers, assistant
 residue), contrast, and the light/dark theme contract. Run it before
-delivering; it exits non-zero on errors.
+delivering, always with `--render`: only a render shows a page that scrolls
+sideways on a phone. It exits non-zero on errors. If it reports
+`render/unavailable`, say the phone width was not checked.
 
 ## Brand precedence
 

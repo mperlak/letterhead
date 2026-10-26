@@ -30,9 +30,9 @@ polish status-update.html
 3. **Done.** One `.html` file that opens offline in any browser. Send it as a
    file, print it to PDF, or publish it as a link people can comment on.
 
-There are 13 templates (proposal, status update, implementation plan, spec,
+There are 14 templates (proposal, status update, implementation plan, spec,
 report, audit, meeting notes, project recap, release notes, checklist,
-postmortem, change walkthrough, presentation) and 9 built-in styles for
+postmortem, change walkthrough, presentation, content kit) and 9 built-in styles for
 documents with no brand to learn.
 
 ## What runs, and what leaves your machine
