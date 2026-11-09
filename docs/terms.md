@@ -1,6 +1,6 @@
 # Letterhead use and support
 
-Updated: 10 October 2026. Publisher: Marcin Perlak.
+Updated: 9 November 2026. Publisher: Marcin Perlak.
 
 Letterhead's original code and instructions are distributed under the
 [MIT license](https://github.com/mperlak/letterhead/blob/main/LICENSE),
@@ -13,6 +13,10 @@ You are responsible for permission to use source documents, brand assets,
 fonts and images, and for reviewing generated content before relying on
 it or sharing it. A document checker tests specific structural and visual
 rules; it does not establish factual accuracy or full accessibility.
+
+Letterhead can lay out and draft contracts, and it is not legal advice. Nobody
+reviews a contract's legal effect for you. Have a lawyer read it before
+anyone signs it.
 
 Document creation requires a host that supports files and Node.js 18+
 code execution. Optional network workflows depend on the selected sites

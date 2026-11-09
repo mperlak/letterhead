@@ -33,7 +33,8 @@ polish status-update.html
 There are 15 templates (proposal, agreement, status update, implementation plan, spec,
 report, audit, meeting notes, project recap, release notes, checklist,
 postmortem, change walkthrough, presentation, content kit) and 9 built-in styles for
-documents with no brand to learn.
+documents with no brand to learn. A contract made with the `agreement`
+template is not legal advice; have a lawyer read it before anyone signs.
 
 ## What runs, and what leaves your machine
 

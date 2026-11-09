@@ -116,21 +116,32 @@ function shots(base) {
 const brandSlugs = dirs(join(EXAMPLES, 'brands')).filter((b) => existsSync(join(EXAMPLES, 'brands', b, 'brand-sheet.html')));
 const docFiles = dirs(join(EXAMPLES, 'documents')).filter((f) => f.endsWith('.html'));
 
+// Documents that belong to no brand: a public form shown in a style. Listed
+// by name, so a typo in a brand slug still fails below.
+const UNBRANDED = { 'series-seed': 'Public-domain form' };
+
+function docTile(f) {
+  const template = basename(f, '.html').split('--')[0];
+  if (!templates[template]) fail(`documents/${f}: no template called ${template}`);
+  copyFileSync(join(EXAMPLES, 'documents', f), join(SITE, 'documents', f));
+  return { href: `documents/${f}`, label: templates[template], title: titleOf(join(EXAMPLES, 'documents', f)), shots: shots(basename(f, '.html')) };
+}
+
 const groups = brandSlugs.map((b) => {
   copyFileSync(join(EXAMPLES, 'brands', b, 'brand-sheet.html'), join(SITE, 'brands', `${b}.html`));
   const tiles = [{ href: `brands/${b}.html`, label: 'Brand sheet', title: titleOf(join(EXAMPLES, 'brands', b, 'brand-sheet.html')), shots: shots(`brand-sheet--${b}`) }];
   for (const f of docFiles) {
-    const [template, brand] = basename(f, '.html').split('--');
-    if (brand !== b) continue;
-    if (!templates[template]) fail(`documents/${f}: no template called ${template}`);
-    copyFileSync(join(EXAMPLES, 'documents', f), join(SITE, 'documents', f));
-    tiles.push({ href: `documents/${f}`, label: templates[template], title: titleOf(join(EXAMPLES, 'documents', f)), shots: shots(basename(f, '.html')) });
+    if (basename(f, '.html').split('--')[1] === b) tiles.push(docTile(f));
   }
   return { slug: b, name: brandName(b), tiles };
 });
 for (const f of docFiles) {
   const brand = basename(f, '.html').split('--')[1];
-  if (!brandSlugs.includes(brand)) fail(`documents/${f}: no brand sheet in examples/brands/${brand}/`);
+  if (!brandSlugs.includes(brand) && !UNBRANDED[brand]) fail(`documents/${f}: no brand sheet in examples/brands/${brand}/`);
+}
+for (const [slug, name] of Object.entries(UNBRANDED)) {
+  const tiles = docFiles.filter((f) => basename(f, '.html').split('--')[1] === slug).map(docTile);
+  if (tiles.length) groups.push({ slug, name, tiles });
 }
 // The brands with the most documents first.
 groups.sort((a, b) => b.tiles.length - a.tiles.length || a.name.localeCompare(b.name));
@@ -166,6 +177,6 @@ page = page.replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => {
 writeFileSync(join(SITE, 'index.html'), page);
 writeFileSync(join(SITE, '.nojekyll'), '');
 
-const nDocs = groups.reduce((n, g) => n + g.tiles.length - 1, 0);
-console.log(`gallery: ${groups.length} brands, ${nDocs} documents, ${styles.length} styles`);
+const nDocs = docFiles.length;
+console.log(`gallery: ${brandSlugs.length} brands, ${nDocs} documents, ${styles.length} styles`);
 console.log(`gallery: site written to ${SITE}`);

@@ -4,7 +4,7 @@ Everything a directory, marketplace or awesome list asks for, in one place.
 Copy from here so every listing says the same thing. When the version, the
 template count or the style count changes, update this file first.
 
-Facts checked on 2026-10-09 against letterhead 0.2.0.
+Version, template count, style count and keywords checked on 2026-11-09 against letterhead 0.6.0.
 
 ## Assets
 
@@ -26,6 +26,7 @@ bash dev-scripts/promo/build-submission.sh
 | Styles contact sheet | `temp/submission/screenshots/styles-contact-sheet.png` | screenshot 6: the 9 styles |
 | Presentation | `temp/submission/screenshots/presentation--bunnyfeelshome-light.png` | optional |
 | Content kit | `temp/submission/screenshots/content-kit--kestrel-light.png` | optional: texts to paste, with counters and copy buttons |
+| Agreement | `temp/submission/screenshots/agreement--series-seed-light.png` | optional: a contract for comments and signing |
 | Plugin archive (OpenAI) | `temp/submission/letterhead-plugin.zip` | `plugin/` without the Cursor manifest |
 | Demo video, 56 s, 4.6 MB | `examples/video/letterhead-demo.mp4` | video fields |
 
@@ -53,7 +54,7 @@ because most upload forms reject WebP.
 Writing, then Design.
 
 **Keywords:** documents, html, brand, branding, reports, proposals,
-status-update, specs, design-tokens, review, meeting-notes, presentation
+status-update, specs, design-tokens, review, meeting-notes, contracts, presentation
 
 **Up to 10 words** (VoltAgent):
 > Learns a brand from a website, writes branded HTML documents

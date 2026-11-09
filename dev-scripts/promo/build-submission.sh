@@ -22,6 +22,7 @@ SHOTS=(
   styles-contact-sheet
   presentation--bunnyfeelshome-light
   content-kit--kestrel-light
+  agreement--series-seed-light
 )
 
 rm -rf "$OUT"
