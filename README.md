@@ -17,7 +17,7 @@ can comment on; your agent reads the comments and updates the document at
 the same link.
 
 <p align="center"><a href="https://mperlak.github.io/letterhead/video/letterhead-demo.mp4"><img src="examples/video/letterhead-teaser.webp" alt="Three cards in a loop. Show it your client's website: letterhead builds their brand book. Every document after that is on their letterhead: a status update, a go-live plan and a checklist. letterhead, a skill for Claude, Codex, Cursor and other agents." width="720"></a><br>
-<a href="https://mperlak.github.io/letterhead/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 14 templates, take the client's comments and update the document.<br>
+<a href="https://mperlak.github.io/letterhead/video/letterhead-demo.mp4"><b>▶ Watch the 56-second demo</b></a>: learn a brand from a website, write from 15 templates, take the client's comments and update the document.<br>
 <sub>Recreated from a real run: the brand sheet and the status update are the unedited files in <a href="examples/">examples/</a>, the notes are shown in full; the terminal is scripted and sped up.</sub></p>
 
 **[Browse the live gallery →](https://mperlak.github.io/letterhead/)** Every example document, grouped by brand, and the 9 styles.
@@ -112,6 +112,7 @@ Fourteen templates, one per thing a client actually receives:
 | `meeting-notes` | decisions, action items with owners, what we need from you |
 | `spec` | what will be built, for sign-off |
 | `proposal` | an offer: scope, price, timeline |
+| `agreement` | a contract to negotiate in comments and sign on paper: numbered clauses, signatures, annexes, page numbers |
 | `report` | findings with evidence: the thesis as the title, notes in the margin, steps and diagrams the reader can click |
 | `audit` | what was checked, what failed, what to fix |
 | `project-recap` | what was delivered, at the end |
@@ -130,7 +131,8 @@ its colors, fonts and logo and keeps its layout. The `report` template brings
 a layout of its own (a contents rail, a margin for notes, a closing decision
 panel) and takes the colors and fonts from the brand or the style. So does
 `content-kit` (copy blocks with counters and copy buttons, one schedule, the
-decisions that gate publishing).
+decisions that gate publishing) and `agreement` (numbered clauses, signature
+blocks, annexes on new pages, page numbers in print).
 
 One document for each of the twelve templates, for four fictional companies, each made by the
 skill from short notes and left unedited:
@@ -261,6 +263,15 @@ first
 <a href="https://mperlak.github.io/letterhead/documents/content-kit--kestrel.html"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/content-kit--kestrel-dark.webp">
   <img src="examples/screenshots/content-kit--kestrel-light.webp" alt="Route API launch kit, Kestrel Labs · the content-kit template's worked example" width="33%">
+</picture></a>
+
+The `agreement` template's worked example: the Series Seed Preferred Stock
+Investment Agreement, a public-domain (CC0) form, word for word, with its
+exhibits and signature pages. A layout example, not legal advice.
+
+<a href="https://mperlak.github.io/letterhead/documents/agreement--series-seed.html"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="examples/screenshots/agreement--series-seed-dark.webp">
+  <img src="examples/screenshots/agreement--series-seed-light.webp" alt="Series Seed Preferred Stock Investment Agreement · the agreement template's worked example" width="33%">
 </picture></a>
 
 Every brand above was taught from its website in about a minute. The notes,

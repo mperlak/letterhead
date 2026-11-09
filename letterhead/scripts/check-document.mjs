@@ -87,9 +87,11 @@ function searchProse(segments, re) {
 // Rules on the text
 // ---------------------------------------------------------------------------
 
+const BRACKET_PLACEHOLDER = /\[\s*(?:your|tw[oó]j\p{L}*|insert|wstaw\p{L}*|company name|nazwa firmy)(?:\s[^\]\n]{0,60})?\]/iu;
+
 const PLACEHOLDER_PATTERNS = [
   /\blorem\s+ipsum\b|\bdolor\s+sit\s+amet\b/i,
-  /\[\s*(?:your|tw[oó]j\p{L}*|insert|wstaw\p{L}*|company name|nazwa firmy)(?:\s[^\]\n]{0,60})?\]/iu,
+  BRACKET_PLACEHOLDER,
   /\{\{\s*[^{}\n]{1,60}?\s*\}\}/,
 ];
 
@@ -109,9 +111,15 @@ const AI_PATTERNS = [
 
 function textRules(root, add) {
   const segments = proseSegments(root);
+  // A blank contract form keeps its bracketed fields as text the parties fill
+  // in; an error here would fail every unfilled form. A signing copy with one
+  // left is still a bad document, so it is reported.
+  const isAgreement = Boolean(root.querySelector('main.agreement'));
   for (const re of PLACEHOLDER_PATTERNS) {
     const hit = searchProse(segments, re);
-    if (hit) add('error', 'doc/template-leftover', hit.start, `Template text left in the document: "${hit.text}". Replace it with the real content or ask for it.`);
+    if (!hit) continue;
+    if (isAgreement && re === BRACKET_PLACEHOLDER) add('info', 'doc/agreement-field', hit.start, `Bracketed field in an agreement: "${hit.text}". A blank form keeps it; a signing copy must have it filled in.`);
+    else add('error', 'doc/template-leftover', hit.start, `Template text left in the document: "${hit.text}". Replace it with the real content or ask for it.`);
   }
   for (const re of DRAFT_PATTERNS) {
     const hit = searchProse(segments, re);

@@ -129,6 +129,18 @@ for (const [label, rule, html] of BROKEN) {
   check(`${label} → exit 2, ${rule}`, r.status === 2 && r.out.includes(` error ${rule} `), r.out);
 }
 
+console.log('agreement: a bracketed field is reported, not an error');
+{
+  const asAgreement = (from, to) => swap(from, to).replace('<body>', '<body><main class="doc agreement">').replace('</body>', '</main></body>');
+  const f = run([write('agreement-field.html', asAgreement('Paid orders and refunds.', 'Issued by [Company Name].'))]);
+  check('[Company Name] in an agreement → exit 0', f.status === 0, f.out);
+  check('doc/agreement-field reported as info', f.out.includes(' info doc/agreement-field '), f.out);
+  const l = run([write('agreement-lorem.html', asAgreement('Paid orders and refunds.', 'Lorem ipsum dolor sit amet.'))]);
+  check('lorem ipsum in an agreement is still an error', l.status === 2 && l.out.includes(' error doc/template-leftover '), l.out);
+  const n = run([write('not-agreement.html', swap('Paid orders and refunds.', 'Issued by [Company Name].'))]);
+  check('[Company Name] outside an agreement is still an error', n.status === 2 && n.out.includes(' error doc/template-leftover '), n.out);
+}
+
 console.log('warnings and info do not fail');
 {
   const warnOnly = swap('<link rel="icon"', '<link rel="preload"').replace('<h3 id="in-scope">In scope</h3>', '<h4>In scope</h4>');

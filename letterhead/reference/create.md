@@ -63,7 +63,7 @@ structural.
 
 ## Build (after the user's yes)
 
-The `report` and `content-kit` templates carry their own layout: after
+The `report`, `content-kit` and `agreement` templates carry their own layout: after
 `apply-tokens.mjs` in step 2, run `apply-template.mjs <slug> <file>` and
 write the markup its `template.md` names instead of the style's signature
 moves (step 6). A content kit also runs `count-copy.mjs <file>` before the

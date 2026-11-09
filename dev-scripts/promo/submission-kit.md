@@ -87,7 +87,7 @@ status-update, specs, design-tokens, review, meeting-notes, presentation
 > Before writing any HTML it shows you the template, the sections and the
 > first phone screen, and waits for your yes. Every document has light and
 > dark themes, reads well on a phone, prints cleanly and keeps stable section
-> ids, so comments survive the next version. 14 templates: proposal, status
+> ids, so comments survive the next version. 15 templates: proposal, agreement, status
 > update, implementation plan, spec, report, audit, meeting notes, project
 > recap, release notes, checklist, content kit, postmortem, change walkthrough
 > and presentation.

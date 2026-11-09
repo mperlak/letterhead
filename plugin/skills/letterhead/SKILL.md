@@ -6,10 +6,11 @@ user-invocable: true
 argument-hint: "[teach | polish | publish] [<topic-or-path>]"
 description: >
   Create and revise branded, self-contained HTML documents: proposals,
-  status updates, plans, specs, reports, meeting notes and project
+  status updates, plans, specs, reports, contracts, meeting notes and project
   presentations. Use when the user wants a document file ("write this up
   as a document", "make me a status update", "turn these notes into a
-  doc", "draft a spec for review", "write up the meeting notes"), an
+  doc", "draft a spec for review", "write up the meeting notes", "lay out
+  this contract"), an
   existing HTML document polished, or a brand learned or applied ("learn
   this brand", "brand sheet", "use our brand", "on our letterhead", "in
   their brand", "match our colors") from a website, PDF or local files.
@@ -26,8 +27,8 @@ boss, a team. Each document is composed from a template contract in
 conventions so feedback tools can anchor comments that survive new versions.
 One template, `presentation` (a project shown picture by picture, room by
 room), is assembled by scripts instead of written by hand; its
-`template.md` carries the procedure. Two others, `report` and
-`content-kit`, bring their own layout and a small script
+`template.md` carries the procedure. Three others, `report`, `content-kit`
+and `agreement`, bring their own layout through a small script
 (`scripts/apply-template.mjs`) in place of the style's layout; the brand and
 the style still give them colors and fonts.
 

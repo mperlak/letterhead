@@ -49,6 +49,20 @@ styles lay these items out as a grid with the marker in its own column;
 loose text with a `<strong>` or a `<code>` in it falls into that grid as
 separate pieces, and the step reads in fragments.
 
+## Agreement
+
+Three elements exist only for the `agreement` template.
+`templates/agreement/agreement.css` draws them, not the styles' `style.css`,
+so they work only inside `<main class="doc agreement">`.
+
+| Markup | What it is | Use it for |
+|---|---|---|
+| `<ol class="clauses">` | Numbered clauses: `<li id="p1-4"><span class="clause-no">1.4.</span><div>Text.</div></li>`. The number is typed, never drawn by CSS. Lettered points are an `ol.clauses` inside the `div`, with `(a)` in the `clause-no`. | Every numbered provision and annex point. |
+| `<div class="signatures">` | One `<div>` per party: `<div><span class="line"></span><p>Client</p></div>`. Labeled fields (name, title, address) go in a `.write-in` inside the party's `div`, under a `<p>` with the party's name. | Inside the last section, after its `ol.clauses`, and in an annex signed separately. |
+| `<section class="annex">` | A part that starts a new page in print. | Each annex, after the signatures, and a separate signature page. |
+
+## Using the vocabulary
+
 Use only what the content earns. A two-section status update has a head,
 a summary and two sections; it has no contents, no figure and no close.
 
